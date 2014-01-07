@@ -23,15 +23,20 @@ file(GLOB implementation_files "src/*.cpp")
 add_library( cvvisual
 	${implementation_files}
 )
-
 target_link_libraries(cvvisual
 	${OpenCV_LIBS}
 )
 
-file(GLOB test_files "test/*.cpp")
-add_executable(UnitTests ${test_files})
-target_link_libraries(UnitTests cvvisual gtest gtest_main)
 
+file(GLOB test_files "test/*.cpp")
+add_executable(UnitTests
+	${test_files}
+)
+target_link_libraries(UnitTests
+	cvvisual
+	gtest
+	gtest_main
+)
 add_test(
 	NAME UnitTests
 	COMMAND UnitTests
