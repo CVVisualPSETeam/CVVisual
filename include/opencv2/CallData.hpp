@@ -25,6 +25,6 @@ public:
 
 }} //namespaces
 
-#define CVVISUAL_LOCATION ::cvv::impl::CallData(__FILE__, __LINE__, __func__, true)
+#define CVVISUAL_LOCATION ::cvv::impl::CallData(__FILE__, __LINE__, __func__)
 
 #endif

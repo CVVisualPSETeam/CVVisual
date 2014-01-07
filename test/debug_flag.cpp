@@ -6,9 +6,9 @@
 
 #include "DebugMode.hpp"
 
-class ApiTest: public testing::Test{};
+class DebugFlagTest: public testing::Test{};
 
-TEST_F(ApiTest, SetAndUnsetDebugMode) {
+TEST_F(DebugFlagTest, SetAndUnsetDebugMode) {
 	EXPECT_EQ(cvv::debugMode(), true);
 	cvv::setDebugFlag(false);
 	EXPECT_EQ(cvv::debugMode(), false);
@@ -16,7 +16,7 @@ TEST_F(ApiTest, SetAndUnsetDebugMode) {
 	EXPECT_EQ(cvv::debugMode(), true);
 }
 
-TEST_F(ApiTest, ParallelDebugMode) {
+TEST_F(DebugFlagTest, ParallelDebugMode) {
 	EXPECT_EQ(cvv::debugMode(), true);
 	std::thread t{[]{
 		EXPECT_EQ(cvv::debugMode(), true);

@@ -6,7 +6,7 @@
 namespace cvv {
 namespace impl {
 
-void debugDilate(const ocv::InputArray& in, const ocv::OutputArray& out, const CallData& data) {
+void debugDilate(cv::InputArray in, cv::OutputArray out, const CallData& data) {
 	(void) in;
 	(void) out;
 	(void) data;
