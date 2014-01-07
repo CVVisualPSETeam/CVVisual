@@ -10,9 +10,20 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Release")
 	set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
 endif()
 
+# packages
+##################################################################
+
+find_package( OpenCV REQUIRED )
+include_directories( ${OpenCV_INCLUDE_DIRS} )
+
+enable_testing()
+find_package(GTest REQUIRED)
+include_directories(${GTEST_INCLUDE_DIR})
+
 include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 
-message("source-dir = ${CMAKE_SOURCE_DIR}")
+# targets
+##################################################################
 
 file(GLOB implementation_files "src/*.cpp")
 add_library( cvvisual
@@ -23,3 +34,13 @@ add_library( cvvisual
 target_link_libraries( cvvisual
 	# opencv, qt...
 )
+
+file(GLOB test_files "test/*.cpp")
+add_executable(runUnitTests ${test_files})
+target_link_libraries(runUnitTests gtest gtest_main)
+
+add_test(
+    NAME runUnitTests
+    COMMAND runUnitTests
+)
+

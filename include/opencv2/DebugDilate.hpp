@@ -4,7 +4,7 @@
 #include <string>
 
 #include "CallData.hpp"
-#include "debugMode.hpp"
+#include "DebugMode.hpp"
 
 
 // FIXME: replace this workaround
