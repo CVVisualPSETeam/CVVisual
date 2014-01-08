@@ -1,9 +1,9 @@
 //#include <opencv2/ts/ts.hpp>
 #include <gtest/gtest.h>
 
-#include "../src/data_controller.hpp"
-#include "../src/call.hpp"
-#include "../src/util.hpp"
+#include "../src/impl/data_controller.hpp"
+#include "../src/impl/call.hpp"
+#include "../src/util/util.hpp"
 
 class DataControllerTest: public testing::Test{};
 

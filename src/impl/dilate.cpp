@@ -5,11 +5,12 @@
 
 #include <QString>
 
+#include "../util/util.hpp"
+
 #include "call.hpp"
 #include "call_data.hpp"
 #include "data_controller.hpp"
 #include "filter_call.hpp"
-#include "util.hpp"
 
 namespace cvv {
 namespace impl {
