@@ -5,11 +5,11 @@
 #include <type_traits>
 #include <utility>
 
-namespace cvv {
-namespace util {
+namespace cvv { namespace util {
 
 template <typename T>
-class Optional {
+class Optional
+{
 public:
 	Optional() : isSet_{false} {}
 	Optional(T value) : isSet_(true)
@@ -38,20 +38,27 @@ public:
 	Optional& operator=(const Optional& other)
 	{
 		destruct();
-		isSet_ = other.isSet();
-		if(isSet())
+		if(other.isSet())
 		{
 			new(getPtr()) T{*other};
+			isSet_ = true;
 		}
 	}
 	
 	Optional& operator=(Optional&& other)
 	{
-		destruct();
-		isSet_ = other.isSet();
-		if(isSet())
+		if (isSet() && other.isSet())
+		{
+			std::swap(get(), other.get());
+		}
+		else if (isSet()) // && !other.isSet()
+		{
+			destruct();
+		}
+		else if (other.isSet()) // && !isSet()
 		{
 			new(getPtr()) T{std::move(*other)};
+			isSet_ = true;
 		}
 	}
 	
@@ -111,6 +118,7 @@ private:
 		{
 			//call the destructor explicitly:
 			reinterpret_cast<T*>(&storage)->~T();
+			isSet_ = false;
 		}
 	}
 	
