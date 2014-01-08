@@ -48,9 +48,13 @@ include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 # targets
 ##################################################################
 
-file(GLOB implementation_files "src/*.cpp")
+file(GLOB implementation_sources "src/*.cpp")
+file(GLOB implementation_headers "src/*.hpp")
+file(GLOB api_headers "include/opencv2/*.hpp")
 add_library( cvvisual
-	${implementation_files}
+        ${implementation_sources}
+        ${implementation_headers}
+        ${api_headers}
 )
 target_link_libraries(cvvisual
 	${OpenCV_LIBS}
@@ -58,9 +62,11 @@ target_link_libraries(cvvisual
 )
 
 
-file(GLOB test_files "test/*.cpp")
+file(GLOB test_sources "test/*.cpp")
+file(GLOB test_headers "test/*.hpp")
 add_executable(UnitTests
-	${test_files}
+	${test_sources}
+	${test_headers}
 )
 target_link_libraries(UnitTests
 	cvvisual
