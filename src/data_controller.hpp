@@ -17,9 +17,24 @@ class DataController {
 public:
 	DataController();
 	
-	void addCall(std::unique_ptr<Call> call) {calls.push_back(std::move(call));}
+	/**
+	 * Add a new call to the calls-list.
+	 */
+	void addCall(std::unique_ptr<Call> call);
+	
+	/**
+	 * Remove a call.
+	 */
 	void removeCall(size_t Id);
+	
+	/**
+	 * Get read-access to a certain call.
+	 */
 	const Call& getCall(size_t Id) const;
+	
+	/**
+	 * Get read/write-access to a certain call.
+	 */
 	Call& getCall(size_t Id);
 	
 	/**
@@ -35,12 +50,7 @@ private:
 	std::vector<std::unique_ptr<Call>> calls;
 };
 
-
-//singleton:
-DataController& dataController() {
-	thread_local static DataController controller{};
-	return controller;
-}
+DataController& dataController();
 
 }} // namespaces cvv::impl
 
