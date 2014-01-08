@@ -17,8 +17,8 @@ void DataController::addCall(std::unique_ptr<Call> call)
 
 void DataController::removeCall(size_t Id)
 {
-	auto it = std::find(calls.begin(), calls.end(),
-			[=](const Call& call){return call.getId() == Id;});
+	auto it = std::find_if(calls.begin(), calls.end(),
+			[=](const std::unique_ptr<Call>& call){return call->getId() == Id;});
 	if(it == calls.end())
 	{
 		throw std::invalid_argument{"there is no call with this id"};

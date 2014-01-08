@@ -18,7 +18,7 @@ size_t newCallId() {
 class Call {
 public:
 	virtual ~Call() = default;
-	size_t getId() { return id; }
+	size_t getId() const { return id; }
 	
 	const QString& type() const {return calltype;}
 protected:
