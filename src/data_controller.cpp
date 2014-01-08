@@ -37,6 +37,11 @@ Call& DataController::getCall(size_t Id)
 	return *calls.at(Id);
 }
 
+size_t DataController::getNumCalls() const
+{
+	return calls.size();
+}
+
 void DataController::callUI()
 {
 	// TODO: implement

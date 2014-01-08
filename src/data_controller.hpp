@@ -38,6 +38,11 @@ public:
 	Call& getCall(size_t Id);
 	
 	/**
+	 * Get the number of currently managed calls.
+	 */
+	size_t getNumCalls() const;
+	
+	/**
 	 * Passes control to the View-controller.
 	 * 
 	 * Returns when the ViewController signals that normal program-execution shall continue.
