@@ -40,7 +40,7 @@ public:
 	/**
 	 * Get the number of currently managed calls.
 	 */
-	size_t getNumCalls() const;
+	size_t numCalls() const;
 	
 	/**
 	 * Passes control to the View-controller.

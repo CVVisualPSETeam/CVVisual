@@ -37,7 +37,7 @@ Call& DataController::getCall(size_t Id)
 	return *calls.at(Id);
 }
 
-size_t DataController::getNumCalls() const
+size_t DataController::numCalls() const
 {
 	return calls.size();
 }

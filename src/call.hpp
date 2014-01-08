@@ -10,10 +10,7 @@
 namespace cvv {
 namespace impl {
 
-size_t newCallId() {
-	thread_local size_t nextId = 0;
-	return nextId++;
-}
+size_t newCallId();
 
 class Call {
 public:

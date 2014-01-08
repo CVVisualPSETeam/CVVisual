@@ -39,6 +39,7 @@ include_directories(${GTEST_INCLUDE_DIR})
 
 FIND_PACKAGE(Qt5Core REQUIRED)
 include_directories(${Qt5Core_INCLUDE_DIRS})
+add_definitions(${QT_DEFINITIONS})
 set(CMAKE_AUTOMOC ON)
 
 
@@ -58,7 +59,8 @@ add_library( cvvisual
 )
 target_link_libraries(cvvisual
 	${OpenCV_LIBS}
-	${QT_LIBRARIES}
+	#${QT_LIBRARIES}
+	Qt5Core
 )
 
 
