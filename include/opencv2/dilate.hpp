@@ -17,7 +17,7 @@ namespace impl {
 } // namespace impl
 
 #ifdef CVVISUAL_DEBUGMODE
-static inline void debugDilate(cv::InputArrayin, cv::OutputArrayout,
+static inline void debugDilate(cv::InputArray in, cv::OutputArray out,
 		impl::CallData data = impl::CallData()){
 	if(debugMode()) {
 		impl::debugDilate(in, out, data);

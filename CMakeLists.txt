@@ -14,6 +14,19 @@ elseif(CMAKE_BUILD_TYPE MATCHES "Release")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
 
+# options
+##################################################################
+
+Option(CVV_DEBUG_MODE "cvvisual-debug-mode" ON)
+
+
+#####################
+
+if(CVV_DEBUG_MODE MATCHES ON)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCVVISUAL_DEBUGMODE")
+endif()
+
+
 # packages
 ##################################################################
 
