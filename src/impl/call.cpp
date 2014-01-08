@@ -11,7 +11,7 @@ size_t newCallId()
 
 Call::Call() : callData{}, id{newCallId()}, calltype{} {}
 
-Call::Call(impl::CallData callData, QString type):
+Call::Call(impl::CallMetaData callData, QString type):
 		callData{std::move(callData)}, id{newCallId()}, calltype{type} {}
 
 }} // namespaces cvv::impl

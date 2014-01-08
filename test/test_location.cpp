@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "call_data.hpp"
+#include "call_meta_data.hpp"
 
 class LocationTest: public testing::Test{};
 
@@ -16,6 +16,6 @@ TEST_F(LocationTest, FileLineFunction) {
 }
 
 TEST_F(LocationTest, EmptyLocation) {
-	cvv::impl::CallData loc{};
+	cvv::impl::CallMetaData loc{};
 	EXPECT_EQ(loc.isKnown, false);
 }

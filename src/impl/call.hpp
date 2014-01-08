@@ -5,7 +5,7 @@
 
 #include <QString>
 
-#include "call_data.hpp"
+#include "call_meta_data.hpp"
 
 namespace cvv {
 namespace impl {
@@ -20,9 +20,9 @@ public:
 	const QString& type() const {return calltype;}
 protected:
 	Call();
-	Call(impl::CallData callData, QString type);
+	Call(impl::CallMetaData callData, QString type);
 	
-	impl::CallData callData;
+	impl::CallMetaData callData;
 	size_t id;
 	QString calltype;
 };

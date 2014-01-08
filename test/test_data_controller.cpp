@@ -9,7 +9,7 @@ class DataControllerTest: public testing::Test{};
 
 class CallMoc : public cvv::impl::Call {
 public:
-	CallMoc(size_t test_id) : Call{cvv::impl::CallData{}, "test"}
+	CallMoc(size_t test_id) : Call{cvv::impl::CallMetaData{}, "test"}
 	{
 		id = test_id;
 	}

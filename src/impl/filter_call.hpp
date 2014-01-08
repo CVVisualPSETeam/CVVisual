@@ -12,7 +12,7 @@ namespace cvv { namespace impl {
  */
 class FilterCall: public Call {
 public:
-	FilterCall(cv::InputArray in, cv::OutputArray out, impl::CallData data, const QString& type);
+	FilterCall(cv::InputArray in, cv::OutputArray out, impl::CallMetaData data, const QString& type);
 	
 	/**
 	 * @returns the original image
