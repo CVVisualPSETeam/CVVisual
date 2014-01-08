@@ -1,6 +1,6 @@
 
-#include "DebugDilate.hpp"
-#include "CallData.hpp"
+#include "dilate.hpp"
+#include "call_data.hpp"
 
 
 namespace cvv {

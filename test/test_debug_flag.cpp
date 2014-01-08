@@ -4,7 +4,7 @@
 #include <thread>
 
 
-#include "DebugMode.hpp"
+#include "debug_mode.hpp"
 
 class DebugFlagTest: public testing::Test{};
 

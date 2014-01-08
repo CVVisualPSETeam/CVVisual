@@ -5,8 +5,8 @@
 
 #include "opencv2/core/core.hpp"
 
-#include "CallData.hpp"
-#include "DebugMode.hpp"
+#include "call_data.hpp"
+#include "debug_mode.hpp"
 
 namespace cvv {
 
