@@ -25,6 +25,12 @@ public:
 
 }} //namespaces
 
-#define CVVISUAL_LOCATION ::cvv::impl::CallData(__FILE__, __LINE__, __func__)
+#ifdef __GNUC__
+#define CVVISUAL_FUNCTION_NAME_MACRO __PRETTY_FUNCTION__
+#else
+#define CVVISUAL_FUNCTION_NAME_MACRO __func__
+#endif
+
+#define CVVISUAL_LOCATION ::cvv::impl::CallData(__FILE__, __LINE__, CVVISUAL_FUNCTION_NAME_MACRO)
 
 #endif
