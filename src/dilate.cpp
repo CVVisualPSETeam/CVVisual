@@ -1,16 +1,21 @@
 
 #include "dilate.hpp"
-#include "call_data.hpp"
 
+#include "opencv2/core/core.hpp"
+
+#include <QString>
+
+#include "call.hpp"
+#include "call_data.hpp"
+#include "data_controller.hpp"
+#include "filter_call.hpp"
+#include "util.hpp"
 
 namespace cvv {
 namespace impl {
 
 void debugDilate(cv::InputArray in, cv::OutputArray out, const CallData& data) {
-	(void) in;
-	(void) out;
-	(void) data;
-	//dataController().addCall(make_unique<FilterCall>(in, out, data, QString{ /* dilate */}));
+	dataController().addCall(util::make_unique<FilterCall>(in, out, data, QString{"dilate"}));
 }
 
 }} //namespaces
