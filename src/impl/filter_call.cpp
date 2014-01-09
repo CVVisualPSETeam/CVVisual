@@ -3,7 +3,7 @@
 namespace cvv { namespace impl {
 
 
-FilterCall::FilterCall(cv::InputArray in, cv::OutputArray out, impl::CallData data, const QString& type):
+FilterCall::FilterCall(cv::InputArray in, cv::OutputArray out, impl::CallMetaData data, const QString& type):
 	Call(data, type), input_(in), output_(out) {}
 
 }} // namespaces cvv::impl
