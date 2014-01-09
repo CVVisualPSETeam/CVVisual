@@ -8,10 +8,10 @@
 namespace cvv {
 namespace impl {
 
-struct CallData {
+struct CallMetaData {
 public:
-	CallData() = default;
-	CallData(const std::string file, size_t line, const std::string function) :
+	CallMetaData() = default;
+	CallMetaData(const std::string file, size_t line, const std::string function) :
 		file(std::move(file)), line(line), function(std::move(function)), isKnown(true) {}
 	operator bool() {
 		return isKnown;
@@ -31,6 +31,6 @@ public:
 #define CVVISUAL_FUNCTION_NAME_MACRO __func__
 #endif
 
-#define CVVISUAL_LOCATION ::cvv::impl::CallData(__FILE__, __LINE__, CVVISUAL_FUNCTION_NAME_MACRO)
+#define CVVISUAL_LOCATION ::cvv::impl::CallMetaData(__FILE__, __LINE__, CVVISUAL_FUNCTION_NAME_MACRO)
 
 #endif

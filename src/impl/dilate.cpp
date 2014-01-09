@@ -5,16 +5,18 @@
 
 #include <QString>
 
+#include "call_meta_data.hpp"
+
+#include "../util/util.hpp"
+
 #include "call.hpp"
-#include "call_data.hpp"
 #include "data_controller.hpp"
 #include "filter_call.hpp"
-#include "util.hpp"
 
 namespace cvv {
 namespace impl {
 
-void debugDilate(cv::InputArray in, cv::OutputArray out, const CallData& data) {
+void debugDilate(cv::InputArray in, cv::OutputArray out, const CallMetaData& data) {
 	dataController().addCall(util::make_unique<FilterCall>(in, out, data, QString{"dilate"}));
 }
 

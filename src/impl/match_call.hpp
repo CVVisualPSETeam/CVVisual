@@ -18,7 +18,7 @@ class MatchCall: public Call {
 public:
 	MatchCall(cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1, cv::InputArray img2,
 			std::vector<cv::KeyPoint> keypoints2, std::vector<cv::DMatch> matches,
-			impl::CallData data, QString type );
+			impl::CallMetaData data, QString type );
 	
 	cv::InputArray img1() const {return img1_;}
 	cv::InputArray img2() const {return img2_;}
