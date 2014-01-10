@@ -18,6 +18,7 @@ endif()
 ##################################################################
 
 Option(CVV_DEBUG_MODE "cvvisual-debug-mode" ON)
+Option(CVV_BUILD_TESTS "cvvisual-build-tests" ON)
 
 
 #####################
@@ -33,9 +34,11 @@ endif()
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-enable_testing()
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIR})
+if(CVV_BUILD_TESTS)
+	enable_testing()
+	find_package(GTest REQUIRED)
+	include_directories(${GTEST_INCLUDE_DIR})
+endif()
 
 FIND_PACKAGE(Qt5Core REQUIRED)
 include_directories(${Qt5Core_INCLUDE_DIRS})
@@ -64,19 +67,20 @@ target_link_libraries(cvvisual
 )
 
 
-file(GLOB test_sources "test/*.cpp")
-file(GLOB test_headers "test/*.hpp")
-add_executable(UnitTests
-	${test_sources}
-	${test_headers}
-)
-target_link_libraries(UnitTests
-	cvvisual
-	gtest
-	gtest_main
-)
-add_test(
-	NAME UnitTests
-	COMMAND UnitTests
-)
-
+if(CVV_BUILD_TESTS)
+	file(GLOB test_sources "test/*.cpp")
+	file(GLOB test_headers "test/*.hpp")
+	add_executable(UnitTests
+		${test_sources}
+		${test_headers}
+	)
+	target_link_libraries(UnitTests
+		cvvisual
+		gtest
+		gtest_main
+	)
+	add_test(
+		NAME UnitTests
+		COMMAND UnitTests
+	)
+endif()
