@@ -78,6 +78,7 @@ if(CVV_BUILD_TESTS)
 		cvvisual
 		gtest
 		gtest_main
+		pthread
 	)
 	add_test(
 		NAME UnitTests
