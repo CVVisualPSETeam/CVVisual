@@ -5,6 +5,10 @@
 #include <cstddef>
 #include <numeric>
 
+#include <QString>
+#include <QHash>
+#include <QRegExp>
+
 /**
  * @brief Implementation of the levenshtein distance, a metric for the edit distance between to strings.
  * Original source: http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance#C.2B.2B
@@ -12,11 +16,11 @@
  * @param str2 second string
  * @return edit distance
  */
-size_t editDistance(QString str1, QString str2) {
+size_t editDistance(const QString& str1, const QString& str2) {
 	const auto len1 = str1.size();
 	const auto len2 = str2.size();
 	
-	std::vector<size_t> col(len2 + 1)
+	std::vector<size_t> col(len2 + 1);
 	std::vector<size_t> prevCol(len2 + 1);
 	
 	std::iota(prevCol.begin(), prevCol.end(), 0);
@@ -29,7 +33,8 @@ size_t editDistance(QString str1, QString str2) {
 		{
 			col[j + 1] = std::min({
 					1 + col[j],
-					1 + prevCol[1 + j]),
+					1 + prevCol[1 + j],
+					// TODO: this looks wrong:
 					prevCol[j] + (str1[i] == str2[j]) });
 		}
 		std::swap(col, prevCol);
