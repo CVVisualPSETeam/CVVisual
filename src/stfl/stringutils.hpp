@@ -1,5 +1,9 @@
 #ifndef CVVISUAL_STRINGUTILS_HPP
-#define	CVVISUAL_STRINGUTILS_HPP
+#define CVVISUAL_STRINGUTILS_HPP
+
+#include <algorithm>
+#include <cstddef>
+#include <numeric>
 
 /**
  * @brief Implementation of the levenshtein distance, a metric for the edit distance between to strings.
@@ -8,16 +12,27 @@
  * @param str2 second string
  * @return edit distance
  */
-int editDistance(QString str1, QString str2) {
-	const int len1 = str1.size(), len2 = str2.size();
-	std::vector<int> col(len2 + 1), prevCol(len2 + 1);
-	for (int i = 0; i < prevCol.size(); i++)
-		prevCol[i] = i;
-	for (int i = 0; i < len1; i++) {
+size_t editDistance(QString str1, QString str2) {
+	const auto len1 = str1.size();
+	const auto len2 = str2.size();
+	
+	std::vector<size_t> col(len2 + 1)
+	std::vector<size_t> prevCol(len2 + 1);
+	
+	std::iota(prevCol.begin(), prevCol.end(), 0);
+	
+	for (size_t i = 0; i < len1; i++)
+	{
 		col[0] = i + 1;
-		for (int j = 0; j < len2; j++)
-			col[j + 1] = std::min(std::min(1 + col[j], 1 + prevCol[1 + j]), prevCol[j] + (str1[i] == str2[j] ? 0 : 1));
-		col.swap(prevCol);
+		
+		for (size_t j = 0; j < len2; j++)
+		{
+			col[j + 1] = std::min({
+					1 + col[j],
+					1 + prevCol[1 + j]),
+					prevCol[j] + (str1[i] == str2[j]) });
+		}
+		std::swap(col, prevCol);
 	}
 	return prevCol[len2];
 }
