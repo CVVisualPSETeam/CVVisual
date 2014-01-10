@@ -20,8 +20,20 @@ std::unique_ptr<T> make_unique(Args&&... args)
 }
 
 
-template<typename T>
-bool isAnyOf(const T& value, const std::initializer_list<T>& set)
+/**
+ * Check whether a value compares equal to any value inside a container of comparable types.
+ */
+template<typename ValueType, typename Container>
+bool isAnyOf(const ValueType& value, const Container& set)
+{
+	return std::find(set.begin(), set.end(), value) != set.end();
+}
+
+/**
+ * Overload for intializer-lists to enable usage like this: isAnyOf(3, {1,2,3})
+ */
+template<typename ValueType, typename Comparable>
+bool isAnyOf(const ValueType& value, const std::initializer_list<Comparable>& set)
 {
 	return std::find(set.begin(), set.end(), value) != set.end();
 }

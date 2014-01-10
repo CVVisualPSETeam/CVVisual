@@ -176,8 +176,7 @@ void replaceIfEndsWith(QString &word, const std::map<QString, QString> &replacem
 
 bool isVowel(const QChar &someChar)
 {
-	std::initializer_list<QChar> vowels {'a', 'e', 'i', 'o', 'u'};
-	return cvv::util::isAnyOf(someChar, vowels);
+	return cvv::util::isAnyOf(someChar, {'a', 'e', 'i', 'o', 'u'});
 }
 
 bool isSingleWord(const QString &str)
