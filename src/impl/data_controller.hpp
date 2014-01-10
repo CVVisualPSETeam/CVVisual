@@ -24,6 +24,7 @@ public:
 	
 	/**
 	 * Remove a call.
+	 * @throws std::invalid_argument if no such call exists
 	 */
 	void removeCall(size_t Id);
 	
