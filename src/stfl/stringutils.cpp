@@ -19,14 +19,13 @@ int stringEquality(const QString &str1, const QString &str2)
 
 size_t editDistance(const QString& str1, const QString& str2)
 {
-<<<<<<< HEAD
 	const unsigned len1 = str1.size();
 	const unsigned len2 = str2.size();
 
 	std::vector<size_t> col(len2 + 1);
 	std::vector<size_t> prevCol(len2 + 1);
 
-	//fills the vector with ascending numbers, starting by 1
+	//fills the vector with ascending numbers, starting by 0
 	std::iota(prevCol.begin(), prevCol.end(), 0);
 
 	for (unsigned i = 0; i < len1; i++)
