@@ -76,8 +76,6 @@ if(CVV_BUILD_TESTS)
 	)
 	target_link_libraries(UnitTests
 		cvvisual
-		gtest
-		gtest_main
 		pthread
 	)
 	add_test(
