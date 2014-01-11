@@ -71,6 +71,7 @@ target_link_libraries(cvvisual
 	#Those do not work
 	#${QT_LIBRARIES}
 	Qt5Core
+	Qt5Widgets
 )
 
 
@@ -90,4 +91,8 @@ if(CVV_BUILD_TESTS)
 		NAME UnitTests
 		COMMAND UnitTests
 	)
+	
+	add_executable(collapsable_test manual_test/collapsable/main.cpp)
+	target_link_libraries(collapsable_test cvvisual)
+	
 endif()
