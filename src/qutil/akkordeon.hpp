@@ -6,9 +6,9 @@
 #include <map>
 #include <limits>
 //QT
-#include <qt5/QtWidgets/QWidget>
-#include <qt5/QtCore/QString>
-#include <qt5/QtWidgets/QVBoxLayout>
+#include <QWidget>
+#include <QString>
+#include <QVBoxLayout>
 //CVV
 #include "collapsable.hpp"
 #include "../util/util.hpp"

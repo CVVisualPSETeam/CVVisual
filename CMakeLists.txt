@@ -42,6 +42,8 @@ endif()
 
 FIND_PACKAGE(Qt5Core REQUIRED)
 include_directories(${Qt5Core_INCLUDE_DIRS})
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
 add_definitions(${QT_DEFINITIONS})
 set(CMAKE_AUTOMOC ON)
 

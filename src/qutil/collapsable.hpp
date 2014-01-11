@@ -2,12 +2,12 @@
 #define CVVISUAL_COLLAPSABLE_H
 
 //QT
-#include <qt5/QtWidgets/QWidget>
-#include <qt5/QtCore/QString>
-#include <qt5/QtWidgets/QToolButton>
-#include <qt5/QtWidgets/QHBoxLayout>
-#include <qt5/QtWidgets/QVBoxLayout>
-#include <qt5/QtWidgets/QLabel>
+#include <QString>
+#include <QWidget>
+#include <QToolButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
 
 namespace cvv{ namespace qtutil{
 
