@@ -7,11 +7,12 @@
 #include "opencv2/core/core.hpp"
 
 #include "call.hpp"
+#include "../controller/view_controller.hpp"
 
 namespace cvv { namespace impl {
 
 // 'forward declaration':
-class WindowController{};
+class ViewController{};
 
 class DataController {
 public:
@@ -52,7 +53,7 @@ public:
 	void callUI();
 	
 private:
-	WindowController windowController;
+	ViewController viewController;
 	std::vector<std::unique_ptr<Call>> calls;
 };
 

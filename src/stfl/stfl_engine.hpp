@@ -21,7 +21,7 @@ namespace stfl {
  * Parses and interprets text queries on its inherited elements.
  */
 template<typename Element>
-class STFLEngine 
+class STFLEngine
 {
 public:
 
@@ -29,36 +29,46 @@ public:
 	 * @brief Constructs (and initializes) a new engine.
 	 * @todo add function parameters
 	 */
-	STFLEngine() 
+	STFLEngine()
 	{
-		filterFuncs["raw"] = [](const QString &str, const Element & elem) {
+		filterFuncs["raw"] = [](const QString &str, const Element & elem)
+		{
 			return elem == str;
 		};
-		filterFuncs["line"] = [](const QString &str, const Element & elem) {
+		filterFuncs["line"] = [](const QString &str, const Element & elem)
+		{
 			return elem == str;
 		};
-		filterFuncs["file"] = [](const QString &str, const Element & elem) {
+		filterFuncs["file"] = [](const QString &str, const Element & elem)
+		{
 			return elem == str;
 		};
-		filterFuncs["description"] = [](const QString &str, const Element & elem) {
+		filterFuncs["description"] = [](const QString &str, const Element & elem)
+		{
 			return elem == str;
 		};
-		filterFuncs["id"] = [](const QString &str, const Element &elem) {
+		filterFuncs["id"] = [](const QString &str, const Element & elem)
+		{
 			return elem == str;
 		};
-		filterPoolFuncs["line"] = [](const Element & elem) {
+		filterPoolFuncs["line"] = [](const Element & elem)
+		{
 			return "line";
 		};
-		filterPoolFuncs["file"] = [](const Element &elem) {
+		filterPoolFuncs["file"] = [](const Element & elem)
+		{
 			return "file";
 		};
-		filterPoolFuncs["description"] = [](const Element & elem) {
+		filterPoolFuncs["description"] = [](const Element & elem)
+		{
 			return "description";
 		};
-		filterPoolFuncs["id"] = [](const Element & elem) {
+		filterPoolFuncs["id"] = [](const Element & elem)
+		{
 			return "id";
 		};
-		filterPoolFuncs["raw"] = [](const Element & elem) {
+		filterPoolFuncs["raw"] = [](const Element & elem)
+		{
 			return QString(elem);
 		};
 		initSupportedCommandsList();
@@ -68,17 +78,17 @@ public:
 	 * @brief Adds a new element and updates the string pools.
 	 * @param element new element
 	 */
-	void addNewElement(Element element) 
+	void addNewElement(Element element)
 	{
 		elements.append(element);
 		auto it = filterPoolFuncs.begin();
-		while (it != filterPoolFuncs.end()) 
+		while (it != filterPoolFuncs.end())
 		{
 			filterPool[it.key()].insert(it.value()(element));
 			++it;
 		}
 		auto it2 = filterCSPoolFuncs.begin();
-		while (it2 != filterCSPoolFuncs.end()) 
+		while (it2 != filterCSPoolFuncs.end())
 		{
 			filterCSPool[it2.key()].unite(it2.value()(element));
 			++it;
@@ -92,7 +102,7 @@ public:
 	 * @param number maximum number of suggestions
 	 * @return suggestions for the given query
 	 */
-	QStringList getSuggestions(QString _query, size_t number = 3) 
+	QStringList getSuggestions(QString _query, size_t number = 3)
 	{
 		QString query(_query);
 
@@ -102,22 +112,22 @@ public:
 		QStringList cmdStrings = query.split("#");
 		QStringList _cmdStrings = _query.split("#");
 		QString lastCmdString;
-		if (cmdStrings.empty()) 
+		if (cmdStrings.empty())
 		{
 			lastCmdString = "";
-		} 
-		else 
+		}
+		else
 		{
 			lastCmdString = cmdStrings[cmdStrings.size() - 1];
 		}
 		QStringList suggs = getSuggestionsForCmdQuery(lastCmdString, number);
-		for (int i = 0; i < suggs.size(); i++) 
+		for (int i = 0; i < suggs.size(); i++)
 		{
-			if (_cmdStrings.empty()) 
+			if (_cmdStrings.empty())
 			{
 				suggs[i] = suggs[i].right(suggs[i].size() - 1);
-			} 
-			else 
+			}
+			else
 			{
 				_cmdStrings[_cmdStrings.size() - 1] = suggs[i];
 				suggs[i] = _cmdStrings.join(" #");
@@ -126,8 +136,9 @@ public:
 		return suggs;
 	}
 
-	QList<ElementGroup<Element> > query(QString query) {
-		if (!query.startsWith("#")) 
+	QList<ElementGroup<Element> > query(QString query)
+	{
+		if (!query.startsWith("#"))
 		{
 			query = "#raw " + query;
 		}
@@ -144,7 +155,8 @@ public:
 	 *
 	 * @return query result.
 	 */
-	QList<ElementGroup<Element >> reexecuteLastQuery() {
+	QList<ElementGroup<Element >> reexecuteLastQuery()
+	{
 		return query(lastQuery);
 	}
 
@@ -153,9 +165,9 @@ public:
 	 *
 	 * @param newElements new elements, now inherited by this engine
 	 */
-	void setElements(const QList<Element> &newElements) 
+	void setElements(const QList<Element> &newElements)
 	{
-		for (Element &elem : newElements) 
+		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
 		}
@@ -166,13 +178,14 @@ public:
 	 *
 	 * @param newElements new elements, now inherited by this engine
 	 */
-	void setElements(std::vector<Element> &newElements) {
-		for (Element &elem : newElements) 
+	void setElements(std::vector<Element> &newElements)
+	{
+		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
 		}
 	}
-	
+
 
 private:
 	QList<Element> elements;
@@ -190,12 +203,12 @@ private:
 	QMap<QString, std::function<int(const Element, const Element) >> sortFuncs;
 	QMap<QString, std::function<QString(const Element) >> groupFuncs;
 
-	QList<Element> executeFilters(const QList<Element> &elements, const QStringList &cmdStrings) 
+	QList<Element> executeFilters(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
-		std::set<std::pair<std::function<bool(const QString, const Element), QString>>> filters;
-		std::set<std::pait<std::function<bool(const QStringList, const Element), QStringList>>> filtersCS;
-		
-		for (const QString &cmdString : cmdStrings) 
+		std::set < std::pair < std::function<bool(const QString, const Element), QString >> > filters;
+		std::set < std::pait < std::function<bool(const QStringList, const Element), QStringList >> > filtersCS;
+
+		for (const QString &cmdString : cmdStrings)
 		{
 			QStringList arr = cmdString.split(" ", QString::SkipEmptyParts);
 			QStringList cmd = arr.takeFirst();
@@ -213,26 +226,29 @@ private:
 				filtersCS.insert(std::make_pair(filterCSFuncs[cmd], arguments));
 			}
 		}
-		
+
 		QList<Element> retList;
-		auto copy_if = [&](const Element &element){
+		auto copy_if = [&](const Element & element)
+		{
 			return std::find_if(filters.begin(), filters.end(),
-					[&](auto pair){
-						return pair.first(pair.second, element);
-					}) == filters.end() &&
+								[&](auto pair)
+								{
+									return pair.first(pair.second, element);
+								}) == filters.end() &&
 				std::find_if(filtersCS.begin(), filtersCS.end(),
-					[&](auto pair){
-						return pair.first(pair.second, element);
-					}) == filtersCS.end();
+							[&](auto pair)
+							{
+								return pair.first(pair.second, element);
+							}) == filtersCS.end();
 		}
 		std::copy_if(elements.begin(), std::back_insertor(retList), copy_if);
 		return resList;
 	}
 
-	QList<Element> executeSortCmds(const QList<Element> &elements, const QStringList &cmdStrings) 
+	QList<Element> executeSortCmds(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
 		QList < std::pair<QString, bool> > sortCmds;
-		for (QString cmdString : cmdStrings) 
+		for (QString cmdString : cmdStrings)
 		{
 			QStringList arr = cmdString.split(" ", QString::SkipEmptyParts);
 			if (arr.size() < 2)
@@ -245,7 +261,7 @@ private:
 				arr.removeFirst();
 			}
 			arr = arr.join(" ").split(",", QString::SkipEmptyParts);
-			for (QString cmdPart : arr) 
+			for (QString cmdPart : arr)
 			{
 				cmdPart = cmdPart.trimmed();
 				QStringList cmdPartList = cmdPart.split(" ");
@@ -255,7 +271,7 @@ private:
 				}
 				cmdPart = cmdPartList[0];
 				bool asc = true;
-				if (cmdPartList.size() >= 2) 
+				if (cmdPartList.size() >= 2)
 				{
 					asc = cmdPartList[1] == "asc";
 				}
@@ -266,16 +282,17 @@ private:
 			}
 		}
 		QList<Element> resList(elements);
-		for (auto sortCmd : sortCmds) 
+		for (auto sortCmd : sortCmds)
 		{
-			if (sortCmd.second) 
+			if (sortCmd.second)
 			{
 				qStableSort(resList.begin(), resList.end(), sortFuncs[sortCmd.first]);
-			} 
+			}
 			else
 			{
 				auto sortFunc = sortFuncs[sortCmd.first];
-				qStableSort(resList.begin(), resList.end(), [&](const Element &elem1, const Element & elem2) {
+				qStableSort(resList.begin(), resList.end(), [&](const Element &elem1, const Element & elem2)
+				{
 					return !sortFunc(elem1, elem2);
 				});
 			}
@@ -283,9 +300,10 @@ private:
 		return resList;
 	}
 
-	QList<ElementGroup<Element> > executeGroupCmds(const QList<Element> &elements, const QStringList &cmdStrings) {
+	QList<ElementGroup<Element> > executeGroupCmds(const QList<Element> &elements, const QStringList &cmdStrings)
+	{
 		QStringList groupCmds;
-		for (QString cmdString : cmdStrings) 
+		for (QString cmdString : cmdStrings)
 		{
 			QStringList arr = cmdString.split(" ", QString::SkipEmptyParts);
 			if (arr.size() < 2)
@@ -298,7 +316,7 @@ private:
 				arr.removeFirst();
 			}
 			arr = arr.join("").split(",", QString::SkipEmptyParts);
-			for (QString cmdPart : arr) 
+			for (QString cmdPart : arr)
 			{
 				QStringList cmdPartList = cmdPart.split(" ");
 				if (cmdPartList.empty())
@@ -310,9 +328,10 @@ private:
 		}
 		int id = 0;
 		QHash<QStringList, std::pair<QList<Element>, int> > groupHash;
-		for (Element element : elements) {
+		for (Element element : elements)
+		{
 			QStringList groupTitles;
-			if (!groupHash.contains(groupTitles)) 
+			if (!groupHash.contains(groupTitles))
 			{
 				groupHash[groupTitles] = std::make_pair(QList<Element>(), id);
 				id++;
@@ -324,10 +343,11 @@ private:
 		for (int i = 0; i < groupHash.size(); i++)
 		{
 			groupList.append(dummy);
-		
+
 		}
 		auto it = groupHash.begin();
-		while (it != groupHash.end()) {
+		while (it != groupHash.end())
+		{
 			groupList[it.value().second] = *(new ElementGroup<Element>(it.key(), it.value().first));
 			it++;
 		}
@@ -345,7 +365,7 @@ private:
 		bool hasByString = tokens.size() >= 2 && tokens[1] == "by";
 
 		QString cmd = tokens[0];
-		if (isSortCmd(cmd) || isGroupCmd(cmd)) 
+		if (isSortCmd(cmd) || isGroupCmd(cmd))
 		{
 			int frontCut = std::min(1 + (hasByString ? 1 : 0), tokens.size());
 			tokens = tokens.mid(frontCut, tokens.size());
@@ -354,25 +374,27 @@ private:
 			if (isSortCmd(cmd))
 			{
 				suggs = getSuggestionsForSortCmd(args);
-			} 
+			}
 			else
 			{
 				suggs = getSuggestionsForGroupCmd(args);
 			}
-		} 
-		else if (isFilterCmd(cmd) || isFilterCSCmd(cmd)) {
+		}
+		else if (isFilterCmd(cmd) || isFilterCSCmd(cmd))
+		{
 			tokens = tokens.mid(1, tokens.size());
 			QString rejoined = tokens.join(" ").replace("\\s+", "\\s");
-			if (isFilterCmd(cmd)) 
+			if (isFilterCmd(cmd))
 			{
 				suggs = getSuggestionsForFilterCmd(cmd, rejoined);
-			} 
-			else {
+			}
+			else
+			{
 				QStringList args = rejoined.split(",", QString::SkipEmptyParts);
 				suggs = getSuggestionsForFilterCSCmd(cmd, args);
 			}
 		}
-		else 
+		else
 		{
 			suggs = getSuggestionsForCmd(cmd);
 		}
@@ -393,10 +415,11 @@ private:
 		QStringList pool(groupFuncs.keys());
 		QStringList list;
 		QStringList arr = last.split(" ");
-		if (pool.contains(arr[0])) {
+		if (pool.contains(arr[0]))
+		{
 			list.append("asc");
 			list.append("desc");
-			if (arr.size() > 1) 
+			if (arr.size() > 1)
 			{
 				list = sortStringsByStringEquality(list, arr[1]);
 			}
@@ -404,12 +427,12 @@ private:
 			{
 				item = arr[i] + " " + item;
 			}
-		} 
+		}
 		else
 		{
 			list = sortStringsByStringEquality(pool, last);
 		}
-		for (QString &item : list) 
+		for (QString &item : list)
 		{
 			joinCommand(item, "sort by ", args);
 		}
@@ -419,7 +442,7 @@ private:
 	QStringList getSuggestionsForGroupCmd(QStringList args)
 	{
 		QString last;
-		if (args.empty()) 
+		if (args.empty())
 		{
 			last = "";
 		}
@@ -435,8 +458,8 @@ private:
 		}
 		return list;
 	}
-	
-	QStringList getSuggestionsForFilterCmd(const QString &cmd, const QString &argument) 
+
+	QStringList getSuggestionsForFilterCmd(const QString &cmd, const QString &argument)
 	{
 		QStringList pool(filterPool[cmd].toList());
 		return sortStringsByStringEquality(pool, argument);
@@ -445,24 +468,24 @@ private:
 	QStringList getSuggestionsForFilterCSCmd(const QString &cmd, QStringList args)
 	{
 		QString last;
-		if (args.empty()) 
+		if (args.empty())
 		{
 			last = "";
-		} 
-		else 
+		}
+		else
 		{
 			last = args[args.size() - 1];
 		}
 		QStringList pool(filterCSPool[cmd].toList());
 		QStringList list = sortStringsByStringEquality(pool, last);
-		for (QString &item : list) 
+		for (QString &item : list)
 		{
 			joinCommand(item, cmd, args);
 		}
 		return list;
 	}
 
-	QStringList getSuggestionsForCmd(const QString &cmd) 
+	QStringList getSuggestionsForCmd(const QString &cmd)
 	{
 		return sortStringsByStringEquality(supportedCmds, cmd);
 	}
@@ -472,7 +495,7 @@ private:
 	 * E.g. "#sort by", "#group by", "#[filter name]"
 	 * @return a string list of commands
 	 */
-	void initSupportedCommandsList() 
+	void initSupportedCommandsList()
 	{
 		QStringList list;
 		list.append(filterFuncs.keys());
@@ -494,9 +517,10 @@ private:
 	 * @param compareWith compare them with this string
 	 * @return the sorted list
 	 */
-	QStringList sortStringsByStringEquality(const QStringList &strings, const QString &compareWith) {
+	QStringList sortStringsByStringEquality(const QStringList &strings, const QString &compareWith)
+	{
 		QMap<int, QString> weightedStrings;
-		for (QString &str : strings) 
+		for (QString &str : strings)
 		{
 			int strEqu = stringEquality(compareWith, strings);
 			weightedStrings[strEqu] = str;
@@ -504,32 +528,33 @@ private:
 		return QStringList(weightedStrings.values());
 	}
 
-	bool isSortCmd(const QString &cmd) 
+	bool isSortCmd(const QString &cmd)
 	{
 		return sortFuncs.count(cmd) > 0;
 	}
 
-	bool isGroupCmd(const QString &cmd) 
+	bool isGroupCmd(const QString &cmd)
 	{
 		return groupFuncs.count(cmd) > 0;
 	}
 
-	bool isFilterCmd(const QString &cmd) 
+	bool isFilterCmd(const QString &cmd)
 	{
 		return filterFuncs.count(cmd) > 0;
 	}
 
-	bool isFilterCSCmd(const QString &cmd) 
+	bool isFilterCSCmd(const QString &cmd)
 	{
 		return filterCSFuncs.count(cmd) > 0;
 	}
-	
-	void joinCommand(QString &item, const QString &cmd, QStringList &args){
-		if (args.empty()) 
+
+	void joinCommand(QString &item, const QString &cmd, QStringList &args)
+	{
+		if (args.empty())
 		{
 			item = cmd + item;
-		} 
-		else 
+		}
+		else
 		{
 			args[args.size() - 1] = item;
 			item = cmd + args.join(", ");
@@ -537,6 +562,7 @@ private:
 	}
 };
 
-}}
+}
+}
 
 #endif // BERRYENGINE_H

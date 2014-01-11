@@ -6,7 +6,7 @@ namespace cvv { namespace impl {
 
 DataController::DataController()
 {
-	(void) windowController;
+	(void) viewController;
 }
 
 
@@ -42,9 +42,12 @@ size_t DataController::numCalls() const
 	return calls.size();
 }
 
+/**
+ * @todo implement
+ */
 void DataController::callUI()
 {
-	// TODO: implement
+	
 }
 
 DataController& dataController()
