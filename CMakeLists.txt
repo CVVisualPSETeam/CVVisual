@@ -61,7 +61,11 @@ add_library( cvvisual
         ${api_headers}
 )
 target_link_libraries(cvvisual
-	${OpenCV_LIBS}
+	#Using those results in ugly problems with gtest:
+	#${OpenCV_LIBS}
+	opencv_core
+	
+	#Those do not work
 	#${QT_LIBRARIES}
 	Qt5Core
 )
