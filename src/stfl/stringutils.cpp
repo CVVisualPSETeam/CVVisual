@@ -19,6 +19,7 @@ int stringEquality(const QString &str1, const QString &str2)
 
 size_t editDistance(const QString& str1, const QString& str2)
 {
+<<<<<<< HEAD
 	const unsigned len1 = str1.size();
 	const unsigned len2 = str2.size();
 
