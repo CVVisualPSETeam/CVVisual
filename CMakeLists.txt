@@ -42,6 +42,8 @@ endif()
 
 FIND_PACKAGE(Qt5Core REQUIRED)
 include_directories(${Qt5Core_INCLUDE_DIRS})
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
 add_definitions(${QT_DEFINITIONS})
 set(CMAKE_AUTOMOC ON)
 
@@ -69,6 +71,7 @@ target_link_libraries(cvvisual
 	#Those do not work
 	#${QT_LIBRARIES}
 	Qt5Core
+	Qt5Widgets
 )
 
 
@@ -88,4 +91,8 @@ if(CVV_BUILD_TESTS)
 		NAME UnitTests
 		COMMAND UnitTests
 	)
+	
+	add_executable(collapsable_test manual_test/collapsable/main.cpp)
+	target_link_libraries(collapsable_test cvvisual)
+	
 endif()
