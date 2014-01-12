@@ -1,4 +1,5 @@
 #include "view_controller.hpp"
+#include <stdexcept>
 
 namespace cvv {
 namespace controller {
@@ -42,9 +43,14 @@ impl::Call ViewController::getCall(size_t id)
 
 QString ViewController::getSetting(const QString &scope, const QString &key)
 {
-	(void) scope;
-	(void) key;
-	return "";
+	settings.beginGroup(scope);
+	if (!settings.contains(key))
+	{
+		throw std::invalid_argument{ "there is no such setting" };
+	}
+	QString set = settings.value(scope + "/" + key).value<QString>();
+	settings.endGroup();
+	return set;
 }
 
 const std::vector<TabWindow> ViewController::getTabWindows()
@@ -76,16 +82,19 @@ void resumeProgramExecution()
 
 void ViewController::setDefaultSetting(const QString &scope, const QString &key, const QString &value)
 {
-	(void) scope;
-	(void) key;
-	(void) value;
+	settings.beginGroup(scope);
+	if (!settings.contains(key))
+	{
+		settings.setValue(key, value);
+	}
+	settings.endGroup();
 }
 
 void ViewController::setSetting(const QString &scope, const QString &key, const QString &value)
 {
-	(void) scope;
-	(void) key;
-	(void) value;
+	settings.beginGroup(scope);
+	settings.setValue(key, value);
+	settings.endGroup();
 }
 
 void ViewController::showCallTab(size_t tabId)
