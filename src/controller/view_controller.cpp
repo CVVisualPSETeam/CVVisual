@@ -36,7 +36,7 @@ void ViewController::exec()
 
 }
 
-impl::Call ViewController::getCall(size_t id)
+impl::Call& ViewController::getCall(size_t id)
 {
 	return calls.at(id);
 }

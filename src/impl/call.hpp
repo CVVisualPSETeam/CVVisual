@@ -22,6 +22,12 @@ protected:
 	Call();
 	Call(impl::CallMetaData callData, QString type);
 	
+	Call(const Call&) = default;
+	Call(Call&&) = default;
+	
+	Call& operator=(const Call&) = default;
+	Call& operator=(Call&&) = default;
+	
 	impl::CallMetaData callData;
 	size_t id;
 	QString calltype;

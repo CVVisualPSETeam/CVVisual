@@ -46,7 +46,7 @@ public:
 	 */
 	void exec();
 	
-	impl::Call getCall(size_t id);
+	impl::Call& getCall(size_t id);
 	
 	/**
 	 * @todo implement
