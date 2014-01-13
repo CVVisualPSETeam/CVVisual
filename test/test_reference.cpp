@@ -13,8 +13,6 @@ TEST_F(ReferenceTest, Construction)
 	int i = 3;
 	Reference<int> ref1{i};
 	EXPECT_EQ(*ref1, 3);
-	Reference<int> ref2{&i};
-	EXPECT_EQ(*ref2, 3);
 }
 
 TEST_F(ReferenceTest, Reassignment)

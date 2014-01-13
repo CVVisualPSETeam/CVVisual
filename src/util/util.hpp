@@ -63,10 +63,7 @@ public:
 	Reference& operator=(const Reference&) = default;
 	Reference& operator=(Reference&&) = default;
 	
-	//Constructing from pointers is as fine as from References; we can however
-	//not allow const References, since the saved value may be modified through
-	//this class:
-	explicit Reference(T* pointee) : ptr{pointee} {assert(ptr);}
+	//Constructing only works from references
 	explicit Reference(T& pointee) : ptr{&pointee} {}
 	
 	// there is no point in having a Reference to a temporary object:
