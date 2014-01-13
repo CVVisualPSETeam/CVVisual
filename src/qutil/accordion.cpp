@@ -1,14 +1,14 @@
-#include "akkordeon.hpp"
+#include "accordion.hpp"
 
 namespace cvv{ namespace qtutil{
 
-Akkordeon::Akkordeon(QWidget *parent):
+Accordion::Accordion(QWidget *parent):
 	QWidget(parent), elements(), layout(), lastHandle(0){}
 
 
 
 
-void Akkordeon::collapseAll(bool b)
+void Accordion::collapseAll(bool b)
 {
 	for(auto& elem: elements)
 	{
@@ -16,7 +16,7 @@ void Akkordeon::collapseAll(bool b)
 	}
 }
 
-void Akkordeon::hideAll(bool b)
+void Accordion::hideAll(bool b)
 {
 	for(auto& elem: elements)
 	{
@@ -24,11 +24,11 @@ void Akkordeon::hideAll(bool b)
 	}
 }
 
-Akkordeon::handle_t Akkordeon::insert(const QString& title,QWidget& widget, bool isCollapsed,
+Accordion::Handle Accordion::insert(const QString& title,QWidget& widget, bool isCollapsed,
 			   std::size_t position)
 {
 	//get handle
-	handle_t handle = getNextHandle();
+	Handle handle = getNextHandle();
 	//create element
 	elements.emplace(handle, cvv::util::make_unique<Collapsable>(title, widget, isCollapsed));
 	//insert element
@@ -38,13 +38,13 @@ Akkordeon::handle_t Akkordeon::insert(const QString& title,QWidget& widget, bool
 	return handle;
 }
 
-void Akkordeon::remove(handle_t handle)
+void Accordion::remove(Handle handle)
 {
 	layout.removeWidget(&element(handle));
 	elements.erase(handle);
 }
 
-void Akkordeon::clear()
+void Accordion::clear()
 {
 	//clear layout
 	for(auto& elem: elements)
@@ -54,14 +54,14 @@ void Akkordeon::clear()
 	elements.clear();
 }
 
-std::pair<QString, QWidget&> Akkordeon::pop(handle_t handle)
+std::pair<QString, QWidget&> Accordion::pop(Handle handle)
 {
 	std::pair<QString, QWidget&> result{element(handle).title(), element(handle).widget()};
 	remove(handle);
 	return result;
 }
 
-std::vector<std::pair<QString, QWidget&>> Akkordeon::popAll()
+std::vector<std::pair<QString, QWidget&>> Accordion::popAll()
 {
 	std::vector<std::pair<QString, QWidget&>> result{};
 	for(auto& elem: elements)
@@ -73,9 +73,9 @@ std::vector<std::pair<QString, QWidget&>> Akkordeon::popAll()
 	return result;
 }
 
-Akkordeon::handle_t Akkordeon::getNextHandle()
+Accordion::Handle Accordion::getNextHandle()
 {
-	for(handle_t i= lastHandle; i <= max_size(); i++)
+	for(Handle i= lastHandle; i <= max_size(); i++)
 	{
 		if(!isValidHandle(i))
 		{
@@ -83,13 +83,13 @@ Akkordeon::handle_t Akkordeon::getNextHandle()
 		}
 	}
 	//check i<= lastHandle
-	for(handle_t i= 0; i <= lastHandle; i++)
+	for(Handle i= 0; i <= lastHandle; i++)
 	{
 		if(!isValidHandle(i))
 		{
 			return i;
 		}
 	}
-	throw std::length_error("Akkordeon reached max size already");
+	throw std::length_error("Accordion reached max size already");
 }
 }} // end namespaces qtutil, cvv

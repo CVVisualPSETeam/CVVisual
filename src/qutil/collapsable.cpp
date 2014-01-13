@@ -3,8 +3,8 @@
 namespace cvv{ namespace qtutil{
 
 Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed, QWidget *parent):
-		QWidget(parent), title_(title), widget_(widget), button(), layoutHeader(),
-		layoutHeaderAndWidget()
+		QWidget{parent}, title_{title}, widget_(widget)
+	//	,button{this}, layoutHeaderAndWidget{this}, layoutHeader{&layoutHeaderAndWidget}
 {
 	button.setEnabled(true);
 	//build header
@@ -14,12 +14,13 @@ Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed,
 	//build widget
 	layoutHeaderAndWidget.addLayout( &layoutHeader);
 	layoutHeaderAndWidget.addWidget( &widget_);
+	setLayout(&layoutHeaderAndWidget);
 
 	//connect signals and slots
 	QObject::connect(&button, SIGNAL(clicked()), this, SLOT(toggleVisibility()));
 
 	//collapse/ expand according to isCollapsed
-	this->collapse(isCollapsed);
+	collapse(isCollapsed);
 }
 
 void Collapsable::collapse(bool b)
