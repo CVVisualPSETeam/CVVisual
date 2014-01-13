@@ -67,7 +67,7 @@ target_link_libraries(cvvisual
 	#Using those results in ugly problems with gtest:
 	#${OpenCV_LIBS}
 	opencv_core
-	
+	pthread
 	#Those do not work
 	#${QT_LIBRARIES}
 	Qt5Core
