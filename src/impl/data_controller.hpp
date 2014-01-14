@@ -11,12 +11,9 @@
 
 namespace cvv { namespace impl {
 
-// 'forward declaration':
-class ViewController{};
-
 class DataController {
 public:
-	DataController();
+	DataController() = default;
 	
 	/**
 	 * Add a new call to the calls-list.
@@ -53,7 +50,7 @@ public:
 	void callUI();
 	
 private:
-	ViewController viewController;
+	controller::ViewController viewController;
 	std::vector<std::unique_ptr<Call>> calls;
 };
 
