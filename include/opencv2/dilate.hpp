@@ -13,7 +13,7 @@ namespace cvv {
 
 namespace impl {
 	//implementation outside API
-	void debugDilate(cv::InputArray original, cv::InputArray result, CallMetaData data);
+	void debugDilate(cv::InputArray original, cv::InputArray result, const CallMetaData& data);
 } // namespace impl
 
 #ifdef CVVISUAL_DEBUGMODE

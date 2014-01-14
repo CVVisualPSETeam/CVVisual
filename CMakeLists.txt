@@ -67,7 +67,7 @@ target_link_libraries(cvvisual
 	#Using those results in ugly problems with gtest:
 	#${OpenCV_LIBS}
 	opencv_core
-	pthread
+	opencv_imgproc
 	#Those do not work
 	#${QT_LIBRARIES}
 	Qt5Core
@@ -94,5 +94,8 @@ if(CVV_BUILD_TESTS)
 	
 	add_executable(collapsable_test manual_test/collapsable/main.cpp)
 	target_link_libraries(collapsable_test cvvisual)
+	
+	add_executable(basic_dilate_test manual_test/basic_dilate/main.cpp)
+	target_link_libraries(basic_dilate_test cvvisual)
 	
 endif()
