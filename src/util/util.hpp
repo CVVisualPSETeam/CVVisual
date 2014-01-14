@@ -2,6 +2,7 @@
 #define CVVISUAL_UTIL_HPP
 
 //required for utilities
+#include <initializer_list>
 #include <memory>
 #include <utility>
 
@@ -10,73 +11,114 @@
 #include <cstdint> // [u]intXX_t
 #include <algorithm> // since some people like to forget that one
 
-namespace cvv {
-namespace util {
+namespace cvv { namespace util {
 
+/**
+ * @brief Creates a new Object of type T on the heap, managed by a std::unique_ptr.
+ * 
+ * @Note This function uses the naming-conventions of the STL instead of cvv because it actually
+ * is a backported function from C++14 that is intended to be in harmony with std::make_shared.
+ */
 template<typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args) {
+std::unique_ptr<T> make_unique(Args&&... args)
+{
 	return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
+
+/**
+ * @brief Check whether a value compares equal to any value inside a container of comparable types.
+ */
+template<typename ValueType, typename Container>
+bool isAnyOf(const ValueType& value, const Container& set)
+{
+	return std::find(set.begin(), set.end(), value) != set.end();
+}
+
+/**
+ * @brief Overload for intializer-lists to enable usage like this: isAnyOf(3, {1,2,3})
+ */
+template<typename ValueType, typename Comparable>
+bool isAnyOf(const ValueType& value, const std::initializer_list<Comparable>& set)
+{
+	return std::find(set.begin(), set.end(), value) != set.end();
 }
 
 /**
  * Reference-class to signal that a type is neither owned nor NULL.
+ * 
+ * Note that const Reference<Foo> does not mean that the pointed to Foo is const. If that is what
+ * you want use Reference<const Foo>
  */
 template<typename T>
-class reference {
-	public:
-		static_assert(std::is_same<T, typename std::decay<T>::type>(),
-				"T must be a fully decayed type");
-		
-		// there is no reasonable default-value, so:
-		reference() = delete;
-		
-		// these are all just the defaults but it is nice to see them explicitly
-		reference(const reference&) = default;
-		reference(reference&&) = default;
-		reference& operator=(const reference&) = default;
-		reference& operator=(reference&&) = default;
-		
-		//Constructing from pointers is as fine as from references; we can however
-		//not allow const references, since the saved value may be modified through
-		//this class:
-		reference(T* pointee) : ptr{pointee} {assert(ptr);}
-		reference(T& pointee) : ptr{&pointee} {}
-		
-		// there is no point in having a reference to a temporary object:
-		reference(T&&) = delete;
-		
-		T& operator*() {return *ptr;}
-		const T& operator*() const {return *ptr;}
-		
-		T* operator->() {return ptr;}
-		const T* operator->() const {return ptr;}
-		
-		T& get() {return *ptr;}
-		const T& get() const {return *ptr;}
-		
-		T* get_ptr() {return ptr;}
-		const T* get_ptr() const {return ptr;}
-		
-		// we need this one for using this template in std::set and the like:
-		bool friend operator<(const reference& l, const reference& r) {
-			return l.ptr < r.ptr;
-		}
-		
-		// comparing for equality is always usefull:
-		bool friend operator==(const reference& l, const reference& r) {
-			return l.ptr == r.ptr;
-		}
-		bool friend operator!=(const reference& l, const reference& r) {
-			return l.ptr != r.ptr;
-		}
-		
-		// The pointer in this class always points to something:
-		explicit constexpr operator bool() const {return true;}
-		constexpr bool operator!() const {return false;}
-		
-	private:
-		T* ptr;
+class Reference
+{
+public:
+	// there is no reasonable default-value, so:
+	Reference() = delete;
+	
+	// these are all just the defaults but it is nice to see them explicitly
+	Reference(const Reference&) = default;
+	Reference(Reference&&) = default;
+	Reference& operator=(const Reference&) = default;
+	Reference& operator=(Reference&&) = default;
+	
+	//Constructing only works from references
+	explicit Reference(T& pointee) : ptr{&pointee} {}
+	
+	// there is no point in having a Reference to a temporary object:
+	Reference(T&&) = delete;
+	
+	/**
+	 * Get a reference to the referenced object.
+	 */
+	T& operator*() const {return *ptr;}
+	
+	T* operator->() const {return ptr;}
+	
+	/**
+	 * Get a reference to the referenced object.
+	 */
+	T& get() const {return *ptr;}
+	
+	/**
+	 * Get a pointer to the referenced object.
+	 */
+	T* getPtr() const {return ptr;}
+	
+	/**
+	 * @brief Compare to references for identity of the referenced object.
+	 * 
+	 * @note identity != equality: two references to two different ints that both happen to have
+	 * the value 1, will still compare unequal.
+	 */
+	bool friend operator==(const Reference& l, const Reference& r)
+	{
+		return l.ptr == r.ptr;
+	}
+	
+	/**
+	 * Dito.
+	 */
+	bool friend operator!=(const Reference& l, const Reference& r)
+	{
+		return l.ptr != r.ptr;
+	}
+	
+private:
+	T* ptr;
 };
+
+/**
+ * Create a cvv::util::Reference to an object. This is intended to be used for
+ * template-argument-deduction, so explicitly passing the template-argument should be considered
+ * undefined behaviour.
+ */
+template<typename T>
+Reference<T> makeRef(T& val)
+{
+	return Reference<T>{val};
+}
 
 }} // namespaces 
 

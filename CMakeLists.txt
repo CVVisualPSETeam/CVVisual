@@ -18,6 +18,7 @@ endif()
 ##################################################################
 
 Option(CVV_DEBUG_MODE "cvvisual-debug-mode" ON)
+Option(CVV_BUILD_TESTS "cvvisual-build-tests" ON)
 
 
 #####################
@@ -33,12 +34,16 @@ endif()
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-enable_testing()
-find_package(GTest REQUIRED)
-include_directories(${GTEST_INCLUDE_DIR})
+if(CVV_BUILD_TESTS)
+	enable_testing()
+	find_package(GTest REQUIRED)
+	include_directories(${GTEST_INCLUDE_DIR})
+endif()
 
 FIND_PACKAGE(Qt5Core REQUIRED)
 include_directories(${Qt5Core_INCLUDE_DIRS})
+FIND_PACKAGE(Qt5Widgets REQUIRED)
+include_directories(${Qt5Widgets_INCLUDE_DIRS})
 add_definitions(${QT_DEFINITIONS})
 set(CMAKE_AUTOMOC ON)
 
@@ -52,31 +57,42 @@ include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 file(GLOB implementation_sources "src/*/*.cpp")
 file(GLOB implementation_headers "src/*/*.hpp")
 file(GLOB api_headers "include/opencv2/*.hpp")
+file(GLOB qt_headers "include/Qt/*.h")
 add_library( cvvisual
         ${implementation_sources}
         ${implementation_headers}
         ${api_headers}
 )
 target_link_libraries(cvvisual
-	${OpenCV_LIBS}
+	#Using those results in ugly problems with gtest:
+	#${OpenCV_LIBS}
+	opencv_core
+	pthread
+	#Those do not work
 	#${QT_LIBRARIES}
 	Qt5Core
+	Qt5Widgets
 )
 
 
-file(GLOB test_sources "test/*.cpp")
-file(GLOB test_headers "test/*.hpp")
-add_executable(UnitTests
-	${test_sources}
-	${test_headers}
-)
-target_link_libraries(UnitTests
-	cvvisual
-	gtest
-	gtest_main
-)
-add_test(
-	NAME UnitTests
-	COMMAND UnitTests
-)
-
+if(CVV_BUILD_TESTS)
+	file(GLOB test_sources "test/*.cpp")
+	file(GLOB test_headers "test/*.hpp")
+	add_executable(UnitTests
+		${test_sources}
+		${test_headers}
+	)
+	target_link_libraries(UnitTests
+		cvvisual
+		pthread
+		gtest
+	)
+	add_test(
+		NAME UnitTests
+		COMMAND UnitTests
+	)
+	
+	add_executable(collapsable_test manual_test/collapsable/main.cpp)
+	target_link_libraries(collapsable_test cvvisual)
+	
+endif()

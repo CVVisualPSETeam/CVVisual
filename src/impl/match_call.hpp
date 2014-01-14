@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <utility>
+#include <type_traits>
 
 #include "call.hpp"
 
@@ -26,9 +27,10 @@ public:
 	const std::vector<cv::KeyPoint>& keyPoints2() const {return keypoints2_;}
 	const std::vector<cv::DMatch>& matches() const {return matches_;}
 private:
-	cv::InputArray img1_;
+	using InArray = typename std::decay<cv::InputArray>::type;
+	InArray img1_;
 	std::vector<cv::KeyPoint> keypoints1_;
-	cv::InputArray img2_;
+	InArray img2_;
 	std::vector<cv::KeyPoint> keypoints2_;
 	std::vector<cv::DMatch> matches_;
 };
