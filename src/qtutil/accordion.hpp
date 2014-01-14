@@ -16,7 +16,7 @@
 namespace cvv{ namespace qtutil
 {
 /**
- * @brief The Accordion class
+ * @brief The Accordion class.
  *
  * Contains multiple widgets an their title. These get stored in collapsables.
  * The collapsables are stored in a collumn.
@@ -26,52 +26,74 @@ class Accordion : public QWidget
 	Q_OBJECT
 public:
 	/**
-	 * @brief the handle type to access elements
+	 * @brief The handle type to access elements
 	 */
-	typedef std::size_t Handle;
+	using Handle = QWidget*;
 
 	/**
 	 * @brief Constructs an empty accordion.
-	 * @param parent the paren widget
+	 * @param parent The parent widget
 	 */
-	explicit Accordion(QWidget *parent = 0);
+	explicit Accordion(QWidget *parent = nullptr);
 
 	/**
-	 * @brief returns the element corrsponding to handle
-	 * @throw std::out_of_range if there is no element corresponding to handle
-	 * @return the element corrsponding to handle
+	 * @brief Returns the element corrsponding to handle
+	 * @throw std::out_of_range If there is no element corresponding to handle
+	 * @return The element corrsponding to handle
 	 */
 	Collapsable& element(Handle handle)
-		{return *elements.at(handle);}
+		{return *elements_.at(handle);}
 
 	/**
-	 * @brief collapses an element
-	 * @param handle the element to collapse
+	 * @brief Sets the title above the element.
+	 * @param handle The element
+	 * @param title The new title.
+	 * @throw std::out_of_range If there is no element corresponding to handle
+	 */
+	void setTitle(Handle handle, const QString& title)
+	{
+		element(handle).setTitle(title);
+	}
+
+	/**
+	 * @brief Returns the current title above the element.
+	 * @param handle The element
+	 * @throw std::out_of_range If there is no element corresponding to handle
+	 * @return The current title above the element.
+	 */
+	QString title(Handle handle)
+	{
+		return element(handle).title();
+	}
+
+	/**
+	 * @brief Collapses an element
+	 * @param handle The element to collapse
 	 * @param b
 	 * @parblock
 	 * 		true: collapses the widget
 	 * 		false: expands the widget
 	 * @endparblock
-	 * @throw std::out_of_range if there is no element corresponding to handle
+	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
-	void collapseElement(Handle handle, bool b = true)
+	void collapse(Handle handle, bool b = true)
 		{element(handle).collapse(b);}
 
 	/**
-	 * @brief expands an element
-	 * @param handle element to expand
+	 * @brief Expands an element
+	 * @param handle Element to expand
 	 * @param b
 	 * @parblock
 	 * 		true: expands the widget
 	 * 		false: collapses the widget
 	 * @endparblock
-	 * @throw std::out_of_range if there is no element corresponding to handle
+	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
-	void expandElement(Handle handle , bool b = true)
-		{collapseElement(handle, !b);}
+	void expand(Handle handle , bool b = true)
+		{collapse(handle, !b);}
 
 	/**
-	 * @brief collapses all elements
+	 * @brief Collapses all elements
 	 * @param b
 	 * @parblock
 	 * 		true: collapses all elements
@@ -81,7 +103,7 @@ public:
 	void collapseAll(bool b = true);
 
 	/**
-	 * @brief expands all elements
+	 * @brief Expands all elements
 	 * @param b
 	 * @parblock
 	 * 		true: expands all elements
@@ -92,33 +114,33 @@ public:
 		{collapseAll(!b);}
 
 	/**
-	 * @brief makes the element invisible
-	 * @param handle the element
+	 * @brief Makes the element invisible
+	 * @param handle The element
 	 * @param b
 	 * @parblock
 	 * 		true: makes the element invisible
 	 * 		false: makes the element visible
 	 * @endparblock
-	 * @throw std::out_of_range if there is no element corresponding to handle
+	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
 	void hide(Handle handle, bool b = true)
 		{element(handle).setVisible(!b);}
 
 	/**
-	 * @brief makes the element visible
-	 * @param handle the element
+	 * @brief Makes the element visible
+	 * @param handle The element
 	 * @param b
 	 * @parblock
 	 * 		true: makes the element visible
 	 * 		false: makes the element invisible
 	 * @endparblock
-	 * @throw std::out_of_range if there is no element corresponding to handle
+	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
 	void show(Handle handle, bool b = true)
 		{hide(handle,!b);}
 
 	/**
-	 * @brief sets all elements visibility to !b
+	 * @brief Sets all elements visibility to !b
 	 * @param b
 	 * @parblock
 	 * 		true: makes all elements invisible
@@ -128,7 +150,7 @@ public:
 	void hideAll(bool b = true);
 
 	/**
-	 * @brief sets all elements visibility to b
+	 * @brief Sets all elements visibility to b
 	 * @param b
 	 * @parblock
 	 * 		true: makes all elements visible
@@ -139,112 +161,89 @@ public:
 		{hideAll(!b);}
 
 	/**
-	 * @brief inserts a widget at the given position
-	 * @param title the title to display
-	 * @param widget the widget to display
-	 * @param isCollapsed whether the widget is collapsed after creation
-	 * @param position the position. if it is greater than the number of elements the widget
+	 * @brief Inserts a widget at the given position
+	 * @param title The title to display
+	 * @param widget The widget to display
+	 * @param isCollapsed Whether the widget is collapsed after creation
+	 * @param position The position. if it is greater than the number of elements the widget
 	 *	will be added to the end
-	 * @throw std::length_error if there is no free handle
-	 * @return the handle to access the element
+	 * @return The handle to access the element
 	 */
 	Handle insert(const QString& title,QWidget& widget, bool isCollapsed = true,
 			std::size_t position = std::numeric_limits<std::size_t>::max());
 
 
 	/**
-	 * @brief adds a widget to the end of the Accordion
-	 * @param title the title to display
-	 * @param widget the widget to display
-	 * @param isCollapsed whether the widget is collapsed after creation
-	 * @throw std::length_error if there is no free handle
-	 * @return the handle to access the element
+	 * @brief Adds a widget to the end of the Accordion
+	 * @param title The title to display
+	 * @param widget The widget to display
+	 * @param isCollapsed Whether the widget is collapsed after creation
+	 * @return The handle to access the element
 	 */
 	Handle push_back(const QString& title,QWidget& widget, bool isCollapsed = true)
 		{return insert(title,widget, isCollapsed);}
 
 	/**
-	 * @brief adds a widget to the front of the Accordion
-	 * @param title the title to display
-	 * @param widget the widget to display
-	 * @param isCollapsed whether the widget is collapsed after creation
-	 * @throw std::length_error if there is no free handle
-	 * @return the handle to access the element
+	 * @brief Adds a widget to the front of the Accordion
+	 * @param title The title to display
+	 * @param widget The widget to display
+	 * @param isCollapsed Whether the widget is collapsed after creation
+	 * @return The handle to access the element
 	 */
 	Handle push_front(const QString& title,QWidget& widget, bool isCollapsed = true)
 		{return insert(title,widget, isCollapsed, 0);}
 
 
 	/**
-	 * @brief removes the element
-	 * @param handle handle of the element
-	 * @throw std::out_of_range if there is no element corresponding to handle
+	 * @brief Removes the element and deletes it immediately.
+	 * @param handle Handle of the element
+	 * @param del
+	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
 	void remove(Handle handle);
 
 	/**
-	 * @brief removes all elements
+	 * @brief Removes all elements and delets them immediately.
+	 * @param del
 	 */
 	void clear();
 
 	/**
-	 * @brief removes an element and returns its title and reference
-	 * @param handle handle handle of the element
-	 * @return title and reference
-	 * @throw std::out_of_range if there is no element corresponding to handle
+	 * @brief Removes an element and returns its title and Collapsable. (ownership remains)
+	 * @param handle Handle handle of the element
+	 * @throw std::out_of_range If there is no element corresponding to handle
+	 * @return Title and reference
 	 */
-	std::pair<QString, QWidget&> pop(Handle handle);
+	std::pair<QString, Collapsable*> pop(Handle handle);
 
 	/**
-	 * @brief removes alle elements from the Accordion and returns their titles
-	 *	and references
-	 * @return a vector containing all titles and references
+	 * @brief Removes alle elements from the Accordion and returns their titles
+	 *	and Collapsables  (ownership remains)
+	 * @return A vector containing all titles and references
 	 */
-	std::vector<std::pair<QString, QWidget&>> popAll();
+	std::vector<std::pair<QString, Collapsable*>> popAll();
 
 	/**
-	 * @brief returns the number of elements
-	 * @return the number of elements
+	 * @brief Returns the number of elements
+	 * @return The number of elements
 	 */
-	std::size_t size();
+	std::size_t size()
+	{
+		return elements_.size();
+	}
 
-	/**
-	 * @brief returns the maximal number of elements
-	 * @return the maximal number of elements
-	 */
-	std::size_t max_size()
-		{return std::numeric_limits<std::size_t>::max();}
+
 private:
-	/**
-	 * @brief returns the next free handle
-	 * @throw std::length_error if there is no free handle
-	 * @return next free handle
-	 */
-	Handle getNextHandle();
 
 	/**
-	 * @brief returns whether handle is valid
-	 * @param handle handle to check
-	 * @return if handle is valid
+	 * @brief Storage for all elements
 	 */
-	bool isValidHandle(Handle handle)
-		{return elements.end() != elements.find(handle);}
+	std::map<Handle, Collapsable*> elements_;
 
 	/**
-	 * @brief storage for all elements
+	 * @brief Layout for all elements
 	 */
-	std::map<Handle, std::unique_ptr<Collapsable>> elements;
-
-
-	/**
-	 * @brief for all elements
-	 */
-	QVBoxLayout layout;
-
-	/**
-	 * @brief the last handle used. (0 is there is no handle in use)
-	 */
-	Handle lastHandle;
+	QVBoxLayout* layout_;
 }; // Accordion
 }} // end namespaces qtutil, cvv
 #endif // CVVISUAL_ACCORDION_HPP

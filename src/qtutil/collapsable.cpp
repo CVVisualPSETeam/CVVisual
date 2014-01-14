@@ -3,21 +3,24 @@
 namespace cvv{ namespace qtutil{
 
 Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed, QWidget *parent):
-		QWidget{parent}, title_{title}, widget_(widget)
-	//	,button{this}, layoutHeaderAndWidget{this}, layoutHeader{&layoutHeaderAndWidget}
+		QWidget{parent}, title_{new QLabel{title}}, widget_{&widget},
+		button_{new QToolButton{}}, layout_{new QVBoxLayout{}}
 {
-	button.setEnabled(true);
+	//put elements on the heap
+	QHBoxLayout* layoutHeader = new QHBoxLayout{};
+
 	//build header
-	layoutHeader.addWidget( &button);
-	layoutHeader.addWidget( &title_);
+	button_->setEnabled(true);
+	layoutHeader->addWidget(button_);
+	layoutHeader->addWidget(title_);
 
 	//build widget
-	layoutHeaderAndWidget.addLayout( &layoutHeader);
-	layoutHeaderAndWidget.addWidget( &widget_);
-	setLayout(&layoutHeaderAndWidget);
+	layout_->addLayout(layoutHeader);
+	layout_->addWidget(widget_);
+	setLayout(layout_);
 
 	//connect signals and slots
-	QObject::connect(&button, SIGNAL(clicked()), this, SLOT(toggleVisibility()));
+	QObject::connect(button_, SIGNAL(clicked()), this, SLOT(toggleVisibility()));
 
 	//collapse/ expand according to isCollapsed
 	collapse(isCollapsed);
@@ -27,34 +30,22 @@ void Collapsable::collapse(bool b)
 {
 	if(b)
 	{
-		widget_.hide();
-		button.setArrowType(Qt::DownArrow);
+		widget_->hide();
+		button_->setArrowType(Qt::DownArrow);
 	} else
 	{
-		widget_.show();
-		button.setArrowType(Qt::UpArrow);
+		widget_->show();
+		button_->setArrowType(Qt::UpArrow);
 	}
 }
 
-
-void Collapsable::setTitle(const QString& title)
+QWidget* Collapsable::detachWidget()
 {
-	title_.setText(title);
-}
-
-QString Collapsable::title()
-{
-	return title_.text();
-}
-
-QWidget& Collapsable::widget()
-{
-	return widget_;
-}
-
-void Collapsable::toggleVisibility()
-{
-	collapse(widget_.isVisible());
+	if(!widget_){return nullptr;}
+	layout_->removeWidget(widget_);
+	QWidget* tmp = widget_;
+	widget_ =  nullptr;
+	return tmp;
 }
 
 }} // end namespaces qtutil, cvv

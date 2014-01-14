@@ -3,14 +3,14 @@
 namespace cvv{ namespace qtutil{
 
 Accordion::Accordion(QWidget *parent):
-	QWidget(parent), elements(), layout(), lastHandle(0){}
-
-
-
+	QWidget{parent}, elements_{}, layout_{new QVBoxLayout{}}
+{
+	setLayout(layout_);
+}
 
 void Accordion::collapseAll(bool b)
 {
-	for(auto& elem: elements)
+	for(auto& elem: elements_)
 	{
 		elem.second->collapse(b);
 	}
@@ -18,7 +18,7 @@ void Accordion::collapseAll(bool b)
 
 void Accordion::hideAll(bool b)
 {
-	for(auto& elem: elements)
+	for(auto& elem: elements_)
 	{
 		elem.second->setVisible(!b);
 	}
@@ -27,69 +27,57 @@ void Accordion::hideAll(bool b)
 Accordion::Handle Accordion::insert(const QString& title,QWidget& widget, bool isCollapsed,
 			   std::size_t position)
 {
-	//get handle
-	Handle handle = getNextHandle();
 	//create element
-	elements.emplace(handle, cvv::util::make_unique<Collapsable>(title, widget, isCollapsed));
+	elements_.emplace(&widget, new Collapsable{title, widget, isCollapsed});
 	//insert element
-	layout.insertWidget(position, &element(handle));
-	//set last handle
-	lastHandle = handle;
-	return handle;
+	layout_->insertWidget(position, &element(&widget));
+	return &widget;
 }
 
 void Accordion::remove(Handle handle)
 {
-	layout.removeWidget(&element(handle));
-	elements.erase(handle);
+	Collapsable* elem = &element(handle);
+	layout_->removeWidget(elem);
+	elements_.erase(handle);
+	elem->setParent(0);
+	delete elem;
 }
 
 void Accordion::clear()
 {
 	//clear layout
-	for(auto& elem: elements)
+	for(auto& elem: elements_)
 	{
-		layout.removeWidget(elem.second.get());
+		layout_->removeWidget(elem.second);
+		elem.second->setParent(0);
+		delete elem.second;
 	}
-	elements.clear();
+	elements_.clear();
 }
 
-std::pair<QString, QWidget&> Accordion::pop(Handle handle)
+std::pair<QString, Collapsable*> Accordion::pop(Handle handle)
 {
-	std::pair<QString, QWidget&> result{element(handle).title(), element(handle).widget()};
-	remove(handle);
+	Collapsable* elem = &element(handle);
+	//remove from layout
+	layout_->removeWidget(elem);
+	std::pair<QString, Collapsable*> result{element(handle).title(), elem};
+	//remove from map
+	elements_.erase(handle);
 	return result;
 }
 
-std::vector<std::pair<QString, QWidget&>> Accordion::popAll()
+std::vector<std::pair<QString, Collapsable*>> Accordion::popAll()
 {
-	std::vector<std::pair<QString, QWidget&>> result{};
-	for(auto& elem: elements)
+	std::vector<std::pair<QString, Collapsable*>> result{};
+	for(auto& elem: elements_)
 	{
-		result.push_back(std::pair<QString, QWidget&>{elem.second->title(),
-							      elem.second->widget()});
+		//remove from layout
+		layout_->removeWidget(elem.second);
+		result.push_back(std::pair<QString, Collapsable*>{elem.second->title(),
+								elem.second});
 	}
-	clear();
+	//remove from map
+	elements_.clear();
 	return result;
-}
-
-Accordion::Handle Accordion::getNextHandle()
-{
-	for(Handle i= lastHandle; i <= max_size(); i++)
-	{
-		if(!isValidHandle(i))
-		{
-			return i;
-		}
-	}
-	//check i<= lastHandle
-	for(Handle i= 0; i <= lastHandle; i++)
-	{
-		if(!isValidHandle(i))
-		{
-			return i;
-		}
-	}
-	throw std::length_error("Accordion reached max size already");
 }
 }} // end namespaces qtutil, cvv
