@@ -1,4 +1,4 @@
-#include "../../src/qutil/collapsable.hpp"
+#include "../../src/qtutil/collapsable.hpp"
 
 #include <QApplication>
 #include <QLabel>
