@@ -17,17 +17,17 @@ public:
 	/**
 	 * @returns the original image
 	 */
-	cv::InputArray original() const {return input_;}
+	const cv::Mat& original() const {return input_;}
 	/**
 	 * @returns the filtered image
 	 */
-	cv::InputArray result() const {return output_;}
+	const cv::Mat& result() const {return output_;}
 	
 private:
 	//TODO: in case we REALLY want to support several input-images: make this a std::vector
 	//TODO: those are typedefs for references, make it clean:
-	cv::InputArray input_;
-	cv::InputArray output_;
+	cv::Mat input_;
+	cv::Mat output_;
 };
 
 
