@@ -16,7 +16,7 @@
 namespace cvv {
 namespace impl {
 
-void debugDilate(cv::InputArray in, cv::OutputArray out, const CallMetaData& data) {
+void debugDilate(cv::InputArray in, cv::InputArray out, const CallMetaData& data) {
 	dataController().addCall(util::make_unique<FilterCall>(in, out, data, QString{"dilate"}));
 }
 

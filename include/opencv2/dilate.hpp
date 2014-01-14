@@ -13,18 +13,18 @@ namespace cvv {
 
 namespace impl {
 	//implementation outside API
-	void debugDilate(cv::InputArray in, cv::OutputArray out, CallMetaData data);
+	void debugDilate(cv::InputArray original, cv::InputArray result, CallMetaData data);
 } // namespace impl
 
 #ifdef CVVISUAL_DEBUGMODE
-static inline void debugDilate(cv::InputArray in, cv::OutputArray out,
+static inline void debugDilate(cv::InputArray original, cv::InputArray result,
 		impl::CallMetaData data = impl::CallMetaData()){
 	if(debugMode()) {
-		impl::debugDilate(in, out, data);
+		impl::debugDilate(original, result, data);
 	}
 }
 #else
-static inline void debugDilate(cv::InputArray, cv::OutputArray,
+static inline void debugDilate(cv::InputArray, cv::InputArray,
 		impl::CallMetaData = impl::CallMetaData()){}
 #endif
 
