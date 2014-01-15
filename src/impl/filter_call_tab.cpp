@@ -7,7 +7,7 @@
 #include "filter_view.hpp"
 #include "../controller/view_controller.hpp"
 #include "filter_call.hpp"
-////////////////////////THIS IS A STUB//////////////////////////////////////////////////////////
+
 namespace cvv {
 namespace impl {
 
@@ -28,8 +28,6 @@ FilterCallTab::FilterCallTab(QString tabName, const cvv::impl::FilterCall& fc, c
 FilterCallTab::FilterCallTab(QString tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, QString viewId): filterCall{fc}, viewController{vc}
 {
     this->setName(tabName);
-    (void) fc;
-	(void) vc;
 	(void) viewId;
 }
 

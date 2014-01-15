@@ -9,14 +9,29 @@
 namespace cvv {
 namespace impl {
 
+/** A call tab.
+ * The inner part of a tab or a window.
+ * Super class for actual call tabs containing views.
+ */
 class CallTab: public QWidget
 {
 Q_OBJECT
-private:
-	QString name;
 public:
+
+    /**
+     * @brief getName
+     * @return name
+     */
     QString getName();
+
+    /**
+     * @brief setName
+     * @param name
+     */
     void setName(QString name);
+
+private:
+    QString name;
 };
 
 }}//namespaces

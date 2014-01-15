@@ -13,10 +13,31 @@ namespace impl {
 class FilterView: public QWidget
 {
 Q_OBJECT
+
 signals:
+
+    /**
+     * @brief updateLeftFooter
+     * Signal to update the left side of the footer with newText.
+     * @param newText
+     */
 	void updateLeftFooter(QString newText);
+
+    /**
+     * @brief updateRightFoooter
+     * Signal to update the right side of the footer with newText.
+     * @param newText
+     */
 	void updateRightFoooter(QString newText);
+
 public:
+
+    /**
+     * @brief createFilterView
+     * Factory method to create FilterViews.
+     * @param img1
+     * @return
+     */
     //virtual FilterView createFilterView(const std::vector<cv::InputArray>& img1);
 };
 

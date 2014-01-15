@@ -7,7 +7,7 @@
 #include "match_view.hpp"
 #include "../controller/view_controller.hpp"
 #include "match_call.hpp"
-////////////////////////THIS IS A STUB//////////////////////////////////////////////////////////
+
 namespace cvv {
 namespace impl {
 
@@ -24,15 +24,11 @@ void MatchCallTab::helpButtonClicked()
 MatchCallTab::MatchCallTab(QString tabName, const cvv::impl::MatchCall& mc, const cvv::controller::ViewController& vc): matchCall{mc}, viewController{vc}
 {
     this->setName(tabName);
-	(void) mc;
-	(void) vc;
 }
 
 MatchCallTab::MatchCallTab(QString tabName, const cvv::impl::MatchCall& mc, const cvv::controller::ViewController& vc, QString viewId): matchCall{mc}, viewController{vc}
 {
     this->setName(tabName);
-    (void) mc;
-	(void) vc;
 	(void) viewId;
 }
 
