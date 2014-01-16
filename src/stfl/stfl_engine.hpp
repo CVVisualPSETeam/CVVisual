@@ -12,7 +12,10 @@
 #include <functional>
 #include <algorithm>
 #include <utility>
-#include "ElementGroup.hpp"
+#include <iterator>
+
+#include "stringutils.hpp"
+#include "element_group.hpp"
 
 namespace cvv {
 namespace stfl {
@@ -31,46 +34,6 @@ public:
 	 */
 	STFLEngine()
 	{
-		filterFuncs["raw"] = [](const QString &str, const Element & elem)
-		{
-			return elem == str;
-		};
-		filterFuncs["line"] = [](const QString &str, const Element & elem)
-		{
-			return elem == str;
-		};
-		filterFuncs["file"] = [](const QString &str, const Element & elem)
-		{
-			return elem == str;
-		};
-		filterFuncs["description"] = [](const QString &str, const Element & elem)
-		{
-			return elem == str;
-		};
-		filterFuncs["id"] = [](const QString &str, const Element & elem)
-		{
-			return elem == str;
-		};
-		filterPoolFuncs["line"] = [](const Element & elem)
-		{
-			return "line";
-		};
-		filterPoolFuncs["file"] = [](const Element & elem)
-		{
-			return "file";
-		};
-		filterPoolFuncs["description"] = [](const Element & elem)
-		{
-			return "description";
-		};
-		filterPoolFuncs["id"] = [](const Element & elem)
-		{
-			return "id";
-		};
-		filterPoolFuncs["raw"] = [](const Element & elem)
-		{
-			return QString(elem);
-		};
 		initSupportedCommandsList();
 	}
 
@@ -205,13 +168,13 @@ private:
 
 	QList<Element> executeFilters(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
-		std::set < std::pair < std::function<bool(const QString, const Element), QString >> > filters;
-		std::set < std::pait < std::function<bool(const QStringList, const Element), QStringList >> > filtersCS;
+		std::set< std::pair< std::function<bool(const QString, const Element)>, QString > > filters;
+		std::set< std::pair< std::function<bool(const QStringList, const Element)>, QStringList > > filtersCS;
 
 		for (const QString &cmdString : cmdStrings)
 		{
 			QStringList arr = cmdString.split(" ", QString::SkipEmptyParts);
-			QStringList cmd = arr.takeFirst();
+			QString cmd = arr.takeFirst();
 			if (arr.empty())
 				continue;
 			if (isFilterCmd(cmd))
@@ -222,7 +185,9 @@ private:
 			else if (isFilterCSCmd(cmd))
 			{
 				QStringList arguments = arr.join("").split(",", QString::SkipEmptyParts);
-				std::for_each(arguments.begin(), arguments.end(), unescapeCommas);
+				std::for_each(arguments.begin(), arguments.end(), [](QString &str){
+					str.replace("\\,", ",");
+				});
 				filtersCS.insert(std::make_pair(filterCSFuncs[cmd], arguments));
 			}
 		}
@@ -231,18 +196,18 @@ private:
 		auto copy_if = [&](const Element & element)
 		{
 			return std::find_if(filters.begin(), filters.end(),
-								[&](auto pair)
+								[&](std::pair< std::function<bool(const QString, const Element)>, QString> pair)
 								{
 									return pair.first(pair.second, element);
 								}) == filters.end() &&
 				std::find_if(filtersCS.begin(), filtersCS.end(),
-							[&](auto pair)
+							[&](std::pair< std::function<bool(const QStringList, const Element)>, QStringList > pair)
 							{
 								return pair.first(pair.second, element);
 							}) == filtersCS.end();
-		}
-		std::copy_if(elements.begin(), std::back_insertor(retList), copy_if);
-		return resList;
+		};
+		std::copy_if(elements.begin(), elements.end(), std::back_inserter(retList), copy_if);
+		return retList;
 	}
 
 	QList<Element> executeSortCmds(const QList<Element> &elements, const QStringList &cmdStrings)
@@ -401,6 +366,11 @@ private:
 		return suggs.mid(0, number);
 	}
 
+	/**
+	 * @todo HÄ?!
+     * @param args
+     * @return 
+     */
 	QStringList getSuggestionsForSortCmd(QStringList args)
 	{
 		QString last;
@@ -422,10 +392,6 @@ private:
 			if (arr.size() > 1)
 			{
 				list = sortStringsByStringEquality(list, arr[1]);
-			}
-			for (QString &item : list)
-			{
-				item = arr[i] + " " + item;
 			}
 		}
 		else
@@ -520,9 +486,9 @@ private:
 	QStringList sortStringsByStringEquality(const QStringList &strings, const QString &compareWith)
 	{
 		QMap<int, QString> weightedStrings;
-		for (QString &str : strings)
+		for (const QString &str : strings)
 		{
-			int strEqu = stringEquality(compareWith, strings);
+			int strEqu = stringEquality(compareWith, str);
 			weightedStrings[strEqu] = str;
 		}
 		return QStringList(weightedStrings.values());

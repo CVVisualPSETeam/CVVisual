@@ -18,13 +18,15 @@ template<class Element>
 class ElementGroup
 {
 public:
-
+	
+	ElementGroup(){}
+	
 	/**
 	 * Constructs a new ElementGroup
 	 * @param _titles title of this group, consisting of several sub titles
 	 * @param _elements elements of this group 
 	 */
-	ElementGroup(QStringList _titles, const QList<Element> _elements)
+	ElementGroup(QStringList _titles, const QList<Element> &_elements)
 	{
 		this->elements = _elements;
 		this->titles = _titles;
@@ -85,4 +87,4 @@ private:
 
 }
 }
-#endif // ELEMENTGROUP_H
+#endif
