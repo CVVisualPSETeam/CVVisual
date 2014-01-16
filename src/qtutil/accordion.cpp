@@ -1,11 +1,26 @@
 #include "accordion.hpp"
 
+#include<QScrollArea>
+
 namespace cvv{ namespace qtutil{
 
 Accordion::Accordion(QWidget *parent):
 	QWidget{parent}, elements_{}, layout_{new QVBoxLayout{}}
 {
 	setLayout(layout_);
+
+	//needed because scrollArea->setLayout(layout_); does not work
+	QWidget* resizehelper= new QWidget{};
+	resizehelper->setLayout(layout_);
+
+	QScrollArea* scrollArea = new QScrollArea{};
+	scrollArea->setWidget(resizehelper);
+	//needed because no contained widget demands a size
+	scrollArea->setWidgetResizable(true);
+
+	QVBoxLayout* mainLayout = new QVBoxLayout{};
+	mainLayout->addWidget(scrollArea);
+	setLayout(mainLayout);
 }
 
 void Accordion::collapseAll(bool b)
