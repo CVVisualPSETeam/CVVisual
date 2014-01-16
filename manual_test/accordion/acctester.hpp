@@ -23,29 +23,29 @@ class Acctester: public QWidget
 	// will look into it later
 public:
 	Acctester(QWidget* parent= nullptr);
-	
+
 	cvv::qtutil::Accordion* acc;
 	cvv::qtutil::Accordion::Handle label5;
-	
-	
+
+
 	//errorlabel
 	QLabel msg;
-	
+
 	std::string s(std::string at);
-	
+
 public slots:
-	void sclear(){acc->clear();}
-	
+	void sclear();
+
 	void shideAll(){acc->hideAll();}
 	void sshowAll(){acc->showAll();}
 	void scollapseAll(){acc->collapseAll();}
 	void sexpandAll(){acc->expandAll();}
-	
+
 	void spfront(){acc->push_front(s("0").c_str(), *(new QLabel{s("0").c_str()}));}
 	void spback(){acc->push_back(s("end").c_str(), *(new QLabel{s("end").c_str()}));}
 	void sinsert5();
 	void sremove5();
-	
+
 	void shide5(){TST5 acc->hide(label5); }
 	void sshow5(){TST5 acc->show(label5); }
 	void sexpand5(){TST5 acc->expand(label5); }

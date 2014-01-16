@@ -71,12 +71,19 @@ std::string Acctester::s(std::string at)
 
 void Acctester::sinsert5()
 {
-	label5=acc->insert(s("5").c_str(), *(new QLabel{s("5").c_str()}), 5);
+	label5=acc->insert(s("5").c_str(), *(new QLabel{s("5").c_str()}),true, 4);
 }
 void Acctester::sremove5()
 {
 	TST5
 	acc->remove(label5);
 	label5 = nullptr;
+}
+
+
+void Acctester::sclear()
+{
+	acc->clear();
+	label5=nullptr;
 }
 
