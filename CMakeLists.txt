@@ -98,7 +98,7 @@ if(CVV_BUILD_TESTS)
 	add_executable(basic_dilate_test manual_test/basic_dilate/main.cpp)
 	target_link_libraries(basic_dilate_test cvvisual)
 	
-	add_executable(test_maual_accordion manual_test/accordion/main.cpp)
+	add_executable(test_maual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
 	target_link_libraries(test_maual_accordion cvvisual Qt5Core Qt5Widgets)
 	
 endif()
