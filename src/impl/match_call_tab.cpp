@@ -21,15 +21,22 @@ void MatchCallTab::helpButtonClicked()
 
 }
 
-MatchCallTab::MatchCallTab(QString tabName, const cvv::impl::MatchCall& mc, const cvv::controller::ViewController& vc): matchCall{mc}, viewController{vc}
+MatchCallTab::MatchCallTab(QString tabName, const cvv::impl::MatchCall& mc, const cvv::controller::ViewController& vc):
+    matchCall{mc}, viewController{vc}
 {
     this->setName(tabName);
+    const QString scope{"default_views"};
+    const QString key{"default_match_view"};
+    //QString setting = this->viewController->getSetting(scope, key);
+    QString setting = "PLACEHOLDER"; (void) scope; (void) key;
+    matchViewId = setting;
 }
 
-MatchCallTab::MatchCallTab(QString tabName, const cvv::impl::MatchCall& mc, const cvv::controller::ViewController& vc, QString viewId): matchCall{mc}, viewController{vc}
+MatchCallTab::MatchCallTab(QString tabName, const cvv::impl::MatchCall& mc, const cvv::controller::ViewController& vc, QString viewId):
+    matchCall{mc}, viewController{vc}
 {
     this->setName(tabName);
-	(void) viewId;
+    matchViewId = viewId;
 }
 
 size_t MatchCallTab::getId()

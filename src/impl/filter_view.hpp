@@ -35,10 +35,12 @@ public:
     /**
      * @brief createFilterView
      * Factory method to create FilterViews.
-     * @param img1
-     * @return
+     * @param originalImg
+     * @param filteredImg
+     * @return an instance of FilterView
      */
-    //virtual FilterView createFilterView(const std::vector<cv::InputArray>& img1);
+    //virtual FilterView createFilterView(const cv::Mat& originalImg, const cv::Mat& filteredImg);
+
 };
 
 }} //namespaces

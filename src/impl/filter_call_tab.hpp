@@ -25,18 +25,6 @@ class FilterCallTab: public CallTab
 {
 Q_OBJECT
 
-public slots:
-
-    /**
-     * Called when the index of the view selection changes.
-     */
-	void currentIndexChanged();
-
-    /**
-     * Called when the help button is clicked.
-     */
-    void helpButtonClicked();
-
 public:
 
     /**
@@ -69,6 +57,19 @@ public:
      * @param filterViewId the Id or name of the FilterView.
      */
     static void addFilterViewToMap(QString filterViewId, cvv::impl::FilterView filterView);
+
+private slots:
+
+    /**
+     * Called when the index of the view selection changes.
+     * @param text of the current selection in the view selection.
+     */
+    void currentIndexChanged(const QString& text);
+
+    /**
+     * Called when the help button is clicked.
+     */
+    void helpButtonClicked();
 
 private:
 

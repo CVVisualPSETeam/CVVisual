@@ -11,24 +11,33 @@
 namespace cvv {
 namespace impl {
 
-void FilterCallTab::currentIndexChanged()
+void FilterCallTab::currentIndexChanged(const QString& text)
 {
-
+    filterViewId = text;
+    //filterView = filterViewMap[filterViewId].createFilterView(filterCall->original(), filterCall->result());
 }
 
-void FilterCallTab::helpButtonClicked() {
-
-}
-
-FilterCallTab::FilterCallTab(QString tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc): filterCall{fc}, viewController{vc}
+void FilterCallTab::helpButtonClicked()
 {
-    this->setName(tabName);
+    //this->viewController->openHelpBrowser(filterViewId);
 }
 
-FilterCallTab::FilterCallTab(QString tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, QString viewId): filterCall{fc}, viewController{vc}
+FilterCallTab::FilterCallTab(QString tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
+    filterCall{fc}, viewController{vc}
 {
     this->setName(tabName);
-	(void) viewId;
+    const QString scope{"default_views"};
+    const QString key{"default_filter_view"};
+    //QString setting = vc.getSetting(scope, key);
+QString setting = "PLACEHOLDER"; (void) scope; (void) key;
+    filterViewId = setting;
+}
+
+FilterCallTab::FilterCallTab(QString tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, QString viewId):
+    filterCall{fc}, viewController{vc}
+{
+    this->setName(tabName);
+    filterViewId = viewId;
 }
 
 size_t FilterCallTab::getId()

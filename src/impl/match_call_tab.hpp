@@ -25,18 +25,6 @@ class MatchCallTab: public CallTab
 {
 Q_OBJECT
 
-public slots:
-
-    /**
-     * Called when the index of the view selection changes.
-     */
-	void currentIndexChanged();
-
-    /**
-     * Called when the help button is clicked.
-     */
-	void helpButtonClicked();
-
 public:
 
     /**
@@ -69,6 +57,18 @@ public:
      * @param MatchViewId the Id or name of the FilterView.
      */
     static void addMatchViewToMap(QString matchViewId, cvv::impl::MatchView matchView);
+
+private slots:
+
+    /**
+     * Called when the index of the view selection changes.
+     */
+    void currentIndexChanged();
+
+    /**
+     * Called when the help button is clicked.
+     */
+    void helpButtonClicked();
 
 private:
 
