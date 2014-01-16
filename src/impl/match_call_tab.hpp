@@ -68,7 +68,7 @@ public:
      * Adds a MatchView with a name to the thread local map of all MatchViews.
      * @param MatchViewId the Id or name of the FilterView.
      */
-    thread_local static void addMatchViewToMap(QString matchViewId, cvv::impl::MatchView matchView);
+    static void addMatchViewToMap(QString matchViewId, cvv::impl::MatchView matchView);
 
 private:
 

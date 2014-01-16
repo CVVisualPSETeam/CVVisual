@@ -68,7 +68,7 @@ public:
      * Adds a FilterView with a name to the thread local map of all FilterViews.
      * @param filterViewId the Id or name of the FilterView.
      */
-    thread_local static void addFilterViewToMap(QString filterViewId, cvv::impl::FilterView filterView);
+    static void addFilterViewToMap(QString filterViewId, cvv::impl::FilterView filterView);
 
 private:
 
