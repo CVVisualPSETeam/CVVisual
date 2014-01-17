@@ -9,6 +9,7 @@
 #include <functional>
 #include <utility>
 #include <QSettings>
+#include <memory>
 
 #include "../impl/call.hpp"
 
@@ -27,7 +28,7 @@ public:
 	~ViewController();
 	
 	static void addCallType(const QString typeName,
-		std::function<CallTab(QString, impl::Call)> constr);
+		const std::function<std::unique_ptr<CallTab>(const QString&, const impl::Call&)> &constr);
 	
 	/**
 	 * @todo implement
@@ -99,7 +100,7 @@ public:
 	
 private:
 	
-	static std::map<QString, std::function<CallTab(QString, cvv::impl::Call)>> callTabType;
+	static std::map<QString, std::function<std::unique_ptr<CallTab>(const QString&, const  cvv::impl::Call&)>> callTabType;
 	
 	bool running = true;
 	QSettings settings{"CVVisual", QSettings::IniFormat};

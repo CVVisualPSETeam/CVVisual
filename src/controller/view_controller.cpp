@@ -1,5 +1,6 @@
 #include "view_controller.hpp"
 #include <stdexcept>
+#include <memory>
 
 namespace cvv {
 namespace controller {
@@ -13,13 +14,12 @@ ViewController::~ViewController()
 }
 
 void ViewController::addCallType(const QString typeName,
-		std::function<CallTab(QString, impl::Call)> constr)
+		const std::function<std::unique_ptr<CallTab>(const QString&, const impl::Call&)> &constr)
 {
 	ViewController::callTabType[typeName] = constr;
 }
 
-std::map<QString, std::function<CallTab(QString, impl::Call) >> ViewController::callTabType =
-	*(new std::map<QString, std::function<CallTab(QString, impl::Call) >>());
+std::map<QString, std::function<std::unique_ptr<CallTab>(const QString&, const  cvv::impl::Call&)>> ViewController::callTabType;
 
 void ViewController::addCall(const impl::Call &data)
 {
