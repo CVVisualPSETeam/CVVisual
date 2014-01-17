@@ -48,7 +48,7 @@ add_definitions(${QT_DEFINITIONS})
 set(CMAKE_AUTOMOC ON)
 
 
-# also: include our own headers:
+# also: include our own headers
 include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 
 # targets
@@ -68,6 +68,9 @@ target_link_libraries(cvvisual
 	#${OpenCV_LIBS}
 	opencv_core
 	opencv_imgproc
+	pthread             #Don't delete this line!!!
+			    #Deleting it prevents the tests compiling on
+			    #(X)Ubuntu 13.10!!!
 	#Those do not work
 	#${QT_LIBRARIES}
 	Qt5Core
