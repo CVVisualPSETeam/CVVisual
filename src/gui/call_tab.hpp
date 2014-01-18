@@ -7,7 +7,7 @@
 #include "../util/util.hpp"
 
 namespace cvv {
-namespace impl {
+namespace gui {
 
 /** A call tab.
  * The inner part of a tab or a window.
@@ -18,20 +18,20 @@ class CallTab: public QWidget
 Q_OBJECT
 public:
 
-    /**
-     * @brief getName
-     * @return name
-     */
-    QString getName();
+	/**
+	 * @brief getName
+	 * @return name
+	 */
+	const QString getName() { return name; }
 
-    /**
-     * @brief setName
-     * @param name
-     */
-    void setName(QString name);
+	/**
+	 * @brief setName
+	 * @param name
+	 */
+	void setName(QString newName) { name = newName; }
 
 private:
-    QString name;
+	QString name;
 };
 
 }}//namespaces
