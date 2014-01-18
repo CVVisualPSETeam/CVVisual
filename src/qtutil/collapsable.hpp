@@ -29,7 +29,7 @@ public:
 	 * @param isCollapsed If true the contained widget will be collapsed. (It will be shown
 	 * otherwise.)
 	 */
-	explicit Collapsable(const QString& title,QWidget& widget, bool isCollapsed = true,
+	explicit Collapsable(const QString& title, QWidget& widget, bool isCollapsed = true,
 			QWidget *parent = 0);
 
 	/**
@@ -50,33 +50,32 @@ public:
 	 * 		false: collapses the widget
 	 * @endparblock
 	*/
-	void expand(bool b = true){collapse(!b);}
+	void expand(bool b = true)
+		{collapse(!b);}
 
 	/**
 	* @brief Sets the title above the widget.
 	*/
 	void setTitle(const QString& title)
-	{
-		title_->setText(title);
-	}
+		{title_->setText(title);}
 
 	/**
 	 * @brief Returns the current title above the widget.
 	 * @return The current title above the widget
 	 */
-	QString title()
-	{
-		return title_->text();
-	}
+	QString title() const
+		{return title_->text();}
 
 	/**
 	 * @brief Returns a reference to the contained widget.
 	 * @return A reference to the contained widget.
 	 */
 	QWidget& widget()
-	{
-		return *widget_;
-	}
+		{return *widget_;}
+
+
+	const QWidget& widget() const
+		{return *widget_;}
 
 	/**
 	 * @brief Detaches the contained widget. (ownership remains)
@@ -89,9 +88,7 @@ private slots:
 	 * @brief Toggles the visibility.
 	 */
 	void toggleVisibility()
-	{
-		collapse(widget_->isVisible());
-	}
+		{collapse(widget_->isVisible());}
 
 private:
 	/**
