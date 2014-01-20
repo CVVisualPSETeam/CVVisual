@@ -31,10 +31,7 @@ signals:
 	void updateRightFoooter(QString newText);
 
 public:
-	/**
-	 * @brief default constructor
-	 **/
-	FilterView():FilterView{0}{}=default;
+
 	/**
 	 * @brief createFilterView
 	 * Factory method to create FilterViews.
@@ -43,12 +40,7 @@ public:
 	 * @return an instance of FilterView
 	 */
 	//virtual FilterView createFilterView(const cv::Mat& originalImg, const cv::Mat& filteredImg);
-protected:
-	/**
-	 * @brief constructor of QWidget(parent)
-	 * @param parent the parent of this view
-	 **/
-	FilterView(QWidget *parent):QWidget{parent}{};
+
 };
 
 }} //namespaces

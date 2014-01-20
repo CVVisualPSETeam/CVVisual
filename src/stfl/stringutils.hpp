@@ -117,8 +117,12 @@ bool isSingleWord(const QString &str);
  */
 void unescapeCommas(QString &str);
 
-}
-}
+/**
+ * @brief Shortens the given string to the given length and append "..." if needed.
+ */
+void shortenString(QString &str, int maxLength);
+
+}}
 
 #endif
 

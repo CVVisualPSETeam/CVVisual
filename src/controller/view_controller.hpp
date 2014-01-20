@@ -9,15 +9,20 @@
 #include <functional>
 #include <utility>
 #include <QSettings>
-#include <memory>
 
 #include "../impl/call.hpp"
+#include "../util/util.hpp"
 
-namespace cvv { namespace controller {
+namespace cvv { 
 
-class CallTab {};
+namespace gui {
+	class CallTab;
+	class CallWindow;
+	class MainCallWindow;
+	class OverviewPanel;
+}
 
-class TabWindow {};
+namespace controller {
 
 class ViewController
 {
@@ -28,33 +33,17 @@ public:
 	~ViewController();
 	
 	static void addCallType(const QString typeName,
-		const std::function<std::unique_ptr<CallTab>(const QString&, const impl::Call&)> &constr);
+		std::function<gui::CallTab(QString, impl::Call)> constr);
 	
-	/**
-	 * @todo implement
-	 */
 	void addCall(const impl::Call &data);
-	
-	/**
-	 * @todo implement
-	 */
-	void addCallTabToWindow(const CallTab &tab, size_t windowId);
-	
-	void close();
-	
-	/**
-	 * @todo implement
-	 */
+		
 	void exec();
 	
 	impl::Call& getCall(size_t id);
-	
-	/**
-	 * @todo implement
-	 */
+
 	QString getSetting(const QString &scope, const QString &key);
 	
-	const std::vector<TabWindow> getTabWindows();
+	const std::map<size_t, gui::CallWindow*> getTabWindows();
 	
 	/**
 	 * @todo implement
@@ -64,7 +53,7 @@ public:
 	/**
 	 * @todo implement
 	 */
-	size_t moveCallTabToWindow(size_t tabId, size_t windowId); 
+	void moveCallTabToWindow(size_t tabId, size_t windowId); 
 	
 	/**
 	 * @todo implement
@@ -72,7 +61,7 @@ public:
 	void openHelpBrowser(const QString &topic);
 	
 	/**
-	 * @todo implement
+	 * @brief Resume the execution of the calling program.
 	 */
 	void resumeProgramExecution();
 	
@@ -96,18 +85,21 @@ public:
 	 */
 	void showOverview(); 
 	
+	gui::CallWindow* getCurrentWindowOfTab(size_t tabId);
+
 	static const int MAIN_WINDOW = -1;
 	
 private:
 	
-	static std::map<QString, std::function<std::unique_ptr<CallTab>(const QString&, const  cvv::impl::Call&)>> callTabType;
+	static std::map<QString, std::function<gui::CallTab(QString, impl::Call)>> callTabType;
 	
-	bool running = true;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
-	std::vector<TabWindow> tabWindows;
-	std::vector<CallTab> callTabs;
+	std::map<size_t, gui::CallWindow*> windowMap;
+	gui::OverviewPanel *ovPanel;
+	gui::MainCallWindow *mainWindow;
+	std::map<size_t, gui::CallTab*> callTabMap;
 	std::vector<impl::Call> calls;
-
+	size_t max_window_id = 0;
 };
 
 }}

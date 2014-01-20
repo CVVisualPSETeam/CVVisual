@@ -3,11 +3,8 @@
 
 //std
 #include <functional>
-#include <stdexcept>
-
 //QT
 #include <QObject>
-#include <QString>
 
 namespace cvv { namespace qtutil{
 
@@ -23,13 +20,12 @@ public:
 	 * @brief Constructor
 	 * @param parent The parent
 	 */
-	Signal(QObject* parent = nullptr):QObject{parent}{}
-
+	Signal(QObject* parent = nullptr);
 	/**
 	 * @brief Emits the signal.
 	 * @param args The arguments
 	 */
-	void emitSignal(){emit signal();}
+	void emitSignal();
 signals:
 	/**
 	 * @brief The signal emited by emitSignal.
@@ -48,58 +44,19 @@ public:
 	/**
 	 * @brief Constructor
 	 * @param f Function called by the slot slot()
-	 * @throw std::invalid_argument If f is invalide
 	 * @param parent The parent
 	 */
-	Slot(const std::function<void()>& f, QObject* parent = nullptr):
-		QObject{parent}, function_{f}
-		{if(!f)throw std::invalid_argument{"invalide function"};}
-
+	Slot(const std::function<void()>& f, QObject* parent = nullptr);
 public slots:
 	/**
 	 * @brief The slot calling function()
 	 */
-	void slot(){function_();}
+	void slot();
 private:
 	/**
 	 * @brief The function called by the slot slot()
 	 */
 	std::function<void()> function_;
-};
-
-// ///////////////////////////////////////////////////////////////
-// manual "templating" for classes Signal and Slot
-// ///////////////////////////////////////////////////////////////
-
-/**
- * @brief The SignalQString class similar to Signal but takes a QString
- */
-class SignalQString: public QObject
-{
-	Q_OBJECT
-public:
-	SignalQString(QObject* parent = nullptr):QObject{parent}{}
-
-	void emitSignal(const QString& s){emit signal(s);}
-signals:
-	void signal(QString s);
-};
-
-/**
- * @brief The SlotQString class similar to Slot but accepts a QString
- */
-class SlotQString: public QObject
-{
-	Q_OBJECT
-public:
-	SlotQString(const std::function<void(QString)>& f, QObject* parent = nullptr):
-		QObject{parent}, function_{f}
-		{if(!f) throw std::invalid_argument{"invalide function"};}
-
-public slots:
-	void slot(QString s){function_(s);}
-private:
-	std::function<void(QString)> function_;
 };
 
 }} // end namespaces qtutil, cvv

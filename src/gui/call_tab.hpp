@@ -30,8 +30,11 @@ public:
 	 */
 	void setName(QString newName) { name = newName; }
 
+	size_t getId() { return id; }
+
 private:
 	QString name;
+	size_t id;
 };
 
 }}//namespaces
