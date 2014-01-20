@@ -44,6 +44,10 @@ public:
 	Collapsable& element(Handle handle)
 		{return *elements_.at(handle);}
 
+
+	const Collapsable& element(Handle handle) const
+		{return *elements_.at(handle);}
+
 	/**
 	 * @brief Sets the title above the element.
 	 * @param handle The element
@@ -61,7 +65,7 @@ public:
 	 * @throw std::out_of_range If there is no element corresponding to handle
 	 * @return The current title above the element.
 	 */
-	QString title(Handle handle)
+	QString title(Handle handle) const
 	{
 		return element(handle).title();
 	}
@@ -227,10 +231,8 @@ public:
 	 * @brief Returns the number of elements
 	 * @return The number of elements
 	 */
-	std::size_t size()
-	{
-		return elements_.size();
-	}
+	std::size_t size() const
+		{return elements_.size();}
 
 
 private:

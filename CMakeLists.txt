@@ -103,5 +103,8 @@ if(CVV_BUILD_TESTS)
 	
 	add_executable(test_maual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
 	target_link_libraries(test_maual_accordion cvvisual Qt5Core Qt5Widgets)
+
+	add_executable(test_maual_signslot manual_test/signalslot/main.cpp manual_test/accordion/acctester.cpp)
+	target_link_libraries(test_maual_signslot cvvisual Qt5Core Qt5Widgets)
 	
 endif()

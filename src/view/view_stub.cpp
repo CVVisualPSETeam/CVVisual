@@ -2,7 +2,7 @@
 #include "match_view.hpp"
 
 namespace cvv {
-namespace impl {
+namespace view {
 
 // To be deleted as soon as there is an actual implementation of views.
 
