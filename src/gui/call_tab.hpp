@@ -29,12 +29,11 @@ public:
 	 * @param name
 	 */
 	void setName(QString newName) { name = newName; }
-
-	size_t getId() { return id; }
+	
+	size_t getId() {return 0;}
 
 private:
 	QString name;
-	size_t id;
 };
 
 }}//namespaces
