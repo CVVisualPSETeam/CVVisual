@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 PARALLEL_JOBS=$(nproc)
 

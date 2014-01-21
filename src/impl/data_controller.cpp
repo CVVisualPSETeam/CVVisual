@@ -4,37 +4,55 @@
 
 namespace cvv { namespace impl {
 
-DataController::DataController()
-{
-	(void) viewController;
+namespace {
+	class CallEquality {
+	public:
+		CallEquality(size_t Id): Id{Id} {}
+		
+		bool operator()(const std::unique_ptr<Call>& call) const
+		{
+			return call->getId() == Id;
+		}
+	private:
+		size_t Id;
+	};
 }
 
 
 void DataController::addCall(std::unique_ptr<Call> call)
 {
 	calls.push_back(std::move(call));
+	viewController.addCall(*calls.back());
 }
 
 void DataController::removeCall(size_t Id)
 {
-	auto it = std::find_if(calls.begin(), calls.end(),
-			[=](const std::unique_ptr<Call>& call){return call->getId() == Id;});
+	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
 	if(it == calls.end())
 	{
 		throw std::invalid_argument{"there is no call with this id"};
 	}
 	calls.erase(it);
-	
 }
 
 const Call& DataController::getCall(size_t Id) const
 {
-	return *calls.at(Id);
+	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
+	if(it == calls.end())
+	{
+		throw std::invalid_argument{"there is no call with this id"};
+	}
+	return **it;
 }
 
 Call& DataController::getCall(size_t Id)
 {
-	return *calls.at(Id);
+	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
+	if(it == calls.end())
+	{
+		throw std::invalid_argument{"there is no call with this id"};
+	}
+	return **it;
 }
 
 size_t DataController::numCalls() const
@@ -47,7 +65,7 @@ size_t DataController::numCalls() const
  */
 void DataController::callUI()
 {
-	
+	viewController.exec();
 }
 
 DataController& dataController()

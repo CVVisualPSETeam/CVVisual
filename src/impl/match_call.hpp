@@ -21,16 +21,15 @@ public:
 			std::vector<cv::KeyPoint> keypoints2, std::vector<cv::DMatch> matches,
 			impl::CallMetaData data, QString type );
 	
-	cv::InputArray img1() const {return img1_;}
-	cv::InputArray img2() const {return img2_;}
+	const cv::Mat& img1() const {return img1_;}
+	const cv::Mat& img2() const {return img2_;}
 	const std::vector<cv::KeyPoint>& keyPoints1() const {return keypoints1_;}
 	const std::vector<cv::KeyPoint>& keyPoints2() const {return keypoints2_;}
 	const std::vector<cv::DMatch>& matches() const {return matches_;}
 private:
-	using InArray = typename std::decay<cv::InputArray>::type;
-	InArray img1_;
+	cv::Mat img1_;
 	std::vector<cv::KeyPoint> keypoints1_;
-	InArray img2_;
+	cv::Mat img2_;
 	std::vector<cv::KeyPoint> keypoints2_;
 	std::vector<cv::DMatch> matches_;
 };

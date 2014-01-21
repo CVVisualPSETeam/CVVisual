@@ -48,7 +48,7 @@ add_definitions(${QT_DEFINITIONS})
 set(CMAKE_AUTOMOC ON)
 
 
-# also: include our own headers:
+# also: include our own headers
 include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 
 # targets
@@ -67,7 +67,10 @@ target_link_libraries(cvvisual
 	#Using those results in ugly problems with gtest:
 	#${OpenCV_LIBS}
 	opencv_core
-	pthread
+	opencv_imgproc
+	pthread             #Don't delete this line!!!
+			    #Deleting it prevents the tests compiling on
+			    #(X)Ubuntu 13.10!!!
 	#Those do not work
 	#${QT_LIBRARIES}
 	Qt5Core
@@ -92,7 +95,16 @@ if(CVV_BUILD_TESTS)
 		COMMAND UnitTests
 	)
 	
-	add_executable(collapsable_test manual_test/collapsable/main.cpp)
-	target_link_libraries(collapsable_test cvvisual)
+	add_executable(test_maual_collapsable manual_test/collapsable/main.cpp)
+	target_link_libraries(test_maual_collapsable cvvisual)
+	
+	add_executable(test_maual_basic_dilate manual_test/basic_dilate/main.cpp)
+	target_link_libraries(test_maual_basic_dilate cvvisual)
+	
+	add_executable(test_maual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
+	target_link_libraries(test_maual_accordion cvvisual Qt5Core Qt5Widgets)
+
+	add_executable(test_maual_signslot manual_test/signalslot/main.cpp manual_test/accordion/acctester.cpp)
+	target_link_libraries(test_maual_signslot cvvisual Qt5Core Qt5Widgets)
 	
 endif()

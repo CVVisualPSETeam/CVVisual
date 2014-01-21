@@ -12,22 +12,22 @@ namespace cvv { namespace impl {
  */
 class FilterCall: public Call {
 public:
-	FilterCall(cv::InputArray in, cv::OutputArray out, impl::CallMetaData data, const QString& type);
+	FilterCall(cv::InputArray in, cv::InputArray out, impl::CallMetaData data, const QString& type);
 	
 	/**
 	 * @returns the original image
 	 */
-	cv::InputArray input() const {return input_;}
+	const cv::Mat& original() const {return input_;}
 	/**
 	 * @returns the filtered image
 	 */
-	cv::OutputArray output() const {return output_;}
+	const cv::Mat& result() const {return output_;}
 	
 private:
 	//TODO: in case we REALLY want to support several input-images: make this a std::vector
 	//TODO: those are typedefs for references, make it clean:
-	cv::InputArray input_;
-	cv::OutputArray output_;
+	cv::Mat input_;
+	cv::Mat output_;
 };
 
 

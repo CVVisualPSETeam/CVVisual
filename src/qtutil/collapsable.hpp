@@ -1,6 +1,7 @@
 #ifndef CVVISUAL_COLLAPSABLE_H
 #define CVVISUAL_COLLAPSABLE_H
-
+//std
+#include <cstddef>
 //QT
 #include <QString>
 #include <QWidget>
@@ -16,26 +17,23 @@ namespace cvv{ namespace qtutil{
  *
  * The widget can be collapsed and expanded with a button.
  * If the widget is collapsed only button and title are shown.
- *
- *
- * @TODO fix crash during destruction (illegal free)
  */
 class Collapsable : public QWidget
 {
 	Q_OBJECT
 public:
 	/**
-	 * @brief constructs a collapsable
-	 * @param title 	The title above the widget.
+	 * @brief Constructs a collapsable
+	 * @param title The title above the widget.
 	 * @param widget The widget to store.
 	 * @param isCollapsed If true the contained widget will be collapsed. (It will be shown
 	 * otherwise.)
 	 */
-	explicit Collapsable(const QString& title,QWidget& widget, bool isCollapsed = true,
+	explicit Collapsable(const QString& title, QWidget& widget, bool isCollapsed = true,
 			QWidget *parent = 0);
 
 	/**
-	 * @brief collapses the contained widget.
+	 * @brief Collapses the contained widget.
 	 * @param b
 	 * @parblock
 	 * 		true: collapses the widget
@@ -45,63 +43,73 @@ public:
 	void collapse(bool b = true);
 
 	/**
-	 * @brief expands the contained widget.
+	 * @brief Expands the contained widget.
 	 * @param b
 	 * @parblock
 	 * 		true: expands the widget
 	 * 		false: collapses the widget
 	 * @endparblock
 	*/
-	void expand(bool b = true){collapse(!b);}
+	void expand(bool b = true)
+		{collapse(!b);}
 
 	/**
 	* @brief Sets the title above the widget.
 	*/
-	void setTitle(const QString& title);
+	void setTitle(const QString& title)
+		{title_->setText(title);}
 
 	/**
 	 * @brief Returns the current title above the widget.
-	 * @return the current title above the widget
+	 * @return The current title above the widget
 	 */
-	QString title();
+	QString title() const
+		{return title_->text();}
 
 	/**
 	 * @brief Returns a reference to the contained widget.
-	 * @return a reference to the contained widget.
+	 * @return A reference to the contained widget.
 	 */
-	QWidget& widget();
+	QWidget& widget()
+		{return *widget_;}
+
+
+	const QWidget& widget() const
+		{return *widget_;}
+
+	/**
+	 * @brief Detaches the contained widget. (ownership remains)
+	 * @return The contained widget
+	 */
+	QWidget* detachWidget();
 
 private slots:
 	/**
 	 * @brief Toggles the visibility.
 	 */
-	void toggleVisibility();
+	void toggleVisibility()
+		{collapse(widget_->isVisible());}
 
 private:
 	/**
-	 * @brief the title above the widget
+	 * @brief The title above the widget
 	 */
-	QLabel title_;
+	QLabel* title_;
 
 	/**
-	 * @brief the contained widget
+	 * @brief The contained widget
 	 */
-	QWidget& widget_;
+	QWidget* widget_;
 
 	/**
-	 * @brief the button to toggle the widget
+	 * @brief The button to toggle the widget
 	 */
-	QToolButton button;
+	QToolButton* button_;
 
 	/**
-	 * @brief the layout for the widget and the header
+	 * @brief The layout containing the header and widget
 	 */
-	QVBoxLayout layoutHeaderAndWidget;
-
-	/**
-	 * @brief layoutHeader the layout for the button and the title (the header)
-	 */
-	QHBoxLayout layoutHeader;
+	QVBoxLayout* layout_;
 }; //Collapsable
 }} // end namespaces qtutil, cvv
 
