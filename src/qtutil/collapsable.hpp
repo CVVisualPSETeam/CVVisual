@@ -92,11 +92,6 @@ private slots:
 
 private:
 	/**
-	 * @brief The title above the widget
-	 */
-	//QLabel* title_;
-
-	/**
 	 * @brief The contained widget
 	 */
 	QWidget* widget_;

@@ -7,18 +7,13 @@ Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed,
 		button_{new QPushButton{}}, layout_{new QVBoxLayout{}}
 {
 	layout_->setAlignment(Qt::AlignTop);
-	//put elements on the heap
-	//QHBoxLayout* layoutHeader = new QHBoxLayout{};
 
 	//build header
 	button_->setEnabled(true);
 	button_->setText(title);
 	button_->setCheckable(true);
-	//layoutHeader->addWidget(button_);
-	//layoutHeader->addWidget(title_);
 
 	//build widget
-	//layout_->addLayout(layoutHeader);
 	layout_->addWidget(button_);
 	layout_->addWidget(widget_);
 	setLayout(layout_);
@@ -36,11 +31,9 @@ void Collapsable::collapse(bool b)
 	if(b)
 	{
 		widget_->hide();
-		//button_->setArrowType(Qt::DownArrow);
 	} else
 	{
 		widget_->show();
-		//button_->setArrowType(Qt::UpArrow);
 	}
 }
 
