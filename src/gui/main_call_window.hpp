@@ -16,15 +16,27 @@ namespace gui {
 
 class OverviewPanel;
 
+/**
+ * @brief A call window also inheriting the overview panel. 
+ */
 class MainCallWindow : public CallWindow
 {
 	
 	Q_OBJECT
 	
 public:
+	/**
+	 * @brief Constructs a new main call window.
+	 * @param controller view controller inheriting this main window
+	 * @param id id of this main window
+	 * @param ovPanel inherited overview panel
+	 */
 	MainCallWindow(util::Reference<controller::ViewController> controller, size_t id,
 				 OverviewPanel *ovPanel);
 	
+	/**
+	 * @brief Show the overview tab.
+	 */
 	void showOverviewTab();
 
 private:

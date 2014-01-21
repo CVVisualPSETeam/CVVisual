@@ -2,7 +2,9 @@
 
 #include <stdexcept>
 
-#include "QApplication"
+#include <QApplication>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "../gui/call_tab.hpp"
 #include "../gui/call_window.hpp"
@@ -87,7 +89,8 @@ void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 
 void ViewController::openHelpBrowser(const QString &topic)
 {
-	(void) topic;
+	//auto topicEncoded = QUrl::toPercentEncoding(topic);
+	//QDesktopServices::openUrl(QUrl("http://cvv.mostlynerdless.de/help.php?" + topicEncoded));
 }
 
 void ViewController::resumeProgramExecution()
