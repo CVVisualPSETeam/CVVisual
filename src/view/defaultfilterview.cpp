@@ -14,9 +14,9 @@ namespace cvv{ namespace view{
 		QHBoxLayout* layout = new QHBoxLayout{};
 		qtutil::Accordion *accor = new qtutil::Accordion{};
 		layout->addWidget(accor);
+		/* fehlende Funktion convertieren OpenCV image->Qimage
 		QWidget *imwid = new QWidget{this};
 		QHBoxLayout* imageLayout = new QHBoxLayout{};
-		/* fehlende Funktion convertieren OpenCV image->Qimage
 		for(auto image:images_){
 			QLabel* label = new QLabel{};
 			label->setPixmap(QPixmap::fromImage(image, Qt::AutoColor));
