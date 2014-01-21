@@ -7,6 +7,7 @@ namespace cvv{ namespace qtutil{
 Accordion::Accordion(QWidget *parent):
 	QWidget{parent}, elements_{}, layout_{new QVBoxLayout{}}
 {
+	layout_->setAlignment(Qt::AlignTop);
 	setLayout(layout_);
 
 	//needed because scrollArea->setLayout(layout_); does not work
