@@ -34,7 +34,7 @@ public:
 	/**
 	 * @brief default constructor
 	 **/
-	FilterView():FilterView{0}{};
+	FilterView():FilterView{0}{}//=default;
 	/**
 	 * @brief createFilterView
 	 * Factory method to create FilterViews.
