@@ -5,7 +5,7 @@
 //QT
 #include <QString>
 #include <QWidget>
-#include <QToolButton>
+#include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -57,14 +57,14 @@ public:
 	* @brief Sets the title above the widget.
 	*/
 	void setTitle(const QString& title)
-		{title_->setText(title);}
+		{button_->setText(title);}
 
 	/**
 	 * @brief Returns the current title above the widget.
 	 * @return The current title above the widget
 	 */
 	QString title() const
-		{return title_->text();}
+		{return button_->text();}
 
 	/**
 	 * @brief Returns a reference to the contained widget.
@@ -94,7 +94,7 @@ private:
 	/**
 	 * @brief The title above the widget
 	 */
-	QLabel* title_;
+	//QLabel* title_;
 
 	/**
 	 * @brief The contained widget
@@ -104,7 +104,7 @@ private:
 	/**
 	 * @brief The button to toggle the widget
 	 */
-	QToolButton* button_;
+	QPushButton* button_;
 
 	/**
 	 * @brief The layout containing the header and widget

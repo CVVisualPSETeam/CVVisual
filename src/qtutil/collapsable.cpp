@@ -3,19 +3,23 @@
 namespace cvv{ namespace qtutil{
 
 Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed, QWidget *parent):
-		QWidget{parent}, title_{new QLabel{title}}, widget_{&widget},
-		button_{new QToolButton{}}, layout_{new QVBoxLayout{}}
+		QWidget{parent}, widget_{&widget},
+		button_{new QPushButton{}}, layout_{new QVBoxLayout{}}
 {
+	layout_->setAlignment(Qt::AlignTop);
 	//put elements on the heap
-	QHBoxLayout* layoutHeader = new QHBoxLayout{};
+	//QHBoxLayout* layoutHeader = new QHBoxLayout{};
 
 	//build header
 	button_->setEnabled(true);
-	layoutHeader->addWidget(button_);
-	layoutHeader->addWidget(title_);
+	button_->setText(title);
+	button_->setCheckable(true);
+	//layoutHeader->addWidget(button_);
+	//layoutHeader->addWidget(title_);
 
 	//build widget
-	layout_->addLayout(layoutHeader);
+	//layout_->addLayout(layoutHeader);
+	layout_->addWidget(button_);
 	layout_->addWidget(widget_);
 	setLayout(layout_);
 
@@ -28,14 +32,15 @@ Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed,
 
 void Collapsable::collapse(bool b)
 {
+	button_->setChecked(!b);
 	if(b)
 	{
 		widget_->hide();
-		button_->setArrowType(Qt::DownArrow);
+		//button_->setArrowType(Qt::DownArrow);
 	} else
 	{
 		widget_->show();
-		button_->setArrowType(Qt::UpArrow);
+		//button_->setArrowType(Qt::UpArrow);
 	}
 }
 

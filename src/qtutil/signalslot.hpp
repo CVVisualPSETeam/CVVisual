@@ -3,8 +3,11 @@
 
 //std
 #include <functional>
+#include <stdexcept>
+
 //QT
 #include <QObject>
+#include <QString>
 
 namespace cvv { namespace qtutil{
 
@@ -20,12 +23,13 @@ public:
 	 * @brief Constructor
 	 * @param parent The parent
 	 */
-	Signal(QObject* parent = nullptr);
+	Signal(QObject* parent = nullptr):QObject{parent}{}
+
 	/**
 	 * @brief Emits the signal.
 	 * @param args The arguments
 	 */
-	void emitSignal();
+	void emitSignal(){emit signal();}
 signals:
 	/**
 	 * @brief The signal emited by emitSignal.
@@ -44,19 +48,60 @@ public:
 	/**
 	 * @brief Constructor
 	 * @param f Function called by the slot slot()
+	 * @throw std::invalid_argument If f is invalide
 	 * @param parent The parent
 	 */
-	Slot(const std::function<void()>& f, QObject* parent = nullptr);
+	Slot(const std::function<void()>& f, QObject* parent = nullptr):
+		QObject{parent}, function_{f}
+		{if(!f)throw std::invalid_argument{"invalide function"};}
+
 public slots:
 	/**
 	 * @brief The slot calling function()
 	 */
-	void slot();
+	void slot(){function_();}
 private:
 	/**
 	 * @brief The function called by the slot slot()
 	 */
 	std::function<void()> function_;
+};
+
+// ///////////////////////////////////////////////////////////////
+// manual "templating" for classes Signal and Slot
+// ///////////////////////////////////////////////////////////////
+
+
+
+class SignalQString: public QObject
+{
+	Q_OBJECT
+public:
+	SignalQString(QObject* parent = nullptr):
+		QObject{parent}{}
+
+	void emitSignal(const QString& t)
+		{emit signal(t);}
+signals:
+	void signal( QString t);
+};
+
+class SlotQString: public QObject
+{
+	Q_OBJECT
+public:
+	SlotQString(const std::function<void(QString)>& f, QObject* parent = nullptr):
+		QObject{parent}, function_{f}
+	{
+		if(!f) throw std::invalid_argument{"invalide function"};
+	}
+
+public slots:
+	void slot(QString t)
+		{function_(t);}
+
+private:
+	std::function<void(QString)> function_;
 };
 
 }} // end namespaces qtutil, cvv

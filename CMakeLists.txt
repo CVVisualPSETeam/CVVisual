@@ -75,6 +75,7 @@ target_link_libraries(cvvisual
 	#${QT_LIBRARIES}
 	Qt5Core
 	Qt5Widgets
+	Qt5Gui
 )
 
 
@@ -95,16 +96,19 @@ if(CVV_BUILD_TESTS)
 		COMMAND UnitTests
 	)
 	
-	add_executable(test_maual_collapsable manual_test/collapsable/main.cpp)
-	target_link_libraries(test_maual_collapsable cvvisual)
+	add_executable(test_manual_collapsable manual_test/collapsable/main.cpp)
+	target_link_libraries(test_manual_collapsable cvvisual)
 	
-	add_executable(test_maual_basic_dilate manual_test/basic_dilate/main.cpp)
-	target_link_libraries(test_maual_basic_dilate cvvisual)
+	add_executable(test_manual_basic_dilate manual_test/basic_dilate/main.cpp)
+	target_link_libraries(test_manual_basic_dilate cvvisual)
 	
-	add_executable(test_maual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
-	target_link_libraries(test_maual_accordion cvvisual Qt5Core Qt5Widgets)
+	add_executable(test_manual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
+	target_link_libraries(test_manual_accordion cvvisual Qt5Core Qt5Widgets)
 
-	add_executable(test_maual_signslot manual_test/signalslot/main.cpp manual_test/accordion/acctester.cpp)
-	target_link_libraries(test_maual_signslot cvvisual Qt5Core Qt5Widgets)
+	add_executable(test_manual_signslot manual_test/signalslot/main.cpp manual_test/accordion/acctester.cpp)
+	target_link_libraries(test_manual_signslot cvvisual Qt5Core Qt5Widgets)
+
+	add_executable(test_manual_registerhelper manual_test/registerhelper/main.cpp manual_test/accordion/acctester.cpp)
+	target_link_libraries(test_manual_registerhelper cvvisual Qt5Core Qt5Widgets Qt5Gui)
 	
 endif()

@@ -4,14 +4,19 @@
 #include <map>
 #include <vector>
 #include <stdexcept>
+#include <memory>
 
 //QT
 #include <QWidget>
 #include <QString>
+#include <QComboBox>
+#include <QVBoxLayout>
 //cvv
 #include "signalslot.hpp"
 
 namespace cvv { namespace qtutil{
+
+
 
 /**
  * @brief The RegisterHelper class can be inherited to gain a mechanism to register fabric functions
@@ -38,8 +43,10 @@ public:
 		:QWidget{parent}, comboBox_{new QComboBox{this}},
 		  slotElementRegistered_{[this](const QString& name){comboBox_->addItem(name);}}
 	{
-		connect(&signElementRegistered_, SIGNAL(signal(QString)),
-			&slotElementRegistered_, SLOT(slot(QString)));
+		connect(&signElementRegistered_,
+			SIGNAL(signal(QString)),
+			&slotElementRegistered_,
+			SLOT(slot(QString)));
 	}
 
 	/**
@@ -54,19 +61,19 @@ public:
 	 * @param name The name to look up
 	 * @return true if there is a function. false otherwise
 	 */
-	bool has(const QString& name) const
+	static bool has(const QString& name)
 		{return registeredElements_.find(name) != registeredElements_.end();}
 
 	/**
 	 * @brief Returns the names of all registered functions.
 	 * @return The names of all registered functions.
 	 */
-	std::vector<QString> registeredElements() const
+	static std::vector<QString> registeredElements()
 	{
 		std::vector<QString> result{};
 		for(auto& elem:registeredElements_)
 		{
-			result.emplace(elem.first);
+			result.push_back(elem.first);
 		};
 		return result;
 	}
@@ -79,13 +86,12 @@ public:
 	 * (the function was not registered!)
 	 */
 	static bool registerElement(const QString& name,
-				const std::function< std::unique_ptr<filter_t>(QWidget*)>& fabric)
+				const std::function< std::unique_ptr<Value>(QWidget*)>& fabric)
 	{
-		if(!has(name))
+		if(has(name))
 			{return false;};
 
 		registeredElements_.emplace(name, fabric);
-		comboBox_->addItem(name);
 
 		signElementRegistered_.emitSignal(name);
 
@@ -125,13 +131,13 @@ protected:
 	/**
 	 * @brief Map of registered functions and their names.
 	 */
-	thread_local std::map<QString,std::function<std::unique_ptr<Value>(QWidget*)>>
-										registeredElements_;
+	thread_local static std::map<QString,std::function<std::unique_ptr<Value>(QWidget*)>>
+									registeredElements_;
 
 	/**
 	 *@brief Signal emitted whenever a new function is registered.
 	 */
-	thread_local SignalQString signElementRegistered_{};
+	thread_local static SignalQString signElementRegistered_;
 
 	/**
 	 * @brief QComboBox containing all names of registered functions
@@ -142,7 +148,18 @@ protected:
 	 * @brief Slot called whenever a new function is registered
 	 */
 	SlotQString slotElementRegistered_;
-}
+};
+
+template<class Value>
+	thread_local std::map<QString,std::function<std::unique_ptr<Value>(QWidget*)>>
+		RegisterHelper<Value>::registeredElements_ =
+			std::map<QString,std::function<std::unique_ptr<Value>(QWidget*)>>{};
+
+template<class Value>
+	thread_local SignalQString RegisterHelper<Value>::signElementRegistered_{}; //= SignalQString{};//*/
+
+
+
 
 }} // end namespaces qtutil, cvv
 
