@@ -87,7 +87,7 @@ void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 	windowMap[windowId]->addTab(callTabMap[tabId]);
 }
 
-void ViewController::openHelpBrowser(const QString &topic)
+void ViewController::openHelpBrowser(const QString &topic) const
 {
 	(void) topic;
 	//auto topicEncoded = QUrl::toPercentEncoding(topic);

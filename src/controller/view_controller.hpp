@@ -96,7 +96,7 @@ public:
 	 * @attention doesn't actually work
 	 * @todo implement properly
 	 */
-	void openHelpBrowser(const QString &topic);
+	void openHelpBrowser(const QString &topic) const;
 	
 	/**
 	 * @brief Resume the execution of the calling program.

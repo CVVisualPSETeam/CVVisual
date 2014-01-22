@@ -20,7 +20,7 @@ void FilterCallTab::currentIndexChanged(const QString& text) const
 
 void FilterCallTab::helpButtonClicked() const
 {
-	//viewController->openHelpBrowser(filterViewId);
+	viewController->openHelpBrowser(filterViewId);
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):

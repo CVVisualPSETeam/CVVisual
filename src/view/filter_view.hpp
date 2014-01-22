@@ -17,14 +17,14 @@ Q_OBJECT
 signals:
 
 	/**
-	 * @brief updateLeftFooter
+	 * @brief update left Ffooter
 	 * Signal to update the left side of the footer with newText.
 	 * @param newText
 	 */
 	void updateLeftFooter(QString newText);
 
 	/**
-	 * @brief updateRightFoooter
+	 * @brief update right foooter
 	 * Signal to update the right side of the footer with newText.
 	 * @param newText
 	 */
@@ -36,7 +36,7 @@ public:
 	 **/
 	FilterView():FilterView{0}{};
 	/**
-	 * @brief createFilterView
+	 * @brief factory method to create a filter view
 	 * Factory method to create FilterViews.
 	 * @param originalImg
 	 * @param filteredImg

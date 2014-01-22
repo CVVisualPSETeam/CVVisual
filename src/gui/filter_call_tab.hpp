@@ -17,6 +17,7 @@ namespace cvv {
 namespace gui {
 
 /** Filter Call Tab
+ * @brief Inner part of a tab, contains a FilterView.
  * The inner part of a tab or window
  * containing a FilterView.
  * Allows to switch views and to access the help.
@@ -28,7 +29,7 @@ Q_OBJECT
 public:
 
 	/**
-	 * @brief FilterCallTab
+	 * @brief Constructor using default view.
 	 * Short constructor which initialises the Call Tab with default view from settings.
 	 * @param tabName
 	 * @param fc the FilterCall containing the information to be visualized.
@@ -37,7 +38,7 @@ public:
 	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc);
 
 	/**
-	 * @brief FilterCallTab
+	 * @brief Constructor with specific view.
 	 * Constructor initialising the Call Tab.
 	 * @param tabName
 	 * @param fc the FilterCall containing the information to be visualized.
@@ -47,12 +48,15 @@ public:
 	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, const QString& viewId);
 
 	/**
-	 * @brief getId
-	 * @return the ID of the CallTab which is equal to the ID of the associated call.
+	 * @brief get ID
+	 * @return the ID of the CallTab
+	 * (ID is equal to the ID of the associated call)
+	 * Overrides CallTab's getId.
 	 */
-	size_t getId() const;
+	size_t getId() const override;
 
 	/**
+	 * @brief adds FilterView to map of all
 	 * Adds a FilterView with a name to the thread local map of all FilterViews.
 	 * @param filterViewId the Id or name of the FilterView.
 	 */
@@ -61,12 +65,14 @@ public:
 private slots:
 
 	/**
+	 * @brief View selection change
 	 * Called when the index of the view selection changes.
 	 * @param text of the current selection in the view selection.
 	 */
 	void currentIndexChanged(const QString& text) const;
 
 	/**
+	 * @brief Help Button clicked.
 	 * Called when the help button is clicked.
 	 */
 	void helpButtonClicked() const;
