@@ -23,8 +23,8 @@ namespace cvv{ namespace view{
 			imageLayout->addWidget(label);
 		}
 		*/
-		imwid->setLayout(imageLayout);
-		layout->addWidget(imwid);
+		//imwid->setLayout(imageLayout);
+		//layout->addWidget(imwid);
 		setLayout(layout);
 	}
 
