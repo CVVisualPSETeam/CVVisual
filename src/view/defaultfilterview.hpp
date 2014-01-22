@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "opencv2/core/core.hpp"
+#include <iostream>
 
 #include "filter_view.hpp"
 
@@ -30,6 +31,15 @@ public:
 	//static DefaultFilterView create(const std::vecotr<InputArray>& input);
 private: 
 	std::vector<cv::Mat> images_;
+	/*
+	 * @brief this function will be replaced
+	 */
+	QPixmap convertCV2OT(cv::Mat m_displayOpencvImg);
+	
+	/*
+	 * @brief this function will be replaced
+	 */
+	QImage::Format opencvToQtImageFormat(int opencvFormat);
 };	
 }}//namespaces
 #endif
