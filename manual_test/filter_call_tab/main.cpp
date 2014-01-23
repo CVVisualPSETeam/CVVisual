@@ -16,14 +16,17 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
+	/* Create some data for the FilterCallTab: */
 	cv::InputArray in{};
 	cv::InputArray out{};
 	cvv::impl::CallMetaData data{};
 	QString type{"test_type"};
 	cvv::impl::FilterCall fc{in, out, data, type};
-	cvv::gui::FilterCallTab w{"TestFTab", fc, cvv::controller::ViewController{}};
-	//QLabel w{"FilterCallTab"};
 
+	cvv::gui::FilterCallTab v{"TestFTab", fc, cvv::controller::ViewController{}};
+	cvv::gui::FilterCallTab w{"TestFTab", fc, cvv::controller::ViewController{}, "test_view"};
+
+	v.show();
 	w.show();
 	return a.exec();
 }

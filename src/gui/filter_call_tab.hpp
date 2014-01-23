@@ -7,8 +7,6 @@
 #include <QComboBox>
 #include <QWidget>
 
-#include <QHBoxLayout>
-
 #include "call_tab.hpp"
 #include "../view/filter_view.hpp"
 #include "../controller/view_controller.hpp"
@@ -81,16 +79,20 @@ private slots:
 
 private:
 
+	/**
+	 * @brief Sets up the visible parts.
+	 * Called by the constructors.
+	 */
+	void createGui();
+
 	thread_local static QMap<QString, cvv::view::FilterView> filterViewMap;
 	util::Reference<const cvv::impl::FilterCall> filterCall;
 	util::Reference<const cvv::controller::ViewController> viewController;
 	QString filterViewId;
 	cvv::view::FilterView filterView;
 
-	QPushButton helpButton;
-	QComboBox filterViewSelection;
-
-	QHBoxLayout* hlayout;
+	QPushButton* helpButton;
+	QComboBox* filterViewSelection;
 };
 
 }}//namespaces

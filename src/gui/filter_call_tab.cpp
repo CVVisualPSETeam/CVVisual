@@ -4,6 +4,8 @@
 #include <QComboBox>
 
 #include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QLabel>
 
 #include "filter_call_tab.hpp"
 #include "../view/filter_view.hpp"
@@ -23,6 +25,7 @@ void FilterCallTab::currentIndexChanged(const QString& text) const
 void FilterCallTab::helpButtonClicked() const
 {
 	viewController->openHelpBrowser(filterViewId);
+/* Only for testing: */	helpButton->setText("Connect successful");
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
@@ -35,11 +38,7 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	QString setting = "PLACEHOLDER"; (void) scope; (void) key;
 	filterViewId = setting;
 
-	setName(tabName);
-	hlayout = new QHBoxLayout;
-	QPushButton* testHelpButton = new QPushButton{"Help"};
-	hlayout->addWidget(testHelpButton);
-	setLayout(hlayout);
+	createGui();
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, const QString& viewId):
@@ -47,6 +46,8 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 {
 	setName(tabName);
 	filterViewId = viewId;
+
+	createGui();
 }
 
 size_t FilterCallTab::getId() const
@@ -58,6 +59,29 @@ void FilterCallTab::addFilterViewToMap(const QString& filterViewId, const cvv::v
 {
 	(void) filterViewId;
 	(void) filterView;
+}
+
+void FilterCallTab::createGui()
+{
+	QHBoxLayout* hlayout = new QHBoxLayout;
+	hlayout->setAlignment(Qt::AlignTop);
+	QLabel* selectionLabel = new QLabel{"View:"};
+	hlayout->addWidget(selectionLabel);
+	filterViewSelection = new QComboBox{};
+	hlayout->addWidget(filterViewSelection);
+	helpButton = new QPushButton{"Help"};
+	hlayout->addWidget(helpButton);
+	connect(helpButton, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
+
+	QWidget* upperBar = new QWidget;
+	upperBar->setLayout(hlayout);
+
+	QVBoxLayout* vlayout = new QVBoxLayout;
+	QLabel* viewDummy = new QLabel{"There will be a view here."};
+	vlayout->addWidget(upperBar);
+	vlayout->addWidget(viewDummy);
+
+	setLayout(vlayout);
 }
 
 }}//namespaces
