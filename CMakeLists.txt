@@ -100,7 +100,7 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_collapsable cvvisual)
 	
 	add_executable(test_manual_basic_dilate manual_test/basic_dilate/main.cpp)
-	target_link_libraries(test_manual_basic_dilate cvvisual)
+	target_link_libraries(test_manual_basic_dilate cvvisual opencv_highgui)
 	
 	add_executable(test_manual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
 	target_link_libraries(test_manual_accordion cvvisual Qt5Core Qt5Widgets)
