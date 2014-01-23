@@ -27,14 +27,14 @@ namespace cvv { namespace qtutil{
  * @tparam Out The number of output images.
  */
 template< std::size_t In, std::size_t Out>
-class FilterFunctionWidget: public QWidget
+class FilterFunctionWidget: public virtual QWidget
 {
-	static_assert( Out > 1, "Out must not be 0!");
+	static_assert( Out > 0, "Out must not be 0!");
 public:
 	/**
 	 * @brief virtual destructor.
 	 */
-	virtual ~FilterFunctionWidget() = 0;
+	virtual ~FilterFunctionWidget(){}
 
 	/**
 	 * @brief Applys the filter to in and saves the result in out.
@@ -44,7 +44,7 @@ public:
 	 */
 	virtual const std::array<cv::Mat&,Out>&
 		applyFilter(const std::array<const cv::Mat&,Out>& in,
-				const std::array<cv::Mat&,Out>& out) = 0;
+				const std::array<cv::Mat&,Out>& out) const = 0;
 
 	/**
 	 * @brief Checks whether input can be progressed by the applyFilter function.
@@ -53,12 +53,13 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(const std::array<const cv::Mat&,Out>& in) = 0;
+	virtual std::pair<bool, QString> checkInput(const std::array<const cv::Mat&,Out>& in) const
+												= 0;
 
 	/**
 	 * @brief Signal to emit when user input leads to different parameters.
 	 */
-	Signal sigStateChanged_;
+	Signal sigFilterSettingsChanged_;
 };
 
 }} // end namespaces qtutil, cvv

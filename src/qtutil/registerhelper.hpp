@@ -5,7 +5,6 @@
 #include <vector>
 #include <stdexcept>
 #include <memory>
-
 //QT
 #include <QWidget>
 #include <QString>
@@ -15,9 +14,6 @@
 #include "signalslot.hpp"
 
 namespace cvv { namespace qtutil{
-
-
-
 /**
  * @brief The RegisterHelper class can be inherited to gain a mechanism to register fabric functions
  * for QWidgets.
@@ -32,7 +28,7 @@ namespace cvv { namespace qtutil{
  * they have to be initialized!
  */
 template<class Value>
-class RegisterHelper: public QWidget
+class RegisterHelper: public virtual QWidget
 {
 public:
 	/**
@@ -41,12 +37,15 @@ public:
 	 */
 	RegisterHelper(QWidget* parent = nullptr)
 		:QWidget{parent}, comboBox_{new QComboBox{this}},
-		  slotElementRegistered_{[this](const QString& name){comboBox_->addItem(name);}}
+		slotElementRegistered_{[this](const QString& name){comboBox_->addItem(name);}}
 	{
 		connect(&signElementRegistered_,
 			SIGNAL(signal(QString)),
 			&slotElementRegistered_,
 			SLOT(slot(QString)));
+		for(auto& elem: registeredElements_)
+			{comboBox_->addItem(elem.first);}
+		select(selection());
 	}
 
 	/**
@@ -156,16 +155,8 @@ template<class Value>
 			std::map<QString,std::function<std::unique_ptr<Value>(QWidget*)>>{};
 
 template<class Value>
-	thread_local SignalQString RegisterHelper<Value>::signElementRegistered_{}; //= SignalQString{};//*/
-
-
-
+	thread_local SignalQString RegisterHelper<Value>::signElementRegistered_{};
 
 }} // end namespaces qtutil, cvv
 
 #endif //CVVISUAL_REGISTERHELPER_HPP
-
-
-
-
-

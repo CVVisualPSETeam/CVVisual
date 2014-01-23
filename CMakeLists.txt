@@ -105,13 +105,13 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
 	target_link_libraries(test_manual_accordion cvvisual Qt5Core Qt5Widgets)
 
-	add_executable(test_manual_signslot manual_test/signalslot/main.cpp manual_test/accordion/acctester.cpp)
+	add_executable(test_manual_signslot manual_test/signalslot/main.cpp)
 	target_link_libraries(test_manual_signslot cvvisual Qt5Core Qt5Widgets)
 
-	add_executable(test_manual_registerhelper manual_test/registerhelper/main.cpp manual_test/accordion/acctester.cpp)
+	add_executable(test_manual_registerhelper manual_test/registerhelper/main.cpp )
 	target_link_libraries(test_manual_registerhelper cvvisual Qt5Core Qt5Widgets Qt5Gui)
 
-	add_executable(test_manual_filtercalltab manual_test/filter_call_tab/main.cpp)
-	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
+	add_executable(test_manual_fsw manual_test/fsw/main.cpp )
+	target_link_libraries(test_manual_fsw cvvisual Qt5Core Qt5Widgets Qt5Gui)
 	
 endif()

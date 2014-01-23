@@ -18,17 +18,16 @@
 #include "registerhelper.hpp"
 #include "filterfunctionwidget.hpp"
 
-	//makro damit filter nicht hinzugefügt werden???
-	//layout auf referenz
-
 namespace cvv { namespace qtutil{
 
 /**
  * @brief The FilterSelectorWidget class
  */
 template< std::size_t In, std::size_t Out>
-class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>>
+class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>>,
+			public FilterFunctionWidget<In,Out>
 {
+	static_assert( Out > 0, "Out must not be 0!");
 public:
 	/**
 	 * @brief Constuctor
@@ -36,27 +35,32 @@ public:
 	 */
 	explicit FilterSelectorWidget(QWidget *parent = 0):
 		RegisterHelper<FilterFunctionWidget<In,Out>>{parent},
-		sigFilterSettingsChanged_{}, currentFilter_{nullptr}, layout_{new QVBoxLayout{}},
+		currentFilter_{nullptr}, layout_{new QVBoxLayout{}},
 		slotFilterSelected_{[this](){
 			if(this->currentFilter_)
 			{
-				this->layout_.removeWidget(this->currentFilter_);
+				this->layout_->removeWidget(this->currentFilter_);
 				delete this->currentFilter_;
 				//disconnect
-				disconnect(&(this->currentFilter_->sigStateChanged_),
-						SIGNAL(signal()), 0, 0);
+				QObject::disconnect(&(this->currentFilter_->sigFilterSettingsChanged_),
+							0,
+							&(this->slotInternalFilterChanged_),
+							0);
 			}
-			this->currentFilter_= (this->operator ()()).release;
+			this->currentFilter_= ((*this)()(nullptr)).release();
 			this->layout_->addWidget(this->currentFilter_);
 			//connect signals and slots
-			this->connect(&(this->currentFilter_->sigStateChanged_), SIGNAL(signal())
-					&(this->slotInternalFilterChanged_), SLOT(slot()));
+			QObject::connect(&(this->currentFilter_->sigFilterSettingsChanged_),
+					SIGNAL(signal()),
+					&(this->slotInternalFilterChanged_),
+					SLOT(slot()));
 		}},
 		slotInternalFilterChanged_{[this](){this->sigFilterSettingsChanged_.emitSignal();}}
 	{
-		layout_->addWidget(comboBox_);
-		connect(comboBox_,SIGNAL(currentTextChanged(const QString &)),
+		layout_->addWidget((this->comboBox_));
+		QObject::connect((this->comboBox_),SIGNAL(currentTextChanged(const QString &)),
 			&slotFilterSelected_, SLOT(slot()));
+		this->setLayout(layout_);
 	}
 
 	/**
@@ -66,12 +70,12 @@ public:
 	 * @throw std::invalid_argument checkInput(in).first==false
 	 * @return parameter out
 	 */
-	const std::array<cv::Mat&,Out>& applyFilter(const std::array<const cv::Mat&,Out>& in,
-							const std::array<cv::Mat&,Out>& out) const
+	virtual const std::array<cv::Mat&,Out>& applyFilter(const std::array<const cv::Mat&,Out>& in,
+					const std::array<cv::Mat&,Out>& out) const override
 	{
 		auto check = checkInput(in);
 		if(!check.first)
-			{throw std::invalid_argument(check.second);}
+			{throw std::invalid_argument{check.second.toStdString()};}
 		return currentFilter_->applyFilter(in,out);
 	}
 
@@ -82,17 +86,14 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	std::pair<bool, QString> checkInput(const std::array<const cv::Mat&,Out>& in)
+	virtual std::pair<bool, QString> checkInput(const std::array<const cv::Mat&,Out>& in) const override
 	{
 		if(currentFilter_)
 			{return {false, "No entry selected."};}
 		return currentFilter_->checkInput(in);
 	}
 
-	/**
-	 * @brief Signal to emit when user input leads to different parameters.
-	 */
-	Signal sigFilterSettingsChanged_;
+
 
 private:
 	/**
