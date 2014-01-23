@@ -3,6 +3,8 @@
 #include <QPushButton>
 #include <QComboBox>
 
+#include <QHBoxLayout>
+
 #include "filter_call_tab.hpp"
 #include "../view/filter_view.hpp"
 #include "../controller/view_controller.hpp"
@@ -32,6 +34,12 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	//QString setting = vc.getSetting(scope, key);
 	QString setting = "PLACEHOLDER"; (void) scope; (void) key;
 	filterViewId = setting;
+
+	setName(tabName);
+	hlayout = new QHBoxLayout;
+	QPushButton* testHelpButton = new QPushButton{"Help"};
+	hlayout->addWidget(testHelpButton);
+	setLayout(hlayout);
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, const QString& viewId):

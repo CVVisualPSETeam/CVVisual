@@ -7,6 +7,8 @@
 #include <QComboBox>
 #include <QWidget>
 
+#include <QHBoxLayout>
+
 #include "call_tab.hpp"
 #include "../view/filter_view.hpp"
 #include "../controller/view_controller.hpp"
@@ -87,6 +89,8 @@ private:
 
 	QPushButton helpButton;
 	QComboBox filterViewSelection;
+
+	QHBoxLayout* hlayout;
 };
 
 }}//namespaces
