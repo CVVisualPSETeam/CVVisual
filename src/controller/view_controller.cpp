@@ -14,7 +14,10 @@
 namespace cvv {
 namespace controller {
 
-ViewController::ViewController(): windowMap{},
+int zero;
+char *emptyArray[] = {nullptr};
+
+ViewController::ViewController(): application{zero, emptyArray}, windowMap{},
 	ovPanel{new gui::OverviewPanel{this}},
 	mainWindow{new gui::MainCallWindow{util::makeRef<ViewController>(*this), 0, ovPanel}},
 	callTabMap{},calls{}
@@ -47,7 +50,7 @@ void ViewController::addCall(const impl::Call &data)
 
 void ViewController::exec()
 {
-	QApplication::exec();
+	application.exec();
 }
 
 impl::Call& ViewController::getCall(size_t id)
@@ -57,11 +60,12 @@ impl::Call& ViewController::getCall(size_t id)
 
 QString ViewController::getSetting(const QString &scope, const QString &key) const
 {
-	if (!settings.contains(key))
+	QString _key = scope + "/" + key;
+	if (!settings.contains(_key))
 	{
 		throw std::invalid_argument{ "there is no such setting" };
 	}
-	QString set = settings.value(scope + "/" + key).value<QString>();
+	QString set = settings.value(_key).value<QString>();
 	return set;
 }
 
@@ -94,24 +98,22 @@ void ViewController::openHelpBrowser(const QString &topic) const
 
 void ViewController::resumeProgramExecution()
 {
-	QApplication::exit();
+	application.exit();
 }
 
 void ViewController::setDefaultSetting(const QString &scope, const QString &key, const QString &value)
 {
-	settings.beginGroup(scope);
-	if (!settings.contains(key))
+	QString _key = scope + "/" + key;
+	if (!settings.contains(_key))
 	{
-		settings.setValue(key, value);
+		settings.setValue(_key, value);
 	}
-	settings.endGroup();
 }
 
 void ViewController::setSetting(const QString &scope, const QString &key, const QString &value)
 {
-	settings.beginGroup(scope);
-	settings.setValue(key, value);
-	settings.endGroup();
+	QString _key = scope + "/" + key;
+	settings.setValue(_key, value);
 }
 
 void ViewController::showCallTab(size_t tabId)

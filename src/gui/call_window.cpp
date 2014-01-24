@@ -31,7 +31,7 @@ void CallWindow::initTabs()
 	tabWidget = new QTabWidget(this);
 	setCentralWidget(tabWidget);
 	QPushButton *button = new QPushButton("Resume program execution", this);
-	connect(button, SIGNAL(keyPressEvent(KeyEvent * e)), this, SLOT(resumeProgramExecution()));
+	//connect(button, SIGNAL(keyPressEvent(KeyEvent * e)), this, SLOT(resumeProgramExecution()));
 	tabWidget->setCornerWidget(button, Qt::TopLeftCorner);
 }
 
