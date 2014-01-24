@@ -5,6 +5,9 @@
 
 #include <QString>
 
+#include "opencv2/core/core.hpp"
+#include "opencv2/features2d/features2d.hpp"
+
 #include "call_meta_data.hpp"
 
 namespace cvv {
@@ -23,6 +26,7 @@ public:
 	 * @brief Returns the number of images that are part of the call.
 	 */
 	virtual size_t matrixCount() const = 0;
+	virtual const cv::Mat& matrixAt(size_t index) const = 0;
 protected:
 	Call();
 	Call(impl::CallMetaData callData, QString type);
