@@ -23,6 +23,7 @@ void DataController::addCall(std::unique_ptr<Call> call)
 {
 	calls.push_back(std::move(call));
 	viewController.addCall(*calls.back());
+	callUI();
 }
 
 void DataController::removeCall(size_t Id)
