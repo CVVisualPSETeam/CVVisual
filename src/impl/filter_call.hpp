@@ -23,6 +23,7 @@ public:
 	 */
 	const cv::Mat& result() const {return output_;}
 	
+	size_t matrixCount() const override { return 2; }
 private:
 	//TODO: in case we REALLY want to support several input-images: make this a std::vector
 	//TODO: those are typedefs for references, make it clean:

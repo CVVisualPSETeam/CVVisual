@@ -34,19 +34,18 @@ ViewController::~ViewController()
 	delete &callTabMap;*/
 }
 
-void ViewController::addCallType(const QString typeName,
-		std::function<gui::CallTab(QString, impl::Call)> constr)
+void ViewController::addCallType(const QString& typeName,
+		std::function<gui::CallTab(QString, const impl::Call&)> constr)
 {
 	ViewController::callTabType[typeName] = constr;
 }
 
-std::map<QString, std::function<gui::CallTab(QString, impl::Call) >> ViewController::callTabType =
-	*(new std::map<QString, std::function<gui::CallTab(QString, impl::Call) >>());
+std::map<QString, std::function<gui::CallTab(QString, const impl::Call&) >> ViewController::callTabType;
 
-void ViewController::addCall(const impl::Call &data)
+void ViewController::addCall(util::Reference<impl::Call> data)
 {
 	mainWindow->showOverviewTab();
-	ovPanel->addElement(util::makeRef(data));
+	ovPanel->addElement(*data);
 }
 
 void ViewController::exec()
@@ -56,7 +55,7 @@ void ViewController::exec()
 
 impl::Call& ViewController::getCall(size_t id)
 {
-	return calls.at(id);
+	return *calls.at(id);
 }
 
 QString ViewController::getSetting(const QString &scope, const QString &key) const

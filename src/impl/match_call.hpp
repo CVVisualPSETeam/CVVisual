@@ -21,6 +21,7 @@ public:
 			std::vector<cv::KeyPoint> keypoints2, std::vector<cv::DMatch> matches,
 			impl::CallMetaData data, QString type );
 	
+	size_t matrixCount() const override { return 2; }
 	const cv::Mat& img1() const {return img1_;}
 	const cv::Mat& img2() const {return img2_;}
 	const std::vector<cv::KeyPoint>& keyPoints1() const {return keypoints1_;}

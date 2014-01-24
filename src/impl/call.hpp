@@ -18,6 +18,11 @@ public:
 	size_t getId() const { return id; }
 	
 	const QString& type() const {return calltype;}
+	
+	/**
+	 * @brief Returns the number of images that are part of the call.
+	 */
+	virtual size_t matrixCount() const = 0;
 protected:
 	Call();
 	Call(impl::CallMetaData callData, QString type);

@@ -42,14 +42,14 @@ public:
 	 * @param constr function constructing an instance of this  call tab type
 	 * @return an instance of the new call tab type 
 	 */
-	static void addCallType(const QString typeName,
-		std::function<gui::CallTab(QString, impl::Call)> constr);
+	static void addCallType(const QString& typeName,
+		std::function<gui::CallTab(QString, const impl::Call&)> constr);
 	
 	/**
 	 * @brief Adds a new call and shows it in the overview table.
 	 * @param data new call (data)
 	 */
-	void addCall(const impl::Call &data);
+	void addCall(util::Reference<impl::Call> data);
 		
 	/**
 	 * Execute the Qt event loop.
@@ -141,14 +141,14 @@ public:
 	
 private:
 	
-	static std::map<QString, std::function<gui::CallTab(QString, impl::Call)>> callTabType;
+	static std::map<QString, std::function<gui::CallTab(QString, const impl::Call&)>> callTabType;
 	QApplication application;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
 	std::map<size_t, gui::CallWindow*> windowMap;
 	gui::OverviewPanel *ovPanel;
 	gui::MainCallWindow *mainWindow;
 	std::map<size_t, gui::CallTab*> callTabMap;
-	std::vector<impl::Call> calls;
+	std::vector<util::Reference<impl::Call>> calls;
 	size_t max_window_id = 0;
 };
 
