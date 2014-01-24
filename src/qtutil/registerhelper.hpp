@@ -39,10 +39,10 @@ public:
 		:QWidget{parent}, comboBox_{new QComboBox{this}},
 		slotElementRegistered_{[this](const QString& name){comboBox_->addItem(name);}}
 	{
-		connect(&signElementRegistered_,
-			SIGNAL(signal(QString)),
-			&slotElementRegistered_,
-			SLOT(slot(QString)));
+		//connect(&signElementRegistered_,
+		//	SIGNAL(signal(QString)),
+		//	&slotElementRegistered_,
+		//	SLOT(slot(QString)));
 		for(auto& elem: registeredElements_)
 			{comboBox_->addItem(elem.first);}
 		select(selection());
@@ -92,7 +92,7 @@ public:
 
 		registeredElements_.emplace(name, fabric);
 
-		signElementRegistered_.emitSignal(name);
+		//signElementRegistered_.emitSignal(name);
 
 		return true;
 	}
