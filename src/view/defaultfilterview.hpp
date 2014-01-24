@@ -36,10 +36,6 @@ private:
 	 */
 	QPixmap convertCV2OT(cv::Mat m_displayOpencvImg);
 	
-	/*
-	 * @brief this function will be replaced
-	 */
-	QImage::Format opencvToQtImageFormat(int opencvFormat);
 };	
 }}//namespaces
 #endif
