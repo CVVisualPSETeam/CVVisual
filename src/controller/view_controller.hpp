@@ -68,7 +68,7 @@ public:
 	 * @param key settings key (e.g. 'autoOpenTabs')
 	 * @return settings string
 	 */
-	QString getSetting(const QString &scope, const QString &key);
+	QString getSetting(const QString &scope, const QString &key) const;
 	
 	/**
 	 * @attention may be deleted

@@ -55,15 +55,13 @@ impl::Call& ViewController::getCall(size_t id)
 	return calls.at(id);
 }
 
-QString ViewController::getSetting(const QString &scope, const QString &key)
+QString ViewController::getSetting(const QString &scope, const QString &key) const
 {
-	settings.beginGroup(scope);
 	if (!settings.contains(key))
 	{
 		throw std::invalid_argument{ "there is no such setting" };
 	}
 	QString set = settings.value(scope + "/" + key).value<QString>();
-	settings.endGroup();
 	return set;
 }
 
