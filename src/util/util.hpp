@@ -64,7 +64,7 @@ public:
 	Reference& operator=(Reference&&) = default;
 	
 	//Constructing only works from references
-	explicit Reference(T& pointee) : ptr{&pointee} {}
+	Reference(T& pointee) : ptr{&pointee} {}
 	
 	// there is no point in having a Reference to a temporary object:
 	Reference(T&&) = delete;
