@@ -79,7 +79,7 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
 {
 	gui::CallWindow *newWindow = new gui::CallWindow(util::makeRef<ViewController>(*this), ++max_window_id);
 	newWindow->addTab(callTabMap[tabId]);
-	newWindow.show();
+	newWindow->show();
 	windowMap[max_window_id] = newWindow;
 	getCurrentWindowOfTab(tabId)->removeTab(tabId);
 }
