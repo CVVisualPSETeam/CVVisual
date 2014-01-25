@@ -2,8 +2,10 @@
 #define CVVISUAL_DEFAULT_FILTER_VIEW
 
 #include <QWidget>
+#include <QImage>
 
 #include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
 #include <iostream>
 
 #include "filter_view.hpp"
@@ -23,19 +25,11 @@ public:
 	 */
 	DefaultFilterView(std::vector<cv::Mat> images,QWidget *parent);
 	
-	/**
-	 * This method is used if you cannot use pointer for constructors
-	 * @return a new instanz of this class with the given images
-	 */
-	 
-	//static DefaultFilterView create(const std::vecotr<InputArray>& input);
 private: 
-	std::vector<cv::Mat> images_;
 	/*
-	 * @brief this function will be replaced
+	 *@brief the images of this view
 	 */
-	QPixmap convertCV2OT(cv::Mat m_displayOpencvImg);
-	
+	std::vector<cv::Mat> images_;
 };	
 }}//namespaces
 #endif
