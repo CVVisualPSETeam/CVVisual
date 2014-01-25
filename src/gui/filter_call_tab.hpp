@@ -85,11 +85,11 @@ private:
 	 */
 	void createGui();
 
-	thread_local static QMap<QString, cvv::view::FilterView> filterViewMap;
+	thread_local static QMap<QString, std::unique_ptr<cvv::view::FilterView>> filterViewMap;
 	util::Reference<const cvv::impl::FilterCall> filterCall;
 	util::Reference<const cvv::controller::ViewController> viewController;
 	QString filterViewId;
-	cvv::view::FilterView filterView;
+	std::unique_ptr<cvv::view::FilterView> filterView;
 
 	QPushButton* helpButton;
 	QComboBox* filterViewSelection;
