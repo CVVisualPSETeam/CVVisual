@@ -1,6 +1,7 @@
 #include "view_controller.hpp"
 
 #include <stdexcept>
+#include <iostream>
 
 #include <QApplication>
 #include <QDesktopServices>
@@ -18,11 +19,11 @@ int zero;
 char *emptyArray[] = {nullptr};
 
 ViewController::ViewController(): application{zero, emptyArray}, windowMap{},
-	ovPanel{new gui::OverviewPanel{this}},
-	mainWindow{new gui::MainCallWindow{util::makeRef<ViewController>(*this), 0, ovPanel}},
 	callTabMap{},calls{}
 {
-	windowMap[0] = mainWindow;
+    ovPanel = new gui::OverviewPanel{this};
+    mainWindow = new gui::MainCallWindow{util::makeRef<ViewController>(*this), 0, ovPanel};
+    windowMap[0] = mainWindow;
 	mainWindow->show();
 	max_window_id = 0;
 }
@@ -76,7 +77,7 @@ const std::map<size_t, gui::CallWindow*> ViewController::getTabWindows()
 
 void ViewController::moveCallTabToNewWindow(size_t tabId)
 {
-	gui::CallWindow *newWindow = new gui::CallWindow(util::makeRef<ViewController>(*this), ++max_window_id);
+    gui::CallWindow *newWindow = new gui::CallWindow(util::makeRef<ViewController>(*this), ++max_window_id);
 	newWindow->addTab(callTabMap[tabId]);
 	newWindow->show();
 	windowMap[max_window_id] = newWindow;

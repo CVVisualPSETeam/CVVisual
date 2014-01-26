@@ -1,12 +1,39 @@
 #include "overview_table.hpp"
 
+#include <utility>
+
+#include <QVBoxLayout>
+#include <QStringList>
+
+#include "../stfl/element_group.hpp"
+#include "overview_table_collumn.hpp"
+#include "overview_group_subtable.hpp"
+#include "../qtutil/accordion.hpp"
+
 namespace cvv { namespace gui {
 
-OverviewTable::OverviewTable(OverviewPanel *parent): parent{parent} {}
-
-void OverviewTable::updateCollumnGroups(const QList<stfl::ElementGroup<OverviewTableCollumn>> &newGroup)
+OverviewTable::OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent):
+    controller{controller}, parent{parent}
 {
-	(void)newGroup;
+    subtableAccordion = new qtutil::Accordion{};
+    auto *layout = new QVBoxLayout{};
+    layout->addWidget(subtableAccordion);
+    setLayout(layout);
+}
+
+void OverviewTable::updateCollumnGroups(std::vector<stfl::ElementGroup<OverviewTableCollumn>> newGroups)
+{
+    subtableAccordion->clear();
+    subTables.clear();
+    for (auto &group : newGroups)
+    {
+        if (group.size() > 0)
+        {
+            auto *subtable = new OverviewGroupSubtable{controller, this, std::move(group)};
+            subtableAccordion->push_back(group.getTitles()[0], *subtable, false);
+            subTables.push_back(subtable);
+        }
+    }
 }
 	
 void OverviewTable::hideImages()
@@ -28,7 +55,10 @@ bool OverviewTable::isShowingImages()
 
 void OverviewTable::updateUI()
 {
-	
+    for (auto *subTable : subTables)
+    {
+        subTable->updateUI();
+    }
 }
 
 }}

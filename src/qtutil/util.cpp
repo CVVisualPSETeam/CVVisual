@@ -12,8 +12,15 @@ QImage convertOpenCVMatToQImage(const cv::Mat &mat)
     return image2Draw_qt;
 }
 
-QPixmap convertOpenCVMatToQPixmap(const cv::Mat &mat){
+QPixmap convertOpenCVMatToQPixmap(const cv::Mat &mat)
+{
     return QPixmap::fromImage(convertOpenCVMatToQImage(mat));
 }
 
+QSet<QString> createStringSet(QString string)
+{
+    QSet<QString> set;
+    set.insert(string);
+    return set;
+}
 }}

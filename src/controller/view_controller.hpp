@@ -5,9 +5,11 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
-#include <QString>
+#include <memory>
+
 #include <functional>
 #include <utility>
+#include <QString>
 #include <QSettings>
 #include <QApplication>
 
@@ -144,9 +146,9 @@ private:
 	static std::map<QString, std::function<gui::CallTab(QString, const impl::Call&)>> callTabType;
 	QApplication application;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
-	std::map<size_t, gui::CallWindow*> windowMap;
+    std::map<size_t, gui::CallWindow*> windowMap;
 	gui::OverviewPanel *ovPanel;
-	gui::MainCallWindow *mainWindow;
+    gui::MainCallWindow *mainWindow;
 	std::map<size_t, gui::CallTab*> callTabMap;
 	std::vector<util::Reference<impl::Call>> calls;
 	size_t max_window_id = 0;

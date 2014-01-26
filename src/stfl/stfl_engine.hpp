@@ -28,11 +28,20 @@ class STFLEngine
 {
 public:
 
+    STFLEngine(){}
+
 	/**
 	 * @brief Constructs (and initializes) a new engine.
 	 * @todo add function parameters
 	 */
-	STFLEngine()
+    STFLEngine(QMap<QString, std::function<bool(const QString&, const Element&) > > filterFuncs,
+               QMap<QString, std::function<QString(const Element&)> > filterPoolFuncs,
+               QMap<QString, std::function<bool(const QStringList&, const Element&) > > filterCSFuncs,
+               QMap<QString, std::function<QSet<QString>(const Element&) > > filterCSPoolFuncs,
+               QMap<QString, std::function<int(const Element&, const Element&) >> sortFuncs,
+               QMap<QString, std::function<QString(const Element&) >> groupFuncs):
+        filterFuncs{filterFuncs}, filterPoolFuncs{filterPoolFuncs}, filterCSFuncs{filterCSFuncs},
+        filterCSPoolFuncs{filterCSPoolFuncs}, sortFuncs{sortFuncs}, groupFuncs{groupFuncs}
 	{
 		initSupportedCommandsList();
 	}
@@ -99,7 +108,7 @@ public:
 		return suggs;
 	}
 
-	QList<ElementGroup<Element> > query(QString query)
+    std::vector<ElementGroup<Element> > query(QString query)
 	{
 		if (!query.startsWith("#"))
 		{
@@ -118,7 +127,7 @@ public:
 	 *
 	 * @return query result.
 	 */
-	QList<ElementGroup<Element >> reexecuteLastQuery()
+    std::vector<ElementGroup<Element >> reexecuteLastQuery()
 	{
 		return query(lastQuery);
 	}
@@ -149,27 +158,42 @@ public:
 		}
 	}
 
+    void setFilterFunc(QString key, std::function<bool(const QString&, const Element&)> func){
+                                  filterFuncs[key] = func;
+    }
+
+    void setFilterPoolFunc(QString key, std::function<QString(const Element&)> func){
+                                        filterPoolFuncs[key] = func;
+    }
+
+    void setFilterCSFunc(QString key, std::function<bool(const QStringList&, const Element&) >  func){
+                                        filterCSFuncs[key] = func;
+    }
+
+    void setFilterCSPoolFunc(QString key, std::function<QSet<QString>(const Element&) > func){
+                                        filterCSPoolFuncs[key] = func;
+    }
 
 private:
 	QList<Element> elements;
 	QString lastQuery = "";
 	QStringList supportedCmds;
 
-	QMap<QString, std::function<bool(const QString, const Element) > > filterFuncs;
-	QMap<QString, std::function<QString(const Element)> > filterPoolFuncs;
+    QMap<QString, std::function<bool(const QString&, const Element&) > > filterFuncs;
+    QMap<QString, std::function<QString(const Element&)> > filterPoolFuncs;
 	QHash<QString, QSet<QString> > filterPool;
 
-	QMap<QString, std::function<bool(const QStringList, const Element) > > filterCSFuncs;
-	QMap<QString, std::function<QSet<QString>(const Element) > > filterCSPoolFuncs;
+    QMap<QString, std::function<bool(const QStringList&, const Element&) > > filterCSFuncs;
+    QMap<QString, std::function<QSet<QString>(const Element&) > > filterCSPoolFuncs;
 	QHash<QString, QSet<QString> > filterCSPool;
 
-	QMap<QString, std::function<int(const Element, const Element) >> sortFuncs;
-	QMap<QString, std::function<QString(const Element) >> groupFuncs;
+    QMap<QString, std::function<int(const Element&, const Element&) >> sortFuncs;
+    QMap<QString, std::function<QString(const Element&) >> groupFuncs;
 
 	QList<Element> executeFilters(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
-		std::set< std::pair< std::function<bool(const QString, const Element)>, QString > > filters;
-		std::set< std::pair< std::function<bool(const QStringList, const Element)>, QStringList > > filtersCS;
+        std::vector< std::pair< std::function<bool(const QString&, const Element&)>, QString > > filters;
+        std::vector< std::pair< std::function<bool(const QStringList&, const Element&)>, QStringList > > filtersCS;
 
 		for (const QString &cmdString : cmdStrings)
 		{
@@ -180,7 +204,7 @@ private:
 			if (isFilterCmd(cmd))
 			{
 				QString argument = arr.join(" ");
-				filters.insert(std::make_pair(filterFuncs[cmd], argument));
+                filters.push_back(std::make_pair(filterFuncs[cmd], argument));
 			}
 			else if (isFilterCSCmd(cmd))
 			{
@@ -188,23 +212,27 @@ private:
 				std::for_each(arguments.begin(), arguments.end(), [](QString &str){
 					str.replace("\\,", ",");
 				});
-				filtersCS.insert(std::make_pair(filterCSFuncs[cmd], arguments));
+                filtersCS.push_back(std::make_pair(filterCSFuncs[cmd], arguments));
 			}
 		}
 
 		QList<Element> retList;
+        //copy if all filters match
 		auto copy_if = [&](const Element & element)
 		{
-			return std::find_if(filters.begin(), filters.end(),
-								[&](std::pair< std::function<bool(const QString, const Element)>, QString> pair)
-								{
-									return pair.first(pair.second, element);
-								}) == filters.end() &&
-				std::find_if(filtersCS.begin(), filtersCS.end(),
-							[&](std::pair< std::function<bool(const QStringList, const Element)>, QStringList > pair)
-							{
-								return pair.first(pair.second, element);
-							}) == filtersCS.end();
+            (void)element;
+            //find in filters
+           auto find_if1 = [&](std::pair< std::function<bool(const QString&, const Element&)>, QString> pair)
+            {
+                return pair.first(pair.second, element);
+            };
+            //find in filtersCS
+            auto find_if2 = [&](std::pair< std::function<bool(const QStringList&, const Element&)>, QStringList > pair)
+            {
+                return pair.first(pair.second, element);
+            };
+            return std::find_if(filters.begin(), filters.end(), find_if1) != filters.end() &&
+                std::find_if(filtersCS.begin(), filtersCS.end(), find_if2) != filtersCS.end();
 		};
 		std::copy_if(elements.begin(), elements.end(), std::back_inserter(retList), copy_if);
 		return retList;
@@ -251,7 +279,11 @@ private:
 		{
 			if (sortCmd.second)
 			{
-				qStableSort(resList.begin(), resList.end(), sortFuncs[sortCmd.first]);
+                auto sortFunc = sortFuncs[sortCmd.first];
+                qStableSort(resList.begin(), resList.end(), [&](const Element &elem1, const Element & elem2)
+                {
+                    return sortFunc(elem1, elem2);
+                });
 			}
 			else
 			{
@@ -265,9 +297,14 @@ private:
 		return resList;
 	}
 
-	QList<ElementGroup<Element> > executeGroupCmds(const QList<Element> &elements, const QStringList &cmdStrings)
+    /**
+     * @note I use std::vector here, as QList does strange things...
+     */
+    std::vector<ElementGroup<Element> > executeGroupCmds(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
-		QStringList groupCmds;
+        (void)cmdStrings;
+        (void)elements;
+        QStringList groupCmds;
 		for (QString cmdString : cmdStrings)
 		{
 			QStringList arr = cmdString.split(" ", QString::SkipEmptyParts);
@@ -284,39 +321,34 @@ private:
 			for (QString cmdPart : arr)
 			{
 				QStringList cmdPartList = cmdPart.split(" ");
-				if (cmdPartList.empty())
+                if (cmdPartList.empty() || !isGroupCmd(cmdPartList[0]))
 				{
 					continue;
 				}
 				groupCmds.append(cmdPartList[0]);
 			}
 		}
-		int id = 0;
-		QHash<QStringList, std::pair<QList<Element>, int> > groupHash;
-		for (Element element : elements)
-		{
-			QStringList groupTitles;
-			if (!groupHash.contains(groupTitles))
-			{
-				groupHash[groupTitles] = std::make_pair(QList<Element>(), id);
-				id++;
-			}
-			groupHash[groupTitles].first.append(element);
-		}
-		QList<ElementGroup<Element> > groupList;
-		ElementGroup<Element> dummy(*(new QStringList()), *(new QList<Element>()));
-		for (int i = 0; i < groupHash.size(); i++)
-		{
-			groupList.append(dummy);
-
-		}
-		auto it = groupHash.begin();
-		while (it != groupHash.end())
-		{
-			groupList[it.value().second] = *(new ElementGroup<Element>(it.key(), it.value().first));
-			it++;
-		}
-		return groupList;
+        std::vector<ElementGroup<Element> > groupList;
+        std::map<QString, QList<Element>> groups{};
+        for (auto &element : elements)
+        {
+            QString name = "";
+            for (auto &groupCmd : groupCmds)
+            {
+                name.append("\\|" + groupFuncs[groupCmd](element));
+            }
+            if (groups.count(name) == 0)
+            {
+                groups[name] = QList<Element>();
+            }
+            groups[name].push_back(element);
+        }
+        for (auto it = groups.begin(); it != groups.end(); ++it)
+        {
+            ElementGroup<Element> elementGroup(it->first.split("\\|" , QString::SkipEmptyParts), it->second);
+            groupList.push_back(elementGroup);
+        }
+        return groupList;
 	}
 
 	QStringList getSuggestionsForCmdQuery(const QString &cmdQuery, size_t number)
@@ -330,7 +362,7 @@ private:
 		bool hasByString = tokens.size() >= 2 && tokens[1] == "by";
 
 		QString cmd = tokens[0];
-		if (isSortCmd(cmd) || isGroupCmd(cmd))
+        if (isSortCmd(cmd) || isGroupCmd(cmd))
 		{
 			int frontCut = std::min(1 + (hasByString ? 1 : 0), tokens.size());
 			tokens = tokens.mid(frontCut, tokens.size());

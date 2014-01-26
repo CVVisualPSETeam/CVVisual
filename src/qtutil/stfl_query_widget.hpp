@@ -5,6 +5,9 @@
 #include <QLineEdit>
 #include <QStringList>
 #include <QWidget>
+#include <QVBoxLayout>
+
+#include "stfl_query_widget_lineedit.hpp"
 
 namespace cvv { namespace qtutil {
 
@@ -24,14 +27,20 @@ public:
      */
 	void showSuggestions(const QStringList &suggestions);
 
+public slots:
+    void returnPressed();
+    void textChanged();
+
 signals:
 	
 	void filterSignal(QString query);
 
 	void userInputUpdate(QString query);
 
+    void requestSuggestions(QString query);
+
 private:
-	QLineEdit *inputLine;
+    STFLQueryWidgetLineEdit *lineEdit;
 };
 
 }}

@@ -37,7 +37,7 @@ public:
 	/**
 	 * @brief Whether *this holds actual data.
 	 */
-	bool isKnown;
+    const bool isKnown;
 };
 
 }} //namespaces

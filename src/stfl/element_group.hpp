@@ -19,19 +19,18 @@ class ElementGroup
 {
 public:
 	
-	ElementGroup(){}
+    ElementGroup(){
+        titles = QStringList();
+        elements = QList<Element>();
+    }
 	
 	/**
 	 * Constructs a new ElementGroup
 	 * @param _titles title of this group, consisting of several sub titles
 	 * @param _elements elements of this group 
 	 */
-	ElementGroup(QStringList _titles, const QList<Element> &_elements)
-	{
-		this->elements = _elements;
-		this->titles = _titles;
-	}
-
+    ElementGroup(const QStringList _titles, const QList<Element> &_elements):
+        titles{_titles}, elements{_elements} {}
 	/**
 	 * Checks whether or not this group contains the element.
 	 */
@@ -51,18 +50,18 @@ public:
 	/**
 	 * Returns the number of elements in this group.
 	 */
-	size_t size()
+    size_t size() const
 	{
 		return this->elements.size();
 	}
 
-	/**
-	 * Returns the title (consisting of sub titles).
-	 */
-	const QStringList getTitles()
-	{
-		return this->titles;
-	}
+    /**
+     * Returns the title (consisting of sub titles).
+     */
+    QStringList getTitles() const
+    {
+        return this->titles;
+    }
 
 	/**
 	 * Get the element at the given index (in this group).
