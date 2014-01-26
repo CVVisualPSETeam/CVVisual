@@ -27,6 +27,11 @@ public:
 	 */
 	virtual size_t matrixCount() const = 0;
 	virtual const cv::Mat& matrixAt(size_t index) const = 0;
+	
+	/**
+	 * @brief provides a description of the call.
+	 */
+	const QString& description() const {return description_;}
 protected:
 	Call();
 	Call(impl::CallMetaData callData, QString type);
@@ -40,6 +45,8 @@ protected:
 	impl::CallMetaData callData;
 	size_t id;
 	QString calltype;
+	// TODO:
+	QString description_ = "Not Yet Implemented";
 };
 
 }} //namespaces
