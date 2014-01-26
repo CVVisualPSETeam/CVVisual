@@ -45,12 +45,15 @@ void OverviewGroupSubtable::updateUI(){
         }
     }
     list << "Description" << "Function" << "File" << "Line" << "Type";
-    qTable->setHorizontalHeaderLabels(list);
     qTable->setRowCount(group.size());
     qTable->setColumnCount(list.size());
+    qTable->setHorizontalHeaderLabels(list);
     for (size_t i = 0; i < group.size(); i++)
     {
         group.get(i).addToTable(qTable, i, parent->isShowingImages(), maxImages);
     }
+    qTable->setVisible(false);
+    qTable->resizeColumnsToContents();
+    qTable->setVisible(true);
 }
 }}

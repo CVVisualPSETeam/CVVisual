@@ -238,11 +238,19 @@ void unescapeCommas(QString &str)
 	str.replace("\\,", ",");
 }
 
-void shortenString(QString &str, int maxLength){
+QString shortenString(QString &str, int maxLength, bool cutEnd){
 	if (str.size() > maxLength)
 	{
-		str = str.mid(0, maxLength - 3) + "...";
-	} 
+        if (cutEnd)
+        {
+            str = str.mid(0, maxLength - 3) + "...";
+        }
+        else
+        {
+            str = "..." + str.mid(str.size() + 3 - maxLength, str.size());
+        }
+    }
+    return str;
 }
 
 }

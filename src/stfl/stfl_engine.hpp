@@ -215,7 +215,6 @@ private:
                 filtersCS.push_back(std::make_pair(filterCSFuncs[cmd], arguments));
 			}
 		}
-
 		QList<Element> retList;
         //copy if all filters match
 		auto copy_if = [&](const Element & element)
@@ -231,11 +230,11 @@ private:
             {
                 return pair.first(pair.second, element);
             };
-            return std::find_if(filters.begin(), filters.end(), find_if1) != filters.end() &&
-                std::find_if(filtersCS.begin(), filtersCS.end(), find_if2) != filtersCS.end();
+            return (filters.size() == 0 || std::find_if(filters.begin(), filters.end(), find_if1) != filters.end())  &&
+                (filtersCS.size() == 0 || std::find_if(filtersCS.begin(), filtersCS.end(), find_if2) != filtersCS.end());
 		};
 		std::copy_if(elements.begin(), elements.end(), std::back_inserter(retList), copy_if);
-		return retList;
+        return retList;
 	}
 
 	QList<Element> executeSortCmds(const QList<Element> &elements, const QStringList &cmdStrings)
