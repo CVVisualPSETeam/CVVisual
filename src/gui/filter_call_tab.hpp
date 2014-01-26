@@ -12,6 +12,7 @@
 #include "../controller/view_controller.hpp"
 #include "../impl/filter_call.hpp"
 #include "../util/util.hpp"
+#include "../qtutil/registerhelper.hpp"
 
 namespace cvv {
 namespace gui {
@@ -85,14 +86,16 @@ private:
 	 */
 	void createGui();
 
-	thread_local static QMap<QString, std::unique_ptr<cvv::view::FilterView>> filterViewMap;
+	//thread_local static QMap<QString, std::unique_ptr<cvv::view::FilterView>> filterViewMap;
 	util::Reference<const cvv::impl::FilterCall> filterCall;
 	util::Reference<const cvv::controller::ViewController> viewController;
 	QString filterViewId;
 	std::unique_ptr<cvv::view::FilterView> filterView;
 
 	QPushButton* helpButton;
-	QComboBox* filterViewSelection;
+	QComboBox* filterViewSelection;	// Will eventually be replaced with the register helper's combo box (below)
+
+	static cvv::qtutil::RegisterHelper<std::unique_ptr<cvv::view::FilterView>>* filterViewMap;
 };
 
 }}//namespaces

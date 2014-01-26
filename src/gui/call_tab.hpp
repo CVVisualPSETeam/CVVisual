@@ -28,7 +28,7 @@ public:
 	 * @brief set name
 	 * @param name
 	 */
-	void setName(QString newName) { name = newName; }
+	void setName(const QString& newName) { name = newName; }
 
 	/**
 	 * @brief get ID
