@@ -113,5 +113,8 @@ if(CVV_BUILD_TESTS)
 
 	add_executable(test_manual_fsw manual_test/fsw/main.cpp )
 	target_link_libraries(test_manual_fsw cvvisual Qt5Core Qt5Widgets Qt5Gui)
+
+	add_executable(test_manual_filtercalltab manual_test/filter_call_tab/main.cpp)
+	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
 	
 endif()

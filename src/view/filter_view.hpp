@@ -23,14 +23,14 @@ signals:
 	 * Signal to update the left side of the footer with newText.
 	 * @param newText
 	 */
-	virtual void updateLeftFooter(QString newText) = 0;
+	virtual void updateLeftFooter(const QString &newText) = 0;
 
 	/**
 	 * @brief update right foooter
 	 * Signal to update the right side of the footer with newText.
 	 * @param newText
 	 */
-	virtual void updateRightFoooter(QString newText) = 0;
+	virtual void updateRightFoooter(const QString& newText) = 0;
 
 public:
 	/**

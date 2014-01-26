@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QImage>
+#include <QString>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
@@ -24,7 +25,7 @@ public:
 	 * @param parent The parent of this QWidget
 	 */
 	DefaultFilterView(std::vector<cv::Mat> images,QWidget *parent);
-	
+
 private: 
 	/*
 	 *@brief the images of this view
