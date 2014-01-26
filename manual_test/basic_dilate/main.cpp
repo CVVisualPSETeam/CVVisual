@@ -12,8 +12,9 @@ void actualWork(char* filename) {
 	auto elem = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9), cv::Point(4, 4));
 	cv::Mat dest;
 	cv::dilate(src, dest, elem);
-	
-	cvv::debugDilate(src, dest, CVVISUAL_LOCATION);
+	for(auto i = 0; i < 3; ++i) {
+		cvv::debugDilate(src, dest, CVVISUAL_LOCATION);
+	}
 	std::cout << "debugDilate returned, local destructors will run now" << std::endl;
 }
 
