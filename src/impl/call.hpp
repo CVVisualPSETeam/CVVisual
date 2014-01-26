@@ -32,6 +32,8 @@ public:
 	 * @brief provides a description of the call.
 	 */
 	const QString& description() const {return description_;}
+	
+	const CallMetaData& metaData() const {return metaData_;}
 protected:
 	Call();
 	Call(impl::CallMetaData callData, QString type);
@@ -42,7 +44,7 @@ protected:
 	Call& operator=(const Call&) = default;
 	Call& operator=(Call&&) = default;
 	
-	impl::CallMetaData callData;
+	impl::CallMetaData metaData_;
 	size_t id;
 	QString calltype;
 	// TODO:

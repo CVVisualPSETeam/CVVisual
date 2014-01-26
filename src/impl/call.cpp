@@ -9,9 +9,9 @@ size_t newCallId()
 	return nextId++;
 }
 
-Call::Call() : callData{}, id{newCallId()}, calltype{} {}
+Call::Call() : metaData_{}, id{newCallId()}, calltype{} {}
 
 Call::Call(impl::CallMetaData callData, QString type):
-		callData{std::move(callData)}, id{newCallId()}, calltype{type} {}
+		metaData_{std::move(callData)}, id{newCallId()}, calltype{type} {}
 
 }} // namespaces cvv::impl
