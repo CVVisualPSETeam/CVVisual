@@ -63,7 +63,7 @@ public:
 		while (it2 != filterCSPoolFuncs.end())
 		{
 			filterCSPool[it2.key()].unite(it2.value()(element));
-			++it;
+			++it2;
 		}
 	}
 
