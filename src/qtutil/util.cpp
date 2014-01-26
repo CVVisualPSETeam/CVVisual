@@ -2,6 +2,8 @@
 
 #include <opencv/highgui.h>
 
+namespace cvv { namespace qtutil {
+
 QImage convertOpenCVMatToQImage(const cv::Mat &mat)
 {
     CvMat* image2Draw_mat;
@@ -13,3 +15,5 @@ QImage convertOpenCVMatToQImage(const cv::Mat &mat)
 QPixmap convertOpenCVMatToQPixmap(const cv::Mat &mat){
     return QPixmap::fromImage(convertOpenCVMatToQImage(mat));
 }
+
+}}
