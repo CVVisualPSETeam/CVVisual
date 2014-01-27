@@ -120,4 +120,7 @@ if(CVV_BUILD_TESTS)
 	#add_executable(test_manual_cvutil manual_test/cvutil/main.cpp)
 	#target_link_libraries(test_manual_cvutil cvvisual Qt5Core Qt5Widgets opencv_core opencv_imgproc)
 	
+	add_executable(test_manual_defaultfilterview manual_test/defaultfilterviewtest/main.cpp)
+	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core Qt5Widgets)
+	
 endif()
