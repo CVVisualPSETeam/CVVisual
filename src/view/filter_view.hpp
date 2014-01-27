@@ -47,8 +47,8 @@ public:
 	 * @param filteredImg
 	 * @return an instance of FilterView
 	 */
-	virtual std::unique_ptr<FilterView> createFilterView(const cv::Mat& originalImg,
-			const cv::Mat& filteredImg) = 0;
+	/*virtual std::unique_ptr<FilterView> createFilterView(const cv::Mat& originalImg,
+			const cv::Mat& filteredImg) = 0;*/
 protected:
 	/**
 	 * @brief constructor of QWidget(parent)

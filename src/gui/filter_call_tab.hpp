@@ -90,7 +90,8 @@ private:
 	util::Reference<const cvv::impl::FilterCall> filterCall;
 	util::Reference<const cvv::controller::ViewController> viewController;
 	QString filterViewId;
-	std::unique_ptr<cvv::view::FilterView> filterView;
+	//std::unique_ptr<cvv::view::FilterView> filterView;
+	cvv::view::FilterView* filterView;
 
 	QPushButton* helpButton;
 	QComboBox* filterViewSelection;	// Will eventually be replaced with the register helper's combo box (below)
