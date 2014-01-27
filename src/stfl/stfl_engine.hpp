@@ -79,10 +79,9 @@ public:
 	 * @param number maximum number of suggestions
 	 * @return suggestions for the given query
 	 */
-	QStringList getSuggestions(QString _query, size_t number = 3)
+    QStringList getSuggestions(QString _query, size_t number = 5)
 	{
 		QString query(_query);
-		std::cerr << "Query: " << query.toStdString() << "\n";
 		bool addedRaw = false;
 		if (!query.startsWith("#")){
 			query = "#raw " + query;
@@ -101,7 +100,6 @@ public:
 			lastCmdString = cmdStrings[cmdStrings.size() - 1];
 		}
 		QStringList suggs = getSuggestionsForCmdQuery(lastCmdString, number);
-		std::cerr << "Suggestions: \n" << suggs.join("\n").toStdString() << "\n";
 		for (auto &sugg : suggs)
 			sugg = sugg.trimmed();
 		for (auto &str : _cmdStrings)
@@ -122,9 +120,6 @@ public:
 				replaceIfStartsWith(suggs[i], "raw ", "");
 			}
 		}
-		std::cerr << "Raw pool:\n";
-	   	for (auto elem : filterPool["raw"].toList())
-			std::cerr << elem.toStdString() << "\n";;
 		return suggs;
 	}
 
@@ -233,9 +228,9 @@ public:
 		{
 			return func(elem1) < func(elem2);
 		};
-		groupFuncs[key] = [func](const Element& elem)
+        groupFuncs[key] = [func](const Element& elem)
 		{
-			return func(elem);
+            return func(elem);
 		};
 		initSupportedCommandsList();
 	}
@@ -277,7 +272,7 @@ public:
 		};
 		groupFuncs[key] = [func, key](const Element& elem)
 		{
-			return QString(key + " ") + QString::number(func(elem));
+            return QString(key + " %1").arg(func(elem));
 		};
 		initSupportedCommandsList();
 	}
@@ -511,12 +506,10 @@ private:
 		}
 		else
 		{
-			std::cerr << "'" << cmd.toStdString() << "' is no real cmd\n";
 			suggs = getSuggestionsForCmd(cmd);
 		}
 		if (isFilterCmd(cmd) || isFilterCSCmd(cmd) || isSortCmd(cmd) || isGroupCmd(cmd))
 		{
-			std::cerr << "'" << cmd.toStdString() << "' is real cmd\n"; 
 			for (auto &sugg : suggs)
 			{
 				sugg = cmd + " " + sugg;
@@ -582,8 +575,6 @@ private:
 	QStringList getSuggestionsForFilterCmd(const QString &cmd, const QString &argument)
 	{
 		QStringList pool(filterPool[cmd].toList());
-		std::cerr << "Suggestions for '" << cmd.toStdString() << "': '" << argument.toStdString();
-		std::cerr << pool.join("\n").toStdString();
 		return sortStringsByStringEquality(pool, argument);
 	}
 
@@ -600,8 +591,6 @@ private:
 		}
 		QStringList pool(filterCSPool[cmd].toList());
 		QStringList list = sortStringsByStringEquality(pool, last);
-		std::cerr << "getSuggestionsForFilterCSCmd\n";
-		std::cerr << list.join("|").toStdString() << "\n";
 		for (QString &item : list)
 		{
 			joinCommand(item, cmd, args, true);
@@ -611,7 +600,6 @@ private:
 
 	QStringList getSuggestionsForCmd(const QString &cmd)
 	{
-		std::cerr << supportedCmds.join("|").toStdString() << "\n";
 		return sortStringsByStringEquality(supportedCmds, cmd);
 	}
 
@@ -626,11 +614,11 @@ private:
 		list.append(filterCSFuncs.keys());
 		for (const auto &key : groupFuncs.keys())
 		{
-			list.append(key + " by");
+            list.append("group by " + key);
 		}
 		for (const auto &key : sortFuncs.keys())
 		{
-			list.append(key + " by");
+            list.append("sort by " + key);
 		}
 		supportedCmds = list;
 	}
@@ -641,12 +629,12 @@ private:
 	 * @param compareWith compare them with this string
 	 * @return the sorted list
 	 */
-	QStringList sortStringsByStringEquality(const QStringList &strings, const QString &compareWith)
+    QStringList sortStringsByStringEquality(const QStringList &strings, QString compareWith)
 	{
 		QMap<int, QString> weightedStrings;
 		for (const QString &str : strings)
 		{
-			int strEqu = editDistance(compareWith, str);
+            int strEqu = editDistance(compareWith, str);
 			weightedStrings[strEqu] = str;
 		}
 		return QStringList(weightedStrings.values());

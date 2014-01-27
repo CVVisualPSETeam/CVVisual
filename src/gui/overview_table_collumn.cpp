@@ -39,7 +39,7 @@ void OverviewTableCollumn::addToTable(QTableWidget *table, size_t row, bool show
         for (size_t i = 0; i < imgs.size() && i < maxImages; i++)
         {
             QTableWidgetItem *imgWidget = new QTableWidgetItem{};
-            imgWidget->setData(Qt::DecorationRole, imgs.at(i));
+            imgWidget->setData(Qt::DecorationRole, imgs.at(i).scaled(100, 100));
             imgWidget->setSizeHint(QSize(100, 100));
             imgWidget->setTextAlignment(Qt::AlignHCenter);
             items.push_back(imgWidget);

@@ -17,7 +17,6 @@ STFLQueryWidget::STFLQueryWidget()
 
 void STFLQueryWidget::showSuggestions(const QStringList &suggestions)
 {
-	std::cerr << __FUNCTION__ << ": " << suggestions.join("|").toStdString() << "\n";
     lineEdit->showSuggestions(suggestions);
 }
 
