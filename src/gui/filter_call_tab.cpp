@@ -96,17 +96,17 @@ void FilterCallTab::createGui()
 	upperBar->setLayout(hlayout);
 
 	QVBoxLayout* vlayout = new QVBoxLayout;
-	QLabel* viewDummy = new QLabel{"There will be a view here."};
+	//QLabel* viewDummy = new QLabel{"There will be a view here."};
 
 /* For testing: */
 	std::vector<cv::Mat> images;
 	images. push_back(filterCall->original());
 	images.push_back(filterCall->result());
-	//filterView = new cvv::view::DefaultFilterView{images, this};
+	filterView = new cvv::view::DefaultFilterView{images, this};
 
 	vlayout->addWidget(upperBar);
-	vlayout->addWidget(viewDummy);
-	//vlayout->addWidget(filterView);
+	//vlayout->addWidget(viewDummy);
+	vlayout->addWidget(filterView);
 
 	setLayout(vlayout);
 }
