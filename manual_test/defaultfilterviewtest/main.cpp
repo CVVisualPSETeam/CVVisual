@@ -13,12 +13,21 @@ int main(int argc, char *argv[])
 	
 	cv::Mat whitemat = cv::Mat{100,100,CV_8U};
 	cv::Mat blackmat = cv::Mat{100,100,CV_8U};
+	cv::Mat colormat1 =cv::Mat{100,100,CV_8U};
+	cv::Mat colormat2 =cv::Mat{100,100,CV_8U};
+	cv::Mat colormat3 =cv::Mat{100,100,CV_8U};
 
 	whitemat = cv::Scalar(255,255,255);
-	blackmat=cv::Scalar(0,0,0);
+	blackmat = cv::Scalar(0,0,0);
+	colormat1 =cv::Scalar(255,0,0);
+	colormat2 = cv::Scalar(0,255,0);
+	colormat3 = cv::Scalar(0,0,255);
 
 	imagelist.push_back(whitemat);
 	imagelist.push_back(blackmat);
+	imagelist.push_back(colormat1);
+	imagelist.push_back(colormat2);
+	imagelist.push_back(colormat3);
 	
 	cvv::view::DefaultFilterView dfv{imagelist,nullptr};
 
