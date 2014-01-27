@@ -16,6 +16,7 @@
 
 #include "stringutils.hpp"
 #include "element_group.hpp"
+#include "../qtutil/util.hpp"
 
 namespace cvv {
 namespace stfl {
@@ -28,7 +29,11 @@ class STFLEngine
 {
 public:
 
-    STFLEngine(){}
+    /**
+	 * @brief Constructs a new Engine.
+	 * @note use the appropriate setters to add filters, etc.
+	 */
+   	STFLEngine(){}
 
 	/**
 	 * @brief Constructs (and initializes) a new engine.
@@ -77,9 +82,12 @@ public:
 	QStringList getSuggestions(QString _query, size_t number = 3)
 	{
 		QString query(_query);
-
-		if (!query.startsWith("#"))
+		std::cerr << "Query: " << query.toStdString() << "\n";
+		bool addedRaw = false;
+		if (!query.startsWith("#")){
 			query = "#raw " + query;
+			addedRaw = true;
+		}
 
 		QStringList cmdStrings = query.split("#");
 		QStringList _cmdStrings = _query.split("#");
@@ -93,6 +101,11 @@ public:
 			lastCmdString = cmdStrings[cmdStrings.size() - 1];
 		}
 		QStringList suggs = getSuggestionsForCmdQuery(lastCmdString, number);
+		std::cerr << "Suggestions: \n" << suggs.join("\n").toStdString() << "\n";
+		for (auto &sugg : suggs)
+			sugg = sugg.trimmed();
+		for (auto &str : _cmdStrings)
+			str = str.trimmed();
 		for (int i = 0; i < suggs.size(); i++)
 		{
 			if (_cmdStrings.empty())
@@ -102,9 +115,16 @@ public:
 			else
 			{
 				_cmdStrings[_cmdStrings.size() - 1] = suggs[i];
-				suggs[i] = _cmdStrings.join(" #");
+				suggs[i] = _cmdStrings.join(" #").trimmed();
+			}
+			if (addedRaw)
+			{
+				replaceIfStartsWith(suggs[i], "raw ", "");
 			}
 		}
+		std::cerr << "Raw pool:\n";
+	   	for (auto elem : filterPool["raw"].toList())
+			std::cerr << elem.toStdString() << "\n";;
 		return suggs;
 	}
 
@@ -159,26 +179,71 @@ public:
 	}
 
     void setFilterFunc(QString key, std::function<bool(const QString&, const Element&)> func){
-                                  filterFuncs[key] = func;
+		filterFuncs[key] = func;
+		initSupportedCommandsList();						  
     }
 
     void setFilterPoolFunc(QString key, std::function<QString(const Element&)> func){
-                                        filterPoolFuncs[key] = func;
-    }
+		filterPoolFuncs[key] = func;
+    	initSupportedCommandsList();
+	}
 
     void setFilterCSFunc(QString key, std::function<bool(const QStringList&, const Element&) >  func){
-                                        filterCSFuncs[key] = func;
+		filterCSFuncs[key] = func;
+		initSupportedCommandsList();
     }
 
     void setFilterCSPoolFunc(QString key, std::function<QSet<QString>(const Element&) > func){
-                                        filterCSPoolFuncs[key] = func;
+		filterCSPoolFuncs[key] = func;
+		initSupportedCommandsList();
     }
+
+	/**
+	 * @brief Derives a basic filter, group and sort function from the given function.
+	 * Slightly slower than just creating the methods on your on and adding them
+	 * with the appropriate setters.
+	 * Please call this method only during the initialization of the STFLEngine object 
+	 * with in your code.
+	 */
+	void addStringCmdFunc(QString key, std::function<QString(const Element&)> func, bool withFilterCS = true)
+	{
+		if (withFilterCS)
+		{
+			filterCSFuncs[key] = [func](const QStringList& args, const Element &elem)
+			{
+					return args.contains(func(elem));
+			};
+			filterCSPoolFuncs[key] = [func](const Element &elem)			
+			{
+				return qtutil::createStringSet(func(elem));
+			};
+		}
+		else
+		{
+			filterFuncs[key] = [func](const QString& query, const Element& elem)
+			{
+				return query == func(elem);
+			};
+			filterPoolFuncs[key] = [func](const Element& elem)
+			{
+				return func(elem);
+			};
+		}
+		sortFuncs[key] = [func](const Element &elem1, const Element& elem2)
+		{
+			return func(elem1) < func(elem2);
+		};
+		groupFuncs[key] = [func](const Element& elem)
+		{
+			return func(elem);
+		};
+		initSupportedCommandsList();
+	}
 
 private:
 	QList<Element> elements;
 	QString lastQuery = "";
 	QStringList supportedCmds;
-
     QMap<QString, std::function<bool(const QString&, const Element&) > > filterFuncs;
     QMap<QString, std::function<QString(const Element&)> > filterPoolFuncs;
 	QHash<QString, QSet<QString> > filterPool;
@@ -189,7 +254,6 @@ private:
 
     QMap<QString, std::function<int(const Element&, const Element&) >> sortFuncs;
     QMap<QString, std::function<QString(const Element&) >> groupFuncs;
-
 	QList<Element> executeFilters(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
         std::vector< std::pair< std::function<bool(const QString&, const Element&)>, QString > > filters;
@@ -359,14 +423,23 @@ private:
 			return suggs;
 		}
 		bool hasByString = tokens.size() >= 2 && tokens[1] == "by";
+		/*bool cmdFollowedBySpace = false;
+		if (hasByString && tokens.size() >= 3)
+			cmdFollowedBySpace = tokens[2] == "";
+		else if (tokens.size() >= 2)
+			cmdFollowedBySpace = tokens[1];*/
 
 		QString cmd = tokens[0];
-        if (isSortCmd(cmd) || isGroupCmd(cmd))
+        if (cmd == "group" || cmd == "sort")
 		{
 			int frontCut = std::min(1 + (hasByString ? 1 : 0), tokens.size());
 			tokens = tokens.mid(frontCut, tokens.size());
 			QStringList args = tokens.join(" ").replace("\\s+", "\\s").split(",", QString::SkipEmptyParts);
 			args.removeDuplicates();
+			if (args.empty())
+			{
+				args.push_back(" ");
+			}
 			if (isSortCmd(cmd))
 			{
 				suggs = getSuggestionsForSortCmd(args);
@@ -379,7 +452,11 @@ private:
 		else if (isFilterCmd(cmd) || isFilterCSCmd(cmd))
 		{
 			tokens = tokens.mid(1, tokens.size());
-			QString rejoined = tokens.join(" ").replace("\\s+", "\\s");
+			QString rejoined = tokens.join(" ");
+			if (tokens.empty())
+			{
+				rejoined = " ";
+			}
 			if (isFilterCmd(cmd))
 			{
 				suggs = getSuggestionsForFilterCmd(cmd, rejoined);
@@ -392,16 +469,20 @@ private:
 		}
 		else
 		{
+			std::cerr << "'" << cmd.toStdString() << "' is no real cmd\n";
 			suggs = getSuggestionsForCmd(cmd);
+		}
+		if (isFilterCmd(cmd) || isFilterCSCmd(cmd) || isSortCmd(cmd) || isGroupCmd(cmd))
+		{
+			std::cerr << "'" << cmd.toStdString() << "' is real cmd\n"; 
+			for (auto &sugg : suggs)
+			{
+				sugg = cmd + " " + sugg;
+			}
 		}
 		return suggs.mid(0, number);
 	}
 
-	/**
-	 * @todo HÄ?!
-     * @param args
-     * @return 
-     */
 	QStringList getSuggestionsForSortCmd(QStringList args)
 	{
 		QString last;
@@ -459,6 +540,8 @@ private:
 	QStringList getSuggestionsForFilterCmd(const QString &cmd, const QString &argument)
 	{
 		QStringList pool(filterPool[cmd].toList());
+		std::cerr << "Suggestions for '" << cmd.toStdString() << "': '" << argument.toStdString();
+		std::cerr << pool.join("\n").toStdString();
 		return sortStringsByStringEquality(pool, argument);
 	}
 
@@ -475,22 +558,24 @@ private:
 		}
 		QStringList pool(filterCSPool[cmd].toList());
 		QStringList list = sortStringsByStringEquality(pool, last);
+		std::cerr << "getSuggestionsForFilterCSCmd\n";
+		std::cerr << list.join("|").toStdString() << "\n";
 		for (QString &item : list)
 		{
-			joinCommand(item, cmd, args);
+			joinCommand(item, cmd, args, true);
 		}
 		return list;
 	}
 
 	QStringList getSuggestionsForCmd(const QString &cmd)
 	{
+		std::cerr << supportedCmds.join("|").toStdString() << "\n";
 		return sortStringsByStringEquality(supportedCmds, cmd);
 	}
 
 	/**
-	 * @brief Returns a list of supported commands.
+	 * @brief Init the inherited list of supported commands.
 	 * E.g. "#sort by", "#group by", "#[filter name]"
-	 * @return a string list of commands
 	 */
 	void initSupportedCommandsList()
 	{
@@ -519,7 +604,7 @@ private:
 		QMap<int, QString> weightedStrings;
 		for (const QString &str : strings)
 		{
-			int strEqu = stringEquality(compareWith, str);
+			int strEqu = editDistance(compareWith, str);
 			weightedStrings[strEqu] = str;
 		}
 		return QStringList(weightedStrings.values());
@@ -545,16 +630,22 @@ private:
 		return filterCSFuncs.count(cmd) > 0;
 	}
 
-	void joinCommand(QString &item, const QString &cmd, QStringList &args)
+	void joinCommand(QString &item, const QString &cmd, QStringList args, bool omitCmd = false)
 	{
-		if (args.empty())
+		if (args.size() == 0)
+		{
+			item = "";
+		}
+		else 
+		{
+			for (auto &arg : args)
+				arg = arg.trimmed();
+			args[args.size() - 1] = item;
+			item = args.join(", ");
+		}
+		if (!omitCmd)
 		{
 			item = cmd + item;
-		}
-		else
-		{
-			args[args.size() - 1] = item;
-			item = cmd + args.join(", ");
 		}
 	}
 };

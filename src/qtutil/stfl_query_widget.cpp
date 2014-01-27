@@ -1,5 +1,7 @@
 #include "stfl_query_widget.hpp"
 
+#include <iostream>
+
 namespace cvv { namespace qtutil {
 
 STFLQueryWidget::STFLQueryWidget()
@@ -15,15 +17,17 @@ STFLQueryWidget::STFLQueryWidget()
 
 void STFLQueryWidget::showSuggestions(const QStringList &suggestions)
 {
+	std::cerr << __FUNCTION__ << ": " << suggestions.join("|").toStdString() << "\n";
     lineEdit->showSuggestions(suggestions);
 }
 
 void STFLQueryWidget::returnPressed(){
-    filterSignal(lineEdit->text());
+	filterSignal(lineEdit->text());
 }
 
 void STFLQueryWidget::textChanged(){
     userInputUpdate(lineEdit->text());
+    requestSuggestions(lineEdit->text());
 }
 
 }}

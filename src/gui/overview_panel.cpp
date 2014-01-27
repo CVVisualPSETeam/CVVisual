@@ -22,39 +22,30 @@ OverviewPanel::OverviewPanel(controller::ViewController *controller):
     layout->addWidget(table);
     setLayout(layout);
     initEngine();
+	connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
+    connect(queryWidget, SIGNAL(filterSignal(QString)), this, SLOT(filterQuery(QString)));
+    connect(queryWidget, SIGNAL(requestSuggestions(QString)), this, SLOT(requestSuggestions(QString)));
 }
 
 void OverviewPanel::initEngine(){
     //raw and description filter
-    auto rawFilter = [](const QString& query, const OverviewTableCollumn& elem)
-    {
-        return elem.description() == query;
-    };
-    auto rawFilterPool = [](const OverviewTableCollumn& elem)
+    auto rawFilter = [](const OverviewTableCollumn& elem)
     {
         return elem.description();
     };
-    queryEngine.setFilterFunc("raw", rawFilter);
-    queryEngine.setFilterPoolFunc("raw", rawFilterPool);
-    queryEngine.setFilterFunc("description", rawFilter);
-    queryEngine.setFilterPoolFunc("description", rawFilterPool);
+    queryEngine.addStringCmdFunc("raw", rawFilter, false);
+    queryEngine.addStringCmdFunc("description", rawFilter, false);
 
     //file filter
-    queryEngine.setFilterCSFunc("file", [](const QStringList& args, const OverviewTableCollumn &elem)
+    queryEngine.addStringCmdFunc("file", [](const OverviewTableCollumn &elem)
     {
-        return args.contains(elem.file());
-    });
-    queryEngine.setFilterCSPoolFunc("file", [](const OverviewTableCollumn &elem){
-        return qtutil::createStringSet(elem.file());
+        return elem.file();
     });
 
     //function filter
-    queryEngine.setFilterCSFunc("function", [](const QStringList& args, const OverviewTableCollumn &elem)
+    queryEngine.addStringCmdFunc("function", [](const OverviewTableCollumn &elem)
     {
-        return args.contains(elem.function());
-    });
-    queryEngine.setFilterCSPoolFunc("function", [](const OverviewTableCollumn &elem){
-        return qtutil::createStringSet(elem.function());
+        return elem.function();
     });
 
     //line filter
@@ -97,7 +88,7 @@ void OverviewPanel::initEngine(){
 void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
 {
 	OverviewTableCollumn col(newCall);
-	queryEngine.addNewElement(col);
+    queryEngine.addNewElement(col);
     table->updateCollumnGroups(queryEngine.reexecuteLastQuery());
 }
 
