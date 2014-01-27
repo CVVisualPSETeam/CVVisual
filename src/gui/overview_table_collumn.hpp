@@ -27,18 +27,20 @@ public:
 
     QString description() const { return description_; }
 
-    QString id() const { return idStr; }
+    size_t id() const { return id_; }
 
     QString function() const { return functionStr; }
 
     QString file() const { return fileStr; }
 
-    QString line() const { return lineStr; }
+    size_t line() const { return line_; }
 
     QString type() const { return typeStr; }
 
 private:
     util::Reference<const impl::Call> call_;
+    size_t id_ = 0;
+    size_t line_ = 0;
     QString idStr = "";
     QString description_ = "";
     std::vector<QPixmap> imgs{};

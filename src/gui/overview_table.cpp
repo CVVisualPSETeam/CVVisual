@@ -17,6 +17,7 @@ OverviewTable::OverviewTable(util::Reference<controller::ViewController> control
 {
     subtableAccordion = new qtutil::Accordion{};
     auto *layout = new QVBoxLayout{};
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(subtableAccordion);
     setLayout(layout);
 }

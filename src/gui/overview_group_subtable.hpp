@@ -31,6 +31,9 @@ public:
 
     void updateUI();
 
+private slots:
+    void rowClicked(int row, int collumn);
+
 private:
     util::Reference<controller::ViewController> controller;
     OverviewTable *parent;

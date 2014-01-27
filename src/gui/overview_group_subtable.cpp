@@ -20,7 +20,11 @@ OverviewGroupSubtable::OverviewGroupSubtable(util::Reference<controller::ViewCon
 void OverviewGroupSubtable::initUI()
 {
 	qTable = new QTableWidget(this);
+    qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    qTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
     auto *layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(qTable);
     setLayout(layout);
     updateUI();
@@ -55,5 +59,13 @@ void OverviewGroupSubtable::updateUI(){
     qTable->setVisible(false);
     qTable->resizeColumnsToContents();
     qTable->setVisible(true);
+}
+
+void OverviewGroupSubtable::rowClicked(int row, int collumn)
+{
+    (void)collumn;
+    size_t tabId = group.get(row).id();
+    controller->moveCallTabToWindow(tabId, 0);
+    controller->showCallTab(tabId);
 }
 }}

@@ -10,6 +10,7 @@ namespace cvv { namespace gui {
 
 OverviewTableCollumn::OverviewTableCollumn(util::Reference<const impl::Call> call): call_{call}
 {
+    id_ = call_->getId();
     idStr = QString::number(call_->getId());
     for (size_t i = 0; i < 2 && i < call->matrixCount(); i++)
     {
@@ -20,6 +21,7 @@ OverviewTableCollumn::OverviewTableCollumn(util::Reference<const impl::Call> cal
     if (call_->metaData().isKnown)
     {
         auto data = call_->metaData();
+        line_ = data.line;
         lineStr = QString::number(data.line);
         fileStr = QString::fromStdString(data.file);
         functionStr = QString::fromStdString(data.function);

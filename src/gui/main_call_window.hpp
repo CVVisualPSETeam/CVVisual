@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_MAINCALLWINDOW_HPP
 #define	CVVISUAL_MAINCALLWINDOW_HPP
 
+#include <QCloseEvent>
+
 #include "call_window.hpp"
 #include "overview_panel.hpp"
 #include "../controller/view_controller.hpp"
@@ -38,6 +40,9 @@ public:
 	 * @brief Show the overview tab.
 	 */
 	void showOverviewTab();
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private:
 	OverviewPanel *ovPanel;

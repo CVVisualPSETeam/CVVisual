@@ -7,11 +7,18 @@ MainCallWindow::MainCallWindow(util::Reference<controller::ViewController> contr
 								: CallWindow(controller, id), ovPanel{ovPanel}
 {
 	tabWidget->insertTab(0, ovPanel, "Overview");
+    setWindowTitle(QString("CVVisual main window (no. %1)").arg(id));
 }
 	
 void MainCallWindow::showOverviewTab()
 {
 	tabWidget->setCurrentWidget(ovPanel);
+}
+
+void MainCallWindow::closeEvent(QCloseEvent *event)
+{
+    controller->resumeProgramExecution();
+    event->ignore();
 }
 
 }}

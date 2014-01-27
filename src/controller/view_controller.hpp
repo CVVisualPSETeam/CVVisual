@@ -44,8 +44,8 @@ public:
 	 * @param constr function constructing an instance of this  call tab type
 	 * @return an instance of the new call tab type 
 	 */
-	static void addCallType(const QString& typeName,
-		std::function<gui::CallTab(QString, const impl::Call&)> constr);
+    static void addCallType(const QString typeName,
+        std::function<gui::CallTab*(util::Reference<impl::Call>)> constr);
 	
 	/**
 	 * @brief Adds a new call and shows it in the overview table.
@@ -143,7 +143,9 @@ public:
 	
 private:
 	
-	static std::map<QString, std::function<gui::CallTab(QString, const impl::Call&)>> callTabType;
+    gui::CallTab* getCallTab(size_t tabId);
+
+    static std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>)>> callTabType;
 	QApplication application;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
     std::map<size_t, gui::CallWindow*> windowMap;

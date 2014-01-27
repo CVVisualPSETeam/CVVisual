@@ -18,6 +18,7 @@ OverviewPanel::OverviewPanel(controller::ViewController *controller):
     queryWidget = new qtutil::STFLQueryWidget();
     table = new OverviewTable(util::makeRef(*controller), this);
     QVBoxLayout *layout = new QVBoxLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(queryWidget);
     layout->addWidget(table);
     setLayout(layout);
@@ -49,39 +50,27 @@ void OverviewPanel::initEngine(){
     });
 
     //line filter
-    queryEngine.setFilterCSFunc("line", [](const QStringList& args, const OverviewTableCollumn &elem)
+    queryEngine.addIntegerCmdFunc("line", [](const OverviewTableCollumn &elem)
     {
-        return args.contains(elem.line());
-    });
-    queryEngine.setFilterCSPoolFunc("line", [](const OverviewTableCollumn &elem){
-        return qtutil::createStringSet(elem.line());
+        return elem.line();
     });
 
     //id filter
-    queryEngine.setFilterCSFunc("id", [](const QStringList& args, const OverviewTableCollumn &elem)
+    queryEngine.addIntegerCmdFunc("id", [](const OverviewTableCollumn &elem)
     {
-        return args.contains(elem.id());
-    });
-    queryEngine.setFilterCSPoolFunc("file", [](const OverviewTableCollumn &elem){
-        return qtutil::createStringSet(elem.id());
+        return elem.id();
     });
 
     //type filter
-    queryEngine.setFilterCSFunc("type", [](const QStringList& args, const OverviewTableCollumn &elem)
+    queryEngine.addStringCmdFunc("type", [](const OverviewTableCollumn &elem)
     {
-        return args.contains(elem.type());
-    });
-    queryEngine.setFilterCSPoolFunc("type", [](const OverviewTableCollumn &elem){
-        return qtutil::createStringSet(elem.type());
+        return elem.type();
     });
 
     //"number of images" filter
-    queryEngine.setFilterCSFunc("img_count", [](const QStringList& args, const OverviewTableCollumn &elem)
+    queryEngine.addIntegerCmdFunc("image_count", [](const OverviewTableCollumn &elem)
     {
-        return args.contains(QString::number(elem.call()->matrixCount()));
-    });
-    queryEngine.setFilterCSPoolFunc("img_count", [](const OverviewTableCollumn &elem){
-        return qtutil::createStringSet(QString::number(elem.call()->matrixCount()));
+        return elem.call()->matrixCount();
     });
 }
 

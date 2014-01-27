@@ -30,23 +30,24 @@ ViewController::ViewController(): application{zero, emptyArray}, windowMap{},
 
 ViewController::~ViewController()
 {
-	delete mainWindow;
+    //delete mainWindow;
 	/*delete &windowMap;
 	delete &callTabMap;*/
 }
 
-void ViewController::addCallType(const QString& typeName,
-		std::function<gui::CallTab(QString, const impl::Call&)> constr)
+void ViewController::addCallType(const QString typeName,
+        std::function<gui::CallTab*(util::Reference<impl::Call>)> constr)
 {
 	ViewController::callTabType[typeName] = constr;
 }
 
-std::map<QString, std::function<gui::CallTab(QString, const impl::Call&) >> ViewController::callTabType;
+std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>) >> ViewController::callTabType;
 
 void ViewController::addCall(util::Reference<impl::Call> data)
 {
 	mainWindow->showOverviewTab();
 	ovPanel->addElement(*data);
+    calls.push_back(data);
 }
 
 void ViewController::exec()
@@ -78,7 +79,7 @@ const std::map<size_t, gui::CallWindow*> ViewController::getTabWindows()
 void ViewController::moveCallTabToNewWindow(size_t tabId)
 {
     gui::CallWindow *newWindow = new gui::CallWindow(util::makeRef<ViewController>(*this), ++max_window_id);
-	newWindow->addTab(callTabMap[tabId]);
+    newWindow->addTab(getCallTab(tabId));
 	newWindow->show();
 	windowMap[max_window_id] = newWindow;
 	getCurrentWindowOfTab(tabId)->removeTab(tabId);
@@ -87,7 +88,8 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
 void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 {
 	getCurrentWindowOfTab(tabId)->removeTab(tabId);
-	windowMap[windowId]->addTab(callTabMap[tabId]);
+    auto *tab = getCallTab(tabId);
+    windowMap[windowId]->addTab(tab);
 }
 
 void ViewController::openHelpBrowser(const QString &topic) const
@@ -141,6 +143,21 @@ gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
 		}
 	}
 	return mainWindow;
+}
+
+gui::CallTab* ViewController::getCallTab(size_t tabId)
+{
+    if (callTabMap.count(tabId) == 0)
+    {
+        auto call = calls.at(tabId);
+        if (callTabType.count(call->type()) == 0)
+        {
+            throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
+            exit(1);
+        }
+        callTabMap[tabId] = callTabType[call->type()](call);
+    }
+    return callTabMap[tabId];
 }
 
 }}
