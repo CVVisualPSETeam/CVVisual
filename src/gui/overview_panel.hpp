@@ -18,7 +18,7 @@ namespace controller {
 }
 
 namespace qtutil {
-class STFLQueryWidget;
+	class STFLQueryWidget;
 }
 
 namespace gui {
