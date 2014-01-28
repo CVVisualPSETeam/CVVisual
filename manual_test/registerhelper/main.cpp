@@ -15,8 +15,9 @@ public:
 			RegisterHelper<QLabel>{parent},
 		lay{new QVBoxLayout{}}, lab{new QLabel{}},
 		s{[this](){this->updlabel();}},
-		reg{[this](QString s){this->regist(s);}}
+		reg{[](QString s){std::cout<<"regevent\t"<<s.toStdString()<<std::endl;}}
 	{
+		std::cout<<__LINE__<<"\tlabel register constr begin\n";
 		lay->addWidget(comboBox_);
 		lay->addWidget(lab);
 		setLayout(lay);
@@ -24,8 +25,11 @@ public:
 			 SIGNAL(currentTextChanged(const QString &)),
 			 &s, SLOT(slot())
 		);
+		std::cout<<__LINE__<<"\tlabel register constr connected text changed\n";
 		connect( &signElementRegistered_, SIGNAL(signal(QString)),
 			 &reg, SLOT(slot(QString)));
+		std::cout<<__LINE__<<"\tlabel register constr connected elem registered\n";
+		std::cout<<__LINE__<<"\tlabel register constr end\n";
 	}
 
 	QVBoxLayout* lay;
@@ -47,11 +51,6 @@ public:
 		std::cout<<"\t~current selection\t"<<selection().toStdString()<<"\n"
 				<<"\t~txt of func\t"<<lab->text().toStdString()<<"\n";
 	}
-
-	void regist(QString s){
-		std::cout<<"regevent\t"<<s.toStdString()<<std::endl;
-	}
-
 };
 
 
@@ -78,10 +77,29 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
-	QWidget w{};
 
+
+
+	std::cout<<__LINE__<<"\tregister label A\t"<<
+	LabelRegister::registerElement("A",[](QWidget*){return std::unique_ptr<QLabel>(new QLabel("A"));})
+	<<"\n";
+
+	std::cout<<__LINE__<<"\tregister label A again\t"<<
+	LabelRegister::registerElement("A",[](QWidget*){return std::unique_ptr<QLabel>(new QLabel("A"));})
+	<<"\n";
+
+	std::cout<<__LINE__<<"\tregister label B\t"<<
+	LabelRegister::registerElement("B",[](QWidget*){return std::unique_ptr<QLabel>(new QLabel("B"));})
+	<<"\n";
+
+
+
+	QWidget w{};
+	std::cout<<__LINE__<<"\twill create labelregister\n";
 	LabelRegister* r1 = new LabelRegister{};
 	LabelRegister* r2 = new LabelRegister{};
+	std::cout<<__LINE__<<"\tcreated labelregister\n";
+
 
 	QVBoxLayout* lay = new QVBoxLayout{};
 	QPushButton* b = new QPushButton{"add"};
@@ -94,6 +112,7 @@ int main(int argc, char *argv[])
 	 QObject::connect(b, SIGNAL(clicked()), &bPushed, SLOT(slot()));
 	w.setLayout(lay);
 	w.show();
+	std::cout<<"*****MAIN*****\tshowed. will now exec\n";
 	return a.exec();
 }
 
