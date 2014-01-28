@@ -16,23 +16,23 @@ public:
 	/**
 	 * @brief Creates an unknown location.
 	 */
-	CallMetaData(): file(), line(0), function(), isKnown(false) {}
+	CallMetaData(): file(nullptr), line(0), function(nullptr), isKnown(false) {}
 	
 	/**
 	 * @brief Creates the provided location.
 	 * 
 	 * Argument should be self-explaining.
 	 */
-	CallMetaData(const std::string file, size_t line, const std::string function) :
-		file(std::move(file)), line(line), function(std::move(function)), isKnown(true) {}
+	CallMetaData(const char* file, size_t line, const char* function) :
+		file(file), line(line), function(function), isKnown(true) {}
 	operator bool() {
 		return isKnown;
 	}
 	
 	//self-explaining:
-	const std::string file;
+	const char* file;
 	const size_t line;
-	const std::string function;
+	const char* function;
 	
 	/**
 	 * @brief Whether *this holds actual data.
