@@ -19,17 +19,26 @@
 namespace cvv {
 namespace gui {
 
-void FilterCallTab::currentIndexChanged(const QString& text) const
+FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
+	filterCall{fc}, viewController{vc}
 {
-	/*filterViewId = text;
-	filterView = filterViewMap[filterViewId].createFilterView(filterCall->original(), filterCall->result());*/
-	(void) text;
-}
+	setName(filterCall->description());
+	const QString scope{"default_views"};
+	const QString key{"default_filter_view"};
+	QString setting;
+	try
+	{
+		setting = vc.getSetting(scope, key);
+	} catch (std::invalid_argument)
+	{
+		setting = "DefaultFilterView";
+	}
 
-void FilterCallTab::helpButtonClicked() const
-{
-	viewController->openHelpBrowser(filterViewId);
-/* Only for testing: */	helpButton->setText("Connect successful");
+	//QString setting = "PLACEHOLDER"; (void) scope; (void) key;
+	filterViewId = setting;
+	// TODO set filterView
+
+	createGui();
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
@@ -62,6 +71,19 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	// TODO set filterView
 
 	createGui();
+}
+
+void FilterCallTab::currentIndexChanged(const QString& text) const
+{
+	/*filterViewId = text;
+	filterView = filterViewMap[filterViewId].createFilterView(filterCall->original(), filterCall->result());*/
+	(void) text;
+}
+
+void FilterCallTab::helpButtonClicked() const
+{
+	viewController->openHelpBrowser(filterViewId);
+/* Only for testing: */	helpButton->setText("Connect successful");
 }
 
 size_t FilterCallTab::getId() const

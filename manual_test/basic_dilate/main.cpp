@@ -5,12 +5,22 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "../../include/opencv2/dilate.hpp"
+#include "../../src/controller/view_controller.hpp"
+#include "../../src/gui/call_tab.hpp"
+#include "../../src/gui/filter_call_tab.hpp"
+#include "../../src/impl/call.hpp"
+#include "../../src/util/util.hpp"
 
 
 void actualWork(char* filename) {
 	auto src = cv::imread(filename);
 	auto elem = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9), cv::Point(4, 4));
 	cv::Mat dest;
+
+	auto newFct = [] (cvv::util::Reference<cvv::impl::Call> call, cvv::util::Reference<cvv::controller::ViewController> vc)
+		{ return new cvv::gui::FilterCallTab(dynamic_cast<cvv::impl::FilterCall&>(*call), *vc); };
+	cvv::controller::ViewController::addCallType("dilate", newFct);
+
 	cv::dilate(src, dest, elem);
 	for(auto i = 0; i < 3; ++i) {
 		cvv::debugDilate(src, dest, CVVISUAL_LOCATION);

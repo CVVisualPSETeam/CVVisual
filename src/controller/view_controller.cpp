@@ -36,12 +36,12 @@ ViewController::~ViewController()
 }
 
 void ViewController::addCallType(const QString typeName,
-        std::function<gui::CallTab*(util::Reference<impl::Call>)> constr)
+	std::function<gui::CallTab*(util::Reference<impl::Call>, util::Reference<ViewController>)> constr)
 {
 	ViewController::callTabType[typeName] = constr;
 }
 
-std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>) >> ViewController::callTabType;
+std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>, util::Reference<ViewController>) >> ViewController::callTabType;
 
 void ViewController::addCall(util::Reference<impl::Call> data)
 {
@@ -155,7 +155,7 @@ gui::CallTab* ViewController::getCallTab(size_t tabId)
             throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
             exit(1);
         }
-        callTabMap[tabId] = callTabType[call->type()](call);
+	callTabMap[tabId] = callTabType[call->type()](call, *this);
     }
     return callTabMap[tabId];
 }

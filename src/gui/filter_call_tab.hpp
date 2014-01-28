@@ -30,6 +30,14 @@ Q_OBJECT
 public:
 
 	/**
+	 * @brief Short constructor using name from Call and default view.
+	 * Initializes the FilterCallTab with the default view and names it after the associated FilterCall.
+	 * @param fc the FilterCall containing the information to be visualized.
+	 * @param vc the ViewController this CallTab belongs to.
+	 */
+	FilterCallTab(const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc);
+
+	/**
 	 * @brief Constructor using default view.
 	 * Short constructor which initialises the Call Tab with default view from settings.
 	 * @param tabName
