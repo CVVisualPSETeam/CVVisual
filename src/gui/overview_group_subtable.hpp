@@ -5,6 +5,7 @@
 
 #include <QWidget>
 #include <QTableWidget>
+#include <QAction>
 
 #include "../stfl/element_group.hpp"
 #include "overview_table_collumn.hpp"
@@ -33,14 +34,17 @@ public:
 
 private slots:
     void rowClicked(int row, int collumn);
+	void customMenuRequested(QPoint location);
+    void customMenuAction(QAction *action);
 
 private:
     util::Reference<controller::ViewController> controller;
     OverviewTable *parent;
     stfl::ElementGroup<OverviewTableCollumn> group;
     QTableWidget *qTable;
+	int currentCustomMenuCallTabId = -1;
 
-    void initUI();
+	void initUI();
 };
 
 }}

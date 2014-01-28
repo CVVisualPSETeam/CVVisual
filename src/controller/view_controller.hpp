@@ -140,11 +140,11 @@ public:
 	 * @return current window
 	 */
 	gui::CallWindow* getCurrentWindowOfTab(size_t tabId);
-	
+
+	gui::CallTab* getCallTab(size_t tabId);
+
 private:
 	
-    gui::CallTab* getCallTab(size_t tabId);
-
     static std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>)>> callTabType;
 	QApplication application;
 	QSettings settings{"CVVisual", QSettings::IniFormat};

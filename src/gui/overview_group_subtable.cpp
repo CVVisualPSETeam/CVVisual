@@ -4,7 +4,12 @@
 
 #include <QVBoxLayout>
 #include <QStringList>
+#include <QModelIndex>
+#include <QMenu>
+#include <QAction>
+#include <QHeaderView>
 
+#include "call_window.hpp"
 #include "overview_table.hpp"
 
 namespace cvv { namespace gui {
@@ -22,7 +27,10 @@ void OverviewGroupSubtable::initUI()
 	qTable = new QTableWidget(this);
     qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     qTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
+    qTable->verticalHeader()->setVisible(false);
+   	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
+	qTable->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customMenuRequested(QPoint)));
     auto *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(qTable);
@@ -67,5 +75,47 @@ void OverviewGroupSubtable::rowClicked(int row, int collumn)
     size_t tabId = group.get(row).id();
     controller->moveCallTabToWindow(tabId, 0);
     controller->showCallTab(tabId);
+}
+
+void OverviewGroupSubtable::customMenuRequested(QPoint location)
+{
+	QMenu *menu = new QMenu(this);
+	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
+	const auto tabs = controller->getTabWindows();
+	menu->addAction(new QAction("Open in new Window", this));
+	for (auto it = tabs.begin(); it != tabs.end(); it++)
+	{
+		menu->addAction(new QAction(QString("Open in '%1'").arg(
+						it->second->windowTitle()), this));
+	}
+	QModelIndex index = qTable->indexAt(location);
+	int row = index.row();
+	QString idStr = qTable->item(row, 0)->text();
+	currentCustomMenuCallTabId = idStr.toInt();  
+	menu->popup(qTable->viewport()->mapToGlobal(location));
+}
+
+void OverviewGroupSubtable::customMenuAction(QAction *action)
+{
+	if (currentCustomMenuCallTabId == -1)
+	{
+		return;
+	}
+	QString actionText = action->text();
+	const auto tabs = controller->getTabWindows();
+	if (actionText == QString("Open in new window"))
+	{
+		controller->moveCallTabToNewWindow(currentCustomMenuCallTabId);
+		return;
+	}
+	for (auto it = tabs.begin(); it != tabs.end(); it++)
+	{
+		if (actionText == QString("Open in '%1'").arg(it->second->windowTitle()))
+		{
+			controller->moveCallTabToWindow(currentCustomMenuCallTabId, it->second->getId());
+			break;
+		}
+	}
+	currentCustomMenuCallTabId = -1;
 }
 }}

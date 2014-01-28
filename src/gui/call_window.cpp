@@ -19,7 +19,8 @@ CallWindow::CallWindow(util::Reference<controller::ViewController> controller, s
 	initTabs();
 	initFooter();
     setWindowTitle(QString("CVVisual window no. %1").arg(id));
-    adjustSize();
+    setMinimumWidth(600);
+	adjustSize();
 }
 
 void CallWindow::initMenu()
@@ -80,7 +81,10 @@ void CallWindow::showTab(CallTab *tab)
 
 void CallWindow::showTab(size_t tabId)
 {
-	showTab(tabMap[tabId]);
+	if (hasTab(tabId))
+	{
+		showTab(tabMap[tabId]);
+	}
 }
 
 void CallWindow::updateLeftFooter(QString newText)

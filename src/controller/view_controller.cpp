@@ -95,8 +95,8 @@ void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 void ViewController::openHelpBrowser(const QString &topic) const
 {
 	(void) topic;
-	//auto topicEncoded = QUrl::toPercentEncoding(topic);
-	//QDesktopServices::openUrl(QUrl("http://cvv.mostlynerdless.de/help.php?" + topicEncoded));
+	auto topicEncoded = QUrl::toPercentEncoding(topic);
+	QDesktopServices::openUrl(QUrl(QString("http://cvv.mostlynerdless.de/help.php?") + topicEncoded));
 }
 
 void ViewController::resumeProgramExecution()

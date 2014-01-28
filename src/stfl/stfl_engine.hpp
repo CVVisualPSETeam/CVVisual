@@ -477,7 +477,7 @@ private:
 			{
 				args.push_back(" ");
 			}
-			if (isSortCmd(cmd))
+			if (cmd == "sort")
 			{
 				suggs = getSuggestionsForSortCmd(args);
 			}
@@ -529,10 +529,10 @@ private:
 		{
 			last = args[args.size() - 1];
 		}
-		QStringList pool(groupFuncs.keys());
+		QStringList pool(sortFuncs.keys());
 		QStringList list;
 		QStringList arr = last.split(" ");
-		if (pool.contains(arr[0]))
+		if (pool.contains("sort by " + arr[0])) //TODO doesn't work well
 		{
 			list.append("asc");
 			list.append("desc");
@@ -631,13 +631,31 @@ private:
 	 */
     QStringList sortStringsByStringEquality(const QStringList &strings, QString compareWith)
 	{
-		QMap<int, QString> weightedStrings;
+		QMap<int, QStringList> weightedStrings;
 		for (const QString &str : strings)
 		{
-            int strEqu = editDistance(compareWith, str);
-			weightedStrings[strEqu] = str;
+			int strEqu;
+			if (str.startsWith(compareWith) || str.endsWith(compareWith) ||
+					compareWith.startsWith(str) || compareWith.endsWith(str))
+			{
+				strEqu = editDistance(compareWith, str) / 2;
+			} 
+			else 
+			{
+            	strEqu = editDistance(compareWith, str);
+			}
+			if (!weightedStrings.contains(strEqu))
+			{
+				weightedStrings[strEqu] = QStringList();
+			}
+			weightedStrings[strEqu].push_back(str);
 		}
-		return QStringList(weightedStrings.values());
+		QStringList retList;
+		for (auto &list : weightedStrings.values())
+		{
+			retList.append(list);
+		}
+		return retList;
 	}
 
 	bool isSortCmd(const QString &cmd)
