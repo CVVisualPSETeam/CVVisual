@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 #include <iostream>
 #include "../../src/qtutil/signalslot.hpp"
+#include "../../src/util/util.hpp"
 
 class LabelRegister:public cvv::qtutil::RegisterHelper<QLabel>
 {
@@ -65,7 +66,7 @@ void regnewlabelfunc()
 			std::cout<<"§label fun\n";
 			std::cout<<"\t§cnt in label fun\t"<<cnt<<"\n";
 			std::cout<<"\t§&cnt in label fun\t"<<&cnt<<"\n";
-			return std::unique_ptr<QLabel>{new QLabel{QString::number(cnt)}};
+			return cvv::util::make_unique<QLabel>(QString::number(cnt));
 		}
 	);
 	std::cout<<"\t#anz now\t"<<LabelRegister::registeredElements().size()<<std::endl;
@@ -81,15 +82,15 @@ int main(int argc, char *argv[])
 
 
 	std::cout<<__LINE__<<"\tregister label A\t"<<
-	LabelRegister::registerElement("A",[](QWidget*){return std::unique_ptr<QLabel>(new QLabel("A"));})
+	LabelRegister::registerElement("A",[](QWidget*){return cvv::util::make_unique<QLabel>("A");})
 	<<"\n";
 
 	std::cout<<__LINE__<<"\tregister label A again\t"<<
-	LabelRegister::registerElement("A",[](QWidget*){return std::unique_ptr<QLabel>(new QLabel("A"));})
+	LabelRegister::registerElement("A",[](QWidget*){return cvv::util::make_unique<QLabel>("A");})
 	<<"\n";
 
 	std::cout<<__LINE__<<"\tregister label B\t"<<
-	LabelRegister::registerElement("B",[](QWidget*){return std::unique_ptr<QLabel>(new QLabel("B"));})
+	LabelRegister::registerElement("B",[](QWidget*){return cvv::util::make_unique<QLabel>("B");})
 	<<"\n";
 
 
