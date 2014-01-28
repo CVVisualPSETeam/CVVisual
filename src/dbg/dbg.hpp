@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#include "string_builder.h"
+#include "string_builder.hpp"
 
 #ifdef NDEBUG
 #	define DEBUG(...) do{}while(false)

@@ -6,7 +6,7 @@
 #include <ios>
 #include <iostream>
 
-#include "log.h"
+#include "dbg.hpp"
 
 namespace cvv {namespace dbg {
 

@@ -1,4 +1,4 @@
-#include "../../src/dbg/log.h"
+#include "../../src/dbg/dbg.hpp"
 
 #include <vector>
 #include <map>
