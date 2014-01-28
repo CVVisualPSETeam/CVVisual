@@ -20,14 +20,14 @@ Q_OBJECT
 signals:
 
 	/**
-	 * @brief updateLeftFooter
+	 * @brief update left footer
 	 * Signal to update the left side of the footer with newText.
 	 * @param newText
 	 */
 	void updateLeftFooter(QString newText);
 
 	/**
-	 * @brief updateLeftFooter
+	 * @brief update right footer
 	 * Signal to update the right side of the footer with newText.
 	 * @param newText
 	 */
@@ -35,7 +35,7 @@ signals:
 
 	/**
 	 * @todo comment
-	 * @brief outputInternalSelection
+	 * @brief output internal selection
 	 * @param matchCalls
 	 */
 	void outputInternalSelection(const std::vector<cvv::impl::MatchCall>& matchCalls);
@@ -43,8 +43,8 @@ signals:
 public:
 
 	/**
-	 * @brief createMatchView
-	 * Facory method to create MatchViews.
+	 * @brief factory method to create a MatchView
+	 * Factory method to create MatchViews.
 	 * @param img1
 	 * @param keypoints1
 	 * @param img2

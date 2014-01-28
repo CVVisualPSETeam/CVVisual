@@ -21,8 +21,10 @@ namespace {
 
 void DataController::addCall(std::unique_ptr<Call> call)
 {
+	auto ref = util::makeRef(*call);
 	calls.push_back(std::move(call));
-	viewController.addCall(*calls.back());
+	viewController.addCall(ref);
+	callUI();
 }
 
 void DataController::removeCall(size_t Id)

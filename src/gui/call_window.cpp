@@ -18,6 +18,8 @@ CallWindow::CallWindow(util::Reference<controller::ViewController> controller, s
 	initMenu();
 	initTabs();
 	initFooter();
+    setWindowTitle(QString("CVVisual window no. %1").arg(id));
+    adjustSize();
 }
 
 void CallWindow::initMenu()
@@ -31,7 +33,7 @@ void CallWindow::initTabs()
 	tabWidget = new QTabWidget(this);
 	setCentralWidget(tabWidget);
 	QPushButton *button = new QPushButton("Resume program execution", this);
-	connect(button, SIGNAL(keyPressEvent(KeyEvent * e)), this, SLOT(resumeProgramExecution()));
+	connect(button, SIGNAL(clicked()), this, SLOT(resumeProgramExecution()));
 	tabWidget->setCornerWidget(button, Qt::TopLeftCorner);
 }
 
@@ -48,6 +50,7 @@ void CallWindow::addTab(CallTab *tab)
 {
 	tabMap[tab->getId()] = tab;
 	tabWidget->addTab(tab, tab->getName());
+    adjustSize();
 }
 	
 size_t CallWindow::getId()
@@ -59,11 +62,15 @@ void CallWindow::removeTab(CallTab *tab)
 {
 	tabMap.erase(tabMap.find(tab->getId()));
 	tabWidget->removeTab(tabWidget->indexOf(tab));
+    adjustSize();
 }
 
 void CallWindow::removeTab(size_t tabId)
 {
-	removeTab(tabMap[tabId]);
+    if (hasTab(tabId))
+    {
+        removeTab(tabMap[tabId]);
+    }
 }
 
 void CallWindow::showTab(CallTab *tab)

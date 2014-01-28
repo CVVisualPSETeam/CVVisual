@@ -14,6 +14,9 @@ class FilterCall: public Call {
 public:
 	FilterCall(cv::InputArray in, cv::InputArray out, impl::CallMetaData data, const QString& type);
 	
+	size_t matrixCount() const override { return 2; }
+	const cv::Mat& matrixAt(size_t index) const override;
+	
 	/**
 	 * @returns the original image
 	 */
@@ -22,7 +25,6 @@ public:
 	 * @returns the filtered image
 	 */
 	const cv::Mat& result() const {return output_;}
-	
 private:
 	//TODO: in case we REALLY want to support several input-images: make this a std::vector
 	//TODO: those are typedefs for references, make it clean:

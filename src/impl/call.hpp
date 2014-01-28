@@ -5,6 +5,9 @@
 
 #include <QString>
 
+#include "opencv2/core/core.hpp"
+#include "opencv2/features2d/features2d.hpp"
+
 #include "call_meta_data.hpp"
 
 namespace cvv {
@@ -18,6 +21,19 @@ public:
 	size_t getId() const { return id; }
 	
 	const QString& type() const {return calltype;}
+	
+	/**
+	 * @brief Returns the number of images that are part of the call.
+	 */
+	virtual size_t matrixCount() const = 0;
+	virtual const cv::Mat& matrixAt(size_t index) const = 0;
+	
+	/**
+	 * @brief provides a description of the call.
+	 */
+	const QString& description() const {return description_;}
+	
+	const CallMetaData& metaData() const {return metaData_;}
 protected:
 	Call();
 	Call(impl::CallMetaData callData, QString type);
@@ -28,9 +44,11 @@ protected:
 	Call& operator=(const Call&) = default;
 	Call& operator=(Call&&) = default;
 	
-	impl::CallMetaData callData;
+	impl::CallMetaData metaData_;
 	size_t id;
 	QString calltype;
+	// TODO:
+	QString description_ = "Not Yet Implemented";
 };
 
 }} //namespaces

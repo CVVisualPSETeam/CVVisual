@@ -1,6 +1,7 @@
 #include "view_controller.hpp"
 
 #include <stdexcept>
+#include <iostream>
 
 #include <QApplication>
 #include <QDesktopServices>
@@ -14,56 +15,59 @@
 namespace cvv {
 namespace controller {
 
-ViewController::ViewController(): windowMap{},
-	ovPanel{new gui::OverviewPanel{this}},
-	mainWindow{new gui::MainCallWindow{util::makeRef<ViewController>(*this), 0, ovPanel}},
+int zero;
+char *emptyArray[] = {nullptr};
+
+ViewController::ViewController(): application{zero, emptyArray}, windowMap{},
 	callTabMap{},calls{}
 {
-	windowMap[0] = mainWindow;
+    ovPanel = new gui::OverviewPanel{this};
+    mainWindow = new gui::MainCallWindow{util::makeRef<ViewController>(*this), 0, ovPanel};
+    windowMap[0] = mainWindow;
+	mainWindow->show();
 	max_window_id = 0;
 }
 
 ViewController::~ViewController()
 {
-	delete mainWindow;
+    //delete mainWindow;
 	/*delete &windowMap;
 	delete &callTabMap;*/
 }
 
 void ViewController::addCallType(const QString typeName,
-		std::function<gui::CallTab(QString, impl::Call)> constr)
+        std::function<gui::CallTab*(util::Reference<impl::Call>)> constr)
 {
 	ViewController::callTabType[typeName] = constr;
 }
 
-std::map<QString, std::function<gui::CallTab(QString, impl::Call) >> ViewController::callTabType =
-	*(new std::map<QString, std::function<gui::CallTab(QString, impl::Call) >>());
+std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>) >> ViewController::callTabType;
 
-void ViewController::addCall(const impl::Call &data)
+void ViewController::addCall(util::Reference<impl::Call> data)
 {
 	mainWindow->showOverviewTab();
-	ovPanel->addElement(util::makeRef(data));
+	ovPanel->addElement(*data);
+    calls.push_back(data);
 }
 
 void ViewController::exec()
 {
-	QApplication::exec();
+	application.exec();
 }
 
 impl::Call& ViewController::getCall(size_t id)
 {
-	return calls.at(id);
+	return *calls.at(id);
 }
 
-QString ViewController::getSetting(const QString &scope, const QString &key)
+QString ViewController::getSetting(const QString &scope, const QString &key) const
 {
-	settings.beginGroup(scope);
-	if (!settings.contains(key))
+	QString _key = scope + "/" + key;
+	if (!settings.contains(_key))
 	{
 		throw std::invalid_argument{ "there is no such setting" };
 	}
-	QString set = settings.value(scope + "/" + key).value<QString>();
-	settings.endGroup();
+	QString set = settings.value(_key).value<QString>();
 	return set;
 }
 
@@ -74,9 +78,9 @@ const std::map<size_t, gui::CallWindow*> ViewController::getTabWindows()
 
 void ViewController::moveCallTabToNewWindow(size_t tabId)
 {
-	gui::CallWindow *newWindow = new gui::CallWindow(util::makeRef<ViewController>(*this),
-		       	++max_window_id);
-	newWindow->addTab(callTabMap[tabId]);
+    gui::CallWindow *newWindow = new gui::CallWindow(util::makeRef<ViewController>(*this), ++max_window_id);
+    newWindow->addTab(getCallTab(tabId));
+	newWindow->show();
 	windowMap[max_window_id] = newWindow;
 	getCurrentWindowOfTab(tabId)->removeTab(tabId);
 }
@@ -84,35 +88,35 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
 void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 {
 	getCurrentWindowOfTab(tabId)->removeTab(tabId);
-	windowMap[windowId]->addTab(callTabMap[tabId]);
+    auto *tab = getCallTab(tabId);
+    windowMap[windowId]->addTab(tab);
 }
 
-void ViewController::openHelpBrowser(const QString &topic)
+void ViewController::openHelpBrowser(const QString &topic) const
 {
+	(void) topic;
 	//auto topicEncoded = QUrl::toPercentEncoding(topic);
 	//QDesktopServices::openUrl(QUrl("http://cvv.mostlynerdless.de/help.php?" + topicEncoded));
 }
 
 void ViewController::resumeProgramExecution()
 {
-	QApplication::exit();
+	application.exit();
 }
 
 void ViewController::setDefaultSetting(const QString &scope, const QString &key, const QString &value)
 {
-	settings.beginGroup(scope);
-	if (!settings.contains(key))
+	QString _key = scope + "/" + key;
+	if (!settings.contains(_key))
 	{
-		settings.setValue(key, value);
+		settings.setValue(_key, value);
 	}
-	settings.endGroup();
 }
 
 void ViewController::setSetting(const QString &scope, const QString &key, const QString &value)
 {
-	settings.beginGroup(scope);
-	settings.setValue(key, value);
-	settings.endGroup();
+	QString _key = scope + "/" + key;
+	settings.setValue(_key, value);
 }
 
 void ViewController::showCallTab(size_t tabId)
@@ -139,6 +143,21 @@ gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
 		}
 	}
 	return mainWindow;
+}
+
+gui::CallTab* ViewController::getCallTab(size_t tabId)
+{
+    if (callTabMap.count(tabId) == 0)
+    {
+        auto call = calls.at(tabId);
+        if (callTabType.count(call->type()) == 0)
+        {
+            throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
+            exit(1);
+        }
+        callTabMap[tabId] = callTabType[call->type()](call);
+    }
+    return callTabMap[tabId];
 }
 
 }}

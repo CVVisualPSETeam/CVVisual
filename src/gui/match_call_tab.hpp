@@ -17,6 +17,7 @@ namespace cvv {
 namespace gui {
 
 /** Match Call Tab
+ * @brief Inner part of a tab, contains a MatchView
  * The inner part of a tab or window
  * containing a MatchView.
  * Allows to switch views and to access the help.
@@ -28,7 +29,7 @@ Q_OBJECT
 public:
 
 	/**
-	 * @brief MatchCallTab
+	 * @brief Constructor with default view.
 	 * Short constructor which initialises the Call Tab with default view from settings.
 	 * @param tabName
 	 * @param fc the MatchCall containing the information to be visualized.
@@ -37,7 +38,7 @@ public:
 	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& mc, const cvv::controller::ViewController& vc);
 
 	/**
-	 * @brief MatchCallTab
+	 * @brief Constructor with specific view.
 	 * Constructor initialising the Call Tab.
 	 * @param tabName
 	 * @param fc the MatchCall containing the information to be visualized.
@@ -47,12 +48,15 @@ public:
 	MatchCallTab(const QString& name, const cvv::impl::MatchCall& mc, const cvv::controller::ViewController& vc, const QString& viewId);
 
 	/**
-	 * @brief getId
-	 * @return the ID of the CallTab which is equal to the ID of the associated call.
+	 * @brief get ID
+	 * @return the ID of the CallTab
+	 * (ID is equal to the ID of the associated call)
+	 * Overrides CallTab's getId.
 	 */
-	size_t getId() const;
+	size_t getId() const override;
 
 	/**
+	 * @brief Add MatchView to map of all.
 	 * Adds a MatchView with a name to the thread local map of all MatchViews.
 	 * @param MatchViewId the Id or name of the FilterView.
 	 */
@@ -61,11 +65,13 @@ public:
 private slots:
 
 	/**
+	 * @brief View selection changed.
 	 * Called when the index of the view selection changes.
 	 */
 	void currentIndexChanged() const;
 
 	/**
+	 * @brief Help button clicked.
 	 * Called when the help button is clicked.
 	 */
 	void helpButtonClicked() const;

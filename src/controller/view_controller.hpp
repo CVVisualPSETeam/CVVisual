@@ -5,10 +5,13 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
-#include <QString>
+#include <memory>
+
 #include <functional>
 #include <utility>
+#include <QString>
 #include <QSettings>
+#include <QApplication>
 
 #include "../impl/call.hpp"
 #include "../util/util.hpp"
@@ -41,14 +44,14 @@ public:
 	 * @param constr function constructing an instance of this  call tab type
 	 * @return an instance of the new call tab type 
 	 */
-	static void addCallType(const QString typeName,
-		std::function<gui::CallTab(QString, impl::Call)> constr);
+    static void addCallType(const QString typeName,
+        std::function<gui::CallTab*(util::Reference<impl::Call>)> constr);
 	
 	/**
 	 * @brief Adds a new call and shows it in the overview table.
 	 * @param data new call (data)
 	 */
-	void addCall(const impl::Call &data);
+	void addCall(util::Reference<impl::Call> data);
 		
 	/**
 	 * Execute the Qt event loop.
@@ -68,7 +71,7 @@ public:
 	 * @param key settings key (e.g. 'autoOpenTabs')
 	 * @return settings string
 	 */
-	QString getSetting(const QString &scope, const QString &key);
+	QString getSetting(const QString &scope, const QString &key) const;
 	
 	/**
 	 * @attention may be deleted
@@ -96,7 +99,7 @@ public:
 	 * @attention doesn't actually work
 	 * @todo implement properly
 	 */
-	void openHelpBrowser(const QString &topic);
+	void openHelpBrowser(const QString &topic) const;
 	
 	/**
 	 * @brief Resume the execution of the calling program.
@@ -140,14 +143,16 @@ public:
 	
 private:
 	
-	static std::map<QString, std::function<gui::CallTab(QString, impl::Call)>> callTabType;
-	
+    gui::CallTab* getCallTab(size_t tabId);
+
+    static std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>)>> callTabType;
+	QApplication application;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
-	std::map<size_t, gui::CallWindow*> windowMap;
+    std::map<size_t, gui::CallWindow*> windowMap;
 	gui::OverviewPanel *ovPanel;
-	gui::MainCallWindow *mainWindow;
+    gui::MainCallWindow *mainWindow;
 	std::map<size_t, gui::CallTab*> callTabMap;
-	std::vector<impl::Call> calls;
+	std::vector<util::Reference<impl::Call>> calls;
 	size_t max_window_id = 0;
 };
 

@@ -19,11 +19,17 @@ static inline bool& getDebugFlag()
 
 } //namespace impl
 
+/**
+ * @brief Returns whether debug-mode is active for this TU and thread.
+ */
 static inline bool debugMode()
 {
 	return impl::getDebugFlag();
 }
 
+/**
+ * @brief Set the debug-mode for this TU and thread.
+ */
 static inline void setDebugFlag(bool active)
 {
 	impl::getDebugFlag() = active;

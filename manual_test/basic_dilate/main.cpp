@@ -2,15 +2,29 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include "../../include/opencv2/dilate.hpp"
 
 
-int main() {
-	cv::Mat input{100, 100, CV_8UC1, 0};
-	cv::Mat output{100, 100, CV_8UC1, 0};
-	
-	//cv::dilate(input, output, cv::Mat());
+void actualWork(char* filename) {
+	auto src = cv::imread(filename);
+	auto elem = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9), cv::Point(4, 4));
+	cv::Mat dest;
+	cv::dilate(src, dest, elem);
+	for(auto i = 0; i < 3; ++i) {
+		cvv::debugDilate(src, dest, CVVISUAL_LOCATION);
+		//from another location:
+		cvv::debugDilate(src, dest, CVVISUAL_LOCATION);
+	}
+	std::cout << "debugDilate returned, local destructors will run now" << std::endl;
+}
 
-	cvv::debugDilate(input, output, CVVISUAL_LOCATION);
+int main(int argc, char** argv) {
+	if(argc != 2)
+	{
+		return 1;
+	}
+	actualWork(argv[1]);
+	std::cout << "local destructors have run, now all the global one will be executed" << std::endl;
 }

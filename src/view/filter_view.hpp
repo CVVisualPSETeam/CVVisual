@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_FILTER_VIEW_HPP
 #define CVVISUAL_FILTER_VIEW_HPP
 
+#include <memory>
+
 #include <QString>
 #include <QWidget>
 #include <vector>
@@ -17,32 +19,36 @@ Q_OBJECT
 signals:
 
 	/**
-	 * @brief updateLeftFooter
+	 * @brief update left Ffooter
 	 * Signal to update the left side of the footer with newText.
 	 * @param newText
 	 */
-	void updateLeftFooter(QString newText);
+	void updateLeftFooter(const QString &newText);
 
 	/**
-	 * @brief updateRightFoooter
+	 * @brief update right foooter
 	 * Signal to update the right side of the footer with newText.
 	 * @param newText
 	 */
-	void updateRightFoooter(QString newText);
+	void updateRightFoooter(const QString& newText);
 
 public:
 	/**
 	 * @brief default constructor
 	 **/
 	FilterView():FilterView{0}{};
+	
+	virtual ~FilterView() = default;
+	
 	/**
-	 * @brief createFilterView
+	 * @brief factory method to create a filter view
 	 * Factory method to create FilterViews.
 	 * @param originalImg
 	 * @param filteredImg
 	 * @return an instance of FilterView
 	 */
-	//virtual FilterView createFilterView(const cv::Mat& originalImg, const cv::Mat& filteredImg);
+	/*virtual std::unique_ptr<FilterView> createFilterView(const cv::Mat& originalImg,
+			const cv::Mat& filteredImg) = 0;*/
 protected:
 	/**
 	 * @brief constructor of QWidget(parent)

@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_OVERVIEWTABLE_HPP
 #define	CVVISUAL_OVERVIEWTABLE_HPP
 
+#include <vector>
+
 #include <QWidget>
 #include <QList>
 
@@ -8,6 +10,9 @@
 #include "overview_table_collumn.hpp"
 #include "../stfl/element_group.hpp"
 #include "../qtutil/accordion.hpp"
+#include "../util/util.hpp"
+#include "../controller/view_controller.hpp"
+#include "overview_group_subtable.hpp"
 
 namespace cvv { namespace gui {
 
@@ -23,12 +28,12 @@ public:
 	/**
 	 * @todo implement
      */
-	OverviewTable(OverviewPanel *parent);
+    OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent);
 	
 	/**
 	 * @todo implement
      */
-	void updateCollumnGroups(const QList<stfl::ElementGroup<OverviewTableCollumn>> &newGroup);
+    void updateCollumnGroups(const std::vector<stfl::ElementGroup<OverviewTableCollumn>> newGroups);
 	
 	void hideImages();
 	
@@ -37,10 +42,12 @@ public:
 	bool isShowingImages();
 
 private:
+    util::Reference<controller::ViewController> controller;
 	OverviewPanel *parent;
 	bool doesShowImages = true;
-	qtutil::Accordion subtableAccordion;
-	
+    qtutil::Accordion *subtableAccordion;
+    std::vector<OverviewGroupSubtable*> subTables{};
+
 	void updateUI();
 };
 

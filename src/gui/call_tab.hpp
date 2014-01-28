@@ -19,22 +19,26 @@ Q_OBJECT
 public:
 
 	/**
-	 * @brief getName
+	 * @brief get name
 	 * @return name
 	 */
-	const QString getName() { return name; }
+	const QString getName() const { return name; }
 
 	/**
-	 * @brief setName
+	 * @brief set name
 	 * @param name
 	 */
-	void setName(QString newName) { name = newName; }
+	void setName(const QString& newName) { name = newName; }
 
-	size_t getId() { return id; }
+	/**
+	 * @brief get ID
+	 * @return the ID of the CallTab
+	 * (ID is equal to the ID of the associated call in derived classes)
+	 */
+	virtual size_t getId() const { return 0; }
 
 private:
 	QString name;
-	size_t id;
 };
 
 }}//namespaces

@@ -8,7 +8,6 @@
 #include "../impl/call.hpp"
 #include "overview_table.hpp"
 #include "overview_table_collumn.hpp"
-#include "../qtutil/stfl_query_widget.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 
@@ -18,10 +17,13 @@ namespace controller {
 	class ViewController;
 }
 
+namespace qtutil {
+class STFLQueryWidget;
+}
+
 namespace gui {
 
 class OverviewTable;
-class STFLQueryWidget;
 class OverviewTableCollumn;
 
 class OverviewPanel : public QWidget
@@ -50,12 +52,16 @@ public slots:
 	 * @todo implement
      */
 	void updateQuery(QString query);
+
+    void requestSuggestions(QString query);
 	
 private:
 	stfl::STFLEngine<OverviewTableCollumn> queryEngine;
 	qtutil::STFLQueryWidget *queryWidget;
 	OverviewTable *table;
 	controller::ViewController *controller;
+
+    void initEngine();
 };
 
 }}
