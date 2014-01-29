@@ -18,7 +18,7 @@ void actualWork(char* filename) {
 	cv::Mat dest;
 
 	auto newFct = [] (cvv::util::Reference<cvv::impl::Call> call, cvv::util::Reference<cvv::controller::ViewController> vc)
-		{ return new cvv::gui::FilterCallTab(dynamic_cast<cvv::impl::FilterCall&>(*call), *vc); };
+		{ return cvv::util::make_unique<cvv::gui::FilterCallTab>(dynamic_cast<cvv::impl::FilterCall&>(*call), *vc); };
 	cvv::controller::ViewController::addCallType("dilate", newFct);
 
 	cv::dilate(src, dest, elem);
