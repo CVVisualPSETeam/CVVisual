@@ -18,9 +18,8 @@ CallWindow::CallWindow(util::Reference<controller::ViewController> controller, s
 	initMenu();
 	initTabs();
 	initFooter();
-    setWindowTitle(QString("CVVisual window no. %1").arg(id));
-    setMinimumWidth(600);
-	adjustSize();
+	setWindowTitle(QString("CVVisual window no. %1").arg(id));
+	setMinimumWidth(600);
 }
 
 void CallWindow::initMenu()
@@ -51,7 +50,6 @@ void CallWindow::addTab(CallTab *tab)
 {
 	tabMap[tab->getId()] = tab;
 	tabWidget->addTab(tab, tab->getName());
-    adjustSize();
 }
 	
 size_t CallWindow::getId()
@@ -63,7 +61,6 @@ void CallWindow::removeTab(CallTab *tab)
 {
 	tabMap.erase(tabMap.find(tab->getId()));
 	tabWidget->removeTab(tabWidget->indexOf(tab));
-    adjustSize();
 }
 
 void CallWindow::removeTab(size_t tabId)
