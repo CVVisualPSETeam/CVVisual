@@ -20,7 +20,7 @@ int main(/*int argc, char *argv[]*/)
 	cv::Mat out{100,100,CV_8U};
 	cvv::impl::CallMetaData data{};
 	QString type{"test_type"};
-	cvv::impl::FilterCall fc{in, out, data, type};
+	cvv::impl::FilterCall fc{in, out, data, type, "some description", ""};
 	cvv::controller::ViewController vc{};
 	cvv::gui::FilterCallTab v{"TestFTab", fc, vc};
 	cvv::gui::FilterCallTab w{"TestFTab", fc, vc, "test_view"};
