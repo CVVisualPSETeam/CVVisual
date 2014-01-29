@@ -32,6 +32,7 @@ public:
 	 * @brief provides a description of the call.
 	 */
 	const QString& description() const {return description_;}
+	const QString& requestedView() const {return requestedView_;}
 	
 	const CallMetaData& metaData() const {return metaData_;}
 protected:
@@ -47,8 +48,8 @@ protected:
 	impl::CallMetaData metaData_;
 	size_t id;
 	QString calltype;
-	QString description_ = "";
-	QString requestedView;
+	QString description_;
+	QString requestedView_;
 };
 
 }} //namespaces
