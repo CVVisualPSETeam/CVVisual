@@ -65,3 +65,29 @@ TEST_F(ReferenceTest, ConstRefsFromMutable)
 	Reference<const int> ref{i};
 	EXPECT_EQ(ref.getPtr(), &i);
 }
+
+struct Base
+{
+	virtual ~Base() = default;
+};
+struct Derived: Base{};
+struct Derived2: Base{};
+
+TEST_F(ReferenceTest, LiberalConstruction)
+{
+	Derived var;
+	auto derivedRef = makeRef(var);
+	Reference<Base> baseRef{derivedRef};
+	EXPECT_EQ(&var, baseRef.getPtr());
+}
+
+TEST_F(ReferenceTest, castTo)
+{
+	Derived var;
+	Reference<Base> baseRef{var};
+	auto derivedRef = baseRef.castTo<Derived>();
+	EXPECT_EQ(&var, derivedRef.getPtr());
+	EXPECT_THROW(baseRef.castTo<Derived2>(), std::bad_cast);
+	// should result in a compiler-error:
+	//EXPECT_THROW(baseRef.castTo<std::vector<int>>(), std::bad_cast);
+}
