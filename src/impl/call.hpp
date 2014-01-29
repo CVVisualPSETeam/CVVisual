@@ -32,11 +32,12 @@ public:
 	 * @brief provides a description of the call.
 	 */
 	const QString& description() const {return description_;}
+	const QString& requestedView() const {return requestedView_;}
 	
 	const CallMetaData& metaData() const {return metaData_;}
 protected:
 	Call();
-	Call(impl::CallMetaData callData, QString type);
+	Call(impl::CallMetaData callData, QString type, QString description, QString requestedView);
 	
 	Call(const Call&) = default;
 	Call(Call&&) = default;
@@ -47,8 +48,8 @@ protected:
 	impl::CallMetaData metaData_;
 	size_t id;
 	QString calltype;
-	// TODO:
-	QString description_ = "Not Yet Implemented";
+	QString description_;
+	QString requestedView_;
 };
 
 }} //namespaces

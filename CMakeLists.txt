@@ -123,4 +123,7 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_defaultfilterview manual_test/defaultfilterviewtest/main.cpp)
 	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core Qt5Widgets)
 	
+	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
+	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
+	
 endif()

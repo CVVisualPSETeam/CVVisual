@@ -12,21 +12,21 @@
 
 #include <opencv2/core/core.hpp>
 
-int main(int argc, char *argv[])
+int main(/*int argc, char *argv[]*/)
 {
-	QApplication a(argc, argv);
 
 	/* Create some data for the FilterCallTab: */
-	cv::InputArray in{};
-	cv::InputArray out{};
+	cv::Mat in{100,100,CV_8U};
+	cv::Mat out{100,100,CV_8U};
 	cvv::impl::CallMetaData data{};
 	QString type{"test_type"};
-	cvv::impl::FilterCall fc{in, out, data, type};
-
-	cvv::gui::FilterCallTab v{"TestFTab", fc, cvv::controller::ViewController{}};
-	cvv::gui::FilterCallTab w{"TestFTab", fc, cvv::controller::ViewController{}, "test_view"};
+	cvv::impl::FilterCall fc{in, out, data, type, "some description", ""};
+	cvv::controller::ViewController vc{};
+	cvv::gui::FilterCallTab v{"TestFTab", fc, vc};
+	cvv::gui::FilterCallTab w{"TestFTab", fc, vc, "test_view"};
 
 	v.show();
 	w.show();
-	return a.exec();
+	vc.exec();
+	return 0;
 }

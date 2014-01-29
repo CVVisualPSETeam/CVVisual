@@ -20,11 +20,11 @@ OverviewTableCollumn::OverviewTableCollumn(util::Reference<const impl::Call> cal
     description_ = QString(call_->description());
     if (call_->metaData().isKnown)
     {
-        auto data = call_->metaData();
+        const auto& data = call_->metaData();
         line_ = data.line;
         lineStr = QString::number(data.line);
-        fileStr = QString::fromStdString(data.file);
-        functionStr = QString::fromStdString(data.function);
+        fileStr = data.file;
+        functionStr = data.function;
     }
     typeStr = QString(call_->type());
 }

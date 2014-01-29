@@ -12,7 +12,8 @@ namespace cvv { namespace impl {
  */
 class FilterCall: public Call {
 public:
-	FilterCall(cv::InputArray in, cv::InputArray out, impl::CallMetaData data, const QString& type);
+	FilterCall(cv::InputArray in, cv::InputArray out, impl::CallMetaData data, QString type,
+			QString description, QString requestedView);
 	
 	size_t matrixCount() const override { return 2; }
 	const cv::Mat& matrixAt(size_t index) const override;
