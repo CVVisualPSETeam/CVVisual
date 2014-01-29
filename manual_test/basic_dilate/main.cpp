@@ -23,9 +23,10 @@ void actualWork(char* filename) {
 
 	cv::dilate(src, dest, elem);
 	for(auto i = 0; i < 3; ++i) {
-		cvv::debugDilate(src, dest, CVVISUAL_LOCATION);
+		cvv::debugDilate(src, dest, CVVISUAL_LOCATION, "some call from location #1");
 		//from another location:
-		cvv::debugDilate(src, dest, CVVISUAL_LOCATION);
+		cvv::debugDilate(src, dest, CVVISUAL_LOCATION, "call from another location #2",
+				"some weird view");
 	}
 	std::cout << "debugDilate returned, local destructors will run now" << std::endl;
 }
