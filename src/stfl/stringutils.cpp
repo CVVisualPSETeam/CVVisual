@@ -243,11 +243,11 @@ QString shortenString(QString &str, int maxLength, bool cutEnd){
 	{
         if (cutEnd)
         {
-            str = str.mid(0, maxLength - 3) + "...";
+            str = str.mid(0, maxLength - 3) + u8"…";
         }
         else
         {
-            str = "..." + str.mid(str.size() + 3 - maxLength, str.size());
+            str = u8"…" + str.mid(str.size() + 3 - maxLength, str.size());
         }
     }
     return str;

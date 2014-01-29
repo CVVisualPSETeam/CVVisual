@@ -81,12 +81,12 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 {
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
-	const auto tabs = controller->getTabWindows();
+    auto windows = controller->getTabWindows();
 	menu->addAction(new QAction("Open in new Window", this));
-	for (auto it = tabs.begin(); it != tabs.end(); it++)
+	for (auto window : windows)
 	{
 		menu->addAction(new QAction(QString("Open in '%1'").arg(
-						it->second->windowTitle()), this));
+						window->windowTitle()), this));
 	}
 	QModelIndex index = qTable->indexAt(location);
 	int row = index.row();
@@ -102,17 +102,17 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 		return;
 	}
 	QString actionText = action->text();
-	const auto tabs = controller->getTabWindows();
+	auto windows = controller->getTabWindows();
 	if (actionText == QString("Open in new window"))
 	{
 		controller->moveCallTabToNewWindow(currentCustomMenuCallTabId);
 		return;
 	}
-	for (auto it = tabs.begin(); it != tabs.end(); it++)
+	for (auto window : windows)
 	{
-		if (actionText == QString("Open in '%1'").arg(it->second->windowTitle()))
+		if (actionText == QString("Open in '%1'").arg(window->windowTitle()))
 		{
-			controller->moveCallTabToWindow(currentCustomMenuCallTabId, it->second->getId());
+			controller->moveCallTabToWindow(currentCustomMenuCallTabId, window->getId());
 			break;
 		}
 	}

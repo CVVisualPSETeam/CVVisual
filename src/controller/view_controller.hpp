@@ -45,7 +45,7 @@ public:
 	 * @return an instance of the new call tab type 
 	 */
     static void addCallType(const QString typeName,
-        std::function<gui::CallTab*(util::Reference<impl::Call>)> constr);
+        std::function<gui::CallTab*(util::Reference<impl::Call>, controller::ViewController&)> constr);
 	
 	/**
 	 * @brief Adds a new call and shows it in the overview table.
@@ -76,7 +76,7 @@ public:
 	/**
 	 * @attention may be deleted
 	 */
-	const std::map<size_t, gui::CallWindow*> getTabWindows();
+	std::vector<util::Reference<gui::CallWindow>> getTabWindows();
 	
 	/**
 	 * @brief Move the call tab with the given id to a new window
@@ -145,14 +145,15 @@ public:
 
 private:
 	
-    static std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>)>> callTabType;
+    static std::map<QString, std::function<gui::CallTab*
+		(util::Reference<impl::Call>, controller::ViewController&)>> callTabType;
 	QApplication application;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
-    std::map<size_t, gui::CallWindow*> windowMap;
+    std::map<size_t, gui::CallWindow*> windowMap{};
 	gui::OverviewPanel *ovPanel;
-    gui::MainCallWindow *mainWindow;
-	std::map<size_t, gui::CallTab*> callTabMap;
-	std::vector<util::Reference<impl::Call>> calls;
+	gui::MainCallWindow *mainWindow;
+	std::map<size_t, gui::CallTab*> callTabMap{};
+	std::vector<util::Reference<impl::Call>> calls{};
 	size_t max_window_id = 0;
 };
 
