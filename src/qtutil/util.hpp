@@ -12,15 +12,27 @@
 
 namespace cvv { namespace qtutil {
 
-/*
- * @brief Converts an cv::Mat from OpenCV to a QImage.
- */
-QImage convertOpenCVMatToQImage(const cv::Mat &mat);
 
-/*
- * @brief Converts an cv::Mat from OpenCV to a QPixmap.
- */
-QPixmap convertOpenCVMatToQPixmap(const cv::Mat &mat);
+QImage convertOpenCVMatToQImage(const cv::Mat&);
+QPixmap convertOpenCVMatToQPixmap(const cv::Mat&);
+
+
+
+enum class ImageConversionResult
+{
+	SUCCESS,
+	MAT_EMPTY,
+	MAT_NOT_2D,
+	FLOAT_OUT_OF_0_TO_1,
+	NUMBER_OF_CHANNELS_NOT_SUPPORTED,
+	MAT_INVALID_SIZE,
+	MAT_UNSUPPORTED_DEPTH
+};
+
+std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat);
+
+
+std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat);
 
 /**
  * @brief Creates a QSet<QString> with the given string as an inherited value.
