@@ -13,32 +13,38 @@
 
 int main(int argc, char *argv[])
 {
+try{
 	QApplication a(argc, argv);
 
-	int dim=100;
+	int w=10;
+	int h=1000;
 
 	std::cout<<"will now create mats \n";
-	cv::Mat mGrey{dim,dim,	CV_8UC1,cv::Scalar{212}};
-
-	cv::Mat mR{dim,dim,	CV_8SC3,cv::Scalar{0,0,255}};
-	cv::Mat mG{dim,dim,	CV_16UC3,cv::Scalar{0,65255,0}};
-	cv::Mat mB{dim,dim,	CV_16SC3,cv::Scalar{32255,0,0}};
-	cv::Mat mBGRA{dim,dim,	CV_32SC4,cv::Scalar{5000,-10000,25500,12500}};
-	cv::Mat mBG{dim,dim,	CV_32FC2,cv::Scalar{0.41,0.55}};
-	cv::Mat mRGB{dim,dim,	CV_64FC3,cv::Scalar{0.123,0.8123,0.7123}};
+	cv::Mat mGrey{h+1,w+1,	CV_8UC1,cv::Scalar{212}};
+	cv::Mat mR{   h+2,w+2,	CV_8SC3,cv::Scalar{0,0,255}};//CV_8SC3
+	cv::Mat mG{   h+3,w+3,	CV_16UC3,cv::Scalar{0,65255,0}};
+	cv::Mat mB{   w+4,h+4,	CV_16SC3,cv::Scalar{32255,0,0}};
+	cv::Mat mBGRA{h+5,w+5,	CV_32SC4,cv::Scalar{5000,-10000,25500,12500}};
+	cv::Mat mBG{  w+6,h+6,	CV_32FC2,cv::Scalar{0.41,0.55}};
+	cv::Mat mRGB{ h+7,w+7,	CV_64FC3,cv::Scalar{0.123,0.8123,0.7123}};
 
 	std::cout<<"done all\n";
 	std::cout<<"will now convert \n";
 
 	auto cGrey = cvv::qtutil::convertMatToQImage(mGrey);
-	std::cout<<"done 1\n";
-
+	std::cout<<"done 1";
 	auto cR    = cvv::qtutil::convertMatToQImage(mR);
+	std::cout<<"2";
 	auto cG    = cvv::qtutil::convertMatToQImage(mG);
+	std::cout<<"3";
 	auto cB    = cvv::qtutil::convertMatToQImage(mB);
+	std::cout<<"4";
 	auto cBGRA = cvv::qtutil::convertMatToQImage(mBGRA);
+	std::cout<<"5";
 	auto cBG   = cvv::qtutil::convertMatToQImage(mBG);
+	std::cout<<"6";
 	auto cRGB  = cvv::qtutil::convertMatToQImage(mRGB);
+	std::cout<<"7\n";
 
 	std::cout<<"done all\n";
 	std::cout<<"will now test result \n";
@@ -62,27 +68,56 @@ int main(int argc, char *argv[])
 	std::cout<<  cBG.second.format()<<"\n";
 	std::cout<< cRGB.second.format()<<"\n";
 
-	QWidget w{};
+	std::cout<<"create widget \n";
+	QWidget wid{};
+	std::cout<<"create vbox \n";
 	QVBoxLayout* lb{new QVBoxLayout{}};
-	w.setLayout(lb);
+	std::cout<<"create hbox \n";
 	QHBoxLayout* l{new QHBoxLayout{}};
+
+	std::cout<<"set widget layout to vbox\n";
+	wid.setLayout(lb);
+
+	std::cout<<"add hbox to vbox \n";
 	lb->addLayout(l);
 
-	QLabel* l1{new QLabel{}};
-	QLabel* l2{new QLabel{}};
-	QLabel* l3{new QLabel{}};
-	QLabel* l4{new QLabel{}};
-	QLabel* l5{new QLabel{}};
-	QLabel* l6{new QLabel{}};
-	QLabel* l7{new QLabel{}};
+	//std::cout.flush();
+	std::cerr<<"will create labels........\n";
 
+	std::cout<<"create labels\n ";
+	//std::cout.flush();
+	QLabel* l1=new QLabel{};
+	std::cout<<"1";
+	QLabel* l2=new QLabel{};
+	std::cout<<"2";
+	QLabel* l3=new QLabel{};
+	std::cout<<"3";
+	QLabel* l4=new QLabel{};
+	std::cout<<"4";
+	QLabel* l5{new QLabel{}};
+	std::cout<<"5";
+	QLabel* l6{new QLabel{}};
+	std::cout<<"6";
+	QLabel* l7{new QLabel{}};
+	std::cout<<"7 => all\n";
+
+
+	std::cout<<"convert to pixmaps start\n";
 	l1->setPixmap(QPixmap::fromImage(cGrey.second));
+	std::cout<<"done 1";
 	l2->setPixmap(QPixmap::fromImage(cR.second));
+	std::cout<<"2";
 	l3->setPixmap(QPixmap::fromImage(cG.second));
+	std::cout<<"3";
 	l4->setPixmap(QPixmap::fromImage(cB.second));
+	std::cout<<"4";
 	l5->setPixmap(QPixmap::fromImage(cBGRA.second));
+	std::cout<<"5";
 	l6->setPixmap(QPixmap::fromImage(cBG.second));
+	std::cout<<"6";
 	l7->setPixmap(QPixmap::fromImage(cRGB.second));
+	std::cout<<"7 => all\n";
+	std::cout<<"convert to pixmaps end\n";
 
 	l->addWidget(l1);
 	l->addWidget(l2);
@@ -92,7 +127,7 @@ int main(int argc, char *argv[])
 	l->addWidget(l6);
 	l->addWidget(l7);
 
-	//now everything with pixmaps
+	std::cout<<"now everything with pixmaps \n";
 	l=new QHBoxLayout{};
 	lb->addLayout(l);
 
@@ -104,6 +139,7 @@ int main(int argc, char *argv[])
 	l6=new QLabel{};
 	l7=new QLabel{};
 
+	std::cout<<"convert to pixmaps start\n";
 	l1->setPixmap(cvv::qtutil::convertMatToQPixmap(mGrey).second);
 	l2->setPixmap(cvv::qtutil::convertMatToQPixmap(mR).second);
 	l3->setPixmap(cvv::qtutil::convertMatToQPixmap(mG).second);
@@ -111,6 +147,7 @@ int main(int argc, char *argv[])
 	l5->setPixmap(cvv::qtutil::convertMatToQPixmap(mBGRA).second);
 	l6->setPixmap(cvv::qtutil::convertMatToQPixmap(mBG).second);
 	l7->setPixmap(cvv::qtutil::convertMatToQPixmap(mRGB).second);
+	std::cout<<"convert to pixmaps end\n";
 
 	l->addWidget(l1);
 	l->addWidget(l2);
@@ -120,7 +157,9 @@ int main(int argc, char *argv[])
 	l->addWidget(l6);
 	l->addWidget(l7);
 
-	w.show();
+	wid.show();
 	return a.exec();
+}catch(const std::bad_alloc&){std::cout<<"Out of mem\n";};
+return 0;
 }
 
