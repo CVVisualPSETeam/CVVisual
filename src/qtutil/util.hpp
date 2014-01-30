@@ -12,12 +12,6 @@
 
 namespace cvv { namespace qtutil {
 
-
-QImage convertOpenCVMatToQImage(const cv::Mat&);
-QPixmap convertOpenCVMatToQPixmap(const cv::Mat&);
-
-
-
 enum class ImageConversionResult
 {
 	SUCCESS,

@@ -24,7 +24,9 @@ namespace cvv{ namespace view{
 		{
 			QLabel* label = new QLabel{};
 			label->setMinimumSize(200,200);
-			QPixmap pix = qtutil::convertOpenCVMatToQPixmap(image);
+			//TODO: don't ignore the returnval
+			QPixmap pix;
+			std::tie(std::ignore, pix) = qtutil::convertMatToQPixmap(image);
 			label->setPixmap(pix.scaled(200,200,Qt::KeepAspectRatio));
 			imageLayout->addWidget(label);
 		}

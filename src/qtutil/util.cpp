@@ -7,23 +7,6 @@
 namespace cvv {
 namespace qtutil {
 
-QImage convertOpenCVMatToQImage(const cv::Mat&)
-{
-	std::cerr<<">>>>>>>>>>>>>>>>>>>>>>>>DONT USE THIS ANYMORE<<<<<<<<<<<<<<<\n";
-	std::cerr<<">>>>>>>>>>>>>>>>>>>>>>>>DONT USE THIS ANYMORE<<<<<<<<<<<<<<<\n";
-	std::cerr<<">>>>>>>>>>>>>>>>>>>>>>>>DONT USE THIS ANYMORE<<<<<<<<<<<<<<<\n";
-	std::cerr<<__FILE__<<"\t"<<__LINE__<<"\n";
-	throw 1234;
-}
-QPixmap convertOpenCVMatToQPixmap(const cv::Mat&)
-{
-	std::cerr<<">>>>>>>>>>>>>>>>>>>>>>>>DONT USE THIS ANYMORE<<<<<<<<<<<<<<<\n";
-	std::cerr<<">>>>>>>>>>>>>>>>>>>>>>>>DONT USE THIS ANYMORE<<<<<<<<<<<<<<<\n";
-	std::cerr<<">>>>>>>>>>>>>>>>>>>>>>>>DONT USE THIS ANYMORE<<<<<<<<<<<<<<<\n";
-	std::cerr<<__FILE__<<"\t"<<__LINE__<<"\n";
-	throw 1234;
-}
-
 
 QSet<QString> createStringSet(QString string)
 {

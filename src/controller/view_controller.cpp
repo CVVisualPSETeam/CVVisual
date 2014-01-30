@@ -21,7 +21,7 @@ char *emptyArray[] = {nullptr};
 ViewController::ViewController(): application{zero, emptyArray}
 {
     ovPanel = new gui::OverviewPanel{this};
-    auto *mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
+    mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
 	windowMap[0] = mainWindow;
 	mainWindow->show();
 	max_window_id = 0;
