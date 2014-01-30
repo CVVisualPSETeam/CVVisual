@@ -26,9 +26,9 @@ void dilateFile(char* filename) {
 	std::string description = "dilate for ";
 	description += filename;
 	cv::dilate(src, dest, elem);
-	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, (description + " from location #1").c_str());
+	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, description.c_str());
 	//from another location:
-	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, (description + " from location #2").c_str(),
+	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, description.c_str(),
 			"some weird view");
 	TRACEPOINT;
 }
