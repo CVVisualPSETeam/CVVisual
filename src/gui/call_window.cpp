@@ -18,7 +18,7 @@ CallWindow::CallWindow(util::Reference<controller::ViewController> controller, s
 	initMenu();
 	initTabs();
 	initFooter();
-	setWindowTitle(QString("CVVisual window no. %1").arg(id));
+    setWindowTitle(QString("CVVisual | window no. %1").arg(id));
 	setMinimumWidth(600);
 }
 
@@ -31,6 +31,7 @@ void CallWindow::initMenu()
 void CallWindow::initTabs()
 {
 	tabWidget = new TabWidget(this);
+    tabWidget->setTabsClosable(true);
 	setCentralWidget(tabWidget);
 	QPushButton *button = new QPushButton("Resume program execution", this);
 	button->setStyleSheet("QPushButton {background-color: red; color: white;}");
@@ -39,6 +40,7 @@ void CallWindow::initTabs()
 	auto *tabBar = tabWidget->getTabBar();
 	tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(tabBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequested(QPoint)));
+    connect(tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequested(int)));
 }
 
 void CallWindow::initFooter()
@@ -121,7 +123,6 @@ void CallWindow::contextMenuRequested(const QPoint &location)
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(contextMenuAction(QAction*)));
     auto windows = controller->getTabWindows();
-	menu->addAction(new QAction("Close", this));
 	menu->addAction(new QAction("Open in new window", this));
 	for (auto window : windows)
 	{
@@ -142,11 +143,7 @@ void CallWindow::contextMenuAction(QAction *action)
 		return;
 	}
 	auto text = action->text();
-	if (text == "Close")
-	{
-		controller->removeCallTab(currentContextMenuTabId);
-	}
-   	else if (text == "Open in new window")
+    if (text == "Open in new window")
 	{
 		controller->moveCallTabToNewWindow(currentContextMenuTabId);
 	
@@ -190,6 +187,14 @@ void CallWindow::closeEvent(QCloseEvent *event)
 		controller->removeCallTab(elem.first, true);
 	}
 	event->accept();
+}
+
+void CallWindow::tabCloseRequested(int index)
+{
+    if (tabAtTabIndex.count(index) >= 1)
+    {
+        controller->removeCallTab(tabAtTabIndex[index]->getId());
+    }
 }
 
 }}

@@ -41,6 +41,11 @@ public:
 	
 	bool isShowingImages();
 
+    /**
+     * @brief Updates the UI
+     */
+    void updateUI();
+
 private:
     util::Reference<controller::ViewController> controller;
 	OverviewPanel *parent;
@@ -48,7 +53,6 @@ private:
     qtutil::Accordion *subtableAccordion;
     std::vector<OverviewGroupSubtable*> subTables{};
 
-	void updateUI();
 };
 
 }}

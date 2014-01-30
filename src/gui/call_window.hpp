@@ -115,7 +115,10 @@ public slots:
 
 private slots:
 	void contextMenuRequested(const QPoint &location);
+
 	void contextMenuAction(QAction *action);
+
+    void tabCloseRequested(int index);
 
 protected:
 	

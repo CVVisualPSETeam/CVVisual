@@ -95,6 +95,7 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
 	newWindow->addTab(getCallTab(tabId));
 	newWindow->show();
 	windowMap[max_window_id] = newWindow;
+    removeEmptyWindows();
 }
 
 void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
@@ -102,6 +103,7 @@ void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 	removeCallTab(tabId);
 	auto *tab = getCallTab(tabId);
     windowMap[windowId]->addTab(tab);
+    removeEmptyWindows();
 }
 
 void ViewController::removeCallTab(size_t tabId, bool deleteIt)
@@ -116,6 +118,7 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt)
 			callTabMap.erase(tabId);
 			delete callTab;
 		}
+        removeEmptyWindows();
 	}
 }
 

@@ -11,7 +11,6 @@
 
 #include "call_window.hpp"
 #include "overview_table.hpp"
-
 namespace cvv { namespace gui {
 
 OverviewGroupSubtable::OverviewGroupSubtable(util::Reference<controller::ViewController> controller,
@@ -19,6 +18,7 @@ OverviewGroupSubtable::OverviewGroupSubtable(util::Reference<controller::ViewCon
                                              stfl::ElementGroup<OverviewTableCollumn> group):
     controller{controller}, parent{parent}, group{std::move(group)}
 {
+    controller->setDefaultSetting("overview", "imgsize", QString::number(100));
     initUI();
 }
 
@@ -27,7 +27,10 @@ void OverviewGroupSubtable::initUI()
 	qTable = new QTableWidget(this);
     qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     qTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    qTable->verticalHeader()->setVisible(false);
+    auto verticalHeader = qTable->verticalHeader();
+    verticalHeader->setVisible(false);
+    auto horizontalHeader = qTable->horizontalHeader();
+    horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
    	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
 	qTable->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customMenuRequested(QPoint)));
@@ -39,6 +42,7 @@ void OverviewGroupSubtable::initUI()
 }
 
 void OverviewGroupSubtable::updateUI(){
+    int imgSize = controller->getSetting("overview", "imgsize").toInt();
     QStringList list{};
     list << "ID";
     size_t maxImages = 0;
@@ -62,11 +66,9 @@ void OverviewGroupSubtable::updateUI(){
     qTable->setHorizontalHeaderLabels(list);
     for (size_t i = 0; i < group.size(); i++)
     {
-        group.get(i).addToTable(qTable, i, parent->isShowingImages(), maxImages);
+        group.get(i).addToTable(qTable, i, parent->isShowingImages(), maxImages, imgSize, imgSize);
+        qTable->setRowHeight(i, imgSize);
     }
-    qTable->setVisible(false);
-    qTable->resizeColumnsToContents();
-    qTable->setVisible(true);
 }
 
 void OverviewGroupSubtable::rowClicked(int row, int collumn)
@@ -81,7 +83,7 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
     auto windows = controller->getTabWindows();
-	menu->addAction(new QAction("Open in new Window", this));
+    menu->addAction(new QAction("Open in new window", this));
 	for (auto window : windows)
 	{
 		menu->addAction(new QAction(QString("Open in '%1'").arg(

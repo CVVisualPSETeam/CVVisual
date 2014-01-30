@@ -14,7 +14,6 @@ OverviewTableCollumn::OverviewTableCollumn(util::Reference<const impl::Call> cal
 	idStr = QString::number(call_->getId());
 	for (size_t i = 0; i < 2 && i < call->matrixCount(); i++)
 	{
-		//TODO: don't ignore returnvalue:
 		QPixmap img;
 		std::tie(std::ignore, img) = qtutil::convertMatToQPixmap(call->matrixAt(i));
 		imgs.push_back(std::move(img));
@@ -31,7 +30,7 @@ OverviewTableCollumn::OverviewTableCollumn(util::Reference<const impl::Call> cal
 	typeStr = QString(call_->type());
 }
 
-void OverviewTableCollumn::addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages)
+void OverviewTableCollumn::addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages, int imgHeight, int imgWidth)
 {
 	auto *idItem = new QTableWidgetItem(idStr);
 	std::vector<QTableWidgetItem*> items{};
@@ -41,9 +40,8 @@ void OverviewTableCollumn::addToTable(QTableWidget *table, size_t row, bool show
 		for (size_t i = 0; i < imgs.size() && i < maxImages; i++)
 		{
 			QTableWidgetItem *imgWidget = new QTableWidgetItem{};
-			imgWidget->setData(Qt::DecorationRole, imgs.at(i).scaled(100, 100));
-			imgWidget->setSizeHint(QSize(100, 100));
-			imgWidget->setTextAlignment(Qt::AlignHCenter);
+            imgWidget->setData(Qt::DecorationRole, imgs.at(i).scaled(imgHeight, imgWidth, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            imgWidget->setTextAlignment(Qt::AlignHCenter);
 			items.push_back(imgWidget);
 		}
 	}

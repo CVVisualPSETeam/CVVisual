@@ -1,11 +1,13 @@
 #include "overview_panel.hpp"
 
 #include <functional>
+#include <math.h>
 
 #include <QMap>
 #include <QSet>
 #include <QString>
 #include <QVBoxLayout>
+#include <QWidget>
 
 #include "../qtutil/stfl_query_widget.hpp"
 #include "../qtutil/util.hpp"
@@ -15,12 +17,32 @@ namespace cvv { namespace gui {
 OverviewPanel::OverviewPanel(controller::ViewController *controller):
     controller{controller}
 {
+    controller->setDefaultSetting("overview", "imgsize", QString::number(100));
     queryWidget = new qtutil::STFLQueryWidget();
     table = new OverviewTable(util::makeRef(*controller), this);
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(queryWidget);
     layout->addWidget(table);
+
+    auto bottomArea = new QWidget{this};
+    auto bottomLayout = new QHBoxLayout;
+    imgSizeSliderLabel = new QLabel{"Zoom", bottomArea};
+    imgSizeSliderLabel->setMaximumWidth(50);
+    imgSizeSliderLabel->setAlignment(Qt::AlignRight);
+
+    bottomLayout->addWidget(imgSizeSliderLabel);
+    imgSizeSlider = new QSlider{Qt::Horizontal, bottomArea};
+    imgSizeSlider->setMinimumWidth(50);
+    imgSizeSlider->setMaximumWidth(200);
+    imgSizeSlider->setMinimum(0);
+    imgSizeSlider->setMaximum(100);
+    imgSizeSlider->setSliderPosition(pxToSliderValue(controller->getSetting("overview", "imgsize").toInt()));
+    connect(imgSizeSlider, SIGNAL(sliderReleased()), this, SLOT(imgSizeSliderAction()));
+
+    bottomLayout->addWidget(imgSizeSlider);
+    bottomArea->setLayout(bottomLayout);
+    layout->addWidget(bottomArea);
     setLayout(layout);
     initEngine();
 	connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
@@ -94,6 +116,23 @@ void OverviewPanel::updateQuery(QString query)
 void OverviewPanel::requestSuggestions(QString query)
 {
     queryWidget->showSuggestions(queryEngine.getSuggestions(query));
+}
+
+void OverviewPanel::imgSizeSliderAction()
+{
+    int newImgSize = sliderValueToPx(imgSizeSlider->value());
+    controller->setSetting("overview", "imgsize", QString::number(newImgSize));
+    table->updateUI();
+}
+
+int OverviewPanel::sliderValueToPx(int value)
+{
+    return round(exp(value / 10) / exp(3.5)) + 10;
+}
+
+int OverviewPanel::pxToSliderValue(int px)
+{
+    return round(log((px - 10) * exp(3.5)));
 }
 
 }}

@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QString>
+#include <QSlider>
+#include <QLabel>
 
 #include "../stfl/stfl_engine.hpp"
 #include "../impl/call.hpp"
@@ -33,35 +35,33 @@ class OverviewPanel : public QWidget
 	
 public:
 	
-	/**
-	 * @todo implement
-     */
 	OverviewPanel(controller::ViewController *controller);
 	
-	/**
-	 * @todo implement
-     */
 	void addElement(const util::Reference<const impl::Call> newCall);
 	
-public slots:	
-	/**
-	 * @todo implement
-     */
+private slots:
+
 	void filterQuery(QString query);
-	/**
-	 * @todo implement
-     */
+
 	void updateQuery(QString query);
 
     void requestSuggestions(QString query);
 	
+    void imgSizeSliderAction();
+
 private:
 	stfl::STFLEngine<OverviewTableCollumn> queryEngine;
 	qtutil::STFLQueryWidget *queryWidget;
 	OverviewTable *table;
 	controller::ViewController *controller;
+    QLabel *imgSizeSliderLabel;
+    QSlider *imgSizeSlider;
 
     void initEngine();
+
+    int sliderValueToPx(int value);
+
+    int pxToSliderValue(int px);
 };
 
 }}
