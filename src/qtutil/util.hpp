@@ -8,8 +8,6 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/opencv.hpp"
 
-#include <iostream>
-
 namespace cvv { namespace qtutil {
 
 enum class ImageConversionResult
@@ -23,10 +21,12 @@ enum class ImageConversionResult
 	MAT_UNSUPPORTED_DEPTH
 };
 
-std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat);
+std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat,
+							bool skipFloatRangeTest=0);
 
 
-std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat);
+std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat,
+							bool skipFloatRangeTest=0);
 
 /**
  * @brief Creates a QSet<QString> with the given string as an inherited value.

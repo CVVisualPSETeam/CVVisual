@@ -72,7 +72,7 @@ void DataController::callUI()
 
 DataController& dataController()
 {
-	thread_local static DataController controller{};
-	return controller;
+	thread_local static DataController* controller = new DataController{};
+	return *controller;
 }
 }} // namespaces cvv::impl
