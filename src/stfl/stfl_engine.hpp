@@ -124,7 +124,9 @@ public:
 	}
 
     std::vector<ElementGroup<Element> > query(QString query)
+	
 	{
+		lastQuery = query;
 		if (!query.startsWith("#"))
 		{
 			query = "#raw " + query;
@@ -132,6 +134,7 @@ public:
 		QList<Element> elemList;
 		QStringList cmdStrings = query.split("#", QString::SkipEmptyParts);
 		elemList = executeFilters(elements, cmdStrings);
+		elemList = executeSortCmds(elements, cmdStrings);
 		auto groups = executeGroupCmds(elemList, cmdStrings);
 		return groups;
 	}
@@ -390,7 +393,7 @@ private:
 				auto sortFunc = sortFuncs[sortCmd.first];
 				qStableSort(resList.begin(), resList.end(), [&](const Element &elem1, const Element & elem2)
 				{
-					return !sortFunc(elem1, elem2);
+					return sortFunc(elem2, elem1);
 				});
 			}
 		}
@@ -532,13 +535,17 @@ private:
 		QStringList pool(sortFuncs.keys());
 		QStringList list;
 		QStringList arr = last.split(" ");
-		if (pool.contains("sort by " + arr[0])) //TODO doesn't work well
+		if (pool.contains(arr[0])) //TODO doesn't work well
 		{
 			list.append("asc");
 			list.append("desc");
 			if (arr.size() > 1)
 			{
 				list = sortStringsByStringEquality(list, arr[1]);
+			}
+			for (auto &str : list)
+			{
+				str = arr[0] + " " + str;
 			}
 		}
 		else
