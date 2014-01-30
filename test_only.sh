@@ -2,7 +2,7 @@
 
 PARALLEL_JOBS=$(nproc)
 
-if [[ "$#" == 1]]; then
+if [[ "$#" == 1 ]]; then
 	PARALLEL_JOBS=$1
 fi
 
