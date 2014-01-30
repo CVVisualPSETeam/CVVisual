@@ -33,6 +33,7 @@ void CallWindow::initTabs()
 	tabWidget = new QTabWidget(this);
 	setCentralWidget(tabWidget);
 	QPushButton *button = new QPushButton("Resume program execution", this);
+	button->setStyleSheet("QPushButton {background-color: red; color: white;}");
 	connect(button, SIGNAL(clicked()), this, SLOT(resumeProgramExecution()));
 	tabWidget->setCornerWidget(button, Qt::TopLeftCorner);
 }

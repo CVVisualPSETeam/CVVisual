@@ -124,7 +124,9 @@ public:
 	}
 
     std::vector<ElementGroup<Element> > query(QString query)
+	
 	{
+		lastQuery = query;
 		if (!query.startsWith("#"))
 		{
 			query = "#raw " + query;
@@ -539,6 +541,10 @@ private:
 			if (arr.size() > 1)
 			{
 				list = sortStringsByStringEquality(list, arr[1]);
+			}
+			for (auto &str : list)
+			{
+				str = arr[0] + " " + str;
 			}
 		}
 		else
