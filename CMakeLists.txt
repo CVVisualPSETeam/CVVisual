@@ -126,5 +126,9 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_imageconvert manual_test/imageconvert/main.cpp)
 	target_link_libraries(test_manual_imageconvert cvvisual Qt5Core Qt5Widgets opencv_core opencv_imgproc)
 
+
+	add_executable(test_manual_imageconvertperf manual_test/imageconvertperf/main.cpp)
+	target_link_libraries(test_manual_imageconvertperf cvvisual Qt5Core Qt5Widgets opencv_core opencv_imgproc)
+
 	
 endif()
