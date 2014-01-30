@@ -4,3 +4,4 @@ CMakeLists.txt.user
 .ycm_extra_conf.pyc
 test.sh
 release.sh
+*.swp

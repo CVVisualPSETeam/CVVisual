@@ -73,8 +73,7 @@ void OverviewGroupSubtable::rowClicked(int row, int collumn)
 {
     (void)collumn;
     size_t tabId = group.get(row).id();
-    controller->moveCallTabToWindow(tabId, 0);
-    controller->showCallTab(tabId);
+	controller->showAndOpenCallTab(tabId);
 }
 
 void OverviewGroupSubtable::customMenuRequested(QPoint location)

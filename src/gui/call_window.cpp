@@ -30,12 +30,15 @@ void CallWindow::initMenu()
 
 void CallWindow::initTabs()
 {
-	tabWidget = new QTabWidget(this);
+	tabWidget = new TabWidget(this);
 	setCentralWidget(tabWidget);
 	QPushButton *button = new QPushButton("Resume program execution", this);
 	button->setStyleSheet("QPushButton {background-color: red; color: white;}");
 	connect(button, SIGNAL(clicked()), this, SLOT(resumeProgramExecution()));
 	tabWidget->setCornerWidget(button, Qt::TopLeftCorner);
+	auto *tabBar = tabWidget->getTabBar();
+	tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(tabBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequested(QPoint)));
 }
 
 void CallWindow::initFooter()
@@ -50,7 +53,8 @@ void CallWindow::initFooter()
 void CallWindow::addTab(CallTab *tab)
 {
 	tabMap[tab->getId()] = tab;
-	tabWidget->addTab(tab, tab->getName());
+	int index = tabWidget->addTab(tab, tab->getName());
+	tabAtTabIndex[index] = tab;
 }
 	
 size_t CallWindow::getId()
@@ -61,7 +65,9 @@ size_t CallWindow::getId()
 void CallWindow::removeTab(CallTab *tab)
 {
 	tabMap.erase(tabMap.find(tab->getId()));
-	tabWidget->removeTab(tabWidget->indexOf(tab));
+	int index = tabWidget->indexOf(tab);
+	tabWidget->removeTab(index);
+	tabAtTabIndex.erase(index);
 }
 
 void CallWindow::removeTab(size_t tabId)
@@ -102,6 +108,88 @@ void CallWindow::resumeProgramExecution()
 
 bool CallWindow::hasTab(size_t tabId){
 	return tabMap.count(tabId);
+}
+
+void CallWindow::contextMenuRequested(const QPoint &location)
+{
+	if (location.isNull())
+		return;
+	auto tabBar = tabWidget->getTabBar();
+	int tabIndex = tabBar->tabAt(location);
+	if (tabIndex == 0)
+		return;
+	QMenu *menu = new QMenu(this);
+	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(contextMenuAction(QAction*)));
+    auto windows = controller->getTabWindows();
+	menu->addAction(new QAction("Close", this));
+	menu->addAction(new QAction("Open in new window", this));
+	for (auto window : windows)
+	{
+		if (window->getId() != id)
+		{
+			menu->addAction(new QAction(QString("Open in '%1'").arg(
+						window->windowTitle()), this));
+		}
+	}
+	currentContextMenuTabId = tabAtTabIndex[tabIndex]->getId();  
+	menu->popup(tabBar->mapToGlobal(location));
+}
+
+void CallWindow::contextMenuAction(QAction *action)
+{
+	if (currentContextMenuTabId == -1)
+	{
+		return;
+	}
+	auto text = action->text();
+	if (text == "Close")
+	{
+		controller->removeCallTab(currentContextMenuTabId);
+	}
+   	else if (text == "Open in new window")
+	{
+		controller->moveCallTabToNewWindow(currentContextMenuTabId);
+	
+	}
+   	else 
+	{
+		auto windows = controller->getTabWindows();
+		for (auto window : windows)
+		{
+			if (text == QString("Open in '%1'").arg(window->windowTitle()))
+			{
+				controller->moveCallTabToWindow(currentContextMenuTabId, window->getId());
+				break;
+			}
+		}
+	}
+	currentContextMenuTabId = -1;
+}
+
+size_t CallWindow::tabCount()
+{
+	return tabMap.size();
+}
+
+std::vector<size_t> CallWindow::getCallTabIds()
+{
+	std::vector<size_t> ids{};
+	for (auto &elem : tabMap)
+	{
+		ids.push_back(elem.first);
+	}
+	return ids;
+}
+
+void CallWindow::closeEvent(QCloseEvent *event)
+{
+	controller->removeWindowFromMaps(id);
+	tabWidget->clear();
+	for (auto &elem : tabMap)
+	{
+		controller->removeCallTab(elem.first, true);
+	}
+	event->accept();
 }
 
 }}
