@@ -2,12 +2,8 @@
 #define CVVISUAL_DEFAULT_FILTER_VIEW
 
 #include <QWidget>
-#include <QImage>
-#include <QString>
 
 #include "opencv2/core/core.hpp"
-#include "opencv2/highgui/highgui.hpp"
-#include <iostream>
 
 #include "filter_view.hpp"
 
@@ -24,7 +20,7 @@ public:
 	 * @param images A List of images
 	 * @param parent The parent of this QWidget
 	 */
-	DefaultFilterView(std::vector<cv::Mat> images,QWidget *parent);
+	DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent);
 
 private: 
 	/*

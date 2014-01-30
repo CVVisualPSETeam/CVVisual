@@ -33,7 +33,7 @@ public:
 	 * @brief Constuctor
 	 * @param parent The parent widget.
 	 */
-	explicit FilterSelectorWidget(QWidget *parent = 0):
+	explicit FilterSelectorWidget(QWidget *parent = nullptr):
 		RegisterHelper<FilterFunctionWidget<In,Out>>{parent},
 		currentFilter_{nullptr}, layout_{new QVBoxLayout{}},
 		slotFilterSelected_{[this](){

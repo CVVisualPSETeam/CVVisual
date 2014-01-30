@@ -1,16 +1,14 @@
 #include <QHBoxLayout>
-#include <QLabel>
-#include <QPixmap>
-#include <QApplication>
-#include <QtGui>
+#include <QWidget>
 
 #include "defaultfilterview.hpp"
 #include "../qtutil/accordion.hpp"
-#include "../qtutil/util.hpp"
+#include "../qtutil/zoomableimage.hpp"
 
 namespace cvv{ namespace view{
 
-	DefaultFilterView::DefaultFilterView(std::vector<cv::Mat> images,QWidget *parent):FilterView{parent},images_(images)
+	DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
+		FilterView{parent},images_(images)
 	{
 		QHBoxLayout* layout = new QHBoxLayout{};
 		qtutil::Accordion *accor = new qtutil::Accordion{};
@@ -22,13 +20,7 @@ namespace cvv{ namespace view{
 
 		for(auto image:images_)
 		{
-			QLabel* label = new QLabel{};
-			label->setMinimumSize(200,200);
-			//TODO: don't ignore the returnval
-			QPixmap pix;
-			std::tie(std::ignore, pix) = qtutil::convertMatToQPixmap(image);
-			label->setPixmap(pix.scaled(200,200,Qt::KeepAspectRatio));
-			imageLayout->addWidget(label);
+			imageLayout->addWidget(new qtutil::ZoomableImage(image));
 		}
 		imwid->setLayout(imageLayout);
 		layout->addWidget(imwid);

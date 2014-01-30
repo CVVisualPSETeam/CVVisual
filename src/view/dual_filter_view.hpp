@@ -6,16 +6,11 @@
 #include <QWidget>
 //CVV
 #include "../qtutil/filterselectorwidget.hpp"
+#include "../qtutil/zoomableimage.hpp"
 #include "../qtutil/accordion.hpp"
 #include "filter_view.hpp"
 
-namespace cvv {
-
-namespace qtutil{
-	class ZoomableImage{}; //dummy class
-}
-
-namespace view {
+namespace cvv {namespace view {
 
 class DualFilterView: public FilterView
 {
