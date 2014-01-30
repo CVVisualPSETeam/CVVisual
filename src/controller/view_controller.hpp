@@ -87,10 +87,16 @@ public:
 	/**
 	 * @brief Move the given call tab to the given window
 	 * @param tabId id of the given call tab
-	 * @param windowId id of the given window
+	 * @param windowId id of the given window (0 is the main window)
 	 */
 	void moveCallTabToWindow(size_t tabId, size_t windowId); 
 	
+	/**
+	 * @brief Removes the call tab with the given id.
+	 * @param tabId given id
+	 */
+	void removeCallTab(size_t tabId, bool deleteIt = true);
+
 	/**
 	 * @brief Opens the users default browser with the topic help page.
 	 * Current URL: cvv.mostlynerdless.de/help.php?topic=[topic]
@@ -128,7 +134,13 @@ public:
 	 * @param tabId id of the given call tab
 	 */
 	void showCallTab(size_t tabId);
-	
+
+	/**
+	 * @brief Shows the tab and opens it if neccessary.
+	 * @param tabId id of the tab
+	 */
+	void showAndOpenCallTab(size_t tabId);
+
 	/**
 	 * @brief Show the overview tab (and table) and bring it's window to the front. 
 	 */
@@ -141,7 +153,18 @@ public:
 	 */
 	gui::CallWindow* getCurrentWindowOfTab(size_t tabId);
 
-	gui::CallTab* getCallTab(size_t tabId);
+	/**
+	 * @brief Returns the call tab with the given id and constructs it if doesn't exit.
+	 * @param tabId given id
+	 * @return call tab with given id
+	 */
+	gui::CallTab* getCallTab(size_t tabId);	
+
+	/**
+	 * @brief Remove the window from the internal data structures.
+	 * @param windowId id of the window 
+	 */
+	void removeWindowFromMaps(size_t windowId);
 
 private:
 	
@@ -155,6 +178,8 @@ private:
 	std::map<size_t, gui::CallTab*> callTabMap{};
 	std::vector<util::Reference<impl::Call>> calls{};
 	size_t max_window_id = 0;
+
+	void removeEmptyWindows();
 };
 
 }}
