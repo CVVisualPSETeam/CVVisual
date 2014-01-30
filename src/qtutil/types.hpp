@@ -1,6 +1,7 @@
 #ifndef TYPES_HPP
 #define TYPES_HPP
 
+#include "opencv2/core/core.hpp"
 
 namespace cvv { namespace qtutil {
 
