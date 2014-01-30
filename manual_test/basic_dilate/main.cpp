@@ -11,8 +11,10 @@
 #include "../../src/impl/call.hpp"
 #include "../../src/util/util.hpp"
 
+#include "../../src/dbg/dbg.hpp"
 
-void actualWork(char* filename) {
+
+void dilateFile(char* filename) {
 	auto src = cv::imread(filename);
 	auto elem = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9), cv::Point(4, 4));
 	cv::Mat dest;
@@ -21,21 +23,25 @@ void actualWork(char* filename) {
 		{ return new cvv::gui::FilterCallTab(*call.castTo<cvv::impl::FilterCall>(), *vc); };
 	cvv::controller::ViewController::addCallType("dilate", newFct);
 
+	std::string description = "dilate for ";
+	description += filename;
 	cv::dilate(src, dest, elem);
-	for(auto i = 0; i < 3; ++i) {
-		cvv::debugDilate(src, dest, CVVISUAL_LOCATION, "some call from location #1");
-		//from another location:
-		cvv::debugDilate(src, dest, CVVISUAL_LOCATION, "call from another location #2",
-				"some weird view");
-	}
-	std::cout << "debugDilate returned, local destructors will run now" << std::endl;
+	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, (description + " from location #1").c_str());
+	//from another location:
+	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, (description + " from location #2").c_str(),
+			"some weird view");
+	TRACEPOINT;
 }
 
 int main(int argc, char** argv) {
-	if(argc != 2)
+	cvv::dbg::setPriority(100);
+	if(argc == 1)
 	{
+		std::cerr << argv[0] << " must be callled with one or more files as arguments\n";
 		return 1;
 	}
-	actualWork(argv[1]);
-	std::cout << "local destructors have run, now all the global one will be executed" << std::endl;
+	for(int i=1; i < argc; ++i) {
+		dilateFile(argv[i]);
+	}
+	TRACEPOINT;
 }
