@@ -28,23 +28,23 @@ namespace cvv { namespace qtutil{
  *
  * @todo SYNCHRONIZE
  */
-template<class Value>
-class RegisterHelper: public virtual QWidget
+template<class Value, class...Args>
+class RegisterHelper
 {
 public:
 	/**
 	 * @brief Constructor
 	 * @param parent The parent
 	 */
-	RegisterHelper(QWidget* parent = nullptr)
-		:QWidget{parent}, comboBox_{new QComboBox{this}},
-		slotElementRegistered_{[this](const QString& name){comboBox_->addItem(name);}}
+	RegisterHelper()
+		:comboBox_{new QComboBox{}},
+		slotElementRegistered_{[&](const QString& name){comboBox_->addItem(name);}}
 	{
-		connect(&(this->signElementRegistered_),
+		QObject::connect(&(this->signElementRegistered_),
 			SIGNAL(signal(QString)),
 			&(this->slotElementRegistered_),
 			SLOT(slot(QString)));
-		for(auto& elem: RegisterHelper<Value>::registeredElements_)
+		for(auto& elem: RegisterHelper<Value,Args...>::registeredElements_)
 			{comboBox_->addItem(elem.first);}
 		select(selection());
 	}
@@ -86,7 +86,7 @@ public:
 	 * (the function was not registered!)
 	 */
 	static bool registerElement(const QString& name,
-				const std::function< std::unique_ptr<Value>(QWidget*)>& fabric)
+				const std::function< std::unique_ptr<Value>(Args...)>& fabric)
 	{
 		if(has(name))
 			{return false;};
@@ -116,7 +116,7 @@ public:
 	 * @throw std::out_of_range If there is no such function.
 	 * @return The function according to the current selection of the QComboBox.
 	 */
-	std::function<std::unique_ptr<Value>(QWidget*)> operator()()
+	std::function<std::unique_ptr<Value>(Args...)> operator()()
 		{return (*this)(selection());}
 
 	/**
@@ -125,7 +125,7 @@ public:
 	 * @throw std::out_of_range If there is no such function.
 	 * @return The function according to name.
 	 */
-	std::function<std::unique_ptr<Value>(QWidget*)> operator()(const QString& name)
+	std::function<std::unique_ptr<Value>(Args...)> operator()(const QString& name)
 		{return registeredElements_.at(name);}
 
 	/**
@@ -141,7 +141,7 @@ protected:
 	 *@todo SYNCHRONIZE
 	 */
 	//thread_local
-	static std::map<QString,std::function<std::unique_ptr<Value>(QWidget*)>>
+	static std::map<QString,std::function<std::unique_ptr<Value>(Args...)>>
 									registeredElements_;
 
 	/**
@@ -157,17 +157,17 @@ protected:
 /**
  * @todo SYNCHRONIZE
  */
-template<class Value>
+template<class Value, class...Args>
 	//thread_local
-	std::map<QString,std::function<std::unique_ptr<Value>(QWidget*)>>
-		RegisterHelper<Value>::registeredElements_{};
+	std::map<QString,std::function<std::unique_ptr<Value>(Args...)>>
+		RegisterHelper<Value,Args...>::registeredElements_{};
 
 /**
  * @todo SYNCHRONIZE
  */
-template<class Value>
+template<class Value, class...Args>
 	//thread_local
-	SignalQString RegisterHelper<Value>::signElementRegistered_{};
+	SignalQString RegisterHelper<Value,Args...>::signElementRegistered_{};
 }} // end namespaces qtutil, cvv
 
 #endif //CVVISUAL_REGISTERHELPER_HPP

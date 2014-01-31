@@ -24,7 +24,7 @@ namespace cvv { namespace qtutil{
  * @brief The FilterSelectorWidget class
  */
 template< std::size_t In, std::size_t Out>
-class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>>,
+class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>,
 			public FilterFunctionWidget<In,Out>
 {
 	static_assert( Out > 0, "Out must not be 0!");
@@ -33,8 +33,8 @@ public:
 	 * @brief Constuctor
 	 * @param parent The parent widget.
 	 */
-	explicit FilterSelectorWidget(QWidget *parent = nullptr):
-		RegisterHelper<FilterFunctionWidget<In,Out>>{parent},
+	explicit FilterSelectorWidget(QWidget *parent = nullptr):QWidget{parent},
+		RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>{},
 		currentFilter_{nullptr}, layout_{new QVBoxLayout{}},
 		slotFilterSelected_{[this](){
 			if(this->currentFilter_)
