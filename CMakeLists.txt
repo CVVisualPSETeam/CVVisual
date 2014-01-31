@@ -76,6 +76,9 @@ target_link_libraries(cvvisual
 	Qt5Core
 	Qt5Widgets
 	Qt5Gui
+	#without the following libraries it doesn't run on debian testing anymore
+	m
+	stdc++
 )
 
 
@@ -118,7 +121,10 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
 	
 	add_executable(test_manual_defaultfilterview manual_test/defaultfilterviewtest/main.cpp)
-	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core Qt5Widgets)
+	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core Qt5Widgets Qt5Gui opencv_highgui opencv_core opencv_imgproc)
+	
+	add_executable(test_manual_dualfilterview manual_test/dual_filter_view/main.cpp)
+    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
 	
 	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
 	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
