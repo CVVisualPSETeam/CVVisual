@@ -33,7 +33,7 @@ void dilateFile(char* filename) {
 	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, filename);
 	cv::erode(src, dest, elem);
 	cvv::debugErode(src, dest, CVVISUAL_LOCATION, filename);
-	cv::Sobel(src, dest, -1, 2, 2);
+	cv::Sobel(src, dest, -1, 1, 1);
 	cvv::debugSobel(src, dest, CVVISUAL_LOCATION, filename);
 	cv::morphologyEx(src, dest,cv::MORPH_GRADIENT, elem );
 	cvv::debugMorphologyEx(src, dest, CVVISUAL_LOCATION, filename);
