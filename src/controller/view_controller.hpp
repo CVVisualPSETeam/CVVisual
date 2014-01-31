@@ -166,6 +166,11 @@ public:
 	 */
 	void removeWindowFromMaps(size_t windowId);
 
+	/**
+	 * @brief Shows an "Exit program" button on each window.
+ 	 */
+	void showExitProgramButton();
+
 private:
 	
     static std::map<QString, std::function<gui::CallTab*

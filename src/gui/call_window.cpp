@@ -15,17 +15,11 @@ namespace gui {
 CallWindow::CallWindow(util::Reference<controller::ViewController> controller, size_t id):
 	id{id}, controller{controller}
 {
-	initMenu();
 	initTabs();
 	initFooter();
     setWindowTitle(QString("CVVisual | window no. %1").arg(id));
 	setMinimumWidth(600);
-}
-
-void CallWindow::initMenu()
-{
-	//auto *test = menuBar()->addMenu("Test menu");
-	//test->addAction("Test");
+	setMinimumHeight(400);
 }
 
 void CallWindow::initTabs()
@@ -33,10 +27,10 @@ void CallWindow::initTabs()
 	tabWidget = new TabWidget(this);
     tabWidget->setTabsClosable(true);
 	setCentralWidget(tabWidget);
-	QPushButton *button = new QPushButton("Resume program execution", this);
-	button->setStyleSheet("QPushButton {background-color: red; color: white;}");
-	connect(button, SIGNAL(clicked()), this, SLOT(resumeProgramExecution()));
-	tabWidget->setCornerWidget(button, Qt::TopLeftCorner);
+	progButton = new QPushButton("Resume program execution", this);
+	progButton->setStyleSheet("QPushButton {background-color: green; color: white;}");
+	connect(progButton, SIGNAL(clicked()), this, SLOT(resumeProgramExecution()));
+	tabWidget->setCornerWidget(progButton, Qt::TopLeftCorner);
 	auto *tabBar = tabWidget->getTabBar();
 	tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(tabBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequested(QPoint)));
@@ -50,6 +44,12 @@ void CallWindow::initFooter()
 	QStatusBar *bar = statusBar();
 	bar->addPermanentWidget(leftFooter, 2);
 	bar->addPermanentWidget(rightFooter, 2);
+}
+
+void CallWindow::showExitProgramButton()
+{
+	progButton->setText("Exit program");
+	progButton->setStyleSheet("QPushButton {background-color: red; color: white;}");
 }
 
 void CallWindow::addTab(CallTab *tab)

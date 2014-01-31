@@ -25,15 +25,9 @@ class OverviewTable : public QWidget
 	
 public:
 	
-	/**
-	 * @todo implement
-     */
-    OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent);
+	OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent);
 	
-	/**
-	 * @todo implement
-     */
-    void updateCollumnGroups(const std::vector<stfl::ElementGroup<OverviewTableCollumn>> newGroups);
+	void updateCollumnGroups(const std::vector<stfl::ElementGroup<OverviewTableCollumn>> newGroups);
 	
 	void hideImages();
 	
@@ -41,17 +35,17 @@ public:
 	
 	bool isShowingImages();
 
-    /**
-     * @brief Updates the UI
-     */
-    void updateUI();
+	/**
+	 * @brief Updates the UI
+	 */
+	void updateUI();
 
 private:
-    util::Reference<controller::ViewController> controller;
+	util::Reference<controller::ViewController> controller;
 	OverviewPanel *parent;
 	bool doesShowImages = true;
-    qtutil::Accordion *subtableAccordion;
-    std::vector<OverviewGroupSubtable*> subTables{};
+	qtutil::Accordion *subtableAccordion;
+	std::vector<OverviewGroupSubtable*> subTables{};
 
 };
 

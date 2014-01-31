@@ -12,6 +12,7 @@
 #include <QKeyEvent>
 #include <QPoint>
 #include <QCloseEvent>
+#include <QPushButton>
 
 #include "call_tab.hpp"
 #include "../controller/view_controller.hpp"
@@ -41,6 +42,11 @@ public:
 	 * @param id id of the window
 	 */
 	CallWindow(util::Reference<controller::ViewController> controller, size_t id);
+	
+	/**
+	 * @brief Shows an "Exit program" button.
+	 */
+	void showExitProgramButton();
 
 	/**
 	 * @brief Add a new tab to the inherited tab widget.
@@ -126,6 +132,7 @@ protected:
 	util::Reference<controller::ViewController> controller;
 	TabWidget *tabWidget;
 	QMainWindow *window;
+	QPushButton *progButton;
 	std::map<size_t, CallTab*> tabMap; 
 	std::map<int, CallTab*> tabAtTabIndex;
 	QLabel *leftFooter;

@@ -5,6 +5,7 @@
 #include <QString>
 #include <QSlider>
 #include <QLabel>
+#include <QPushButton>
 
 #include "../stfl/stfl_engine.hpp"
 #include "../impl/call.hpp"
@@ -38,6 +39,11 @@ public:
 	OverviewPanel(controller::ViewController *controller);
 	
 	void addElement(const util::Reference<const impl::Call> newCall);
+
+	/**
+	 * @brief Changes the "Resume program execution" button label to "Exit Application"
+	 */
+	void showExitApplicationButton();
 	
 private slots:
 
@@ -45,23 +51,23 @@ private slots:
 
 	void updateQuery(QString query);
 
-    void requestSuggestions(QString query);
+	void requestSuggestions(QString query);
 	
-    void imgSizeSliderAction();
+	void imgSizeSliderAction();
+
+	void toggleImages(); 	
 
 private:
 	stfl::STFLEngine<OverviewTableCollumn> queryEngine;
 	qtutil::STFLQueryWidget *queryWidget;
 	OverviewTable *table;
 	controller::ViewController *controller;
-    QLabel *imgSizeSliderLabel;
-    QSlider *imgSizeSlider;
+	QLabel *imgSizeSliderLabel;
+	QSlider *imgSizeSlider;
+	QPushButton *showImgsButton;
 
-    void initEngine();
+	void initEngine();
 
-    int sliderValueToPx(int value);
-
-    int pxToSliderValue(int px);
 };
 
 }}
