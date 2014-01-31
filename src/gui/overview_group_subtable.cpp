@@ -24,25 +24,28 @@ OverviewGroupSubtable::OverviewGroupSubtable(util::Reference<controller::ViewCon
 
 void OverviewGroupSubtable::initUI()
 {
+	controller->setDefaultSetting("overview", "imgzoom", "30");
 	qTable = new QTableWidget(this);
     qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     qTable->setSelectionMode(QAbstractItemView::SingleSelection);
-    auto verticalHeader = qTable->verticalHeader();
+	auto verticalHeader = qTable->verticalHeader();
     verticalHeader->setVisible(false);
-    auto horizontalHeader = qTable->horizontalHeader();
-    horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
-   	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
+	auto horizontalHeader = qTable->horizontalHeader();
+    horizontalHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+	horizontalHeader->setStretchLastSection(false);
+	qTable->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
 	qTable->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customMenuRequested(QPoint)));
     auto *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(qTable);
     setLayout(layout);
-    updateUI();
+	updateUI();
 }
 
 void OverviewGroupSubtable::updateUI(){
-    int imgSize = controller->getSetting("overview", "imgsize").toInt();
+    int imgSize = controller->getSetting("overview", "imgzoom").toInt() * width() / 400;
     QStringList list{};
     list << "ID";
     size_t maxImages = 0;
@@ -55,7 +58,14 @@ void OverviewGroupSubtable::updateUI(){
     }
     if (parent->isShowingImages())
     {
-        for (size_t i = 0; i < maxImages; i++)
+        for (auto element : group.getElements ())
+    	{
+       	 if (maxImages < element.call()->matrixCount())
+        	{
+        	    maxImages = element.call()->matrixCount();
+    	    }
+	    }
+		for (size_t i = 0; i < maxImages; i++)
         {
             list << QString("Image ") + QString::number(i + 1);
         }
@@ -64,11 +74,24 @@ void OverviewGroupSubtable::updateUI(){
     qTable->setRowCount(group.size());
     qTable->setColumnCount(list.size());
     qTable->setHorizontalHeaderLabels(list);
+	int rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
     for (size_t i = 0; i < group.size(); i++)
     {
         group.get(i).addToTable(qTable, i, parent->isShowingImages(), maxImages, imgSize, imgSize);
-        qTable->setRowHeight(i, imgSize);
+        qTable->setRowHeight(i, rowHeight);
     }
+	auto header = qTable->horizontalHeader();
+	header->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+	for (size_t i = 1; i < maxImages + 1; i++)
+	{
+		header->setSectionResizeMode(i, QHeaderView::ResizeToContents);
+	}
+	for (size_t i = maxImages + 1; i < maxImages + 4; i++)
+	{
+		header->setSectionResizeMode(i, QHeaderView::Stretch);
+	}
+	header->setSectionResizeMode(maxImages + 4, QHeaderView::ResizeToContents);
+	header->setSectionResizeMode(maxImages + 5, QHeaderView::ResizeToContents);
 }
 
 void OverviewGroupSubtable::rowClicked(int row, int collumn)
@@ -119,4 +142,11 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 	}
 	currentCustomMenuCallTabId = -1;
 }
+
+void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
+{
+	(void)event;
+	updateUI();		
+}
+
 }}

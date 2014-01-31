@@ -226,4 +226,12 @@ void ViewController::removeEmptyWindows()
 	}
 }
 
+void ViewController::showExitProgramButton()
+{
+	for (auto &elem : windowMap)
+	{
+		elem.second->showExitProgramButton();
+	}
+}
+
 }}

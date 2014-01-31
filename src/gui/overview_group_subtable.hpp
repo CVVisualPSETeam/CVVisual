@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QAction>
+#include <QResizeEvent>
 
 #include "../stfl/element_group.hpp"
 #include "overview_table_collumn.hpp"
@@ -31,6 +32,9 @@ public:
                          stfl::ElementGroup<OverviewTableCollumn> group);
 
     void updateUI();
+
+protected:
+	void resizeEvent(QResizeEvent *event);
 
 private slots:
     void rowClicked(int row, int collumn);

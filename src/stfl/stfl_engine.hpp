@@ -416,6 +416,10 @@ private:
 				continue;
 			}
 			QString cmd = arr.takeFirst();
+			if (cmd != "group")
+			{
+				continue;
+			}
 			if (arr[0] == "by")
 			{
 				arr.removeFirst();

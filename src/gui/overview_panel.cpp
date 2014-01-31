@@ -8,6 +8,7 @@
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QScrollArea>
 
 #include "../qtutil/stfl_query_widget.hpp"
 #include "../qtutil/util.hpp"
@@ -17,7 +18,7 @@ namespace cvv { namespace gui {
 OverviewPanel::OverviewPanel(controller::ViewController *controller):
     controller{controller}
 {
-    controller->setDefaultSetting("overview", "imgsize", QString::number(100));
+    controller->setDefaultSetting("overview", "imgzoom", "20");
     queryWidget = new qtutil::STFLQueryWidget();
     table = new OverviewTable(util::makeRef(*controller), this);
     QVBoxLayout *layout = new QVBoxLayout;
@@ -30,19 +31,22 @@ OverviewPanel::OverviewPanel(controller::ViewController *controller):
     imgSizeSliderLabel = new QLabel{"Zoom", bottomArea};
     imgSizeSliderLabel->setMaximumWidth(50);
     imgSizeSliderLabel->setAlignment(Qt::AlignRight);
-
     bottomLayout->addWidget(imgSizeSliderLabel);
     imgSizeSlider = new QSlider{Qt::Horizontal, bottomArea};
     imgSizeSlider->setMinimumWidth(50);
     imgSizeSlider->setMaximumWidth(200);
     imgSizeSlider->setMinimum(0);
     imgSizeSlider->setMaximum(100);
-    imgSizeSlider->setSliderPosition(pxToSliderValue(controller->getSetting("overview", "imgsize").toInt()));
-    connect(imgSizeSlider, SIGNAL(sliderReleased()), this, SLOT(imgSizeSliderAction()));
-
-    bottomLayout->addWidget(imgSizeSlider);
+    imgSizeSlider->setSliderPosition(controller->getSetting("overview", "imgzoom").toInt());
+    connect(imgSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(imgSizeSliderAction()));
+	bottomLayout->addWidget(imgSizeSlider);
+	showImgsButton = new QPushButton{};
+	showImgsButton->setText("Hide images");
+	//connect(showImgsButton, SIGNAL(released()), this, SLOT(toggleImages()));
+	//bottomLayout->addWidget(showImgsButton);	
     bottomArea->setLayout(bottomLayout);
     layout->addWidget(bottomArea);
+
     setLayout(layout);
     initEngine();
 	connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
@@ -120,19 +124,22 @@ void OverviewPanel::requestSuggestions(QString query)
 
 void OverviewPanel::imgSizeSliderAction()
 {
-    int newImgSize = sliderValueToPx(imgSizeSlider->value());
-    controller->setSetting("overview", "imgsize", QString::number(newImgSize));
+    controller->setSetting("overview", "imgzoom", QString::number(imgSizeSlider->value()));
     table->updateUI();
 }
 
-int OverviewPanel::sliderValueToPx(int value)
+void OverviewPanel::toggleImages()
 {
-    return round(exp(value / 10) / exp(3.5)) + 10;
-}
-
-int OverviewPanel::pxToSliderValue(int px)
-{
-    return round(log((px - 10) * exp(3.5)));
+	if (showImgsButton->text() == "Show images")
+	{
+		table->showImages();
+		showImgsButton->setText("Hide images");
+	}
+	else
+	{
+		table->hideImages();
+		showImgsButton->setText("Show images");
+	}
 }
 
 }}
