@@ -20,22 +20,14 @@ char *emptyArray[] = {nullptr};
 
 ViewController::ViewController(): application{zero, emptyArray}
 {
-    ovPanel = new gui::OverviewPanel{this};
-    mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
-	windowMap[0] = mainWindow;
-	mainWindow->show();
+	windowMap[0] = util::make_unique<gui::MainCallWindow>(util::makeRef<ViewController>(*this), 0, ovPanel);
+	ovPanel = new gui::OverviewPanel{this};
+	mainWindow().show();
 	max_window_id = 0;
 }
 
 ViewController::~ViewController()
 {
-    //delete mainWindow;
-	/*delete &windowMap;
-	delete &callTabMap;*/
-	for (auto &elem : windowMap)
-	{
-		delete elem.second;
-	}
 	for (auto &elem : callTabMap)
 	{
 		delete elem.second;
@@ -52,9 +44,9 @@ std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>, contr
 
 void ViewController::addCall(util::Reference<impl::Call> data)
 {
-	mainWindow->showOverviewTab();
+	mainWindow().showOverviewTab();
 	ovPanel->addElement(*data);
-    calls.push_back(data);
+	calls.push_back(data);
 }
 
 void ViewController::exec()
@@ -90,12 +82,12 @@ std::vector<util::Reference<gui::CallWindow>> ViewController::getTabWindows()
 
 void ViewController::moveCallTabToNewWindow(size_t tabId)
 {
-    auto newWindow = new gui::CallWindow(util::makeRef<ViewController>(*this), ++max_window_id);
+	auto newWindow = util::make_unique<gui::CallWindow>(util::makeRef<ViewController>(*this), ++max_window_id);
 	removeCallTab(tabId);
 	newWindow->addTab(getCallTab(tabId));
 	newWindow->show();
-	windowMap[max_window_id] = newWindow;
-    removeEmptyWindows();
+	windowMap[max_window_id] = std::move(newWindow);
+	removeEmptyWindows();
 }
 
 void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
@@ -157,19 +149,19 @@ void ViewController::showCallTab(size_t tabId)
 
 void ViewController::showAndOpenCallTab(size_t tabId)
 {
-	auto curWindow = getCurrentWindowOfTab(tabId);
+	auto curWindow = util::makeRef(*getCurrentWindowOfTab(tabId));
 	if (!curWindow->hasTab(tabId))
 	{
 		moveCallTabToWindow(tabId, 0);
-		curWindow = mainWindow;
+		curWindow = mainWindow();
 	}
 	curWindow->showTab(tabId);
 }
 
 void ViewController::showOverview()
 {
-	mainWindow->raise();
-	mainWindow->showOverviewTab();
+	mainWindow().raise();
+	mainWindow().showOverviewTab();
 }
 
 gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
@@ -178,10 +170,11 @@ gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
 	{
 		if (elem.second->hasTab(tabId))
 		{
-			return elem.second;
+			//TODO
+			return elem.second.get();
 		}
 	}
-	return mainWindow;
+	return &mainWindow();
 }
 
 gui::CallTab* ViewController::getCallTab(size_t tabId)
@@ -219,11 +212,16 @@ void ViewController::removeEmptyWindows()
 	}
 	for (auto windowId : remIds)
 	{
-		auto window = windowMap[windowId];
+		auto& window = windowMap[windowId];
 		windowMap.erase(windowId);
 		window->close();
-		delete window;
+		window.reset();
+		//delete window;
 	}
+}
+
+gui::MainCallWindow& ViewController::mainWindow() {
+	return dynamic_cast<gui::MainCallWindow&>(*windowMap[0]);
 }
 
 }}

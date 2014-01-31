@@ -15,6 +15,7 @@
 
 #include "../impl/call.hpp"
 #include "../util/util.hpp"
+#include "../gui/call_window.hpp"
 
 namespace cvv { 
 
@@ -167,14 +168,14 @@ public:
 	void removeWindowFromMaps(size_t windowId);
 
 private:
+	gui::MainCallWindow& mainWindow();
 	
-    static std::map<QString, std::function<gui::CallTab*
+	static std::map<QString, std::function<gui::CallTab*
 		(util::Reference<impl::Call>, controller::ViewController&)>> callTabType;
 	QApplication application;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
-    std::map<size_t, gui::CallWindow*> windowMap{};
+	std::map<size_t, std::unique_ptr<gui::CallWindow>> windowMap{};
 	gui::OverviewPanel *ovPanel;
-	gui::MainCallWindow *mainWindow;
 	std::map<size_t, gui::CallTab*> callTabMap{};
 	std::vector<util::Reference<impl::Call>> calls{};
 	size_t max_window_id = 0;
