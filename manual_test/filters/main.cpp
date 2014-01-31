@@ -5,6 +5,9 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "../../include/opencv2/dilate.hpp"
+#include "../../include/opencv2/erode.hpp"
+#include "../../include/opencv2/sobel.hpp"
+#include "../../include/opencv2/morphology_ex.hpp"
 #include "../../src/controller/view_controller.hpp"
 #include "../../src/gui/call_tab.hpp"
 #include "../../src/gui/filter_call_tab.hpp"
@@ -22,14 +25,18 @@ void dilateFile(char* filename) {
 	auto newFct = [] (cvv::util::Reference<cvv::impl::Call> call, cvv::util::Reference<cvv::controller::ViewController> vc)
 		{ return new cvv::gui::FilterCallTab(*call.castTo<cvv::impl::FilterCall>(), *vc); };
 	cvv::controller::ViewController::addCallType("dilate", newFct);
+	cvv::controller::ViewController::addCallType("erode", newFct);
+	cvv::controller::ViewController::addCallType("morphologyEx", newFct);
+	cvv::controller::ViewController::addCallType("sobel", newFct);
 
-	std::string description = "dilate for ";
-	description += filename;
 	cv::dilate(src, dest, elem);
-	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, description.c_str());
-	//from another location:
-	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, description.c_str(),
-			"some weird view");
+	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, filename);
+	cv::erode(src, dest, elem);
+	cvv::debugErode(src, dest, CVVISUAL_LOCATION, filename);
+	cv::Sobel(src, dest, -1, 2, 2);
+	cvv::debugSobel(src, dest, CVVISUAL_LOCATION, filename);
+	cv::morphologyEx(src, dest,cv::MORPH_GRADIENT, elem );
+	cvv::debugMorphologyEx(src, dest, CVVISUAL_LOCATION, filename);
 	TRACEPOINT;
 }
 

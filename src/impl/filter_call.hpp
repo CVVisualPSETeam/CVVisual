@@ -33,6 +33,8 @@ private:
 	cv::Mat output_;
 };
 
+void debugFilterCall(cv::InputArray original, cv::InputArray result, const CallMetaData& data,
+		const char* description, const char* view, const char* filter);
 
 }} //namespaces
 

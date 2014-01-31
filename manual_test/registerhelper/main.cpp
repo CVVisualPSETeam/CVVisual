@@ -9,11 +9,11 @@
 #include "../../src/qtutil/signalslot.hpp"
 #include "../../src/util/util.hpp"
 
-class LabelRegister:public cvv::qtutil::RegisterHelper<QLabel>
+class LabelRegister:public QWidget, public cvv::qtutil::RegisterHelper<QLabel,QWidget*>
 {
 public:
-	LabelRegister(QWidget* parent = nullptr):
-			RegisterHelper<QLabel>{parent},
+	LabelRegister(QWidget* parent = nullptr):QWidget{parent},
+			RegisterHelper<QLabel,QWidget*>{},
 		lay{new QVBoxLayout{}}, lab{new QLabel{}},
 		s{[this](){this->updlabel();}},
 		reg{[](QString s){std::cout<<"regevent\t"<<s.toStdString()<<std::endl;}}
