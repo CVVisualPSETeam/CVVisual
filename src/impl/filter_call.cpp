@@ -1,5 +1,11 @@
 #include "filter_call.hpp"
 
+#include <QString>
+
+#include "data_controller.hpp"
+
+#include "../util/util.hpp"
+
 namespace cvv { namespace impl {
 
 
@@ -18,6 +24,15 @@ const cv::Mat& FilterCall::matrixAt(size_t index) const {
 		default:
 			throw std::out_of_range{""};
 	}
+}
+
+void debugFilterCall(cv::InputArray original, cv::InputArray result, const CallMetaData& data,
+		const char* description, const char* view, const char* filter)
+{
+	dataController().addCall(util::make_unique<FilterCall>(original, result, data, filter,
+			description ? QString::fromLocal8Bit(description) : QString{"<no description>"},
+			view ? QString::fromLocal8Bit(view) : QString{}));
+	
 }
 
 }} // namespaces cvv::impl
