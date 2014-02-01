@@ -5,6 +5,7 @@
 #include <QWidget>
 
 #include "opencv2/core/core.hpp"
+#include "util.hpp"
 
 namespace cvv{ namespace qtutil{
 	
@@ -18,7 +19,7 @@ namespace cvv{ namespace qtutil{
 		ZoomableImage(const cv::Mat& mat=cv::Mat{},QWidget* parent = nullptr);
 
 	signals:
-		void updateInfo(const QString& str);
+		void updateInfo(const ImageConversionResult& result);
 
 	public slots:
 

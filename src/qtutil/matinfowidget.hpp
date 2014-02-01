@@ -7,24 +7,25 @@
 
 
 #include "opencv2/core/core.hpp"
+#include "util.hpp"
 
 namespace cvv { namespace qtutil{
 
 class MatInfoWidget : public QWidget{
 Q_OBJECT
 public:
-	MatInfoWidget(cv::Mat,QWidget *parent=nullptr);
+    MatInfoWidget(cv::Mat,QWidget *parent=nullptr);
 
 public slots:
-	void updateMat(cv::Mat);
-	void updateConvertStatus(QString);
+    void updateMat(cv::Mat);
+    void updateConvertStatus(ImageConversionResult);
 private:
-	QLabel *labelConvert;
-	QLabel *labelDim;
-	QLabel *labelType;
-	QLabel *labelChannel;
-	QLabel *labelSize;
-	QLabel *labelDepth;
+    QLabel *labelConvert;
+    QLabel *labelDim;
+    QLabel *labelType;
+    QLabel *labelChannel;
+    QLabel *labelSize;
+    QLabel *labelDepth;
 
 };
 

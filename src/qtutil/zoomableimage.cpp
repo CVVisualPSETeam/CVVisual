@@ -19,34 +19,12 @@ namespace cvv{ namespace qtutil{
 	{
 		this->mat_ = mat;
 		auto result = convertMatToQPixmap(mat_);
-		switch(result.first)
+		if(result.first==ImageConversionResult::SUCCESS)
 		{
-			case ImageConversionResult::SUCCESS : 
-				label_->setPixmap(result.second); 
-				emit updateInfo("SUCCESS");
-				break;
-			case ImageConversionResult::MAT_EMPTY:
-				emit updateInfo("Empty Mat");
-				break;
-			case ImageConversionResult::MAT_NOT_2D:
-				emit updateInfo("Unsupported Dimension");
-				break;
-			case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:
-				emit updateInfo("Float values out of range [0,1]");
-				break;
-			case ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED:
-				emit updateInfo("Unsupported number of channels");
-				break;
-			case ImageConversionResult::MAT_INVALID_SIZE:
-				emit updateInfo("Invalid Size");
-				break;
-			case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:
-				emit updateInfo("Unsupported Depth ");
-				break;
-			default : 
-				emit updateInfo("Unknown result from convert function");
-				break;
+			label_->setPixmap(result.second);
 		}
+		emit updateInfo(result.first);
+
 
 	}
 }}
