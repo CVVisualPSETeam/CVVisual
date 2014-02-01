@@ -15,11 +15,14 @@
 namespace cvv {
 namespace controller {
 
-int zero;
 char *emptyArray[] = {nullptr};
 
-ViewController::ViewController(): application{zero, emptyArray}
+ViewController::ViewController()//: application{zero, emptyArray}
 {
+	if(!QApplication::instance()) {
+		int zero = 0;
+		new QApplication{zero, emptyArray};
+	}
     ovPanel = new gui::OverviewPanel{this};
     mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
 	windowMap[0] = mainWindow;
@@ -59,7 +62,7 @@ void ViewController::addCall(util::Reference<impl::Call> data)
 
 void ViewController::exec()
 {
-	application.exec();
+	QApplication::instance()->exec();
 }
 
 impl::Call& ViewController::getCall(size_t id)
@@ -130,7 +133,7 @@ void ViewController::openHelpBrowser(const QString &topic) const
 
 void ViewController::resumeProgramExecution()
 {
-	application.exit();
+	QApplication::instance()->exit();
 }
 
 void ViewController::setDefaultSetting(const QString &scope, const QString &key, const QString &value)

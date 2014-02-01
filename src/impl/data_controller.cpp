@@ -1,5 +1,7 @@
 #include "data_controller.hpp"
 
+#include "../dbg/dbg.hpp"
+
 #include <stdexcept>
 
 namespace cvv { namespace impl {
@@ -17,7 +19,6 @@ namespace {
 		size_t Id;
 	};
 }
-
 
 void DataController::addCall(std::unique_ptr<Call> call)
 {
@@ -62,17 +63,21 @@ size_t DataController::numCalls() const
 	return calls.size();
 }
 
-/**
- * @todo implement
- */
 void DataController::callUI()
 {
 	viewController.exec();
 }
 
+void DataController::lastCall()
+{
+	viewController.showExitProgramButton();
+	callUI();
+}
+
+
 DataController& dataController()
 {
-	thread_local static DataController* controller = new DataController{};
-	return *controller;
+	static DataController controller{};
+	return controller;
 }
 }} // namespaces cvv::impl

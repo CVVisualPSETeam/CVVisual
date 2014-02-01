@@ -49,6 +49,13 @@ public:
 	 */
 	void callUI();
 	
+	/**
+	 * @brief Replace the continue-buttons with close-buttons and show the UI.
+	 * 
+	 * This function is intended to be called directly before main returns after all the actual
+	 * work is done.
+	 */
+	void lastCall();
 private:
 	controller::ViewController viewController;
 	std::vector<std::unique_ptr<Call>> calls;

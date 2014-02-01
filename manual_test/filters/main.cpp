@@ -8,6 +8,8 @@
 #include "../../include/opencv2/erode.hpp"
 #include "../../include/opencv2/sobel.hpp"
 #include "../../include/opencv2/morphology_ex.hpp"
+#include "../../include/opencv2/final_show.hpp"
+
 #include "../../src/controller/view_controller.hpp"
 #include "../../src/gui/call_tab.hpp"
 #include "../../src/gui/filter_call_tab.hpp"
@@ -50,5 +52,7 @@ int main(int argc, char** argv) {
 	for(int i=1; i < argc; ++i) {
 		dilateFile(argv[i]);
 	}
+	TRACEPOINT;
+	cvv::finalShow();
 	TRACEPOINT;
 }

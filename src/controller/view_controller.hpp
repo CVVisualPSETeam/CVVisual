@@ -11,7 +11,6 @@
 #include <utility>
 #include <QString>
 #include <QSettings>
-#include <QApplication>
 
 #include "../impl/call.hpp"
 #include "../util/util.hpp"
@@ -175,7 +174,6 @@ private:
 	
     static std::map<QString, std::function<gui::CallTab*
 		(util::Reference<impl::Call>, controller::ViewController&)>> callTabType;
-	QApplication application;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
     std::map<size_t, gui::CallWindow*> windowMap{};
 	gui::OverviewPanel *ovPanel;
