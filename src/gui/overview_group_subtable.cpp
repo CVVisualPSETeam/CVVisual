@@ -114,6 +114,7 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 		menu->addAction(new QAction(QString("Open in '%1'").arg(
 						window->windowTitle()), this));
 	}
+    menu->addAction(new QAction("Remove call", this));
 	QModelIndex index = qTable->indexAt(location);
 	int row = index.row();
 	QString idStr = qTable->item(row, 0)->text();
@@ -134,6 +135,10 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 		controller->moveCallTabToNewWindow(currentCustomMenuCallTabId);
 		return;
 	}
+    else if (actionText == "Remove call")
+    {
+        controller->removeCallTab(currentCustomMenuCallTabId, true, true);
+    }
 	for (auto window : windows)
 	{
 		if (actionText == QString("Open in '%1'").arg(window->windowTitle()))

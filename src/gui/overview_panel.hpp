@@ -19,11 +19,11 @@
 namespace cvv {
 
 namespace controller {
-	class ViewController;
+    class ViewController;
 }
 
 namespace qtutil {
-	class STFLQueryWidget;
+    class STFLQueryWidget;
 }
 
 namespace gui {
@@ -33,42 +33,48 @@ class OverviewTableCollumn;
 
 class OverviewPanel : public QWidget
 {
-	
-	Q_OBJECT
-	
-public:
-	
-	OverviewPanel(controller::ViewController *controller);
-	
-	void addElement(const util::Reference<const impl::Call> newCall);
 
-	/**
-	 * @brief Changes the "Resume program execution" button label to "Exit Application"
-	 */
-	void showExitApplicationButton();
-	
+    Q_OBJECT
+
+public:
+
+    OverviewPanel(controller::ViewController *controller);
+
+    void addElement(const util::Reference<const impl::Call> newCall);
+
+    /**
+     * @brief Changes the "Resume program execution" button label to "Exit Application"
+     */
+    void showExitApplicationButton();
+
+    /**
+     * @brief Removes and deletes the element with the given id.
+     * @param id element id
+     */
+    void deleteElement(size_t id);
+
 private slots:
 
-	void filterQuery(QString query);
+    void filterQuery(QString query);
 
-	void updateQuery(QString query);
+    void updateQuery(QString query);
 
-	void requestSuggestions(QString query);
-	
-	void imgSizeSliderAction();
+    void requestSuggestions(QString query);
 
-	void toggleImages(); 	
+    void imgSizeSliderAction();
+
+    void toggleImages();
 
 private:
-	stfl::STFLEngine<OverviewTableCollumn> queryEngine;
-	qtutil::STFLQueryWidget *queryWidget;
-	OverviewTable *table;
-	controller::ViewController *controller;
-	QLabel *imgSizeSliderLabel;
-	QSlider *imgSizeSlider;
-	QPushButton *showImgsButton;
+    stfl::STFLEngine<OverviewTableCollumn> queryEngine;
+    qtutil::STFLQueryWidget *queryWidget;
+    OverviewTable *table;
+    controller::ViewController *controller;
+    QLabel *imgSizeSliderLabel;
+    QSlider *imgSizeSlider;
+    QPushButton *showImgsButton;
 
-	void initEngine();
+    void initEngine();
 
 };
 

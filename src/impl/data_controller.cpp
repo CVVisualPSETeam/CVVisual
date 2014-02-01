@@ -58,6 +58,12 @@ Call& DataController::getCall(size_t Id)
 	return **it;
 }
 
+bool DataController::hasCall(size_t Id)
+{
+    auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
+	return it != calls.end();
+}
+
 size_t DataController::numCalls() const
 {
 	return calls.size();

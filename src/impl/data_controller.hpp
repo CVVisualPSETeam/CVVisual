@@ -36,6 +36,8 @@ public:
 	 */
 	Call& getCall(size_t Id);
 	
+    bool hasCall(size_t Id);
+    
 	/**
 	 * Get the number of currently managed calls.
 	 */
