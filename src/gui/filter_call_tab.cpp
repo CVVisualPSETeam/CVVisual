@@ -74,10 +74,15 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	createGui();
 }
 
-void FilterCallTab::currentIndexChanged(const QString& text) const
+void FilterCallTab::currentIndexChanged(const QString& text)
 {
-	//delete filterView;
-	(void) text;
+	delete filterView;
+	auto fct = registeredElements_.at(text);
+	std::vector<cv::Mat> images;
+	images. push_back(filterCall->original());
+	images.push_back(filterCall->result());
+	filterView = (fct(images, this)).release();
+	vlayout->addWidget(filterView);
 }
 
 void FilterCallTab::helpButtonClicked() const
@@ -99,7 +104,7 @@ void FilterCallTab::addFilterViewToMap(const QString& filterViewId,
 
 void FilterCallTab::createGui()
 {
-	QHBoxLayout* hlayout = new QHBoxLayout;
+	hlayout = new QHBoxLayout;
 	hlayout->setAlignment(Qt::AlignTop);
 	QLabel* selectionLabel = new QLabel{"View:"};
 	hlayout->addWidget(selectionLabel);
@@ -113,7 +118,9 @@ void FilterCallTab::createGui()
 	QWidget* upperBar = new QWidget;
 	upperBar->setLayout(hlayout);
 
-	QVBoxLayout* vlayout = new QVBoxLayout;
+	vlayout = new QVBoxLayout;
+
+	connect(comboBox_, SIGNAL(currentTextChanged(QString)), this, SLOT(currentIndexChanged(QString)));
 	//QLabel* viewDummy = new QLabel{"There will be a view here."};
 
 /* For testing: */
