@@ -11,6 +11,8 @@
 
 #include "call_window.hpp"
 #include "overview_table.hpp"
+#include "../controller/view_controller.hpp"
+
 namespace cvv { namespace gui {
 
 OverviewGroupSubtable::OverviewGroupSubtable(util::Reference<controller::ViewController> controller,

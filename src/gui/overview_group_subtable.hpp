@@ -14,6 +14,10 @@
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 
+namespace cvv { namespace controller {
+class ViewController;
+}}
+
 namespace cvv { namespace gui {
 
 class OverviewTable;

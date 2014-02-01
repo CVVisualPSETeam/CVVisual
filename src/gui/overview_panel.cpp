@@ -10,6 +10,7 @@
 #include <QWidget>
 #include <QScrollArea>
 
+#include "../controller/view_controller.hpp"
 #include "../qtutil/stfl_query_widget.hpp"
 #include "../qtutil/util.hpp"
 

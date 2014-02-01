@@ -17,47 +17,32 @@ namespace controller {
 
 char *emptyArray[] = {nullptr};
 
-ViewController::ViewController()//: application{zero, emptyArray}
+ViewController::ViewController()
 {
 	if(!QApplication::instance()) {
 		int zero = 0;
 		new QApplication{zero, emptyArray};
 	}
-    ovPanel = new gui::OverviewPanel{this};
-    mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
-	windowMap[0] = mainWindow;
+	ovPanel = new gui::OverviewPanel{this};
+	mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
+	windowMap[0] = std::unique_ptr<gui::CallWindow>(mainWindow);
 	mainWindow->show();
 	max_window_id = 0;
 }
 
-ViewController::~ViewController()
-{
-    //delete mainWindow;
-	/*delete &windowMap;
-	delete &callTabMap;*/
-	for (auto &elem : windowMap)
-	{
-		delete elem.second;
-	}
-	for (auto &elem : callTabMap)
-	{
-		delete elem.second;
-	}
-}
-
 void ViewController::addCallType(const QString typeName,
-        std::function<gui::CallTab*(util::Reference<impl::Call>, controller::ViewController&)> constr)
+		TabFactory constr)
 {
 	ViewController::callTabType[typeName] = constr;
 }
 
-std::map<QString, std::function<gui::CallTab*(util::Reference<impl::Call>, controller::ViewController&) >> ViewController::callTabType;
+std::map<QString, TabFactory> ViewController::callTabType;
 
 void ViewController::addCall(util::Reference<impl::Call> data)
 {
 	mainWindow->showOverviewTab();
 	ovPanel->addElement(*data);
-    calls.push_back(data);
+	calls.push_back(data);
 }
 
 void ViewController::exec()
@@ -84,29 +69,29 @@ QString ViewController::getSetting(const QString &scope, const QString &key) con
 std::vector<util::Reference<gui::CallWindow>> ViewController::getTabWindows()
 {
 	std::vector<util::Reference<gui::CallWindow>>  windows{};
-	for (auto it = windowMap.begin(); it != windowMap.end(); it++)
+	for (auto& it: windowMap)
 	{
-		windows.push_back(util::makeRef(*(it->second)));
+		windows.push_back(util::makeRef(*(it.second)));
 	}
 	return windows;
 }
 
 void ViewController::moveCallTabToNewWindow(size_t tabId)
 {
-    auto newWindow = new gui::CallWindow(util::makeRef<ViewController>(*this), ++max_window_id);
+	auto newWindow = util::make_unique<gui::CallWindow>(util::makeRef<ViewController>(*this), ++max_window_id);
 	removeCallTab(tabId);
 	newWindow->addTab(getCallTab(tabId));
 	newWindow->show();
-	windowMap[max_window_id] = newWindow;
-    removeEmptyWindows();
+	windowMap[max_window_id] = std::move(newWindow);
+	removeEmptyWindows();
 }
 
 void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 {
 	removeCallTab(tabId);
 	auto *tab = getCallTab(tabId);
-    windowMap[windowId]->addTab(tab);
-    removeEmptyWindows();
+	windowMap[windowId]->addTab(tab);
+	removeEmptyWindows();
 }
 
 void ViewController::removeCallTab(size_t tabId, bool deleteIt)
@@ -117,11 +102,9 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt)
 		getCurrentWindowOfTab(tabId)->removeTab(tabId);
 		if (deleteIt)
 		{
-			auto callTab = callTabMap[tabId];
 			callTabMap.erase(tabId);
-			delete callTab;
 		}
-        removeEmptyWindows();
+		removeEmptyWindows();
 	}
 }
 
@@ -181,7 +164,7 @@ gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
 	{
 		if (elem.second->hasTab(tabId))
 		{
-			return elem.second;
+			return elem.second.get();
 		}
 	}
 	return mainWindow;
@@ -189,17 +172,17 @@ gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
 
 gui::CallTab* ViewController::getCallTab(size_t tabId)
 {
-    if (callTabMap.count(tabId) == 0)
-    {
-        auto call = calls.at(tabId);
-        if (callTabType.count(call->type()) == 0)
-        {
-            throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
-            exit(1);
-        }
-        callTabMap[tabId] = callTabType[call->type()](call, *this);
-    }
-    return callTabMap[tabId];
+	if (callTabMap.count(tabId) == 0)
+	{
+		auto call = calls.at(tabId);
+		if (callTabType.count(call->type()) == 0)
+		{
+			throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
+			exit(1);
+		}
+		callTabMap[tabId] = callTabType[call->type()](call, *this);
+	}
+	return callTabMap[tabId].get();
 }
 
 void ViewController::removeWindowFromMaps(size_t windowId)
@@ -207,7 +190,7 @@ void ViewController::removeWindowFromMaps(size_t windowId)
 	if (windowMap.count(windowId) > 0)
 	{
 		windowMap.erase(windowId);
-	}	
+	}
 }
 
 void ViewController::removeEmptyWindows()
@@ -217,15 +200,12 @@ void ViewController::removeEmptyWindows()
 	{
 		if (elem.second->tabCount() == 0 && elem.second->getId() != 0)
 		{
-			remIds.push_back(elem.first);	
+			remIds.push_back(elem.first);
 		}
 	}
 	for (auto windowId : remIds)
 	{
-		auto window = windowMap[windowId];
 		windowMap.erase(windowId);
-		window->close();
-		delete window;
 	}
 }
 

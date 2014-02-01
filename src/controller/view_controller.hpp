@@ -12,8 +12,10 @@
 #include <QString>
 #include <QSettings>
 
-#include "../impl/call.hpp"
 #include "../util/util.hpp"
+#include "../impl/call.hpp"
+#include "../gui/call_tab.hpp"
+#include "../gui/call_window.hpp"
 
 namespace cvv { 
 
@@ -26,6 +28,15 @@ namespace gui {
 
 namespace controller {
 
+class ViewController;
+
+/**
+ * Typedef for a function that creates a CallTab from a impl::Call and a ViewController&
+ */
+using TabFactory = std::function<std::unique_ptr<gui::CallTab>(util::Reference<impl::Call>,
+	ViewController&)>;
+
+
 /**
  * @brief Controlls the windows, call tabs and the event fetch loop.
  */
@@ -35,16 +46,13 @@ public:
 	
 	ViewController();
 	
-	~ViewController();
-	
 	/**
 	 * @brief Adds the new call tab type.
 	 * @param typeName name of the new type
 	 * @param constr function constructing an instance of this  call tab type
 	 * @return an instance of the new call tab type 
 	 */
-    static void addCallType(const QString typeName,
-        std::function<gui::CallTab*(util::Reference<impl::Call>, controller::ViewController&)> constr);
+	static void addCallType(const QString typeName, TabFactory constr);
 	
 	/**
 	 * @brief Adds a new call and shows it in the overview table.
@@ -167,18 +175,22 @@ public:
 
 	/**
 	 * @brief Shows an "Exit program" button on each window.
- 	 */
+	 */
 	void showExitProgramButton();
 
 private:
 	
-    static std::map<QString, std::function<gui::CallTab*
-		(util::Reference<impl::Call>, controller::ViewController&)>> callTabType;
+	static std::map<QString, TabFactory> callTabType;
 	QSettings settings{"CVVisual", QSettings::IniFormat};
-    std::map<size_t, gui::CallWindow*> windowMap{};
-	gui::OverviewPanel *ovPanel;
+	
+	std::map<size_t, std::unique_ptr<gui::CallWindow>> windowMap{};
+	//non-owning:
 	gui::MainCallWindow *mainWindow;
-	std::map<size_t, gui::CallTab*> callTabMap{};
+	
+	std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
+	//non-owning:
+	gui::OverviewPanel* ovPanel;
+
 	std::vector<util::Reference<impl::Call>> calls{};
 	size_t max_window_id = 0;
 
