@@ -40,15 +40,6 @@ public:
 	
 	virtual ~FilterView() = default;
 	
-	/**
-	 * @brief factory method to create a filter view
-	 * Factory method to create FilterViews.
-	 * @param originalImg
-	 * @param filteredImg
-	 * @return an instance of FilterView
-	 */
-	/*virtual std::unique_ptr<FilterView> createFilterView(const cv::Mat& originalImg,
-			const cv::Mat& filteredImg) = 0;*/
 protected:
 	/**
 	 * @brief constructor of QWidget(parent)
