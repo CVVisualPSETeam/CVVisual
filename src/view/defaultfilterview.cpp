@@ -24,7 +24,7 @@ namespace cvv{ namespace view{
 			qtutil::ZoomableImage *zoomim =new qtutil::ZoomableImage{};
 			qtutil::MatInfoWidget *info=new qtutil::MatInfoWidget{image};
 
-			connect(zoomim,SIGNAL(updateInfo(ImageConversionResult)),info,
+			connect(zoomim,SIGNAL(updateConversionResult(ImageConversionResult)),info,
 				SLOT(updateConvertStatus(ImageConversionResult)));
 			zoomim->updateMat(image);
 

@@ -17,7 +17,7 @@ public:
 	ZoomableImage(const cv::Mat& mat=cv::Mat{},QWidget* parent = nullptr);
 
 signals:
-	void conversionResult(ImageConversionResult);
+	void updateConversionResult(ImageConversionResult);
 
 public slots:
 	void updateMat(cv::Mat mat);

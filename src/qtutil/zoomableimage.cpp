@@ -19,7 +19,7 @@ void ZoomableImage::updateMat(cv::Mat mat)
 {
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
-	emit conversionResult(result.first);
+	emit updateConversionResult(result.first);
 
 	label_->setPixmap(result.second);
 }
