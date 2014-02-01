@@ -40,6 +40,12 @@ private:
 };
 
 
+void debugMatchCall(
+		cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
+		cv::InputArray img2, std::vector<cv::KeyPoint> keypoints2,
+		std::vector<cv::DMatch> matches, const CallMetaData& data,
+		const char* match, const char* description, const char* view);
+
 }} //namespaces cvv::impl
 
 
