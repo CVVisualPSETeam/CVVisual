@@ -5,30 +5,26 @@
 #include <QWidget>
 
 #include "opencv2/core/core.hpp"
+
 #include "util.hpp"
 
 namespace cvv{ namespace qtutil{
-	
-	class ZoomableImage:public QWidget
-	{
 
-	Q_OBJECT
+class ZoomableImage:public QWidget
+{
+Q_OBJECT
+public:
+	ZoomableImage(const cv::Mat& mat=cv::Mat{},QWidget* parent = nullptr);
 
-	public:
+signals:
+	void updateConversionResult(ImageConversionResult);
 
-		ZoomableImage(const cv::Mat& mat=cv::Mat{},QWidget* parent = nullptr);
+public slots:
+	void updateMat(cv::Mat mat);
 
-	signals:
-		void updateInfo(const ImageConversionResult& result);
-
-	public slots:
-
-		void updateMat(const cv::Mat& mat); 
-
-	private:
-
-		cv::Mat mat_;
-		QLabel *label_;
+private:
+	cv::Mat mat_;
+	QLabel *label_;
 
 	};
 }}
