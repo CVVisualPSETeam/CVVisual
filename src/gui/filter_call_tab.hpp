@@ -81,7 +81,7 @@ private slots:
 	 * Called when the index of the view selection changes.
 	 * @param text of the current selection in the view selection.
 	 */
-	void currentIndexChanged(const QString& text) const;
+	void currentIndexChanged(const QString& text);
 
 	/**
 	 * @brief Help Button clicked.
@@ -105,6 +105,8 @@ private:
 	cvv::view::FilterView* filterView;
 
 	QPushButton* helpButton;
+	QHBoxLayout* hlayout;
+	QVBoxLayout* vlayout;
 	//QComboBox* filterViewSelection;	// Will eventually be replaced with the register helper's combo box (below)
 
 	//static cvv::qtutil::RegisterHelper<std::unique_ptr<cvv::view::FilterView>>* filterViewMap;
