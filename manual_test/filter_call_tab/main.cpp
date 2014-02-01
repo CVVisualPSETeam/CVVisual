@@ -25,14 +25,14 @@ int main(/*int argc, char *argv[]*/)
 	QString type{"test_type"};
 	cvv::impl::FilterCall fc{in, out, data, type, "some description", ""};
 	cvv::controller::ViewController vc{};
-	cvv::gui::FilterCallTab v{"TestFTab", fc, vc};
 
 	cvv::gui::FilterCallTab::addFilterViewToMap("DefaultFilterView",
 		[] (std::vector<cv::Mat> images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DefaultFilterView>(images, parent); });
 	cvv::gui::FilterCallTab::addFilterViewToMap("DualFilterView",
 		[] (std::vector<cv::Mat> images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DualFilterView>(images, parent); });
 
-	cvv::gui::FilterCallTab w{"TestFTab", fc, vc, "test_view"};
+	cvv::gui::FilterCallTab v{"TestFTab", fc, vc};
+	cvv::gui::FilterCallTab w{"TestFTab", fc, vc, "DualFilterView"};
 	v.show();
 	w.show();
 	vc.exec();
