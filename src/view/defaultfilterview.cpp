@@ -13,7 +13,7 @@ namespace cvv{ namespace view{
 	{
 		QHBoxLayout* layout = new QHBoxLayout{};
 		qtutil::Accordion *accor = new qtutil::Accordion{};
-		accor->insert("this is a accordion",*(new QWidget{}));
+		accor->insert("this is a accordion", util::make_unique<QWidget>());
 		accor->setMinimumSize(150,0);
 		QWidget *imwid = new QWidget{};
 		QHBoxLayout* imageLayout = new QHBoxLayout{};
@@ -22,14 +22,14 @@ namespace cvv{ namespace view{
 		for(auto image:images_)
 		{
 			qtutil::ZoomableImage *zoomim =new qtutil::ZoomableImage{};
-			qtutil::MatInfoWidget *info=new qtutil::MatInfoWidget{image};
+			auto info = util::make_unique<qtutil::MatInfoWidget>(image);
 
-			connect(zoomim,SIGNAL(updateInfo(ImageConversionResult)),info,
+			connect(zoomim,SIGNAL(updateInfo(ImageConversionResult)),info.get(),
 				SLOT(updateConvertStatus(ImageConversionResult)));
 			zoomim->updateMat(image);
 
 			imageLayout->addWidget(zoomim);
-			accor->insert("ImageInformation",*info);
+			accor->insert("ImageInformation", std::move(info));
 		}
 		imwid->setLayout(imageLayout);
 		layout->addWidget(imwid);

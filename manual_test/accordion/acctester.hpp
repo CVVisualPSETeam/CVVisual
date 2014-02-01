@@ -41,8 +41,8 @@ public slots:
 	void scollapseAll(){acc->collapseAll();}
 	void sexpandAll(){acc->expandAll();}
 
-	void spfront(){acc->push_front(s("0").c_str(), *(new QLabel{s("0").c_str()}));}
-	void spback(){acc->push_back(s("end").c_str(), *(new QLabel{s("end").c_str()}));}
+	void spfront(){acc->push_front("0", cvv::util::make_unique<QLabel>("0"));}
+	void spback(){acc->push_back("end", cvv::util::make_unique<QLabel>("end"));}
 	void sinsert5();
 	void sremove5();
 

@@ -22,10 +22,10 @@ namespace view
 		QWidget *imwid = new QWidget{};
 		qtutil::Accordion *accor = new qtutil::Accordion{};
 
-		qtutil::FilterSelectorWidget<2,1> filterWidget;
+		auto filterWidget = util::make_unique<qtutil::FilterSelectorWidget<2,1>>();
 		//TO DO: filter hinzufügen
 
-		accor->insert("Filter selection", filterWidget);
+		accor->insert("Filter selection", std::move(filterWidget));
 		accor->setMinimumSize(150,0);
 		layout->addWidget(accor);
 

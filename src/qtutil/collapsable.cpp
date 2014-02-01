@@ -2,21 +2,23 @@
 
 namespace cvv{ namespace qtutil{
 
-Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed, QWidget *parent):
-		QWidget{parent}, widget_{&widget},
-		button_{new QPushButton{}}, layout_{new QVBoxLayout{}}
+Collapsable::Collapsable(const QString& title, std::unique_ptr<QWidget> widget, bool isCollapsed,
+	QWidget *parent):
+		QWidget{parent}, widget_{widget.get()}, layout_{new QVBoxLayout{}}
 {
 	layout_->setAlignment(Qt::AlignTop);
 
 	//build header
+	auto tmpButton = util::make_unique<QPushButton>();
+	button_ = tmpButton.get();
 	button_->setEnabled(true);
 	button_->setText(title);
 	button_->setCheckable(true);
 
 	//build widget
-	layout_->addWidget(button_);
-	layout_->addWidget(widget_);
 	setLayout(layout_);
+	layout_->addWidget(tmpButton.release());
+	layout_->addWidget(widget.release());
 
 	//connect signals and slots
 	QObject::connect(button_, SIGNAL(clicked()), this, SLOT(toggleVisibility()));
@@ -24,6 +26,9 @@ Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed,
 	//collapse/ expand according to isCollapsed
 	collapse(isCollapsed);
 }
+
+//Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed, QWidget *parent):
+//	Collapsable{title, std::unique_ptr<QWidget>{&widget}, isCollapsed, parent} {}
 
 void Collapsable::collapse(bool b)
 {
