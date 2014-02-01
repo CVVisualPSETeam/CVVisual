@@ -12,6 +12,9 @@
 #include "../gui/overview_panel.hpp"
 #include "../gui/main_call_window.hpp"
 
+#include "../gui/filter_call_tab.hpp"
+#include "../impl/filter_call.hpp"
+
 namespace cvv {
 namespace controller {
 
@@ -36,7 +39,19 @@ void ViewController::addCallType(const QString typeName,
 	ViewController::callTabType[typeName] = constr;
 }
 
-std::map<QString, TabFactory> ViewController::callTabType;
+std::unique_ptr<cvv::gui::FilterCallTab> makeFilterCallTab(
+		cvv::util::Reference<cvv::impl::Call> call,
+		cvv::controller::ViewController& vc)
+{
+	return cvv::util::make_unique<cvv::gui::FilterCallTab>(*call.castTo<cvv::impl::FilterCall>(), vc);
+}
+
+std::map<QString, TabFactory> ViewController::callTabType {
+	{"dilate", makeFilterCallTab},
+	{"erode", makeFilterCallTab},
+	{"morphologyEx", makeFilterCallTab},
+	{"sobel", makeFilterCallTab},
+};
 
 void ViewController::addCall(util::Reference<impl::Call> data)
 {

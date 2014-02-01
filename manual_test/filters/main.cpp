@@ -18,23 +18,11 @@
 
 #include "../../src/dbg/dbg.hpp"
 
-std::unique_ptr<cvv::gui::FilterCallTab> makeFilterCallTab(
-		cvv::util::Reference<cvv::impl::Call> call,
-		cvv::controller::ViewController& vc)
-{
-	return cvv::util::make_unique<cvv::gui::FilterCallTab>(*call.castTo<cvv::impl::FilterCall>(), vc);
-}
-
 void dilateFile(char* filename) {
 	auto src = cv::imread(filename);
 	auto elem = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9), cv::Point(4, 4));
 	cv::Mat dest;
-
-	cvv::controller::ViewController::addCallType("dilate", makeFilterCallTab);
-	cvv::controller::ViewController::addCallType("erode", makeFilterCallTab);
-	cvv::controller::ViewController::addCallType("morphologyEx", makeFilterCallTab);
-	cvv::controller::ViewController::addCallType("sobel", makeFilterCallTab);
-
+	
 	cv::dilate(src, dest, elem);
 	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, filename);
 	cv::erode(src, dest, elem);
