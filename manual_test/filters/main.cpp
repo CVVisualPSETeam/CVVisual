@@ -4,19 +4,11 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "../../include/opencv2/dilate.hpp"
-#include "../../include/opencv2/erode.hpp"
-#include "../../include/opencv2/sobel.hpp"
-#include "../../include/opencv2/morphology_ex.hpp"
-#include "../../include/opencv2/final_show.hpp"
-
-#include "../../src/controller/view_controller.hpp"
-#include "../../src/gui/call_tab.hpp"
-#include "../../src/gui/filter_call_tab.hpp"
-#include "../../src/impl/call.hpp"
-#include "../../src/util/util.hpp"
-
-#include "../../src/dbg/dbg.hpp"
+#include "dilate.hpp"
+#include "erode.hpp"
+#include "sobel.hpp"
+#include "morphology_ex.hpp"
+#include "final_show.hpp"
 
 void dilateFile(char* filename) {
 	auto src = cv::imread(filename);
@@ -31,11 +23,9 @@ void dilateFile(char* filename) {
 	cvv::debugSobel(src, dest, CVVISUAL_LOCATION, filename);
 	cv::morphologyEx(src, dest,cv::MORPH_GRADIENT, elem );
 	cvv::debugMorphologyEx(src, dest, CVVISUAL_LOCATION, filename);
-	TRACEPOINT;
 }
 
 int main(int argc, char** argv) {
-	cvv::dbg::setPriority(100);
 	if(argc == 1)
 	{
 		std::cerr << argv[0] << " must be callled with one or more files as arguments\n";
@@ -44,7 +34,7 @@ int main(int argc, char** argv) {
 	for(int i=1; i < argc; ++i) {
 		dilateFile(argv[i]);
 	}
-	TRACEPOINT;
+	std::cout << "All calculation done" << std::endl;
 	cvv::finalShow();
-	TRACEPOINT;
+	std::cout << "Program finished" << std::endl;
 }
