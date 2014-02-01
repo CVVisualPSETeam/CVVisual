@@ -3,6 +3,7 @@
 
 #include "defaultfilterview.hpp"
 #include "../qtutil/accordion.hpp"
+#include "../qtutil/matinfowidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
 
 namespace cvv{ namespace view{
@@ -20,7 +21,14 @@ namespace cvv{ namespace view{
 
 		for(auto image:images_)
 		{
-			imageLayout->addWidget(new qtutil::ZoomableImage(image));
+			qtutil::ZoomableImage *zoomim =new qtutil::ZoomableImage{};
+			qtutil::MatInfoWidget *info=new qtutil::MatInfoWidget{image};
+
+			connect(zoomim,SIGNAL(updateInfo(QString)),info,SLOT(updateConvertStatus(QString)));
+			zoomim->updateMat(image);
+
+			imageLayout->addWidget(zoomim);
+			accor->insert("ImageInformation",*info);
 		}
 		imwid->setLayout(imageLayout);
 		layout->addWidget(imwid);

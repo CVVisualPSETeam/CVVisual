@@ -15,7 +15,7 @@ namespace cvv{ namespace qtutil{
 
 	public:
 
-		ZoomableImage(const cv::Mat& mat,QWidget* parent = nullptr);
+		ZoomableImage(const cv::Mat& mat=cv::Mat{},QWidget* parent = nullptr);
 
 	signals:
 		void updateInfo(const QString& str);
