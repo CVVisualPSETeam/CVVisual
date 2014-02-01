@@ -1,4 +1,5 @@
 #include <vector>
+#include <memory>
 
 #include <QString>
 #include <QMap>
@@ -75,8 +76,7 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 
 void FilterCallTab::currentIndexChanged(const QString& text) const
 {
-	/*filterViewId = text;
-	filterView = filterViewMap[filterViewId].createFilterView(filterCall->original(), filterCall->result());*/
+	//delete filterView;
 	(void) text;
 }
 
@@ -91,14 +91,10 @@ size_t FilterCallTab::getId() const
 	return filterCall->getId();
 }
 
-void FilterCallTab::addFilterViewToMap(const QString& filterViewId, const cvv::view::FilterView& filterView)
+void FilterCallTab::addFilterViewToMap(const QString& filterViewId,
+				       std::function<std::unique_ptr<cvv::view::FilterView>(std::vector<cv::Mat>, QWidget*)> fView)
 {
-	/*if(!filterViewMap->registerElement(filterViewId, &(bool (createFilterView()))))
-	{
-		// TODO error handling.
-	}*/
-	(void) filterViewId;
-	(void) filterView;
+	cvv::qtutil::RegisterHelper<cvv::view::FilterView, std::vector<cv::Mat>, QWidget*>::registerElement(filterViewId, fView);
 }
 
 void FilterCallTab::createGui()
@@ -107,8 +103,8 @@ void FilterCallTab::createGui()
 	hlayout->setAlignment(Qt::AlignTop);
 	QLabel* selectionLabel = new QLabel{"View:"};
 	hlayout->addWidget(selectionLabel);
-	filterViewSelection = new QComboBox{};
-	hlayout->addWidget(filterViewSelection); // Will eventually replaced with the combo box of the register helper below.
+	//filterViewSelection = new QComboBox{};
+	hlayout->addWidget(comboBox_);
 	//hlayout->addWidget(filterViewMap);
 	helpButton = new QPushButton{"Help"};
 	hlayout->addWidget(helpButton);

@@ -9,6 +9,9 @@
 #include "../../src/impl/filter_call.hpp"
 #include "../../src/controller/view_controller.hpp"
 #include "../../include/opencv2/call_meta_data.hpp"
+#include "../../src/view/defaultfilterview.hpp"
+#include "../../src/view/dual_filter_view.hpp"
+#include "../../src/util/util.hpp"
 
 #include <opencv2/core/core.hpp>
 
@@ -23,8 +26,13 @@ int main(/*int argc, char *argv[]*/)
 	cvv::impl::FilterCall fc{in, out, data, type, "some description", ""};
 	cvv::controller::ViewController vc{};
 	cvv::gui::FilterCallTab v{"TestFTab", fc, vc};
-	cvv::gui::FilterCallTab w{"TestFTab", fc, vc, "test_view"};
 
+	cvv::gui::FilterCallTab::addFilterViewToMap("DefaultFilterView",
+		[] (std::vector<cv::Mat> images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DefaultFilterView>(images, parent); });
+	cvv::gui::FilterCallTab::addFilterViewToMap("DualFilterView",
+		[] (std::vector<cv::Mat> images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DualFilterView>(images, parent); });
+
+	cvv::gui::FilterCallTab w{"TestFTab", fc, vc, "test_view"};
 	v.show();
 	w.show();
 	vc.exec();
