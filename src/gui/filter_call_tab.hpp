@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_FILTER_CALL_TAB_HPP
 #define CVVISUAL_FILTER_CALL_TAB_HPP
 
+#include <memory>
+
 #include <QString>
 #include <QMap>
 #include <QPushButton>
@@ -23,7 +25,8 @@ namespace gui {
  * containing a FilterView.
  * Allows to switch views and to access the help.
  */
-class FilterCallTab: public CallTab
+class FilterCallTab:
+		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::FilterView, std::vector<cv::Mat>, QWidget*>
 {
 Q_OBJECT
 
@@ -69,7 +72,7 @@ public:
 	 * Adds a FilterView with a name to the thread local map of all FilterViews.
 	 * @param filterViewId the Id or name of the FilterView.
 	 */
-	static void addFilterViewToMap(const QString& filterViewId, const cvv::view::FilterView& filterView);
+	static void addFilterViewToMap(const QString& filterViewId, std::function<std::unique_ptr<cvv::view::FilterView>(std::vector<cv::Mat>, QWidget*)>);
 
 private slots:
 
@@ -102,9 +105,9 @@ private:
 	cvv::view::FilterView* filterView;
 
 	QPushButton* helpButton;
-	QComboBox* filterViewSelection;	// Will eventually be replaced with the register helper's combo box (below)
+	//QComboBox* filterViewSelection;	// Will eventually be replaced with the register helper's combo box (below)
 
-	static cvv::qtutil::RegisterHelper<std::unique_ptr<cvv::view::FilterView>>* filterViewMap;
+	//static cvv::qtutil::RegisterHelper<std::unique_ptr<cvv::view::FilterView>>* filterViewMap;
 };
 
 }}//namespaces
