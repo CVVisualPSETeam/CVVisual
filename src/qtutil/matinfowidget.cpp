@@ -2,10 +2,10 @@
 
 #include "matinfowidget.hpp"
 
-		 labelConvert = new QLabel{};
 namespace cvv{ namespace qtutil {
 
 	MatInfoWidget::MatInfoWidget(cv::Mat mat,QWidget *parent):QWidget{parent}{
+		labelConvert = new QLabel{};
 		labelDim = new QLabel{};
 		labelType = new QLabel{};
 		labelChannel = new QLabel{};
