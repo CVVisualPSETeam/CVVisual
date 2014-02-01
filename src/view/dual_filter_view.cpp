@@ -1,3 +1,5 @@
+
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QImage>
@@ -42,6 +44,8 @@ namespace view
 
 		setLayout(layout);
 	}
+
+
 
 }
 } //namespaces
