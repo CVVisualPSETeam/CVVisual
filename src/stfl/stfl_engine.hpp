@@ -17,6 +17,7 @@
 #include "stringutils.hpp"
 #include "element_group.hpp"
 #include "../qtutil/util.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv {
 namespace stfl {
@@ -280,33 +281,15 @@ public:
         initSupportedCommandsList();
     }
 
-    /**
-     * @brief Removes the elements that match the filter function.
-     * @brief filterFunc filter function
-     * @param deleteIt if true, also deletes the elements
-     */
-    void removeElements(std::function<bool(const Element&)> filterFunc, bool deleteIt = true)
-    {
-        QList<Element> newList;
-        std::vector<Element> remList;
-        for (auto &elem : elements)
-        {
-            if (filterFunc(elem))
-            {
-                remList.push_back(elem);
-            }
-            else
-            {
-                newList.push_back(elem);
-            }
-        }
-        for (auto &elem : remList)
-        {
-            if (deleteIt)
-                delete &elem;
-        }
-        elements = newList;
-    }
+	/**
+	 * @brief Removes the elements that match the filter function.
+	 * @brief filterFunc filter function
+	 */
+	void removeElements(std::function<bool(const Element&)> filterFunc)
+	{
+		auto newEnd = std::remove_if(elements.begin(), elements.end(), filterFunc);
+		elements.erase(newEnd, elements.end());
+	}
 
 private:
     QList<Element> elements;
