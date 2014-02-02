@@ -60,7 +60,7 @@ Call& DataController::getCall(size_t Id)
 
 bool DataController::hasCall(size_t Id)
 {
-    auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
+	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
 	return it != calls.end();
 }
 
