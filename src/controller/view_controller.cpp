@@ -120,7 +120,6 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
         getCurrentWindowOfTab(tabId)->removeTab(tabId);
         if (deleteIt)
         {
-            delete &(callTabMap[tabId]);
             callTabMap.erase(tabId);
         }
         removeEmptyWindows();
