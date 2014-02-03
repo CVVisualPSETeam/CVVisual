@@ -49,7 +49,7 @@ int phoneticEquality(const QString &word1, const QString &word2)
 	{
 		return 0;
 	}
-	return editDistance(nysiisForWordCached(word1), nysiisForWordCached(word2)) + 1;
+	return editDistance(nysiisForWord(word1), nysiisForWord(word2)) + 1;
 }
 
 QString nysiisForWord(QString word)

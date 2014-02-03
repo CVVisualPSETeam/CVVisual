@@ -1,5 +1,7 @@
 #ifndef CVVISUAL_STFLENGINE_HPP
 #define CVVISUAL_STFLENGINE_HPP
+
+#include <math.h>
 #include <vector>
 #include <QString>
 #include <QMap>
@@ -80,7 +82,7 @@ public:
      * @param number maximum number of suggestions
      * @return suggestions for the given query
      */
-    QStringList getSuggestions(QString _query, size_t number = 5)
+    QStringList getSuggestions(QString _query, size_t number = 100)
     {
         QString query(_query);
         bool addedRaw = false;
@@ -488,9 +490,16 @@ private:
         if (cmd == "group" || cmd == "sort")
         {
             int frontCut = std::min(1 + (hasByString ? 1 : 0), tokens.size());
-            tokens = tokens.mid(frontCut, tokens.size());
-            QStringList args = tokens.join(" ").replace("\\s+", "\\s").split(",", QString::SkipEmptyParts);
+            tokens = cmdQuery.split(" ", QString::SkipEmptyParts)
+				.mid(frontCut, tokens.size());
+            QStringList args = tokens.join(" ").split(",", QString::SkipEmptyParts);
             args.removeDuplicates();
+			for (auto &arg : args)
+			{
+				int wsLen = 0;
+				for (wsLen = 0; wsLen < arg.size() && arg[wsLen] == ' '; wsLen++);
+				arg = arg.right(arg.size() - wsLen);
+			}
             if (args.empty())
             {
                 args.push_back(" ");
@@ -537,7 +546,7 @@ private:
     }
 
     QStringList getSuggestionsForSortCmd(QStringList args)
-    {
+	{
         QString last;
         if (args.empty())
         {
@@ -557,7 +566,9 @@ private:
             if (arr.size() > 1)
             {
                 list = sortStringsByStringEquality(list, arr[1]);
-            }
+            } else {
+				list.prepend("");
+			}
             for (auto &str : list)
             {
                 str = arr[0] + " " + str;
@@ -652,29 +663,36 @@ private:
      * @return the sorted list
      */
     QStringList sortStringsByStringEquality(const QStringList &strings, QString compareWith)
-<<<<<<< HEAD
 	{
 		QMap<int, QStringList> weightedStrings;
+		auto compareWithWords = compareWith.split(" ", QString::SkipEmptyParts);
 		for (const QString &str : strings)
 		{
-			int strEqu;
-			if (str.startsWith(compareWith) || compareWith.startsWith(str))
+			int strEqu = 0xFFFFFF; //infinity...
+			for (auto word : str.split(" ", QString::SkipEmptyParts))
 			{
-				strEqu = 0;
-			} 
-			else 
-			{
-            	strEqu = editDistance(compareWith, str);
-			}
+				auto wordA = word.leftJustified(15, ' ');
+				for (const auto &word2 : compareWithWords)
+				{
+					auto wordB = word2.leftJustified(15, ' ');
+					int editDist = editDistance(wordA, wordB);
+					if (word.startsWith(word2) || word2.startsWith(word))
+					{
+						editDist /= 8;
+					}
+					strEqu = std::min(strEqu, editDist);
+				}
+			}			
 			if (!weightedStrings.contains(strEqu))
 			{
 				weightedStrings[strEqu] = QStringList();
 			}
-			weightedStrings[strEqu].push_back(str);
+			weightedStrings[strEqu].push_back(str + QString(" [%1]").arg(strEqu));
 		}
 		QStringList retList;
 		for (auto &list : weightedStrings.values())
 		{
+			list.sort();
 			retList.append(list);
 		}
 		return retList;
