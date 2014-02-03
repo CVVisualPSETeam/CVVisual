@@ -26,6 +26,12 @@ namespace cvv{ namespace view{
 
 			connect(zoomim,SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
 				SLOT(updateConvertStatus(ImageConversionResult)));
+			
+
+			connect(info.get(),SIGNAL(getZoom(qreal)),zoomim,
+				SLOT(updateZoom(qreal)));
+
+
 			zoomim->updateMat(image);
 
 			imageLayout->addWidget(zoomim);

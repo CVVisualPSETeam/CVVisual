@@ -13,12 +13,12 @@ namespace cvv{ namespace view{
 	SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
 		FilterView{parent},images_(images)
 	{
-		QWidget 			*imwid		= new QWidget{};
+		QWidget 		*imwid		= new QWidget{};
 		qtutil::Accordion 	*accor 		= new qtutil::Accordion{};
-		QHBoxLayout			*layout 	= new QHBoxLayout{};
-		QHBoxLayout			*imageLayout 	= new QHBoxLayout{};
+		QHBoxLayout		*layout 	= new QHBoxLayout{};
+		QHBoxLayout		*imageLayout 	= new QHBoxLayout{};
 
-		auto filterSelector	= util::make_unique<qtutil::FilterSelectorWidget<1,1>>();
+		auto filterSelector			= util::make_unique<qtutil::FilterSelectorWidget<1,1>>();
 		filterSelector_ = filterSelector.get();
 		
 		accor->setMinimumSize(250,0);
@@ -32,6 +32,10 @@ namespace cvv{ namespace view{
 
 			connect(zoomImages_[count],SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
 				SLOT(updateConvertStatus(ImageConversionResult)));
+
+			connect(info.get(),SIGNAL(getZoom(qreal)),zoomImages_[count],
+				SLOT(updateZoom(qreal)));
+
 			zoomImages_[count]->updateMat(image);
 
 			imageLayout->addWidget(zoomImages_[count]);

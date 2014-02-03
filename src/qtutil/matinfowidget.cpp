@@ -5,28 +5,33 @@
 
 namespace cvv{ namespace qtutil {
 
-     MatInfoWidget::MatInfoWidget(cv::Mat mat,QWidget *parent):QWidget{parent}{
-         labelConvert = new QLabel{};
-         labelDim = new QLabel{};
-         labelType = new QLabel{};
-         labelChannel = new QLabel{};
-         labelSize = new QLabel{};
-         labelDepth = new QLabel{};
+	MatInfoWidget::MatInfoWidget(cv::Mat mat,QWidget *parent):QWidget{parent}
+	{
+		zoomSpin 	= new QDoubleSpinBox{};
+		labelConvert 	= new QLabel{};
+		labelDim 	= new QLabel{};
+		labelType 	= new QLabel{};
+		labelChannel 	= new QLabel{};
+		labelSize 	= new QLabel{};
+		labelDepth 	= new QLabel{};
 
-         QVBoxLayout *basicLayout=new QVBoxLayout{};
+		QVBoxLayout *basicLayout = new QVBoxLayout{};
 
-         basicLayout->addWidget(labelConvert);
-         basicLayout->addWidget(labelDim);
-         basicLayout->addWidget(labelType);
-         basicLayout->addWidget(labelChannel);
-         basicLayout->addWidget(labelSize);
-         basicLayout->addWidget(labelDepth);
+		basicLayout->addWidget(zoomSpin);
+		basicLayout->addWidget(labelConvert);
+		basicLayout->addWidget(labelDim);
+		basicLayout->addWidget(labelType);
+		basicLayout->addWidget(labelChannel);
+		basicLayout->addWidget(labelSize);
+		basicLayout->addWidget(labelDepth);
 
-	setLayout(basicLayout);
-         updateMat(mat);
-     }
+		setLayout(basicLayout);
 
-     void MatInfoWidget::updateConvertStatus(ImageConversionResult result){
+		connect(zoomSpin,SIGNAL(valueChanged(double)),this,SIGNAL(getZoom(qreal)));
+		updateMat(mat);
+	}
+
+	void MatInfoWidget::updateConvertStatus(ImageConversionResult result){
 		QString qs{"Convert Status: "};
 		switch(result)
 		{
@@ -55,41 +60,47 @@ namespace cvv{ namespace qtutil {
 				labelConvert->setText(qs.append("Unknown result from convert function"));
 				break;
 		}
-     }
+	}
 
-     void MatInfoWidget::updateMat(cv::Mat mat){
-         if(mat.empty()){
-             labelDim->setText("empty");
-             labelType->setText("empty");
-             labelChannel->setText("empty");
-             labelSize->setText("empty");
-             labelDepth->setText("empty");
-         }else{
-             labelDim->setText(QString("Dimension: %1").arg(mat.dims));
-             labelChannel->setText(QString("Number of Channels: %1").arg(mat.channels()));
-             labelSize->setText(QString("Size: %1/%2").arg(mat.rows).arg((mat.cols)));
-             labelDepth->setText(QString("Depth: %1").arg(mat.depth()));
+	void MatInfoWidget::updateMat(cv::Mat mat){
+		if(mat.empty()){
+			labelDim->setText("empty");
+			labelType->setText("empty");
+			labelChannel->setText("empty");
+			labelSize->setText("empty");
+			labelDepth->setText("empty");
+		}else
+		{
+			labelDim->setText(QString("Dimension: %1").arg(mat.dims));
+			labelChannel->setText(QString("Number of Channels: %1").arg(mat.channels()));
+			labelSize->setText(QString("Size: %1/%2").arg(mat.rows).arg((mat.cols)));
+			labelDepth->setText(QString("Depth: %1").arg(mat.depth()));
 
-             switch(mat.type()){
-             case CV_8U: labelType->setText("Type: CV_8U");
-                 break;
-             case CV_8S: labelType->setText("Type: CV_5U");
-                 break;
-             case CV_16U: labelType->setText("Type: CV_16U");
-                 break;
-             case CV_16S: labelType->setText("Type: CV_16S");
-                 break;
-             case CV_32S: labelType->setText("Type: CV_32S");
-                 break;
-             case CV_32F: labelType->setText("Type: CV_32F");
-                 break;
-             case CV_64F: labelType->setText("Type: CV_64S");
-                 break;
-             default:
-                 labelType->setText("Type: Unkown");
-                 break;
-             }
-         }
-     }
+			switch(mat.type())
+			{
+				case CV_8U: labelType->setText("Type: CV_8U");
+					break;
+				case CV_8S: labelType->setText("Type: CV_5U");
+					break;
+				case CV_16U: labelType->setText("Type: CV_16U");
+					break;
+				case CV_16S: labelType->setText("Type: CV_16S");
+					break;
+				case CV_32S: labelType->setText("Type: CV_32S");
+					break;
+				case CV_32F: labelType->setText("Type: CV_32F");
+					break;
+				case CV_64F: labelType->setText("Type: CV_64S");
+					break;
+				default:
+					labelType->setText("Type: Unkown");
+					break;
+			}
+		}
+	}
 
+ 	/*void MatInfoWidget::setZoom(qreal zoomfac)
+	{
+		zoomSpin->setValue(zoomfac);
+	}*/
 }}
