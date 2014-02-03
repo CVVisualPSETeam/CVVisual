@@ -646,10 +646,9 @@ private:
 		for (const QString &str : strings)
 		{
 			int strEqu;
-			if (str.startsWith(compareWith) || str.endsWith(compareWith) ||
-					compareWith.startsWith(str) || compareWith.endsWith(str))
+			if (str.startsWith(compareWith) || compareWith.startsWith(str))
 			{
-				strEqu = editDistance(compareWith, str) / 2;
+				strEqu = 0;
 			} 
 			else 
 			{
