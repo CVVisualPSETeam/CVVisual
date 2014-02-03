@@ -10,6 +10,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
+#include "../util/util.hpp"
+
 namespace cvv{ namespace qtutil{
 
 /**
@@ -29,7 +31,9 @@ public:
 	 * @param isCollapsed If true the contained widget will be collapsed. (It will be shown
 	 * otherwise.)
 	 */
-	explicit Collapsable(const QString& title, QWidget& widget, bool isCollapsed = true,
+	//explicit Collapsable(const QString& title, QWidget& widget, bool isCollapsed = true,
+	//		QWidget *parent = 0);
+	explicit Collapsable(const QString& title, std::unique_ptr<QWidget> widget, bool isCollapsed = true,
 			QWidget *parent = 0);
 
 	/**

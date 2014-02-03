@@ -173,7 +173,7 @@ public:
 	 *	will be added to the end
 	 * @return The handle to access the element
 	 */
-	Handle insert(const QString& title,QWidget& widget, bool isCollapsed = true,
+	Handle insert(const QString& title, std::unique_ptr<QWidget> widget, bool isCollapsed = true,
 			std::size_t position = std::numeric_limits<std::size_t>::max());
 
 
@@ -184,8 +184,8 @@ public:
 	 * @param isCollapsed Whether the widget is collapsed after creation
 	 * @return The handle to access the element
 	 */
-	Handle push_back(const QString& title,QWidget& widget, bool isCollapsed = true)
-		{return insert(title,widget, isCollapsed);}
+	Handle push_back(const QString& title, std::unique_ptr<QWidget> widget , bool isCollapsed = true)
+		{return insert(title, std::move(widget), isCollapsed);}
 
 	/**
 	 * @brief Adds a widget to the front of the Accordion
@@ -194,8 +194,8 @@ public:
 	 * @param isCollapsed Whether the widget is collapsed after creation
 	 * @return The handle to access the element
 	 */
-	Handle push_front(const QString& title,QWidget& widget, bool isCollapsed = true)
-		{return insert(title,widget, isCollapsed, 0);}
+	Handle push_front(const QString& title, std::unique_ptr<QWidget> widget , bool isCollapsed = true)
+		{return insert(title, std::move(widget), isCollapsed, 0);}
 
 
 	/**

@@ -10,6 +10,7 @@
 #include <QWidget>
 #include <QScrollArea>
 
+#include "../controller/view_controller.hpp"
 #include "../qtutil/stfl_query_widget.hpp"
 #include "../qtutil/util.hpp"
 
@@ -39,17 +40,17 @@ OverviewPanel::OverviewPanel(controller::ViewController *controller):
     imgSizeSlider->setMaximum(100);
     imgSizeSlider->setSliderPosition(controller->getSetting("overview", "imgzoom").toInt());
     connect(imgSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(imgSizeSliderAction()));
-	bottomLayout->addWidget(imgSizeSlider);
-	showImgsButton = new QPushButton{};
-	showImgsButton->setText("Hide images");
-	//connect(showImgsButton, SIGNAL(released()), this, SLOT(toggleImages()));
-	//bottomLayout->addWidget(showImgsButton);	
+    bottomLayout->addWidget(imgSizeSlider);
+    showImgsButton = new QPushButton{};
+    showImgsButton->setText("Hide images");
+    //connect(showImgsButton, SIGNAL(released()), this, SLOT(toggleImages()));
+    //bottomLayout->addWidget(showImgsButton);
     bottomArea->setLayout(bottomLayout);
     layout->addWidget(bottomArea);
 
     setLayout(layout);
     initEngine();
-	connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
+    connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
     connect(queryWidget, SIGNAL(filterSignal(QString)), this, SLOT(filterQuery(QString)));
     connect(queryWidget, SIGNAL(requestSuggestions(QString)), this, SLOT(requestSuggestions(QString)));
 }
@@ -102,8 +103,14 @@ void OverviewPanel::initEngine(){
 
 void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
 {
-	OverviewTableCollumn col(newCall);
+    OverviewTableCollumn col(newCall);
     queryEngine.addNewElement(col);
+    table->updateCollumnGroups(queryEngine.reexecuteLastQuery());
+}
+
+void OverviewPanel::deleteElement(size_t id)
+{
+    queryEngine.removeElements([id](OverviewTableCollumn elem) {return elem.id() == id;});
     table->updateCollumnGroups(queryEngine.reexecuteLastQuery());
 }
 
@@ -130,16 +137,16 @@ void OverviewPanel::imgSizeSliderAction()
 
 void OverviewPanel::toggleImages()
 {
-	if (showImgsButton->text() == "Show images")
-	{
-		table->showImages();
-		showImgsButton->setText("Hide images");
-	}
-	else
-	{
-		table->hideImages();
-		showImgsButton->setText("Show images");
-	}
+    if (showImgsButton->text() == "Show images")
+    {
+        table->showImages();
+        showImgsButton->setText("Hide images");
+    }
+    else
+    {
+        table->hideImages();
+        showImgsButton->setText("Show images");
+    }
 }
 
 }}

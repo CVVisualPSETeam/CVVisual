@@ -70,8 +70,8 @@ public:
 	 * @throw std::invalid_argument checkInput(in).first==false
 	 * @return parameter out
 	 */
-	virtual const std::array<cv::Mat&,Out>& applyFilter(const std::array<const cv::Mat&,In>& in,
-					const std::array<cv::Mat&,Out>& out) const override
+	virtual const std::array<cv::Mat,Out>& applyFilter(const std::array<const cv::Mat,In>& in,
+					std::array<cv::Mat,Out>& out) const override
 	{
 		auto check = checkInput(in);
 		if(!check.first)
@@ -86,7 +86,7 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(const std::array<const cv::Mat&,In>& in) const override
+	virtual std::pair<bool, QString> checkInput(const std::array<const cv::Mat,In>& in) const override
 	{
 		if(currentFilter_)
 			{return {false, "No entry selected."};}

@@ -3,32 +3,49 @@
 
 #include <QLabel>
 #include <QWidget>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QRectF>
 
 #include "opencv2/core/core.hpp"
 
+#include "util.hpp"
+#include "../util/util.hpp"
+
 namespace cvv{ namespace qtutil{
-	
-	class ZoomableImage:public QWidget
-	{
 
-	Q_OBJECT
+class ZoomableImage:public QWidget
+{
+Q_OBJECT
+public:
+	ZoomableImage(const cv::Mat& mat=cv::Mat{},QWidget* parent = nullptr);
 
-	public:
+	const cv::Mat& mat() const
+		{return mat_;}
 
-		ZoomableImage(const cv::Mat& mat,QWidget* parent = nullptr);
+	QRectF visibleArea() const;
 
-	signals:
-		void updateInfo(const QString& str);
+	qreal zoom() const
+		{return zoom_;}
 
-	public slots:
+signals:
+	void updateConversionResult(ImageConversionResult);
+	void updateArea(QRectF);
 
-		void updateMat(const cv::Mat& mat); 
+public slots:
+	void updateMat(cv::Mat mat);
+	void updateZoom(qreal factor);
 
-	private:
+private slots:
+	void viewScrolled()
+		{emit updateArea(visibleArea());}
+private:
+	cv::Mat mat_;
 
-		cv::Mat mat_;
-		QLabel *label_;
+	QGraphicsView* view_;
+	std::unique_ptr<QGraphicsScene> scene_;
+	qreal zoom_;
+};
 
-	};
 }}
 #endif

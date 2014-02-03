@@ -30,15 +30,16 @@ void OverviewTable::updateCollumnGroups(std::vector<stfl::ElementGroup<OverviewT
     {
         if (group.size() > 0)
         {
-            auto *subtable = new OverviewGroupSubtable{controller, this, std::move(group)};
+            auto subtable = util::make_unique<OverviewGroupSubtable>(controller, this, std::move(group));
+	    auto subtablePtr = subtable.get();
             auto titles = group.getTitles();
             QString title = "No grouping specified, use #group to do specify";
             if (titles.size() != 0)
             {
                 title = titles.join(", ");
             }
-            subtableAccordion->push_back(title, *subtable, false);
-            subTables.push_back(subtable);
+            subtableAccordion->push_back(title, std::move(subtable), false);
+            subTables.push_back(subtablePtr);
         }
     }
 }

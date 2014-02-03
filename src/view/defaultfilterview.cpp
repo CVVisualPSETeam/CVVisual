@@ -3,6 +3,7 @@
 
 #include "defaultfilterview.hpp"
 #include "../qtutil/accordion.hpp"
+#include "../qtutil/matinfowidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
 
 namespace cvv{ namespace view{
@@ -12,7 +13,7 @@ namespace cvv{ namespace view{
 	{
 		QHBoxLayout* layout = new QHBoxLayout{};
 		qtutil::Accordion *accor = new qtutil::Accordion{};
-		accor->insert("this is a accordion",*(new QWidget{}));
+		accor->insert("this is a accordion", util::make_unique<QWidget>());
 		accor->setMinimumSize(150,0);
 		QWidget *imwid = new QWidget{};
 		QHBoxLayout* imageLayout = new QHBoxLayout{};
@@ -20,7 +21,15 @@ namespace cvv{ namespace view{
 
 		for(auto image:images_)
 		{
-			imageLayout->addWidget(new qtutil::ZoomableImage(image));
+			qtutil::ZoomableImage *zoomim =new qtutil::ZoomableImage{};
+			auto info = util::make_unique<qtutil::MatInfoWidget>(image);
+
+			connect(zoomim,SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
+				SLOT(updateConvertStatus(ImageConversionResult)));
+			zoomim->updateMat(image);
+
+			imageLayout->addWidget(zoomim);
+			accor->insert("ImageInformation", std::move(info));
 		}
 		imwid->setLayout(imageLayout);
 		layout->addWidget(imwid);

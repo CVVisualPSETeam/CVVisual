@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_FILTER_CALL_TAB_HPP
 #define CVVISUAL_FILTER_CALL_TAB_HPP
 
+#include <memory>
+
 #include <QString>
 #include <QMap>
 #include <QPushButton>
@@ -23,7 +25,8 @@ namespace gui {
  * containing a FilterView.
  * Allows to switch views and to access the help.
  */
-class FilterCallTab: public CallTab
+class FilterCallTab:
+		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::FilterView, std::vector<cv::Mat>, QWidget*>
 {
 Q_OBJECT
 
@@ -43,6 +46,7 @@ public:
 	 * @param tabName
 	 * @param fc the FilterCall containing the information to be visualized.
 	 * @param vc the ViewController this CallTab belongs to.
+	 * @attention might be deleted
 	 */
 	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc);
 
@@ -53,6 +57,7 @@ public:
 	 * @param fc the FilterCall containing the information to be visualized.
 	 * @param vc the ViewController this CallTab belongs to
 	 * @param viewId the ID of the view to be shown inside this CallTab.
+	 * @attention might be deleted
 	 */
 	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, const QString& viewId);
 
@@ -69,7 +74,7 @@ public:
 	 * Adds a FilterView with a name to the thread local map of all FilterViews.
 	 * @param filterViewId the Id or name of the FilterView.
 	 */
-	static void addFilterViewToMap(const QString& filterViewId, const cvv::view::FilterView& filterView);
+	static void addFilterViewToMap(const QString& filterViewId, std::function<std::unique_ptr<cvv::view::FilterView>(std::vector<cv::Mat>, QWidget*)>);
 
 private slots:
 
@@ -78,7 +83,7 @@ private slots:
 	 * Called when the index of the view selection changes.
 	 * @param text of the current selection in the view selection.
 	 */
-	void currentIndexChanged(const QString& text) const;
+	void currentIndexChanged(const QString& text);
 
 	/**
 	 * @brief Help Button clicked.
@@ -94,17 +99,21 @@ private:
 	 */
 	void createGui();
 
-	//thread_local static QMap<QString, std::unique_ptr<cvv::view::FilterView>> filterViewMap;
-	util::Reference<const cvv::impl::FilterCall> filterCall;
-	util::Reference<const cvv::controller::ViewController> viewController;
-	QString filterViewId;
-	//std::unique_ptr<cvv::view::FilterView> filterView;
-	cvv::view::FilterView* filterView;
+	/**
+	 * @brief sets up View referred to by viewId
+	 * @param viewId ID of the view to be set.
+	 */
+	void setView(const QString& viewId);
 
-	QPushButton* helpButton;
-	QComboBox* filterViewSelection;	// Will eventually be replaced with the register helper's combo box (below)
+	util::Reference<const cvv::impl::FilterCall> filterCall_;
+	util::Reference<const cvv::controller::ViewController> viewController_;
+	QString filterViewId_;
+	cvv::view::FilterView* filterView_;
 
-	static cvv::qtutil::RegisterHelper<std::unique_ptr<cvv::view::FilterView>>* filterViewMap;
+	QPushButton* helpButton_;
+	QHBoxLayout* hlayout_;
+	QVBoxLayout* vlayout_;
+
 };
 
 }}//namespaces

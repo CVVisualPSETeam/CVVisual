@@ -17,6 +17,56 @@ QSet<QString> createStringSet(QString string)
 	return set;
 }
 
+std::pair<bool, QString> typeToQString(const cv::Mat& mat)
+{
+	QString s{};
+	bool b=true;
+	switch(mat.depth())
+	{
+		case CV_8U:  s.append("CV_8U" ); break;
+		case CV_8S:  s.append("CV_8S" ); break;
+		case CV_16U: s.append("CV_16U"); break;
+		case CV_16S: s.append("CV_16S"); break;
+		case CV_32S: s.append("CV_32S"); break;
+		case CV_32F: s.append("CV_32F"); break;
+		case CV_64F: s.append("CV_64F"); break;
+		default:
+			s.append("DEPTH").append(QString::number(mat.depth()));
+			b=false;
+	}
+	s.append("C").append(QString::number(mat.channels()));
+	return{b,s};
+}
+
+QString conversionResultToString(const ImageConversionResult& result)
+{
+	switch(result)
+	{
+		case ImageConversionResult::SUCCESS :
+			return "SUCCESS";
+		break;
+		case ImageConversionResult::MAT_EMPTY:
+			return "Empty Mat";
+		break;
+		case ImageConversionResult::MAT_NOT_2D:
+			return "Unsupported Dimension";
+		break;
+		case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:
+			return "Float values out of range [0,1]";
+		break;
+		case ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED:
+			return "Unsupported number of channels";
+		break;
+		case ImageConversionResult::MAT_INVALID_SIZE:
+			return "Invalid Size";
+		break;
+		case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:
+			return "Unsupported Depth ";
+		break;
+	}
+	return "Unknown result from convert function";
+}
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////
 //image conversion stuff
 // ////////////////////////////////////////////////

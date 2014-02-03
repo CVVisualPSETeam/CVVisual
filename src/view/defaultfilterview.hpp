@@ -20,7 +20,7 @@ public:
 	 * @param images A List of images
 	 * @param parent The parent of this QWidget
 	 */
-	DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent);
+	DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
 
 private: 
 	/*
