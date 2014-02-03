@@ -1,10 +1,10 @@
 #ifndef CVVISUAL_ZOOMABLEIMAGE
 #define CVVISUAL_ZOOMABLEIMAGE
 
-#include <QLabel>
 #include <QWidget>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QGraphicsTextItem>
 #include <QRectF>
 
 #include "opencv2/core/core.hpp"
@@ -18,7 +18,7 @@ class ZoomableImage:public QWidget
 {
 Q_OBJECT
 public:
-	ZoomableImage(const cv::Mat& mat=cv::Mat{},QWidget* parent = nullptr);
+	ZoomableImage(const cv::Mat& mat=cv::Mat{}, QWidget* parent = nullptr);
 
 	const cv::Mat& mat() const
 		{return mat_;}
@@ -30,21 +30,31 @@ public:
 
 signals:
 	void updateConversionResult(ImageConversionResult);
-	void updateArea(QRectF);
+	void updateArea(QRectF,qreal);
 
 public slots:
 	void updateMat(cv::Mat mat);
 	void updateZoom(qreal factor);
+	void showValues(bool show);
+	void autoShowValues(bool enable)
+		{autoShowValues_=enable;}
 
 private slots:
 	void viewScrolled()
-		{emit updateArea(visibleArea());}
+		{emit updateArea(visibleArea(),zoom_);}
+	void drawValues();
 private:
+
 	cv::Mat mat_;
 
 	QGraphicsView* view_;
-	std::unique_ptr<QGraphicsScene> scene_;
+	QGraphicsScene* scene_;
 	qreal zoom_;
+
+	qreal threshold_;
+	bool autoShowValues_;
+	bool valuesVisible_;
+	std::vector<QGraphicsTextItem*> values_;
 };
 
 }}

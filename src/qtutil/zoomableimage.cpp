@@ -1,22 +1,98 @@
+#include "zoomableimage.hpp"
+
+#include <algorithm>
 
 #include <QHBoxLayout>
 #include <QScrollBar>
 
-#include "zoomableimage.hpp"
 #include "util.hpp"
+#include "types.hpp"
+/*
+template<int depth> cvv::qtutil::DepthType<depth> transformForPrint(cvv::qtutil::DepthType<depth> i){return i;}
+template<> cvv::qtutil::DepthType<CV_16S> transformForPrint<CV_8U>(cvv::qtutil::DepthType<CV_8U> i){return static_cast<cvv::qtutil::DepthType<CV_16S>>(i);}
+template<> cvv::qtutil::DepthType<CV_16S> transformForPrint<CV_8S>(cvv::qtutil::DepthType<CV_8S> i){return static_cast<cvv::qtutil::DepthType<CV_16S>>(i);}
+*/
+template<int depth>
+std::string printPixel(const cv::Mat& mat, int spalte, int zeile)
+{
+	std::stringstream ss{};
+	auto p=mat.ptr<cvv::qtutil::DepthType<depth>>(zeile)
+				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<depth>);
+	ss<<(p[0]);
+	for(int c=1;c<mat.channels();c++)
+	{
+		ss<<"\n"<<(p[c]);
+	}
+	return ss.str();
+}
+template<>
+std::string printPixel<CV_8U>(const cv::Mat& mat, int spalte, int zeile)
+{
+	std::stringstream ss{};
+	auto p=mat.ptr<cvv::qtutil::DepthType<CV_8U>>(zeile)
+				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<CV_8U>);
+	ss<<static_cast<cvv::qtutil::DepthType<CV_16U>>(p[0]);
+	for(int c=1;c<mat.channels();c++)
+	{
+		ss<<"\n"<<static_cast<cvv::qtutil::DepthType<CV_16U>>(p[c]);
+	}
+	return ss.str();
+}
+template<>
+std::string printPixel<CV_8S>(const cv::Mat& mat, int spalte, int zeile)
+{
+	std::stringstream ss{};
+	auto p=mat.ptr<cvv::qtutil::DepthType<CV_8S>>(zeile)
+				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<CV_8S>);
+	ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(p[0]);
+	for(int c=1;c<mat.channels();c++)
+	{
+		ss<<"\n"<<static_cast<cvv::qtutil::DepthType<CV_16S>>(p[c]);
+	}
+	return ss.str();
+}
+
+std::string printPixel(const cv::Mat& mat, int i, int j)
+{
+	if(i>=0&&j>=0)
+	{
+		if(i<mat.cols&&j<mat.rows)
+		{
+			switch(mat.depth())
+			{
+				case CV_8U:return printPixel<CV_8U>(mat,i,j); break;
+				case CV_8S:return printPixel<CV_8S>(mat,i,j); break;
+				case CV_16U:return printPixel<CV_16U>(mat,i,j); break;
+				case CV_16S:return printPixel<CV_16S>(mat,i,j); break;
+				case CV_32S:return printPixel<CV_32S>(mat,i,j); break;
+				case CV_32F:return printPixel<CV_32F>(mat,i,j); break;
+				case CV_64F:return printPixel<CV_64F>(mat,i,j); break;
+			}
+		}
+	}
+	return "";
+}
 
 namespace cvv{ namespace qtutil{
 ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	QWidget{parent},
 	mat_{mat},
 	view_{new QGraphicsView{}},
-	scene_{cvv::util::make_unique<QGraphicsScene>()},
-	zoom_{1}
+	scene_{new QGraphicsScene{this}},
+	zoom_{1},
+	threshold_{60},
+	autoShowValues_{true},
+	valuesVisible_{false},
+	values_{}
 {
 	// qt5 doc : "The view does not take ownership of scene."
-	view_->setScene(scene_.get());
-	QObject::connect((view_->horizontalScrollBar()),&QScrollBar::valueChanged,this,&ZoomableImage::viewScrolled);
-	QObject::connect((view_->verticalScrollBar()),  SIGNAL(valueChanged(int)),this,SLOT(viewScrolled()));
+	view_->setScene(scene_);
+	QObject::connect((view_->horizontalScrollBar()),&QScrollBar::valueChanged,this,
+							&ZoomableImage::viewScrolled);
+	QObject::connect((view_->verticalScrollBar()),&QScrollBar::valueChanged,this,
+							&ZoomableImage::viewScrolled);
+	QObject::connect(this,SIGNAL(updateArea(QRectF,qreal)),
+			 this,SLOT(drawValues()));
 
 	QHBoxLayout *layout=new QHBoxLayout{};
 	layout->addWidget(view_);
@@ -29,28 +105,75 @@ void ZoomableImage::updateMat(cv::Mat mat)
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
 	emit updateConversionResult(result.first);
-	std::unique_ptr<QGraphicsScene> tmp=cvv::util::make_unique<QGraphicsScene>();
-	view_->setScene(tmp.get());
-	scene_.reset(tmp.release());
+	scene_->clear();
 	scene_->addPixmap(result.second);
+
+	drawValues();
 }
 
 void ZoomableImage::updateZoom(qreal factor)
 {
-	if(factor > 0)
+	if(factor <= 0) {return;}
+	view_->scale(factor/zoom_,factor/zoom_);
+	zoom_=factor;
+
+	if(autoShowValues_)
 	{
-		view_->scale(factor/zoom_,factor/zoom_);
-		zoom_=factor;
-		emit updateArea(visibleArea());
+		valuesVisible_= zoom_>=threshold_;
 	}
+
+	emit updateArea(visibleArea(),zoom_);
 }
 
+
+void ZoomableImage::showValues(bool show)
+{
+	valuesVisible_= show;
+	drawValues();
+}
+
+
+
+void ZoomableImage::drawValues()
+{
+	//delete old values
+	for(auto& elem:values_)
+	{
+		scene_->removeItem(elem);
+		delete elem;
+	}
+	values_.clear();
+
+	//draw new values?
+	if(!valuesVisible_){return;}
+	auto r=visibleArea();
+	for(int i=std::max(0,static_cast<int>(r.left())-5);
+		i<std::min(mat_.cols,static_cast<int>(r.right())+5);i++)
+	{
+		for(int j=std::max(0,static_cast<int>(r.top())-5);
+			j<std::min(mat_.rows,static_cast<int>(r.bottom())+5); j++)
+		{
+
+			QString s(printPixel(mat_,i,j).c_str());
+
+			s.replace('\n',"<br>");
+			QGraphicsTextItem* txt=scene_->addText("");
+			txt->setHtml(
+				QString("<div style='background-color:rgba(255, 255, 255, 0.5);'>")+
+						s + "</div>"
+			);
+			txt->setPos(i,j);
+			txt->setScale(0.008);
+			values_.push_back(txt);
+		}
+	}
+}
 
 QRectF ZoomableImage::visibleArea() const
 {
 	QRectF result{};
 	result.setTopLeft(view_->mapToScene(QPoint{0,0}));
-	result.setTopRight(view_->mapToScene(QPoint{view_->width(),view_->height()}));
+	result.setBottomRight(view_->mapToScene(QPoint{view_->width(),view_->height()}));
 	return result;
 }
 

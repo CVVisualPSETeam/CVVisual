@@ -10,14 +10,22 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/opencv.hpp"
+#include "opencv2/highgui/highgui.hpp"
+
+// from
+// https://github.com/Itseez/opencv/blob/master/samples/cpp/
+//        tutorial_code/core/Matrix/Drawing_1.cpp
+cv::Mat renderImg();
 
 int main(int argc, char *argv[])
 {
 try{
+
+
 	QApplication a(argc, argv);
 
 	int w=10;
-	int h=1000;
+	int h=15;
 
 	std::cout<<"will now create mats \n";
 	cv::Mat mGrey{h+1,w+1,	CV_8UC1,cv::Scalar{212}};
@@ -27,6 +35,7 @@ try{
 	cv::Mat mBGRA{h+5,w+5,	CV_32SC4,cv::Scalar{5000,-10000,25500,12500}};
 	cv::Mat mBG{  w+6,h+6,	CV_32FC2,cv::Scalar{0.41,0.55}};
 	cv::Mat mRGB{ h+7,w+7,	CV_64FC3,cv::Scalar{0.123,0.8123,0.7123}};
+	cv::Mat mImg{renderImg()};;
 
 	std::cout<<"done all\n";
 	std::cout<<"will now convert \n";
@@ -44,7 +53,9 @@ try{
 	auto cBG   = cvv::qtutil::convertMatToQImage(mBG);
 	std::cout<<"6";
 	auto cRGB  = cvv::qtutil::convertMatToQImage(mRGB);
-	std::cout<<"7\n";
+	std::cout<<"7";
+	auto cImg  = cvv::qtutil::convertMatToQImage(mImg);
+	std::cout<<"8\n";
 
 	std::cout<<"done all\n";
 	std::cout<<"will now test result \n";
@@ -56,6 +67,7 @@ try{
 	std::cout<<(cBGRA.first==cvv::qtutil::ImageConversionResult::SUCCESS)<<"\n";
 	std::cout<<  (cBG.first==cvv::qtutil::ImageConversionResult::SUCCESS)<<"\n";
 	std::cout<< (cRGB.first==cvv::qtutil::ImageConversionResult::SUCCESS)<<"\n";
+	std::cout<< (cImg.first==cvv::qtutil::ImageConversionResult::SUCCESS)<<"\n";
 
 	std::cout<<"done all\n";
 	std::cout<<"will now print formats 0=Invalid, 3=Indexed8, 5=ARGB32, 13=RGB888 \n";
@@ -67,6 +79,7 @@ try{
 	std::cout<<cBGRA.second.format()<<"\n";
 	std::cout<<  cBG.second.format()<<"\n";
 	std::cout<< cRGB.second.format()<<"\n";
+	std::cout<< cImg.second.format()<<"\n";
 
 	std::cout<<"create widget \n";
 	QWidget wid{};
@@ -99,7 +112,9 @@ try{
 	QLabel* l6{new QLabel{}};
 	std::cout<<"6";
 	QLabel* l7{new QLabel{}};
-	std::cout<<"7 => all\n";
+	std::cout<<"7 => all";
+	QLabel* l8{new QLabel{}};
+	std::cout<<"8 => all\n";
 
 
 	std::cout<<"convert to pixmaps start\n";
@@ -116,7 +131,9 @@ try{
 	l6->setPixmap(QPixmap::fromImage(cBG.second));
 	std::cout<<"6";
 	l7->setPixmap(QPixmap::fromImage(cRGB.second));
-	std::cout<<"7 => all\n";
+	std::cout<<"7";
+	l8->setPixmap(QPixmap::fromImage(cImg.second));
+	std::cout<<"8 => all\n";
 	std::cout<<"convert to pixmaps end\n";
 
 	l->addWidget(l1);
@@ -126,6 +143,7 @@ try{
 	l->addWidget(l5);
 	l->addWidget(l6);
 	l->addWidget(l7);
+	l->addWidget(l8);
 
 	std::cout<<"now everything with pixmaps \n";
 	l=new QHBoxLayout{};
@@ -138,6 +156,7 @@ try{
 	l5=new QLabel{};
 	l6=new QLabel{};
 	l7=new QLabel{};
+	l8=new QLabel{};
 
 	std::cout<<"convert to pixmaps start\n";
 	l1->setPixmap(cvv::qtutil::convertMatToQPixmap(mGrey).second);
@@ -147,6 +166,7 @@ try{
 	l5->setPixmap(cvv::qtutil::convertMatToQPixmap(mBGRA).second);
 	l6->setPixmap(cvv::qtutil::convertMatToQPixmap(mBG).second);
 	l7->setPixmap(cvv::qtutil::convertMatToQPixmap(mRGB).second);
+	l8->setPixmap(cvv::qtutil::convertMatToQPixmap(mImg).second);
 	std::cout<<"convert to pixmaps end\n";
 
 	l->addWidget(l1);
@@ -156,6 +176,7 @@ try{
 	l->addWidget(l5);
 	l->addWidget(l6);
 	l->addWidget(l7);
+	l->addWidget(l8);
 
 	wid.show();
 	return a.exec();
@@ -163,3 +184,84 @@ try{
 return 0;
 }
 
+static const int w=400;
+void MyPolygon( cv::Mat img );
+void MyLine( cv::Mat img, cv::Point start, cv::Point end );
+
+cv::Mat renderImg()
+{
+	cv::Mat rook_image = cv::Mat::zeros( w, w, CV_8UC3 );
+	// 2. Draw a rook
+	// ------------------
+
+	// 2.a. Create a convex polygon
+	MyPolygon( rook_image );
+
+	// 2.b. Creating rectangles
+	rectangle( rook_image,
+		cv::Point( 0, 7*w/8 ),
+		cv::Point( w, w),
+		cv::Scalar( 0, 255, 255 ),
+		1,
+		8
+	);
+
+	// 2.c. Create a few lines
+	MyLine( rook_image, cv::Point( 0, 15*w/16 ), cv::Point( w, 15*w/16 ) );
+	MyLine( rook_image, cv::Point( w/4, 7*w/8 ), cv::Point( w/4, w ) );
+	MyLine( rook_image, cv::Point( w/2, 7*w/8 ), cv::Point( w/2, w ) );
+	MyLine( rook_image, cv::Point( 3*w/4, 7*w/8 ), cv::Point( 3*w/4, w ) );
+
+	return rook_image;
+}
+
+void MyPolygon( cv::Mat img )
+{
+	int lineType = 8;
+	cv::Point rook_points[1][20];
+	rook_points[0][0] = cv::Point( w/4, 7*w/8 );
+	rook_points[0][1] = cv::Point( 3*w/4, 7*w/8 );
+	rook_points[0][2] = cv::Point( 3*w/4, 13*w/16 );
+	rook_points[0][3] = cv::Point( 11*w/16, 13*w/16 );
+	rook_points[0][4] = cv::Point( 19*w/32, 3*w/8 );
+	rook_points[0][5] = cv::Point( 3*w/4, 3*w/8 );
+	rook_points[0][6] = cv::Point( 3*w/4, w/8 );
+	rook_points[0][7] = cv::Point( 26*w/40, w/8 );
+	rook_points[0][8] = cv::Point( 26*w/40, w/4 );
+	rook_points[0][9] = cv::Point( 22*w/40, w/4 );
+	rook_points[0][10] = cv::Point( 22*w/40, w/8 );
+	rook_points[0][11] = cv::Point( 18*w/40, w/8 );
+	rook_points[0][12] = cv::Point( 18*w/40, w/4 );
+	rook_points[0][13] = cv::Point( 14*w/40, w/4 );
+	rook_points[0][14] = cv::Point( 14*w/40, w/8 );
+	rook_points[0][15] = cv::Point( w/4, w/8 );
+	rook_points[0][16] = cv::Point( w/4, 3*w/8 );
+	rook_points[0][17] = cv::Point( 13*w/32, 3*w/8 );
+	rook_points[0][18] = cv::Point( 5*w/16, 13*w/16 );
+	rook_points[0][19] = cv::Point( w/4, 13*w/16 );
+
+	const cv::Point* ppt[1] = { rook_points[0] };
+	int npt[] = { 20 };
+
+	fillPoly( img,
+		ppt,
+		npt,
+		1,
+		cv::Scalar( 0, 0, 255 ),
+		lineType
+	);
+}
+
+
+void MyLine( cv::Mat img, cv::Point start, cv::Point end )
+{
+	int thickness = 2;
+	int lineType = 8;
+	line( img,
+		start,
+		end,
+		cv::Scalar( 0, 0, 0 ),
+		thickness,
+		lineType
+	);
+}
