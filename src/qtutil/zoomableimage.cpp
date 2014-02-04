@@ -106,7 +106,7 @@ void ZoomableImage::updateMat(cv::Mat mat)
 	auto result = convertMatToQPixmap(mat_);
 	emit updateConversionResult(result.first);
 	scene_->clear();
-	scene_->addPixmap(result.second);
+	pixmap_ = scene_->addPixmap(result.second);
 
 	drawValues();
 }
@@ -177,4 +177,8 @@ QRectF ZoomableImage::visibleArea() const
 	return result;
 }
 
+QPointF ZoomableImage::mapImagePointToParent(QPointF point)
+{
+	return mapToParent(view_->mapToParent(view_->mapFromScene(pixmap_->mapToScene(point))));
+}
 }}

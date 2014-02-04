@@ -1,0 +1,30 @@
+#ifndef CVVISUAL_MATCH_SCENE
+#define CVVISUAL_MATCH_SCENE
+
+#include <QWidget>
+#include <QGraphicsView>
+#include <QGraphicsScene>
+
+#include "opencv2/core/core.hpp"
+
+namespace cvv{ namespace qtutil{
+
+class MatchScene:public QWidget{
+public:	
+	MatchScene(cv::Mat imageLeft,cv:Mat imageRight,const std::vector<cv::KeyPoint>& keypoints left,
+		const std::vector<cv::KeyPoint>& keypoints right,const std::vector<cv::DMatch>&, QWidget* parent = nullptr);
+public slots:
+	//TODO
+	//void setSelection();
+signal:
+	//TODO
+	//void changeSelection();
+
+private:
+	qtutil::ZoomableImage *leftImage_;
+	qtutil::ZoomableImage *rightImage_;
+	QGraphicsView *graphicView_;
+	QGraphicsScene *graphicScene_;	
+};
+}}
+#endif
