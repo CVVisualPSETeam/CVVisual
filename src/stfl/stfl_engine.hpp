@@ -687,7 +687,7 @@ private:
 			{
 				weightedStrings[strEqu] = QStringList();
 			}
-			weightedStrings[strEqu].push_back(str + QString(" [%1]").arg(strEqu));
+			weightedStrings[strEqu].push_back(str);
 		}
 		QStringList retList;
 		for (auto &list : weightedStrings.values())

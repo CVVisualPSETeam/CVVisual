@@ -19,7 +19,7 @@ CallWindow::CallWindow(util::Reference<controller::ViewController> controller, s
 	initFooter();
     setWindowTitle(QString("CVVisual | window no. %1").arg(id));
 	setMinimumWidth(600);
-	setMinimumHeight(400);
+	setMinimumHeight(600);
 }
 
 void CallWindow::initTabs()
@@ -114,11 +114,9 @@ bool CallWindow::hasTab(size_t tabId){
 
 void CallWindow::contextMenuRequested(const QPoint &location)
 {
-	if (location.isNull())
-		return;
 	auto tabBar = tabWidget->getTabBar();
 	int tabIndex = tabBar->tabAt(location);
-	if (tabIndex == 0)
+	if (tabIndex == tabOffset - 1)
 		return;
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(contextMenuAction(QAction*)));
@@ -149,7 +147,7 @@ void CallWindow::contextMenuAction(QAction *action)
 		controller->moveCallTabToNewWindow(currentContextMenuTabId);
 	
 	} if (text == "Remove call") {
-    	controller->removeCallTab (currentContextMenuTabId, true, true);
+    	controller->removeCallTab(currentContextMenuTabId, true, true);
 	} else 
 	{
 		auto windows = controller->getTabWindows();
