@@ -101,8 +101,8 @@ void FilterCallTab::createGui()
 	hlayout_->addWidget(helpButton_);
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
 
-	QWidget* upperBar = new QWidget{this};
-	upperBar->setLayout(hlayout_);
+	upperBar_ = new QWidget{this};
+	upperBar_->setLayout(hlayout_);
 
 	vlayout_ = new QVBoxLayout{this};
 
@@ -113,7 +113,7 @@ void FilterCallTab::createGui()
 	images.push_back(filterCall_->result());
 	filterView_ = new cvv::view::DefaultFilterView{images, this};*/
 
-	vlayout_->addWidget(upperBar);
+	vlayout_->addWidget(upperBar_);
 	setView(filterViewId_);
 
 	setLayout(vlayout_);
