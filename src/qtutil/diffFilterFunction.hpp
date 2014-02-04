@@ -20,12 +20,12 @@ class DiffFilterFunction: public FilterFunctionWidget<2,1>
 		DiffFilterType filterType_;
 
 	public:
-		DiffFilterFunction(DiffFilterType filterType);
+		DiffFilterFunction(DiffFilterType filterType, QWidget* parent = nullptr);
 
-		const std::array<cv::Mat,1>& applyFilter(const std::array<const cv::Mat,2>& in,
+		const std::array<cv::Mat,1>& applyFilter(const std::array<cv::Mat,2>& in,
 					std::array<cv::Mat,1>& out) const override;
 
-		std::pair<bool, QString> checkInput(const std::array<const cv::Mat,2>& in) const override;
+		std::pair<bool, QString> checkInput(const std::array<cv::Mat,2>& in) const override;
 };
 
 }}

@@ -1,4 +1,5 @@
-
+#include <exception>
+#include <memory>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -8,15 +9,18 @@
 #include <QtGui>
 
 #include "../qtutil/accordion.hpp"
+#include "../qtutil/diffFilterFunction.hpp"
 #include "../qtutil/filterselectorwidget.hpp"
+#include "../qtutil/matinfowidget.hpp"
 #include "../qtutil/util.hpp"
+#include "../util/util.hpp"
 #include "dual_filter_view.hpp"
 
 namespace cvv
 {
 namespace view
 {
-	DualFilterView::DualFilterView(std::vector<cv::Mat> images, QWidget* parent)
+	DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 		: FilterView{parent}, rawImages_(images)
 	{
 		QHBoxLayout* layout = new QHBoxLayout{};
@@ -25,26 +29,88 @@ namespace view
 		qtutil::Accordion *accor = new qtutil::Accordion{};
 
 		auto filterWidget = util::make_unique<qtutil::FilterSelectorWidget<2,1>>();
-		//TO DO: filter hinzufügen
+		filterSelector_ = filterWidget.get();
+
+		cvv::qtutil::FilterSelectorWidget<2,1>::registerElement("Difference image - hue",
+		[](QWidget* parent)
+		{
+			return std::unique_ptr<cvv::qtutil::FilterFunctionWidget<2,1>>
+				{new qtutil::DiffFilterFunction{qtutil::DiffFilterType::HUE, parent}};
+		});
+
+		cvv::qtutil::FilterSelectorWidget<2,1>::registerElement("Difference image - saturation",
+		[](QWidget* parent)
+		{
+			return std::unique_ptr<cvv::qtutil::FilterFunctionWidget<2,1>>
+				{new qtutil::DiffFilterFunction{qtutil::DiffFilterType::SATURATION, parent}};
+		});
+
+		cvv::qtutil::FilterSelectorWidget<2,1>::registerElement("Difference image - value",
+		[](QWidget* parent)
+		{
+			return std::unique_ptr<cvv::qtutil::FilterFunctionWidget<2,1>>
+				{new qtutil::DiffFilterFunction{qtutil::DiffFilterType::VALUE, parent}};
+		});
+
+		connect(&(filterSelector_->sigFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
 
 		accor->insert("Filter selection", std::move(filterWidget));
 		accor->setMinimumSize(150,0);
 		layout->addWidget(accor);
 
-		//add images
-		for(auto image:rawImages_)
-		{
-			QLabel* label = new QLabel{};
-			label->setMinimumSize(200,200);
-			label->setPixmap(qtutil::convertMatToQPixmap(image).second.scaled(200,200,Qt::KeepAspectRatio));
-			imageLayout->addWidget(label);
-		}
+		auto lambda = [this, imageLayout, accor](cv::Mat image, size_t count)
+			{
+				auto info = util::make_unique<qtutil::MatInfoWidget>(image);
+
+				connect(&zoomImages_.at(count),SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
+					SLOT(updateConvertStatus(ImageConversionResult)));
+
+				connect(info.get(),SIGNAL(getZoom(qreal)),&zoomImages_.at(count),
+					SLOT(updateZoom(qreal)));
+
+				zoomImages_.at(count).updateMat(image);
+
+				imageLayout->addWidget(&(zoomImages_.at(count)));
+				accor->insert("ImageInformation",std::move(info));
+			};
+
+		lambda(rawImages_.at(0), 0);
+		lambda(rawImages_.at(1), 2);
+
+		std::array<cv::Mat, 1> imageArray;
+		qtutil::DiffFilterFunction defaultFilter {qtutil::DiffFilterType::SATURATION};
+		defaultFilter.applyFilter(rawImages_, imageArray);
+		lambda(imageArray.at(0), 1);
+
 		imwid->setLayout(imageLayout);
 		layout->addWidget(imwid);
 
 		setLayout(layout);
 	}
 
+	DualFilterView::DualFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
+	:DualFilterView(convertToArray(images), parent)
+	{}
+
+	void DualFilterView::applyFilter()
+	{
+		auto result = filterSelector_->checkInput(rawImages_);
+		if(result.first){
+			std::array<cv::Mat,1> out;
+			filterSelector_-> applyFilter(rawImages_,out);
+			zoomImages_.at(1).updateMat(out.at(0));
+		}
+	}
+
+	std::array<cv::Mat, 2> DualFilterView::convertToArray(const std::vector<cv::Mat>& matVec)
+	{
+		if(matVec.size() != 2)
+		{
+			throw std::runtime_error("Wrong number of elements in vector");
+		}
+
+		return {matVec.at(0), matVec.at(1)};
+	}
 
 
 }

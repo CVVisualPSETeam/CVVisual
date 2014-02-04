@@ -18,9 +18,9 @@ namespace cvv{ namespace view{
 		QHBoxLayout		*layout 	= new QHBoxLayout{};
 		QHBoxLayout		*imageLayout 	= new QHBoxLayout{};
 
-		auto filterSelector			= util::make_unique<qtutil::FilterSelectorWidget<1,1>>();
+		auto filterSelector	= util::make_unique<qtutil::FilterSelectorWidget<1,1>>();
 		filterSelector_ = filterSelector.get();
-		
+
 		accor->setMinimumSize(250,0);
 		connect(&(filterSelector->sigFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
 		accor->insert("Select a Filter",std::move(filterSelector));
@@ -42,20 +42,20 @@ namespace cvv{ namespace view{
 			accor->insert("ImageInformation",std::move(info));
 			count++;
 		}
-		
+
 		imwid->setLayout(imageLayout);
 
 		layout->addWidget(accor);
-		layout->addWidget(imwid);		
+		layout->addWidget(imwid);
 		setLayout(layout);
 	}
-	
+
 	void SingleFilterView::applyFilter()
 	{
 		int count = 0;
 		for(auto image : images_)
 		{
-			const std::array<const cv::Mat,1> input{image};
+			const std::array<cv::Mat,1> input{image};
 			auto result = filterSelector_->checkInput(input);
 			if(result.first){
 				std::array<cv::Mat,1> out;
