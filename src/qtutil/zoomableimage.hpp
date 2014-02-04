@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include <QGraphicsTextItem>
 #include <QRectF>
+#include <QGraphicsPixmapItem>
 
 #include "opencv2/core/core.hpp"
 
@@ -27,6 +28,7 @@ public:
 
 	qreal zoom() const
 		{return zoom_;}
+	QPointF mapImagePointToParent(QPointF);
 
 signals:
 	void updateConversionResult(ImageConversionResult);
@@ -47,6 +49,7 @@ private:
 
 	cv::Mat mat_;
 
+	QGraphicsPixmapItem* pixmap_;
 	QGraphicsView* view_;
 	QGraphicsScene* scene_;
 	qreal zoom_;

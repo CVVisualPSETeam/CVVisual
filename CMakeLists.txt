@@ -120,10 +120,16 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
 	
 	add_executable(test_manual_defaultfilterview manual_test/defaultfilterviewtest/main.cpp)
-	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core Qt5Widgets Qt5Gui opencv_highgui opencv_core opencv_imgproc)
+	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core opencv_core)
 	
+	add_executable(test_manual_singlefilterview manual_test/singlefilterviewtest/main.cpp)
+	target_link_libraries(test_manual_singlefilterview cvvisual Qt5Core opencv_core)
+
+	add_executable(test_manual_matchscenetest manual_test/matchscenetest/main.cpp)
+	target_link_libraries(test_manual_matchscenetest cvvisual Qt5Core opencv_highgui opencv_core)
+
 	add_executable(test_manual_dualfilterview manual_test/dual_filter_view/main.cpp)
-    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
+    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core opencv_core)
 	
 	add_executable(test_manual_difffilterfunction manual_test/diffFilterFunction/main.cpp)
     	target_link_libraries(test_manual_difffilterfunction cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
