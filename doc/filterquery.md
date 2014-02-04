@@ -1,4 +1,10 @@
-#Filter query language
+---
+layout: page
+title: "Filter query language"
+category: doc
+date: 2014-02-04 08:55:36
+order: 1
+---
 The filter query language is the query language used in the overview and the raw match view to simply the task of filtering, sorting and grouping data sets in a table UI.
 The following is a description of the simple syntax and the supported commands.
 
@@ -50,5 +56,20 @@ It also supports several arguments for one filter command (via the comma seperat
 #[cs filter command] [argument 1], [...], [argument n]
 ```
 
+##Overview
+The following commands are supported in the overview.
+
+feauture/command | sorting supported | grouping supported | filtering supported | description
+-----------------|-------------------|--------------------|--------------------------------------------
+id               | yes               | yes                | yes                 |
+raw              | yes               | yes                | only basic filter   | alias for description
+description      | yes               | yes                | only basic filter   |
+image_count      | yes               | yes                | yes                 | number of images
+function         | yes               | yes                | yes                 | calling function
+file             | yes               | yes                | yes                 | inheriting file
+line             | yes               | yes                | yes                 |
+type             | yes               | yes                | yes                 | call type   
+            
+
 ##TODO
-Add Overview and raw match view paragraphs... 
+Add raw match view paragraphs... 
