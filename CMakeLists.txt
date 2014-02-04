@@ -57,7 +57,6 @@ include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 file(GLOB implementation_sources "src/*/*.cpp")
 file(GLOB implementation_headers "src/*/*.hpp")
 file(GLOB api_headers "include/opencv2/*.hpp")
-file(GLOB qt_headers "include/Qt/*.h")
 add_library( cvvisual
         ${implementation_sources}
         ${implementation_headers}
