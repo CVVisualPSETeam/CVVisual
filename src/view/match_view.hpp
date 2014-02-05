@@ -52,7 +52,7 @@ public:
 	 * @param matches
 	 * @return
 	 */
-	//virtual MatchView createMatchView(const std::vector<cv::InputArray>& img1, const std::vector<cv::KeyPoint>& keypoints1, const std::vector<cv::InputArray>& img2, const std::vector<cv::KeyPoint>& keypoints2, const std::vector<std::vector<cv::DMatch>>& matches);
+    //virtual MatchView createMatchView(const std::vector<cv::Mat>& img1, const std::vector<cv::KeyPoint>& keypoints1, const std::vector<cv::Mat>& img2, const std::vector<cv::KeyPoint>& keypoints2, const std::vector<std::vector<cv::DMatch>>& matches);
 };
 
 }} //namespaces

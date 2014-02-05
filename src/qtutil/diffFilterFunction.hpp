@@ -11,7 +11,8 @@ enum class DiffFilterType
 	HUE = 0,
 	SATURATION = 1,
 	VALUE = 2,
-	LUMINANCE=VALUE
+	LUMINANCE=VALUE,
+	GRAYSCALE = 3
 };
 
 class DiffFilterFunction: public FilterFunctionWidget<2,1>
@@ -20,12 +21,12 @@ class DiffFilterFunction: public FilterFunctionWidget<2,1>
 		DiffFilterType filterType_;
 
 	public:
-		DiffFilterFunction(DiffFilterType filterType);
+		DiffFilterFunction(DiffFilterType filterType, QWidget* parent = nullptr);
 
-		const std::array<cv::Mat,1>& applyFilter(const std::array<const cv::Mat,2>& in,
+		const std::array<cv::Mat,1>& applyFilter(const std::array<cv::Mat,2>& in,
 					std::array<cv::Mat,1>& out) const override;
 
-		std::pair<bool, QString> checkInput(const std::array<const cv::Mat,2>& in) const override;
+		std::pair<bool, QString> checkInput(const std::array<cv::Mat,2>& in) const override;
 };
 
 }}

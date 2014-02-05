@@ -43,7 +43,7 @@ public:
 	 * @return Returns out.
 	 */
 	virtual const std::array<cv::Mat,Out>&
-		applyFilter(const std::array<const cv::Mat,In>& in,
+		applyFilter(const std::array<cv::Mat,In>& in,
 				std::array<cv::Mat,Out>& out) const = 0;
 
 	/**
@@ -53,7 +53,7 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(const std::array<const cv::Mat,In>& in) const
+	virtual std::pair<bool, QString> checkInput(const std::array<cv::Mat,In>& in) const
 												= 0;
 
 	/**

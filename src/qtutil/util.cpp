@@ -1,10 +1,16 @@
 #include "util.hpp"
 
 #include <algorithm>
+#include <stdexcept>
+#include <thread>
+#include <functional>
+
 
 #include <opencv/highgui.h>
 
 #include "types.hpp"
+#include "../../src/dbg/dbg.hpp"
+
 
 namespace cvv {
 namespace qtutil {
@@ -71,6 +77,7 @@ QString conversionResultToString(const ImageConversionResult& result)
 //image conversion stuff
 // ////////////////////////////////////////////////
 //convert an image with known depth and channels (the number of chanels is the suffix (convertX)
+//colortable for CV_XXC1
 struct ColorTable
 {
 	ColorTable(): table{}
@@ -79,99 +86,126 @@ struct ColorTable
 };
 const static ColorTable colorTable{};
 
-template<int depth, int channels> struct ImageConverter
+//helper
+template<int depth, int channels> struct ConvertHelper
 {
 	static_assert(channels>=1&&channels<=4,"Illegal number of channels");
-	QImage static convert(const cv::Mat& mat);
+	QImage image(const cv::Mat& mat);
+	void pixelOperation(int i,int j, const cv::Mat& mat, uchar* row);
 };
 
-template<int depth> struct ImageConverter<depth,1>
+template<int depth> struct ConvertHelper<depth,1>
 {
-	QImage static convert(const cv::Mat& mat){
+	static QImage image(const cv::Mat& mat)
+	{
 		QImage img{mat.cols,mat.rows,QImage::Format_Indexed8};
 		img.setColorTable(colorTable.table);
-		uchar* row;
-		for(int i=0; i<mat.rows; i++)
-		{
-			row = img.scanLine(i);
-			for(int j=0; j<mat.cols; j++)
-			{
-				row[j] = convertTo8U<depth>(mat.at<PixelType<depth,1>>(i,j)[0]);
-			}
-		}
 		return img;
+	}
+
+	static void pixelOperation(int i,int j, const cv::Mat& mat, uchar* row)
+	{
+		row[j] = convertTo8U<depth>(mat.at<PixelType<depth,1>>(i,j)[0]);
 	}
 };
 
-template<int depth> struct ImageConverter<depth,2>
+template<int depth> struct ConvertHelper<depth,2>
 {
-	QImage static convert(const cv::Mat& mat)
+	static QImage image(const cv::Mat& mat)
+		{return QImage{mat.cols,mat.rows,QImage::Format_RGB888};}
+
+	static void pixelOperation(int i,int j, const cv::Mat& mat, uchar* row)
 	{
-		QImage img{mat.cols,mat.rows,QImage::Format_RGB888};
-		uchar* row;
-		int qimIndex;
-		for(int i=0; i<mat.rows; i++)
-		{
-			row = img.scanLine(i);
-			qimIndex=0;
-			for(int j=0; j<mat.cols; j++)
-			{
-				row[qimIndex]   = 0;//r
-				row[qimIndex+1] = convertTo8U<depth>(mat.at<PixelType<depth,2>>(i,j)[1]);//g
-				row[qimIndex+2] = convertTo8U<depth>(mat.at<PixelType<depth,2>>(i,j)[0]);//b
-				qimIndex+=3;
-			}
-		}
-		return img;
+		row[j*3]   = 0;//r
+		row[j*3+1] = convertTo8U<depth>(mat.at<PixelType<depth,2>>(i,j)[1]);//g
+		row[j*3+2] = convertTo8U<depth>(mat.at<PixelType<depth,2>>(i,j)[0]);//b
 	}
 };
 
-template<int depth> struct ImageConverter<depth,3>
+template<int depth> struct ConvertHelper<depth,3>
 {
-	QImage static convert(const cv::Mat& mat)
+	static QImage image(const cv::Mat& mat)
+		{return QImage{mat.cols,mat.rows,QImage::Format_RGB888};}
+
+	static void pixelOperation(int i,int j, const cv::Mat& mat, uchar* row)
 	{
-		QImage img{mat.cols,mat.rows,QImage::Format_RGB888};
-		uchar* row;
-		int qimIndex;
-		for(int i=0; i<mat.rows; i++)
-		{
-			row = img.scanLine(i);
-			qimIndex=0;
-			for(int j=0; j<mat.cols; j++)
-			{
-				row[qimIndex]   = convertTo8U<depth>(mat.at<PixelType<depth,3>>(i,j)[2]);//r
-				row[qimIndex+1] = convertTo8U<depth>(mat.at<PixelType<depth,3>>(i,j)[1]);//g
-				row[qimIndex+2] = convertTo8U<depth>(mat.at<PixelType<depth,3>>(i,j)[0]);//b
-				qimIndex+=3;
-			}
-		}
-		return img;
+		row[3*j]   = convertTo8U<depth>(mat.at<PixelType<depth,3>>(i,j)[2]);//r
+		row[3*j+1] = convertTo8U<depth>(mat.at<PixelType<depth,3>>(i,j)[1]);//g
+		row[3*j+2] = convertTo8U<depth>(mat.at<PixelType<depth,3>>(i,j)[0]);//b
 	}
 };
 
-template<int depth> struct ImageConverter<depth,4>
+template<int depth> struct ConvertHelper<depth,4>
 {
-	QImage static convert(const cv::Mat& mat)
+	static QImage image(const cv::Mat& mat)
+		{return QImage{mat.cols,mat.rows,QImage::Format_ARGB32};}
+
+	static void pixelOperation(int i,int j, const cv::Mat& mat, uchar* row)
 	{
-		QImage img{mat.cols,mat.rows,QImage::Format_ARGB32};
-		uchar* row;
-		int qimIndex;
-		for(int i=0; i<mat.rows; i++)
-		{
-			row = img.scanLine(i);
-			qimIndex=0;
-			for(int j=0; j<mat.cols; j++)
-			{
-				row[qimIndex]   = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[3]);//a
-				row[qimIndex+1] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[2]);//r
-				row[qimIndex+2] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[1]);//g
-				row[qimIndex+3] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[0]);//b
-				qimIndex+=4;
-			}
-		}
-		return img;
+		row[4*j]   = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[3]);//a
+		row[4*j+1] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[2]);//r
+		row[4*j+2] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[1]);//g
+		row[4*j+3] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[0]);//b
 	}
 };
+
+
+template<int depth, int channels>
+void convertPart(const cv::Mat& mat, QImage& img, int minRow, int maxRow)
+{
+	if(minRow==maxRow){return;}
+	if(maxRow<minRow) {throw std::invalid_argument{"maxRow<minRow"};}
+	if(maxRow>mat.rows) {throw std::invalid_argument{"maxRow>mat.rows"};}
+	uchar* row;
+	for(int i=minRow; i<maxRow; i++)
+	{
+		row = img.scanLine(i);
+		for(int j=0; j<mat.cols; j++)
+		{
+			ConvertHelper<depth,channels>::pixelOperation(i,j,mat,row);
+		}
+	}
+}
+
+template<int depth, int channels>
+QImage convert(const cv::Mat& mat, int threads)
+{
+	// threads as unsigned
+	// std::hardware_concurrency
+	QImage img=ConvertHelper<depth,channels>::image(mat);
+
+	if(threads>1)
+	{
+		//multithreadding
+		int nThreads=std::min(threads,mat.rows);
+		std::vector<std::thread> workerThreads;
+		workerThreads.reserve(nThreads);
+		int nperthread=mat.rows/nThreads;
+		for(std::size_t i=0;i<nThreads;i++)
+		{
+			workerThreads.emplace_back(
+						convertPart<depth,channels>,mat,std::ref(img),
+						i*nperthread,
+						i*nperthread+nperthread);
+		}
+		//there may be some rows left
+		convertPart<depth,channels>(mat,img,nperthread*nThreads,mat.rows);
+
+		char c;
+		std::cin>>c;
+		//join
+		for(auto& t:workerThreads)
+		{
+			t.join();
+		}
+
+	}else{
+		convertPart<depth,channels>(mat,img,0,mat.rows);
+	}
+	return img;
+}
+
+
 
 // ////////////////////////////////////////////////
 // checks wheather all pixels are in a given range
@@ -195,30 +229,30 @@ std::pair<ImageConversionResult,QImage> errorResult(ImageConversionResult res, c
 
 //split depth
 template<int channels> std::pair<ImageConversionResult,QImage> convert(const cv::Mat& mat,
-								bool skipFloatRangeTest)
+						bool skipFloatRangeTest, int threads)
 {
 	//depth ok?
 	switch(mat.depth())
 	{
 		case CV_8U:
 			return {ImageConversionResult::SUCCESS,
-				ImageConverter<CV_8U  ,channels>::convert(mat)};
+				convert<CV_8U  ,channels>(mat,threads)};
 		break;
 		case CV_8S:
 			return {ImageConversionResult::SUCCESS,
-				ImageConverter<CV_8S  ,channels>::convert(mat)};
+				convert<CV_8S  ,channels>(mat,threads)};
 		break;
 		case CV_16U:
 			return {ImageConversionResult::SUCCESS,
-				ImageConverter<CV_16U ,channels>::convert(mat)};
+				convert<CV_16U ,channels>(mat,threads)};
 		break;
 		case CV_16S:
 			return {ImageConversionResult::SUCCESS,
-				ImageConverter<CV_16S ,channels>::convert(mat)};
+				convert<CV_16S ,channels>(mat,threads)};
 		break;
 		case CV_32S:
 			return {ImageConversionResult::SUCCESS,
-				ImageConverter<CV_32S ,channels>::convert(mat)};
+				convert<CV_32S ,channels>(mat,threads)};
 		break;
 		case CV_32F:
 			if(!skipFloatRangeTest)
@@ -233,7 +267,7 @@ template<int channels> std::pair<ImageConversionResult,QImage> convert(const cv:
 				}
 			}
 			return {ImageConversionResult::SUCCESS,
-				ImageConverter<CV_32F ,channels>::convert(mat)};
+				convert<CV_32F ,channels>(mat,threads)};
 		break;
 		case CV_64F:
 			if(!skipFloatRangeTest)
@@ -248,7 +282,7 @@ template<int channels> std::pair<ImageConversionResult,QImage> convert(const cv:
 				}
 			}
 			return {ImageConversionResult::SUCCESS,
-				ImageConverter<CV_64F ,channels>::convert(mat)};
+				convert<CV_64F ,channels>(mat,threads)};
 		break;
 		default: return errorResult(ImageConversionResult::MAT_UNSUPPORTED_DEPTH, mat);
 	}
@@ -257,7 +291,7 @@ template<int channels> std::pair<ImageConversionResult,QImage> convert(const cv:
 
 //convert
 std::pair<ImageConversionResult,QImage> convertMatToQImage(const cv::Mat &mat,
-							bool skipFloatRangeTest)
+						bool skipFloatRangeTest, int threads)
 {
 	//empty?
 	if(mat.empty())
@@ -275,23 +309,23 @@ std::pair<ImageConversionResult,QImage> convertMatToQImage(const cv::Mat &mat,
 	//now convert
 	switch(mat.channels())
 	{
-		case 1: return convert<1>(mat,skipFloatRangeTest); break;
-		case 2: return convert<2>(mat,skipFloatRangeTest); break;
-		case 3: return convert<3>(mat,skipFloatRangeTest); break;
-		case 4: return convert<4>(mat,skipFloatRangeTest); break;
+		case 1: return convert<1>(mat,skipFloatRangeTest,threads); break;
+		case 2: return convert<2>(mat,skipFloatRangeTest,threads); break;
+		case 3: return convert<3>(mat,skipFloatRangeTest,threads); break;
+		case 4: return convert<4>(mat,skipFloatRangeTest,threads); break;
 		default:
 			return errorResult(
 				ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED, mat);
 	}
 	//floating depth + in range [0,1]  (in function convert<T>)
-	//depth ok?                        (in function convert<T>)
+	//depth ok?						(in function convert<T>)
 }
 
 
 std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat,
-							bool skipFloatRangeTest)
+						bool skipFloatRangeTest, int threads)
 {
-	auto converted=convertMatToQImage(mat, skipFloatRangeTest);
+	auto converted=convertMatToQImage(mat, skipFloatRangeTest,threads);
 	return {converted.first, QPixmap::fromImage(converted.second)};
 }
 }}
