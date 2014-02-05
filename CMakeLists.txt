@@ -57,7 +57,6 @@ include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 file(GLOB implementation_sources "src/*/*.cpp")
 file(GLOB implementation_headers "src/*/*.hpp")
 file(GLOB api_headers "include/opencv2/*.hpp")
-file(GLOB qt_headers "include/Qt/*.h")
 add_library( cvvisual
         ${implementation_sources}
         ${implementation_headers}
@@ -121,10 +120,16 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
 	
 	add_executable(test_manual_defaultfilterview manual_test/defaultfilterviewtest/main.cpp)
-	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core Qt5Widgets Qt5Gui opencv_highgui opencv_core opencv_imgproc)
+	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core opencv_core)
 	
+	add_executable(test_manual_singlefilterview manual_test/singlefilterviewtest/main.cpp)
+	target_link_libraries(test_manual_singlefilterview cvvisual Qt5Core opencv_core)
+
+	add_executable(test_manual_matchscenetest manual_test/matchscenetest/main.cpp)
+	target_link_libraries(test_manual_matchscenetest cvvisual Qt5Core opencv_highgui opencv_core)
+
 	add_executable(test_manual_dualfilterview manual_test/dual_filter_view/main.cpp)
-    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
+    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core opencv_core)
 	
 	add_executable(test_manual_difffilterfunction manual_test/diffFilterFunction/main.cpp)
     	target_link_libraries(test_manual_difffilterfunction cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
@@ -133,10 +138,13 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
 
 	add_executable(test_manual_imageconvert manual_test/imageconvert/main.cpp)
-	target_link_libraries(test_manual_imageconvert cvvisual Qt5Core Qt5Widgets opencv_core opencv_imgproc)
+	target_link_libraries(test_manual_imageconvert cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
 
 	add_executable(test_manual_imageconvertperf manual_test/imageconvertperf/main.cpp)
 	target_link_libraries(test_manual_imageconvertperf cvvisual Qt5Core Qt5Widgets opencv_core opencv_imgproc)
+
+	add_executable(test_manual_zoomableimage manual_test/zoomableimage/main.cpp)
+	target_link_libraries(test_manual_zoomableimage cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
 
 	
 endif()

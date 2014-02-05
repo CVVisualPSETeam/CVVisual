@@ -7,11 +7,9 @@
 
 #include "util.hpp"
 #include "types.hpp"
-/*
-template<int depth> cvv::qtutil::DepthType<depth> transformForPrint(cvv::qtutil::DepthType<depth> i){return i;}
-template<> cvv::qtutil::DepthType<CV_16S> transformForPrint<CV_8U>(cvv::qtutil::DepthType<CV_8U> i){return static_cast<cvv::qtutil::DepthType<CV_16S>>(i);}
-template<> cvv::qtutil::DepthType<CV_16S> transformForPrint<CV_8S>(cvv::qtutil::DepthType<CV_8S> i){return static_cast<cvv::qtutil::DepthType<CV_16S>>(i);}
-*/
+
+#include <iostream>
+
 template<int depth>
 std::string printPixel(const cv::Mat& mat, int spalte, int zeile)
 {
@@ -106,7 +104,7 @@ void ZoomableImage::updateMat(cv::Mat mat)
 	auto result = convertMatToQPixmap(mat_);
 	emit updateConversionResult(result.first);
 	scene_->clear();
-	scene_->addPixmap(result.second);
+	pixmap_ = scene_->addPixmap(result.second);
 
 	drawValues();
 }
@@ -147,11 +145,11 @@ void ZoomableImage::drawValues()
 	//draw new values?
 	if(!valuesVisible_){return;}
 	auto r=visibleArea();
-	for(int i=std::max(0,static_cast<int>(r.left())-5);
-		i<std::min(mat_.cols,static_cast<int>(r.right())+5);i++)
+	for(int i=std::max(0,static_cast<int>(r.left())-2);
+		i<std::min(mat_.cols,static_cast<int>(r.right())+2);i++)
 	{
-		for(int j=std::max(0,static_cast<int>(r.top())-5);
-			j<std::min(mat_.rows,static_cast<int>(r.bottom())+5); j++)
+		for(int j=std::max(0,static_cast<int>(r.top())-2);
+			j<std::min(mat_.rows,static_cast<int>(r.bottom())+2); j++)
 		{
 
 			QString s(printPixel(mat_,i,j).c_str());
@@ -169,12 +167,28 @@ void ZoomableImage::drawValues()
 	}
 }
 
+
+void ZoomableImage::showFullImage()
+{
+	updateZoom(
+		std::min(
+		static_cast<qreal>(view_->viewport()->width())/static_cast<qreal>(imageWidth()),
+		static_cast<qreal>(view_->viewport()->height())/static_cast<qreal>(imageHeight())
+		)
+	);
+}
+
 QRectF ZoomableImage::visibleArea() const
 {
 	QRectF result{};
 	result.setTopLeft(view_->mapToScene(QPoint{0,0}));
-	result.setBottomRight(view_->mapToScene(QPoint{view_->width(),view_->height()}));
+	result.setBottomRight(view_->mapToScene(QPoint{view_->viewport()->width(),
+							view_->viewport()->height()}));
 	return result;
 }
 
+QPointF ZoomableImage::mapImagePointToParent(QPointF point)
+{
+	return mapToParent(view_->mapToParent(view_->mapFromScene(pixmap_->mapToScene(point))));
+}
 }}

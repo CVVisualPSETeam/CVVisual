@@ -22,11 +22,6 @@ public:
 	 */
 	DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
 
-private: 
-	/*
-	 *@brief the images of this view
-	 */
-	std::vector<cv::Mat> images_;
 };	
 }}//namespaces
 #endif

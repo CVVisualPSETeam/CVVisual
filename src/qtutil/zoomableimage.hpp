@@ -6,6 +6,7 @@
 #include <QGraphicsView>
 #include <QGraphicsTextItem>
 #include <QRectF>
+#include <QGraphicsPixmapItem>
 
 #include "opencv2/core/core.hpp"
 
@@ -27,6 +28,25 @@ public:
 
 	qreal zoom() const
 		{return zoom_;}
+	QPointF mapImagePointToParent(QPointF);
+
+	qreal threshold() const
+		{return threshold_;}
+
+	virtual void resizeEvent(QResizeEvent*) override
+		{emit updateArea(visibleArea(),zoom_);}
+
+	int imageWidth() const
+		{return mat_.cols;}
+
+	int imageHeight() const
+		{return mat_.rows;}
+
+	bool valuesVisible() const
+		{return valuesVisible_;}
+
+	bool autoShowValues() const
+		{return autoShowValues_;}
 
 signals:
 	void updateConversionResult(ImageConversionResult);
@@ -34,10 +54,14 @@ signals:
 
 public slots:
 	void updateMat(cv::Mat mat);
-	void updateZoom(qreal factor);
-	void showValues(bool show);
-	void autoShowValues(bool enable)
+	void updateZoom(qreal factor = 1);
+	void showValues(bool show = true);
+	void setAutoShowValues(bool enable = true)
 		{autoShowValues_=enable;}
+	void setThreshold(qreal threshold = 60)
+		{threshold_=threshold;}
+	void showFullImage();
+
 
 private slots:
 	void viewScrolled()
@@ -47,6 +71,7 @@ private:
 
 	cv::Mat mat_;
 
+	QGraphicsPixmapItem* pixmap_;
 	QGraphicsView* view_;
 	QGraphicsScene* scene_;
 	qreal zoom_;

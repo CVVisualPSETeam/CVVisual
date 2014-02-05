@@ -110,8 +110,6 @@ public:
      * Current URL: cvv.mostlynerdless.de/help.php?topic=[topic]
      *
      * @param topic help topic
-     * @attention doesn't actually work
-     * @todo implement properly
      */
     void openHelpBrowser(const QString &topic) const;
 
