@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
 	cv::Mat mat{50,5,CV_8SC4, cv::Scalar{125,125,0,125}};
 	cv::Mat mat2{5,50,CV_64FC4, cv::Scalar{1,0.234523452345432523452,
-		0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000075345340
+	0.75345340e-123
 	,0.5}};
 	cv::Mat img=renderImg();
 
@@ -50,12 +50,6 @@ int main(int argc, char *argv[])
 	QObject::connect(spb,SIGNAL(valueChanged(double)),i2, SLOT(updateZoom(qreal)));
 	QObject::connect(spb,SIGNAL(valueChanged(double)),i3, SLOT(updateZoom(qreal)));
 	layleft->addWidget(spb);
-
-	QPushButton* bshow=new QPushButton{"showval"};
-	QObject::connect(bshow,SIGNAL(clicked()),i,  SLOT(showValues()));
-	QObject::connect(bshow,SIGNAL(clicked()),i2, SLOT(showValues()));
-	QObject::connect(bshow,SIGNAL(clicked()),i3, SLOT(showValues()));
-	layleft->addWidget(bshow);
 
 	QPushButton* bautoshow=new QPushButton{"autoshow"};
 	bautoshow->setCheckable(true);

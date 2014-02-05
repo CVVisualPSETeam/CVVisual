@@ -112,25 +112,12 @@ void ZoomableImage::updateMat(cv::Mat mat)
 void ZoomableImage::updateZoom(qreal factor)
 {
 	if(factor <= 0) {return;}
-	view_->scale(factor/zoom_,factor/zoom_);
+	qreal newscale=factor/zoom_;
 	zoom_=factor;
-
-	if(autoShowValues_)
-	{
-		valuesVisible_= zoom_>=threshold_;
-	}
-
-	emit updateArea(visibleArea(),zoom_);
+	view_->scale(newscale,newscale);
+	// will be called in resize event
+	// emit updateArea(visibleArea(),zoom_);
 }
-
-
-void ZoomableImage::showValues(bool show)
-{
-	valuesVisible_= show;
-	drawValues();
-}
-
-
 
 void ZoomableImage::drawValues()
 {
@@ -143,7 +130,7 @@ void ZoomableImage::drawValues()
 	values_.clear();
 
 	//draw new values?
-	if(!valuesVisible_){return;}
+	if(!(autoShowValues_&&(zoom_>=threshold_))){return;}
 	auto r=visibleArea();
 	for(int i=std::max(0,static_cast<int>(r.left())-2);
 		i<std::min(mat_.cols,static_cast<int>(r.right())+2);i++)

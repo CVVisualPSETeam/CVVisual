@@ -55,7 +55,6 @@ signals:
 public slots:
 	void updateMat(cv::Mat mat);
 	void updateZoom(qreal factor = 1);
-	void showValues(bool show = true);
 	void setAutoShowValues(bool enable = true)
 		{autoShowValues_=enable;}
 	void setThreshold(qreal threshold = 60)
