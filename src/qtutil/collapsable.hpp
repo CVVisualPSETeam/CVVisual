@@ -11,6 +11,7 @@
 #include <QLabel>
 
 #include "../util/util.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
 
@@ -36,6 +37,8 @@ public:
 	explicit Collapsable(const QString& title, std::unique_ptr<QWidget> widget, bool isCollapsed = true,
 			QWidget *parent = 0);
 
+	~Collapsable(){TRACEPOINT;}
+
 	/**
 	 * @brief Collapses the contained widget.
 	 * @param b
@@ -55,31 +58,31 @@ public:
 	 * @endparblock
 	*/
 	void expand(bool b = true)
-		{collapse(!b);}
+		{TRACEPOINT;collapse(!b);TRACEPOINT;}
 
 	/**
 	* @brief Sets the title above the widget.
 	*/
 	void setTitle(const QString& title)
-		{button_->setText(title);}
+		{TRACEPOINT;button_->setText(title);TRACEPOINT;}
 
 	/**
 	 * @brief Returns the current title above the widget.
 	 * @return The current title above the widget
 	 */
 	QString title() const
-		{return button_->text();}
+		{TRACEPOINT;return button_->text();}
 
 	/**
 	 * @brief Returns a reference to the contained widget.
 	 * @return A reference to the contained widget.
 	 */
 	QWidget& widget()
-		{return *widget_;}
+		{TRACEPOINT;return *widget_;}
 
 
 	const QWidget& widget() const
-		{return *widget_;}
+		{TRACEPOINT;return *widget_;}
 
 	/**
 	 * @brief Detaches the contained widget. (ownership remains)
@@ -92,7 +95,7 @@ private slots:
 	 * @brief Toggles the visibility.
 	 */
 	void toggleVisibility()
-		{collapse(widget_->isVisible());}
+		{TRACEPOINT;collapse(widget_->isVisible());TRACEPOINT;}
 
 private:
 	/**

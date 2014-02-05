@@ -6,6 +6,7 @@ Collapsable::Collapsable(const QString& title, std::unique_ptr<QWidget> widget, 
 	QWidget *parent):
 		QWidget{parent}, widget_{widget.get()}, layout_{new QVBoxLayout{}}
 {
+	TRACEPOINT;
 	layout_->setAlignment(Qt::AlignTop);
 
 	//build header
@@ -25,6 +26,7 @@ Collapsable::Collapsable(const QString& title, std::unique_ptr<QWidget> widget, 
 
 	//collapse/ expand according to isCollapsed
 	collapse(isCollapsed);
+	TRACEPOINT;
 }
 
 //Collapsable::Collapsable(const QString& title,QWidget& widget, bool isCollapsed, QWidget *parent):
@@ -32,6 +34,7 @@ Collapsable::Collapsable(const QString& title, std::unique_ptr<QWidget> widget, 
 
 void Collapsable::collapse(bool b)
 {
+	TRACEPOINT;
 	button_->setChecked(!b);
 	if(b)
 	{
@@ -40,14 +43,17 @@ void Collapsable::collapse(bool b)
 	{
 		widget_->show();
 	}
+	TRACEPOINT;
 }
 
 QWidget* Collapsable::detachWidget()
 {
+	TRACEPOINT;
 	if(!widget_){return nullptr;}
 	layout_->removeWidget(widget_);
 	QWidget* tmp = widget_;
 	widget_ =  nullptr;
+	TRACEPOINT;
 	return tmp;
 }
 

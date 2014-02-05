@@ -1,7 +1,9 @@
-#ifndef TYPES_HPP
-#define TYPES_HPP
+#ifndef CVVISUAL_TYPES_HPP
+#define CVVISUAL_TYPES_HPP
 
 #include "opencv2/core/core.hpp"
+
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace qtutil {
 

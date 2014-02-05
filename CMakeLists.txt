@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 # add some nice 'no-ugly-code-enforcers':
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_DEBUG")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_DEBUG -fsanitize=address -fno-omit-frame-pointer")
 elseif(CMAKE_BUILD_TYPE MATCHES "Release")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
@@ -129,7 +129,7 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_matchscenetest cvvisual Qt5Core opencv_highgui opencv_core)
 
 	add_executable(test_manual_dualfilterview manual_test/dual_filter_view/main.cpp)
-    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core opencv_core)
+    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core opencv_core opencv_highgui)
 	
 	add_executable(test_manual_difffilterfunction manual_test/diffFilterFunction/main.cpp)
     	target_link_libraries(test_manual_difffilterfunction cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)

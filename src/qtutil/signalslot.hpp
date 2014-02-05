@@ -9,6 +9,8 @@
 #include <QObject>
 #include <QString>
 
+#include "../dbg/dbg.hpp"
+
 namespace cvv { namespace qtutil{
 
 /**
@@ -23,13 +25,15 @@ public:
 	 * @brief Constructor
 	 * @param parent The parent
 	 */
-	Signal(QObject* parent = nullptr):QObject{parent}{}
+	Signal(QObject* parent = nullptr):QObject{parent}{TRACEPOINT;}
+
+	~Signal(){TRACEPOINT;}
 
 	/**
 	 * @brief Emits the signal.
 	 * @param args The arguments
 	 */
-	void emitSignal(){emit signal();}
+	void emitSignal(){TRACEPOINT;emit signal();TRACEPOINT;}
 signals:
 	/**
 	 * @brief The signal emited by emitSignal.
@@ -53,13 +57,19 @@ public:
 	 */
 	Slot(const std::function<void()>& f, QObject* parent = nullptr):
 		QObject{parent}, function_{f}
-		{if(!f)throw std::invalid_argument{"invalide function"};}
+	{
+		TRACEPOINT;
+		if(!f)throw std::invalid_argument{"invalide function"};
+		TRACEPOINT;
+	}
+
+	~Slot(){TRACEPOINT;}
 
 public slots:
 	/**
 	 * @brief The slot calling function()
 	 */
-	void slot(){function_();}
+	void slot(){TRACEPOINT;function_();TRACEPOINT;}
 private:
 	/**
 	 * @brief The function called by the slot slot()
@@ -78,10 +88,12 @@ class SignalQString: public QObject
 	Q_OBJECT
 public:
 	SignalQString(QObject* parent = nullptr):
-		QObject{parent}{}
+		QObject{parent}{TRACEPOINT;}
+
+	~SignalQString(){TRACEPOINT;}
 
 	void emitSignal(const QString& t)
-		{emit signal(t);}
+		{TRACEPOINT;emit signal(t);TRACEPOINT;}
 signals:
 	void signal( QString t);
 };
@@ -93,12 +105,16 @@ public:
 	SlotQString(const std::function<void(QString)>& f, QObject* parent = nullptr):
 		QObject{parent}, function_{f}
 	{
+		TRACEPOINT;
 		if(!f) throw std::invalid_argument{"invalide function"};
+		TRACEPOINT;
 	}
+
+	~SlotQString(){TRACEPOINT;}
 
 public slots:
 	void slot(QString t)
-		{function_(t);}
+		{TRACEPOINT;function_(t);TRACEPOINT;}
 
 private:
 	std::function<void(QString)> function_;

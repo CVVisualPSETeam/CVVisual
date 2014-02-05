@@ -15,7 +15,7 @@
 #include "../controller/view_controller.hpp"
 #include "../impl/filter_call.hpp"
 
-//#include "../view/defaultfilterview.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv {
 namespace gui {
@@ -23,6 +23,7 @@ namespace gui {
 FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
 	filterCall_{fc}, viewController_{vc}
 {
+    TRACEPOINT;
 	setName(filterCall_->description());
 	const QString scope{"default_views"};
 	const QString key{"default_filter_view"};
@@ -37,11 +38,13 @@ FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc, const cvv::control
 	filterViewId_ = setting;
 
 	createGui();
+    TRACEPOINT;
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
 	filterCall_{fc}, viewController_{vc}
 {
+    TRACEPOINT;
 	setName(tabName);
 	const QString scope{"default_views"};
 	const QString key{"default_filter_view"};
@@ -56,42 +59,54 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	filterViewId_ = setting;
 
 	createGui();
+    TRACEPOINT;
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, const QString& viewId):
 	filterCall_{fc}, viewController_{vc}
 {
+    TRACEPOINT;
 	setName(tabName);
 	filterViewId_ = viewId;
 
 	createGui();
+    TRACEPOINT;
 }
 
 void FilterCallTab::currentIndexChanged(const QString& text)
 {
+    TRACEPOINT;
 	filterViewId_ = text;
 	delete filterView_;
 	setView(filterViewId_);
+    TRACEPOINT;
 }
 
 void FilterCallTab::helpButtonClicked() const
 {
+    TRACEPOINT;
 	viewController_->openHelpBrowser(filterViewId_);
+    TRACEPOINT;
 }
 
 size_t FilterCallTab::getId() const
 {
+    TRACEPOINT;
 	return filterCall_->getId();
+    TRACEPOINT;
 }
 
 void FilterCallTab::addFilterViewToMap(const QString& filterViewId,
 				       std::function<std::unique_ptr<cvv::view::FilterView>(std::vector<cv::Mat>, QWidget*)> fView)
 {
+    TRACEPOINT;
 	cvv::qtutil::RegisterHelper<cvv::view::FilterView, std::vector<cv::Mat>, QWidget*>::registerElement(filterViewId, fView);
+    TRACEPOINT;
 }
 
 void FilterCallTab::createGui()
 {
+    TRACEPOINT;
 	comboBox_->setCurrentText(filterViewId_);
 	hlayout_ = new QHBoxLayout{this};
 	hlayout_->setAlignment(Qt::AlignTop);
@@ -106,22 +121,17 @@ void FilterCallTab::createGui()
 
 	vlayout_ = new QVBoxLayout{this};
 
-
-/* For testing:
-	std::vector<cv::Mat> images;
-	images. push_back(filterCall_->original());
-	images.push_back(filterCall_->result());
-	filterView_ = new cvv::view::DefaultFilterView{images, this};*/
-
 	vlayout_->addWidget(upperBar_);
 	setView(filterViewId_);
 
 	setLayout(vlayout_);
 	connect(comboBox_, SIGNAL(currentTextChanged(QString)), this, SLOT(currentIndexChanged(QString)));
+    TRACEPOINT;
 }
 
 void FilterCallTab::setView(const QString &viewId)
 {
+    TRACEPOINT;
 	try
 	{
 		auto fct = registeredElements_.at(viewId);
@@ -130,11 +140,12 @@ void FilterCallTab::setView(const QString &viewId)
 		images.push_back(filterCall_->result());
 		filterView_ = (fct(images, this)).release();
 		vlayout_->addWidget(filterView_);
-	} catch (std::out_of_range)
+    } catch (std::out_of_range&)
 	{
-		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
+        vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
+        throw;
 	}
-
+    TRACEPOINT;
 }
 
 }}//namespaces
