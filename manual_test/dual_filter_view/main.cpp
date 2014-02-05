@@ -12,24 +12,10 @@
 #include "../../src/view/dual_filter_view.hpp"
 #include "../../src/view/singlefilterview.hpp"
 
+
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
-
-	cv::Mat whitemat = cv::Mat{100,100,CV_8U};
-	cv::Mat blackmat = cv::Mat{100,100,CV_8U};
-
-	whitemat = cv::Scalar(255,255,255);
-	cv::cvtColor(whitemat, blackmat, CV_BGR2HSV);
-	blackmat = cv::Scalar(0,0,0);
-
-	std::array<cv::Mat, 2> imgArray {whitemat, blackmat};
-
-	cvv::view::DualFilterView view{imgArray};
-	view.setWindowTitle("Dual Filter View Test");
-	view.show();
-
-
 
 	if(argc < 2)
 	{
@@ -41,10 +27,17 @@ int main(int argc, char *argv[])
 	cv::Mat dest;
 
 	cv::dilate(src, dest, elem);
+
+	std::array<cv::Mat, 2> inArray {src, dest};
+	cvv::view::DualFilterView view{inArray};
+	view.setWindowTitle("Dual Filter View Test");
+	view.show();
+
+
 	cvv::qtutil::DiffFilterFunction filter {cvv::qtutil::DiffFilterType::HUE};
 	std::array<cv::Mat, 1> diffArray = {cv::Mat{}};
 
-	filter.applyFilter({src, dest}, diffArray);
+	filter.applyFilter(inArray, diffArray);
 
 	std::vector<cv::Mat> images = {src, diffArray.at(0), dest};
 	cvv::view::SingleFilterView singleview{images, nullptr};

@@ -11,7 +11,8 @@ enum class DiffFilterType
 	HUE = 0,
 	SATURATION = 1,
 	VALUE = 2,
-	LUMINANCE=VALUE
+	LUMINANCE=VALUE,
+	GRAYSCALE = 3
 };
 
 class DiffFilterFunction: public FilterFunctionWidget<2,1>

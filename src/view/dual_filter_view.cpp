@@ -1,5 +1,6 @@
 #include <exception>
 #include <memory>
+#include <iostream> //for debugging
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -12,6 +13,7 @@
 #include "../qtutil/diffFilterFunction.hpp"
 #include "../qtutil/filterselectorwidget.hpp"
 #include "../qtutil/matinfowidget.hpp"
+#include "../qtutil/signalslot.hpp"
 #include "../qtutil/util.hpp"
 #include "../util/util.hpp"
 #include "dual_filter_view.hpp"
@@ -21,7 +23,16 @@ namespace cvv
 namespace view
 {
 	DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
-		: FilterView{parent}, rawImages_(images)
+		: FilterView{parent}, rawImages_(images),
+		slotFilterSelectedChanged_{[this](){
+			std::cout << "slotFilterSelectedChanged was called" << std::endl;
+			auto result = filterSelector_->checkInput(rawImages_);
+			if(result.first){
+				std::array<cv::Mat,1> out;
+				out = filterSelector_-> applyFilter(rawImages_,out);
+				zoomImages_.at(1).updateMat(out.at(0));
+			}
+		}}
 	{
 		QHBoxLayout* layout = new QHBoxLayout{};
 		QHBoxLayout* imageLayout = new QHBoxLayout{};
@@ -30,6 +41,13 @@ namespace view
 
 		auto filterWidget = util::make_unique<qtutil::FilterSelectorWidget<2,1>>();
 		filterSelector_ = filterWidget.get();
+
+		cvv::qtutil::FilterSelectorWidget<2,1>::registerElement("Difference image - grayscale",
+		[](QWidget* parent)
+		{
+			return std::unique_ptr<cvv::qtutil::FilterFunctionWidget<2,1>>
+				{new qtutil::DiffFilterFunction{qtutil::DiffFilterType::GRAYSCALE, parent}};
+		});
 
 		cvv::qtutil::FilterSelectorWidget<2,1>::registerElement("Difference image - hue",
 		[](QWidget* parent)
@@ -52,7 +70,7 @@ namespace view
 				{new qtutil::DiffFilterFunction{qtutil::DiffFilterType::VALUE, parent}};
 		});
 
-		connect(&(filterSelector_->sigFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
+		connect(&(filterSelector_->sigFilterSettingsChanged_),SIGNAL(signal()),&slotFilterSelectedChanged_,SLOT(slot()));
 
 		accor->insert("Filter selection", std::move(filterWidget));
 		accor->setMinimumSize(150,0);
@@ -75,12 +93,13 @@ namespace view
 			};
 
 		lambda(rawImages_.at(0), 0);
-		lambda(rawImages_.at(1), 2);
 
 		std::array<cv::Mat, 1> imageArray;
-		qtutil::DiffFilterFunction defaultFilter {qtutil::DiffFilterType::SATURATION};
+		qtutil::DiffFilterFunction defaultFilter {qtutil::DiffFilterType::GRAYSCALE};
 		defaultFilter.applyFilter(rawImages_, imageArray);
 		lambda(imageArray.at(0), 1);
+
+		lambda(rawImages_.at(1), 2);
 
 		imwid->setLayout(imageLayout);
 		layout->addWidget(imwid);
@@ -97,7 +116,7 @@ namespace view
 		auto result = filterSelector_->checkInput(rawImages_);
 		if(result.first){
 			std::array<cv::Mat,1> out;
-			filterSelector_-> applyFilter(rawImages_,out);
+			out = filterSelector_-> applyFilter(rawImages_,out);
 			zoomImages_.at(1).updateMat(out.at(0));
 		}
 	}
