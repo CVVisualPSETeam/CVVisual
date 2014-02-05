@@ -85,8 +85,8 @@ public:
 		auto check = checkInput(in);
 		if(!check.first)
 			{throw std::invalid_argument{check.second.toStdString()};}
-		return currentFilter_->applyFilter(in,out);
 		TRACEPOINT;
+		return currentFilter_->applyFilter(in,out);
 	}
 
 	/**
@@ -101,8 +101,8 @@ public:
 		TRACEPOINT;
 		if(currentFilter_)
 			{return {false, "No entry selected."};}
-		return currentFilter_->checkInput(in);
 		TRACEPOINT;
+		return currentFilter_->checkInput(in);
 	}
 
 private:
