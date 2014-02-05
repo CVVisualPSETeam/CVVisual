@@ -309,6 +309,7 @@ private:
 	QMap<QString, std::function<QString(const Element&) >> groupFuncs;
 	QList<Element> executeFilters(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
+		TRACEPOINT;
 		std::vector<std::function<bool(const Element&)>> filters;
 
 		for (const QString &cmdString : cmdStrings)
@@ -344,15 +345,15 @@ private:
 			//find in filters
 			auto find_if = [&](StringFilter filter)
 			{
-				DEBUG(1, !filter(element));
+				TRACEPOINT;
 				return !filter(element);
 			};
 			auto returnval = std::find_if(filters.begin(), filters.end(), find_if) == filters.end();
-			DEBUGF(0, "filtercount: %s, returnval: %s", filters.size(), returnval);
+			TRACEPOINT;
 			return returnval;
 		};
 		std::copy_if(elements.begin(), elements.end(), std::back_inserter(retList), copy_if);
-		DEBUG(0, retList.size());
+		TRACEPOINT;
 		return retList;
 	}
 
