@@ -15,6 +15,7 @@
 // from
 // https://github.com/Itseez/opencv/blob/master/samples/cpp/
 //        tutorial_code/core/Matrix/Drawing_1.cpp
+static const int w=400;
 cv::Mat renderImg();
 
 int main(int argc, char *argv[])
@@ -36,6 +37,9 @@ try{
 	cv::Mat mBG{  w+6,h+6,	CV_32FC2,cv::Scalar{0.41,0.55}};
 	cv::Mat mRGB{ h+7,w+7,	CV_64FC3,cv::Scalar{0.123,0.8123,0.7123}};
 	cv::Mat mImg{renderImg()};;
+
+	cv::imshow( "rook_window", mImg );
+	cv::moveWindow( "rook_window", w, 200 );
 
 	std::cout<<"done all\n";
 	std::cout<<"will now convert \n";
@@ -184,7 +188,6 @@ try{
 return 0;
 }
 
-static const int w=400;
 void MyPolygon( cv::Mat img );
 void MyLine( cv::Mat img, cv::Point start, cv::Point end );
 
