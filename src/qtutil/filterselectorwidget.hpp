@@ -17,6 +17,7 @@
 #include "signalslot.hpp"
 #include "registerhelper.hpp"
 #include "filterfunctionwidget.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace qtutil{
 
@@ -36,9 +37,10 @@ public:
 	explicit FilterSelectorWidget(QWidget *parent = nullptr):QWidget{parent},
 		RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>{},
 		currentFilter_{nullptr}, layout_{new QVBoxLayout{}},
-		slotFilterSelected_{[this](){
+		slotFilterSelected_{[this](){TRACEPOINT;
 			if(this->currentFilter_)
 			{
+				TRACEPOINT;
 				this->layout_->removeWidget(this->currentFilter_);
 				delete this->currentFilter_;
 				//disconnect
@@ -54,14 +56,20 @@ public:
 					SIGNAL(signal()),
 					&(this->slotInternalFilterChanged_),
 					SLOT(slot()));
+			TRACEPOINT;
 		}},
-		slotInternalFilterChanged_{[this](){this->sigFilterSettingsChanged_.emitSignal();}}
+		slotInternalFilterChanged_{[this](){TRACEPOINT;
+			this->sigFilterSettingsChanged_.emitSignal();TRACEPOINT;}}
 	{
+		TRACEPOINT;
 		layout_->addWidget((this->comboBox_));
 		QObject::connect((this->comboBox_),SIGNAL(currentTextChanged(const QString &)),
 			&slotFilterSelected_, SLOT(slot()));
 		this->setLayout(layout_);
+		TRACEPOINT;
 	}
+
+	~FilterSelectorWidget(){TRACEPOINT;}
 
 	/**
 	 * @brief Applies the selected filter.
@@ -73,10 +81,12 @@ public:
 	virtual const std::array<cv::Mat,Out>& applyFilter(const std::array<cv::Mat,In>& in,
 					std::array<cv::Mat,Out>& out) const override
 	{
+		TRACEPOINT;
 		auto check = checkInput(in);
 		if(!check.first)
 			{throw std::invalid_argument{check.second.toStdString()};}
 		return currentFilter_->applyFilter(in,out);
+		TRACEPOINT;
 	}
 
 	/**
@@ -88,9 +98,11 @@ public:
 	 */
 	virtual std::pair<bool, QString> checkInput(const std::array<cv::Mat,In>& in) const override
 	{
+		TRACEPOINT;
 		if(currentFilter_)
 			{return {false, "No entry selected."};}
 		return currentFilter_->checkInput(in);
+		TRACEPOINT;
 	}
 
 private:

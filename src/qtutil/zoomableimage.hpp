@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_ZOOMABLEIMAGE
-#define CVVISUAL_ZOOMABLEIMAGE
+#ifndef CVVISUAL_ZOOMABLEIMAGE_HPP
+#define CVVISUAL_ZOOMABLEIMAGE_HPP
 
 #include <QWidget>
 #include <QGraphicsScene>
@@ -12,6 +12,7 @@
 
 #include "util.hpp"
 #include "../util/util.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
 
@@ -22,31 +23,32 @@ public:
 	ZoomableImage(const cv::Mat& mat=cv::Mat{}, QWidget* parent = nullptr);
 
 	const cv::Mat& mat() const
-		{return mat_;}
+		{TRACEPOINT;return mat_;}
 
 	QRectF visibleArea() const;
 
 	qreal zoom() const
-		{return zoom_;}
+		{TRACEPOINT;return zoom_;}
+
 	QPointF mapImagePointToParent(QPointF);
 
 	qreal threshold() const
-		{return threshold_;}
+		{TRACEPOINT;return threshold_;}
 
 	virtual void resizeEvent(QResizeEvent*) override
-		{emit updateArea(visibleArea(),zoom_);}
+		{TRACEPOINT;emit updateArea(visibleArea(),zoom_);TRACEPOINT;}
 
 	int imageWidth() const
-		{return mat_.cols;}
+		{TRACEPOINT;return mat_.cols;}
 
 	int imageHeight() const
-		{return mat_.rows;}
+		{TRACEPOINT;return mat_.rows;}
 
 	bool valuesVisible() const
-		{return valuesVisible_;}
+		{TRACEPOINT;return valuesVisible_;}
 
 	bool autoShowValues() const
-		{return autoShowValues_;}
+		{TRACEPOINT;return autoShowValues_;}
 
 signals:
 	void updateConversionResult(ImageConversionResult);
@@ -56,15 +58,15 @@ public slots:
 	void updateMat(cv::Mat mat);
 	void updateZoom(qreal factor = 1);
 	void setAutoShowValues(bool enable = true)
-		{autoShowValues_=enable;}
+		{TRACEPOINT;autoShowValues_=enable;TRACEPOINT;}
 	void setThreshold(qreal threshold = 60)
-		{threshold_=threshold;}
+		{TRACEPOINT;threshold_=threshold;TRACEPOINT;}
 	void showFullImage();
 
 
 private slots:
 	void viewScrolled()
-		{emit updateArea(visibleArea(),zoom_);}
+		{TRACEPOINT;emit updateArea(visibleArea(),zoom_);TRACEPOINT;}
 	void drawValues();
 private:
 
