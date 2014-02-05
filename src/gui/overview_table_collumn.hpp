@@ -21,7 +21,7 @@ public:
 	/**
 	 * @todo implement
      */	
-    void addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages);
+    void addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages, int imgHeight = 100, int imgWidth = 100);
 	
     util::Reference<const impl::Call> call() const { return call_; }
 

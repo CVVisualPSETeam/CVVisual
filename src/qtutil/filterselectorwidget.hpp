@@ -24,7 +24,7 @@ namespace cvv { namespace qtutil{
  * @brief The FilterSelectorWidget class
  */
 template< std::size_t In, std::size_t Out>
-class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>>,
+class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>,
 			public FilterFunctionWidget<In,Out>
 {
 	static_assert( Out > 0, "Out must not be 0!");
@@ -33,8 +33,8 @@ public:
 	 * @brief Constuctor
 	 * @param parent The parent widget.
 	 */
-	explicit FilterSelectorWidget(QWidget *parent = 0):
-		RegisterHelper<FilterFunctionWidget<In,Out>>{parent},
+	explicit FilterSelectorWidget(QWidget *parent = nullptr):QWidget{parent},
+		RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>{},
 		currentFilter_{nullptr}, layout_{new QVBoxLayout{}},
 		slotFilterSelected_{[this](){
 			if(this->currentFilter_)
@@ -70,8 +70,8 @@ public:
 	 * @throw std::invalid_argument checkInput(in).first==false
 	 * @return parameter out
 	 */
-	virtual const std::array<cv::Mat&,Out>& applyFilter(const std::array<const cv::Mat&,Out>& in,
-					const std::array<cv::Mat&,Out>& out) const override
+	virtual const std::array<cv::Mat,Out>& applyFilter(const std::array<cv::Mat,In>& in,
+					std::array<cv::Mat,Out>& out) const override
 	{
 		auto check = checkInput(in);
 		if(!check.first)
@@ -86,14 +86,12 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(const std::array<const cv::Mat&,Out>& in) const override
+	virtual std::pair<bool, QString> checkInput(const std::array<cv::Mat,In>& in) const override
 	{
 		if(currentFilter_)
 			{return {false, "No entry selected."};}
 		return currentFilter_->checkInput(in);
 	}
-
-
 
 private:
 	/**

@@ -49,7 +49,7 @@ int phoneticEquality(const QString &word1, const QString &word2)
 	{
 		return 0;
 	}
-	return editDistance(nysiisForWordCached(word1), nysiisForWordCached(word2)) + 1;
+	return editDistance(nysiisForWord(word1), nysiisForWord(word2)) + 1;
 }
 
 QString nysiisForWord(QString word)
@@ -243,11 +243,11 @@ QString shortenString(QString &str, int maxLength, bool cutEnd){
 	{
         if (cutEnd)
         {
-            str = str.mid(0, maxLength - 3) + "...";
+            str = str.mid(0, maxLength - 3) + u8"…";
         }
         else
         {
-            str = "..." + str.mid(str.size() + 3 - maxLength, str.size());
+            str = u8"…" + str.mid(str.size() + 3 - maxLength, str.size());
         }
     }
     return str;

@@ -57,7 +57,6 @@ include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 file(GLOB implementation_sources "src/*/*.cpp")
 file(GLOB implementation_headers "src/*/*.hpp")
 file(GLOB api_headers "include/opencv2/*.hpp")
-file(GLOB qt_headers "include/Qt/*.h")
 add_library( cvvisual
         ${implementation_sources}
         ${implementation_headers}
@@ -76,6 +75,9 @@ target_link_libraries(cvvisual
 	Qt5Core
 	Qt5Widgets
 	Qt5Gui
+	#without the following libraries it doesn't run on debian testing anymore
+	m
+	stdc++
 )
 
 
@@ -99,8 +101,8 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_collapsable manual_test/collapsable/main.cpp)
 	target_link_libraries(test_manual_collapsable cvvisual)
 	
-	add_executable(test_manual_basic_dilate manual_test/basic_dilate/main.cpp)
-	target_link_libraries(test_manual_basic_dilate cvvisual opencv_highgui)
+	add_executable(test_manual_filters manual_test/filters/main.cpp)
+	target_link_libraries(test_manual_filters cvvisual opencv_highgui)
 	
 	add_executable(test_manual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
 	target_link_libraries(test_manual_accordion cvvisual Qt5Core Qt5Widgets)
@@ -116,11 +118,33 @@ if(CVV_BUILD_TESTS)
 
 	add_executable(test_manual_filtercalltab manual_test/filter_call_tab/main.cpp)
 	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
-
-	#add_executable(test_manual_cvutil manual_test/cvutil/main.cpp)
-	#target_link_libraries(test_manual_cvutil cvvisual Qt5Core Qt5Widgets opencv_core opencv_imgproc)
 	
 	add_executable(test_manual_defaultfilterview manual_test/defaultfilterviewtest/main.cpp)
-	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core Qt5Widgets)
+	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core opencv_core)
+	
+	add_executable(test_manual_singlefilterview manual_test/singlefilterviewtest/main.cpp)
+	target_link_libraries(test_manual_singlefilterview cvvisual Qt5Core opencv_core)
+
+	add_executable(test_manual_matchscenetest manual_test/matchscenetest/main.cpp)
+	target_link_libraries(test_manual_matchscenetest cvvisual Qt5Core opencv_highgui opencv_core)
+
+	add_executable(test_manual_dualfilterview manual_test/dual_filter_view/main.cpp)
+    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core opencv_core)
+	
+	add_executable(test_manual_difffilterfunction manual_test/diffFilterFunction/main.cpp)
+    	target_link_libraries(test_manual_difffilterfunction cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
+	
+	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
+	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
+
+	add_executable(test_manual_imageconvert manual_test/imageconvert/main.cpp)
+	target_link_libraries(test_manual_imageconvert cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
+
+	add_executable(test_manual_imageconvertperf manual_test/imageconvertperf/main.cpp)
+	target_link_libraries(test_manual_imageconvertperf cvvisual Qt5Core Qt5Widgets opencv_core opencv_imgproc)
+
+	add_executable(test_manual_zoomableimage manual_test/zoomableimage/main.cpp)
+	target_link_libraries(test_manual_zoomableimage cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
+
 	
 endif()

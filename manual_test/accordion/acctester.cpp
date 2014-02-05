@@ -71,7 +71,7 @@ std::string Acctester::s(std::string at)
 
 void Acctester::sinsert5()
 {
-	label5=acc->insert(s("5").c_str(), *(new QLabel{s("5").c_str()}),true, 4);
+	label5=acc->insert("5", cvv::util::make_unique<QLabel>("5"), true, 4);
 }
 void Acctester::sremove5()
 {

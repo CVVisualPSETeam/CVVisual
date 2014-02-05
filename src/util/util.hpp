@@ -5,6 +5,7 @@
 #include <initializer_list>
 #include <memory>
 #include <utility>
+#include <type_traits>
 
 //included for convinience of others:
 #include <cstddef> //size_t
@@ -44,6 +45,10 @@ bool isAnyOf(const ValueType& value, const std::initializer_list<Comparable>& se
 	return std::find(set.begin(), set.end(), value) != set.end();
 }
 
+// just forward-declarations:
+template<typename T> class Reference;
+template<typename T> Reference<T> makeRef(T& val);
+
 /**
  * Reference-class to signal that a type is neither owned nor NULL.
  * 
@@ -70,21 +75,49 @@ public:
 	Reference(T&&) = delete;
 	
 	/**
-	 * Get a reference to the referenced object.
+	 * @brief Creates a Ref from a Reference to a type that inherits T.
+	 *
+	 * Trying to pass in any other type results in a compiler-error.
+	 */
+	template<typename Derived>
+		Reference(const Reference<Derived> other): ptr{other.getPtr()}
+	{
+		static_assert(std::is_base_of<T, Derived>::value,
+				"Reference<T> can only be constructed from Reference<U> if "
+				"T is either equal to U or a base-class of U");
+	}
+	
+	/**
+	 * @brief Get a reference to the referenced object.
 	 */
 	T& operator*() const {return *ptr;}
 	
 	T* operator->() const {return ptr;}
 	
 	/**
-	 * Get a reference to the referenced object.
+	 * @brief Get a reference to the referenced object.
 	 */
 	T& get() const {return *ptr;}
 	
 	/**
-	 * Get a pointer to the referenced object.
+	 * @brief Get a pointer to the referenced object.
 	 */
 	T* getPtr() const {return ptr;}
+	
+	/**
+	 * @brief Tries to create a Reference to a type that inherits T.
+	 * 
+	 * If the target-type does not inherit T, a compiler-error is created.
+	 * @throws std::bad_cast if the pointee is not of the requested type.
+	 */
+	template<typename TargetType>
+	Reference<TargetType> castTo() const
+	{
+		static_assert(std::is_base_of<T, TargetType>::value,
+				"Reference<Base>::castTo<>() can only cast to Reference<Derived>, "
+				"where Derived inherits from Base");
+		return makeRef(dynamic_cast<TargetType&>(*ptr));
+	}
 	
 	/**
 	 * @brief Compare to references for identity of the referenced object.

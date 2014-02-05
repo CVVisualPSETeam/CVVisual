@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QTableWidget>
 #include <QAction>
+#include <QResizeEvent>
 
 #include "../stfl/element_group.hpp"
 #include "overview_table_collumn.hpp"
@@ -13,10 +14,17 @@
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 
+namespace cvv { namespace controller {
+class ViewController;
+}}
+
 namespace cvv { namespace gui {
 
 class OverviewTable;
 
+/**
+ * @brief A table for the a group of overview data sets.
+ */
 class OverviewGroupSubtable : public QWidget
 {
     Q_OBJECT
@@ -24,13 +32,22 @@ class OverviewGroupSubtable : public QWidget
 public:
 
     /**
-     * @todo implement
+     * @brief Constructs an over group subtable.
+	 * @param controller view controller
+	 * @param parent parent table
+	 * @param group the displayed group of overview data sets
      */
     OverviewGroupSubtable(util::Reference<controller::ViewController> controller,
                          OverviewTable *parent,
                          stfl::ElementGroup<OverviewTableCollumn> group);
 
+	/**
+	 * @brief Updates the displayed table UI.
+	 */
     void updateUI();
+
+protected:
+	void resizeEvent(QResizeEvent *event);
 
 private slots:
     void rowClicked(int row, int collumn);

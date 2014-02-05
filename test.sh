@@ -16,5 +16,5 @@ function run_tests() {
 }
 
 cd "$(dirname $0)/build"
-run_tests debug && run_tests release
+   	run_tests debug && run_tests release
 exit $?

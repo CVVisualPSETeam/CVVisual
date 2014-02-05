@@ -36,6 +36,8 @@ public:
 	 */
 	Call& getCall(size_t Id);
 	
+	bool hasCall(size_t Id);
+	
 	/**
 	 * Get the number of currently managed calls.
 	 */
@@ -49,6 +51,13 @@ public:
 	 */
 	void callUI();
 	
+	/**
+	 * @brief Replace the continue-buttons with close-buttons and show the UI.
+	 * 
+	 * This function is intended to be called directly before main returns after all the actual
+	 * work is done.
+	 */
+	void lastCall();
 private:
 	controller::ViewController viewController;
 	std::vector<std::unique_ptr<Call>> calls;

@@ -32,11 +32,14 @@ void STFLQueryWidgetLineEdit::keyPressEvent(QKeyEvent *e)
         case Qt::Key_Enter:
         case Qt::Key_Return:
         case Qt::Key_Escape:
-        case Qt::Key_Tab:
         case Qt::Key_Backtab:
             e->ignore();
             return; // Let the completer do default behavior
-        }
+       	case Qt::Key_Tab:
+			QLineEdit::keyPressEvent(new QKeyEvent(e->type(), Qt::DownArrow, e->modifiers()));
+			e->ignore();
+			return;   
+		}
     }
 
     bool isShortcut = (e->modifiers() & Qt::ControlModifier) && e->key() == Qt::Key_E;

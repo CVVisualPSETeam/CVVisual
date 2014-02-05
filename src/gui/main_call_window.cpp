@@ -6,8 +6,11 @@ MainCallWindow::MainCallWindow(util::Reference<controller::ViewController> contr
 							   size_t id, OverviewPanel *ovPanel)
 								: CallWindow(controller, id), ovPanel{ovPanel}
 {
+	tabOffset = 1;
 	tabWidget->insertTab(0, ovPanel, "Overview");
-    setWindowTitle(QString("CVVisual main window (no. %1)").arg(id));
+    auto *tabBar = tabWidget->getTabBar();
+    tabBar->tabButton(0,  QTabBar::RightSide)->hide();
+    setWindowTitle(QString("CVVisual | main window"));
 }
 	
 void MainCallWindow::showOverviewTab()

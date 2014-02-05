@@ -3,6 +3,9 @@
 
 #include <QWidget>
 #include <QString>
+#include <QSlider>
+#include <QLabel>
+#include <QPushButton>
 
 #include "../stfl/stfl_engine.hpp"
 #include "../impl/call.hpp"
@@ -11,14 +14,16 @@
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 
+
+
 namespace cvv {
 
 namespace controller {
-	class ViewController;
+    class ViewController;
 }
 
 namespace qtutil {
-	class STFLQueryWidget;
+    class STFLQueryWidget;
 }
 
 namespace gui {
@@ -28,40 +33,49 @@ class OverviewTableCollumn;
 
 class OverviewPanel : public QWidget
 {
-	
-	Q_OBJECT
-	
+
+    Q_OBJECT
+
 public:
-	
-	/**
-	 * @todo implement
+
+    OverviewPanel(controller::ViewController *controller);
+
+    void addElement(const util::Reference<const impl::Call> newCall);
+
+    /**
+     * @brief Changes the "Resume program execution" button label to "Exit Application"
      */
-	OverviewPanel(controller::ViewController *controller);
-	
-	/**
-	 * @todo implement
+    void showExitApplicationButton();
+
+    /**
+     * @brief Removes and deletes the element with the given id.
+     * @param id element id
      */
-	void addElement(const util::Reference<const impl::Call> newCall);
-	
-public slots:	
-	/**
-	 * @todo implement
-     */
-	void filterQuery(QString query);
-	/**
-	 * @todo implement
-     */
-	void updateQuery(QString query);
+    void deleteElement(size_t id);
+
+private slots:
+
+    void filterQuery(QString query);
+
+    void updateQuery(QString query);
 
     void requestSuggestions(QString query);
-	
+
+    void imgSizeSliderAction();
+
+    void toggleImages();
+
 private:
-	stfl::STFLEngine<OverviewTableCollumn> queryEngine;
-	qtutil::STFLQueryWidget *queryWidget;
-	OverviewTable *table;
-	controller::ViewController *controller;
+    stfl::STFLEngine<OverviewTableCollumn> queryEngine;
+    qtutil::STFLQueryWidget *queryWidget;
+    OverviewTable *table;
+    controller::ViewController *controller;
+    QLabel *imgSizeSliderLabel;
+    QSlider *imgSizeSlider;
+    QPushButton *showImgsButton;
 
     void initEngine();
+
 };
 
 }}

@@ -40,14 +40,15 @@ void Accordion::hideAll(bool b)
 	}
 }
 
-Accordion::Handle Accordion::insert(const QString& title,QWidget& widget, bool isCollapsed,
+Accordion::Handle Accordion::insert(const QString& title, std::unique_ptr<QWidget> widget, bool isCollapsed,
 			   std::size_t position)
 {
 	//create element
-	elements_.emplace(&widget, new Collapsable{title, widget, isCollapsed});
+	auto widgetPtr = widget.get();
+	elements_.emplace(widgetPtr, new Collapsable{title, std::move(widget), isCollapsed});
 	//insert element
-	layout_->insertWidget(position, &element(&widget));
-	return &widget;
+	layout_->insertWidget(position, &element(widgetPtr));
+	return widgetPtr;
 }
 
 void Accordion::remove(Handle handle)

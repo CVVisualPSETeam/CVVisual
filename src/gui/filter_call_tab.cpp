@@ -1,4 +1,5 @@
 #include <vector>
+#include <memory>
 
 #include <QString>
 #include <QMap>
@@ -14,26 +15,32 @@
 #include "../controller/view_controller.hpp"
 #include "../impl/filter_call.hpp"
 
-#include "../view/defaultfilterview.hpp"
+//#include "../view/defaultfilterview.hpp"
 
 namespace cvv {
 namespace gui {
 
-void FilterCallTab::currentIndexChanged(const QString& text) const
+FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
+	filterCall_{fc}, viewController_{vc}
 {
-	/*filterViewId = text;
-	filterView = filterViewMap[filterViewId].createFilterView(filterCall->original(), filterCall->result());*/
-	(void) text;
-}
+	setName(filterCall_->description());
+	const QString scope{"default_views"};
+	const QString key{"default_filter_view"};
+	QString setting;
+	try
+	{
+		setting = vc.getSetting(scope, key);
+	} catch (std::invalid_argument)
+	{
+		setting = "DefaultFilterView";
+	}
+	filterViewId_ = setting;
 
-void FilterCallTab::helpButtonClicked() const
-{
-	viewController->openHelpBrowser(filterViewId);
-/* Only for testing: */	helpButton->setText("Connect successful");
+	createGui();
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
-	filterCall{fc}, viewController{vc}
+	filterCall_{fc}, viewController_{vc}
 {
 	setName(tabName);
 	const QString scope{"default_views"};
@@ -46,69 +53,88 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	{
 		setting = "DefaultFilterView";
 	}
-
-	//QString setting = "PLACEHOLDER"; (void) scope; (void) key;
-	filterViewId = setting;
-	// TODO set filterView
+	filterViewId_ = setting;
 
 	createGui();
 }
 
 FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, const QString& viewId):
-	filterCall{fc}, viewController{vc}
+	filterCall_{fc}, viewController_{vc}
 {
 	setName(tabName);
-	filterViewId = viewId;
-	// TODO set filterView
+	filterViewId_ = viewId;
 
 	createGui();
 }
 
-size_t FilterCallTab::getId() const
+void FilterCallTab::currentIndexChanged(const QString& text)
 {
-	return filterCall->getId();
+	filterViewId_ = text;
+	delete filterView_;
+	setView(filterViewId_);
 }
 
-void FilterCallTab::addFilterViewToMap(const QString& filterViewId, const cvv::view::FilterView& filterView)
+void FilterCallTab::helpButtonClicked() const
 {
-	/*if(!filterViewMap->registerElement(filterViewId, &(bool (createFilterView()))))
-	{
-		// TODO error handling.
-	}*/
-	(void) filterViewId;
-	(void) filterView;
+	viewController_->openHelpBrowser(filterViewId_);
+}
+
+size_t FilterCallTab::getId() const
+{
+	return filterCall_->getId();
+}
+
+void FilterCallTab::addFilterViewToMap(const QString& filterViewId,
+				       std::function<std::unique_ptr<cvv::view::FilterView>(std::vector<cv::Mat>, QWidget*)> fView)
+{
+	cvv::qtutil::RegisterHelper<cvv::view::FilterView, std::vector<cv::Mat>, QWidget*>::registerElement(filterViewId, fView);
 }
 
 void FilterCallTab::createGui()
 {
-	QHBoxLayout* hlayout = new QHBoxLayout;
-	hlayout->setAlignment(Qt::AlignTop);
-	QLabel* selectionLabel = new QLabel{"View:"};
-	hlayout->addWidget(selectionLabel);
-	filterViewSelection = new QComboBox{};
-	hlayout->addWidget(filterViewSelection); // Will eventually replaced with the combo box of the register helper below.
-	//hlayout->addWidget(filterViewMap);
-	helpButton = new QPushButton{"Help"};
-	hlayout->addWidget(helpButton);
-	connect(helpButton, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
+	comboBox_->setCurrentText(filterViewId_);
+	hlayout_ = new QHBoxLayout{this};
+	hlayout_->setAlignment(Qt::AlignTop);
+	hlayout_->addWidget(new QLabel{"View:"});
+	hlayout_->addWidget(comboBox_);
+	helpButton_ = new QPushButton{"Help", this};
+	hlayout_->addWidget(helpButton_);
+	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
 
-	QWidget* upperBar = new QWidget;
-	upperBar->setLayout(hlayout);
+	upperBar_ = new QWidget{this};
+	upperBar_->setLayout(hlayout_);
 
-	QVBoxLayout* vlayout = new QVBoxLayout;
-	//QLabel* viewDummy = new QLabel{"There will be a view here."};
+	vlayout_ = new QVBoxLayout{this};
 
-/* For testing: */
+
+/* For testing:
 	std::vector<cv::Mat> images;
-	images. push_back(filterCall->original());
-	images.push_back(filterCall->result());
-	filterView = new cvv::view::DefaultFilterView{images, this};
+	images. push_back(filterCall_->original());
+	images.push_back(filterCall_->result());
+	filterView_ = new cvv::view::DefaultFilterView{images, this};*/
 
-	vlayout->addWidget(upperBar);
-	//vlayout->addWidget(viewDummy);
-	vlayout->addWidget(filterView);
+	vlayout_->addWidget(upperBar_);
+	setView(filterViewId_);
 
-	setLayout(vlayout);
+	setLayout(vlayout_);
+	connect(comboBox_, SIGNAL(currentTextChanged(QString)), this, SLOT(currentIndexChanged(QString)));
+}
+
+void FilterCallTab::setView(const QString &viewId)
+{
+	try
+	{
+		auto fct = registeredElements_.at(viewId);
+		std::vector<cv::Mat> images;
+		images. push_back(filterCall_->original());
+		images.push_back(filterCall_->result());
+		filterView_ = (fct(images, this)).release();
+		vlayout_->addWidget(filterView_);
+	} catch (std::out_of_range)
+	{
+		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
+	}
+
 }
 
 }}//namespaces
