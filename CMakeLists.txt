@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 # add some nice 'no-ugly-code-enforcers':
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_DEBUG")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_DEBUG -fsanitize=address -fno-omit-frame-pointer")
 elseif(CMAKE_BUILD_TYPE MATCHES "Release")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
