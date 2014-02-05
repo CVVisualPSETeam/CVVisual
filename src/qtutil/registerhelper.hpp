@@ -12,10 +12,7 @@
 #include <QVBoxLayout>
 //cvv
 #include "signalslot.hpp"
-
-
-#include<iostream>
-
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace qtutil{
 /**
@@ -38,8 +35,13 @@ public:
 	 */
 	RegisterHelper()
 		:comboBox_{new QComboBox{}},
-		slotElementRegistered_{[&](const QString& name){comboBox_->addItem(name);}}
+		slotElementRegistered_{[&](const QString& name){
+			TRACEPOINT;
+			comboBox_->addItem(name);
+			TRACEPOINT;
+		}}
 	{
+		TRACEPOINT;
 		QObject::connect(&(this->signElementRegistered_),
 			SIGNAL(signal(QString)),
 			&(this->slotElementRegistered_),
@@ -47,14 +49,17 @@ public:
 		for(auto& elem: RegisterHelper<Value,Args...>::registeredElements_)
 			{comboBox_->addItem(elem.first);}
 		select(selection());
+		TRACEPOINT;
 	}
+
+	~RegisterHelper(){TRACEPOINT;}
 
 	/**
 	 * @brief Returns the current selection from the QComboBox
 	 * @return The current selection from the QComboBox
 	 */
 	QString selection() const
-		{return comboBox_->currentText();}
+		{TRACEPOINT;return comboBox_->currentText();}
 
 	/**
 	 * @brief Checks whether a function was registered with the name.
@@ -62,7 +67,7 @@ public:
 	 * @return true if there is a function. false otherwise
 	 */
 	static bool has(const QString& name)
-		{return registeredElements_.find(name) != registeredElements_.end();}
+		{TRACEPOINT;return registeredElements_.find(name) != registeredElements_.end();}
 
 	/**
 	 * @brief Returns the names of all registered functions.
@@ -70,11 +75,13 @@ public:
 	 */
 	static std::vector<QString> registeredElements()
 	{
+		TRACEPOINT;
 		std::vector<QString> result{};
 		for(auto& elem:registeredElements_)
 		{
 			result.push_back(elem.first);
 		};
+		TRACEPOINT;
 		return result;
 	}
 
@@ -88,13 +95,15 @@ public:
 	static bool registerElement(const QString& name,
 				const std::function< std::unique_ptr<Value>(Args...)>& fabric)
 	{
+		TRACEPOINT;
 		if(has(name))
-			{return false;};
+			{TRACEPOINT;return false;};
 
 		registeredElements_.emplace(name, fabric);
 
 		signElementRegistered_.emitSignal(name);
 
+		TRACEPOINT;
 		return true;
 	}
 
@@ -105,10 +114,12 @@ public:
 	 */
 	bool select(const QString& name)
 	{
+		TRACEPOINT;
 		if(!has(name))
 			{return false;}
 		comboBox_->setCurrentText(name);
 		return true;
+		TRACEPOINT;
 	}
 
 	/**
@@ -117,7 +128,7 @@ public:
 	 * @return The function according to the current selection of the QComboBox.
 	 */
 	std::function<std::unique_ptr<Value>(Args...)> operator()()
-		{return (*this)(selection());}
+		{TRACEPOINT;return (*this)(selection());}
 
 	/**
 	 * @brief Returns the function according to name.
@@ -126,7 +137,7 @@ public:
 	 * @return The function according to name.
 	 */
 	std::function<std::unique_ptr<Value>(Args...)> operator()(const QString& name)
-		{return registeredElements_.at(name);}
+		{TRACEPOINT;return registeredElements_.at(name);}
 
 	/**
 	 *@brief Signal emitted whenever a new function is registered.

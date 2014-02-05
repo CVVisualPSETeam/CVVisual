@@ -13,6 +13,7 @@
 
 //cvv
 #include "signalslot.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace qtutil{
 
@@ -34,7 +35,7 @@ public:
 	/**
 	 * @brief virtual destructor.
 	 */
-	virtual ~FilterFunctionWidget(){}
+	virtual ~FilterFunctionWidget(){TRACEPOINT;}
 
 	/**
 	 * @brief Applys the filter to in and saves the result in out.

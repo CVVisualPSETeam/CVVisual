@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_QTUTIL
-#define CVVISUAL_QTUTIL
+#ifndef CVVISUAL_QTUTIL_HPP
+#define CVVISUAL_QTUTIL_HPP
 
 #include <QImage>
 #include <QPixmap>
@@ -7,6 +7,8 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/opencv.hpp"
+
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace qtutil {
 
