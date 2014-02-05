@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QtGui>
 
+#include "../dbg/dbg.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../qtutil/diffFilterFunction.hpp"
 #include "../qtutil/filterselectorwidget.hpp"
@@ -34,6 +35,7 @@ namespace view
 			}
 		}}
 	{
+		TRACEPOINT;
 		QHBoxLayout* layout = new QHBoxLayout{};
 		QHBoxLayout* imageLayout = new QHBoxLayout{};
 		QWidget *imwid = new QWidget{};
@@ -105,6 +107,8 @@ namespace view
 		layout->addWidget(imwid);
 
 		setLayout(layout);
+
+		TRACEPOINT;
 	}
 
 	DualFilterView::DualFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
@@ -113,20 +117,28 @@ namespace view
 
 	void DualFilterView::applyFilter()
 	{
+		TRACEPOINT;
+
 		auto result = filterSelector_->checkInput(rawImages_);
 		if(result.first){
 			std::array<cv::Mat,1> out;
 			out = filterSelector_-> applyFilter(rawImages_,out);
 			zoomImages_.at(1).updateMat(out.at(0));
 		}
+
+		TRACEPOINT;
 	}
 
 	std::array<cv::Mat, 2> DualFilterView::convertToArray(const std::vector<cv::Mat>& matVec)
 	{
+		TRACEPOINT;
+
 		if(matVec.size() != 2)
 		{
 			throw std::runtime_error("Wrong number of elements in vector");
 		}
+
+		TRACEPOINT;
 
 		return {matVec.at(0), matVec.at(1)};
 	}

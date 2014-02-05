@@ -4,6 +4,7 @@
 
 #include <QString>
 
+#include "../dbg/dbg.hpp"
 #include "diffFilterFunction.hpp"
 
 namespace cvv{
@@ -15,6 +16,8 @@ DiffFilterFunction::DiffFilterFunction(DiffFilterType filterType, QWidget* paren
 const std::array<cv::Mat,1>& DiffFilterFunction::applyFilter(const std::array<cv::Mat,2>& in,
 			std::array<cv::Mat,1>& out) const
 {
+	TRACEPOINT;
+
 	auto check = checkInput(in);
 	if(!check.first)
 	{
@@ -37,11 +40,15 @@ const std::array<cv::Mat,1>& DiffFilterFunction::applyFilter(const std::array<cv
 
 	out.at(0) = splitVector.at(static_cast<size_t>(filterType_));
 
+	TRACEPOINT;
+
 	return out;
 }
 
 std::pair<bool, QString> DiffFilterFunction::checkInput(const std::array<cv::Mat,2>& in) const
 {
+	TRACEPOINT;
+
 	size_t inChannels = in.at(0).channels();
 
 	if (inChannels != static_cast<size_t>(in.at(1).channels()))
@@ -61,6 +68,8 @@ std::pair<bool, QString> DiffFilterFunction::checkInput(const std::array<cv::Mat
 			"filter is grayscale, but image has more channels."
 			"Result will have as many channels as image");
 	}
+
+	TRACEPOINT;
 
 	return std::make_pair(true, "images can be converted");
 }
