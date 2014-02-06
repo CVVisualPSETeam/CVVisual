@@ -11,71 +11,69 @@
 #include <iostream>
 
 template<int depth>
+void putInStream(std::stringstream& ss,const cvv::qtutil::DepthType<depth>& val){ss<<val;}
+
+template<> void putInStream<CV_8U>(std::stringstream& ss,const cvv::qtutil::DepthType<CV_8U>& val)
+	{ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(val);}
+
+template<> void putInStream<CV_8S>(std::stringstream& ss,const cvv::qtutil::DepthType<CV_8S>& val)
+	{ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(val);}
+
+
+template<int depth,int channels>
 std::string printPixel(const cv::Mat& mat, int spalte, int zeile)
 {
-	TRACEPOINT;
 	std::stringstream ss{};
-	auto p=mat.ptr<cvv::qtutil::DepthType<depth>>(zeile)
-				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<depth>);
-	ss<<(p[0]);
+	auto p=mat.at<cv::Vec<cvv::qtutil::DepthType<depth>,channels>>(zeile,spalte);
+
+	putInStream<depth>(ss,p[0]);
 	for(int c=1;c<mat.channels();c++)
 	{
-		ss<<"\n"<<(p[c]);
+		ss<<"\n";
+		putInStream<depth>(ss,p[c]);
 	}
-	TRACEPOINT;
 	return ss.str();
 }
-template<>
-std::string printPixel<CV_8U>(const cv::Mat& mat, int spalte, int zeile)
+
+template<int depth>
+std::string printPixel(const cv::Mat& mat, int i, int j)
 {
-	TRACEPOINT;
-	std::stringstream ss{};
-	auto p=mat.ptr<cvv::qtutil::DepthType<CV_8U>>(zeile)
-				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<CV_8U>);
-	ss<<static_cast<cvv::qtutil::DepthType<CV_16U>>(p[0]);
-	for(int c=1;c<mat.channels();c++)
+	if(mat.channels()<1){return "<1 channel";}
+	switch(mat.channels())
 	{
-		ss<<"\n"<<static_cast<cvv::qtutil::DepthType<CV_16U>>(p[c]);
+	case 1: return printPixel<depth,1>(mat,i,j); break;
+	case 2: return printPixel<depth,2>(mat,i,j); break;
+	case 3: return printPixel<depth,3>(mat,i,j); break;
+	case 4: return printPixel<depth,4>(mat,i,j); break;
+	case 5: return printPixel<depth,5>(mat,i,j); break;
+	case 6: return printPixel<depth,6>(mat,i,j); break;
+	case 7: return printPixel<depth,7>(mat,i,j); break;
+	case 8: return printPixel<depth,8>(mat,i,j); break;
+	case 9: return printPixel<depth,9>(mat,i,j); break;
+	case 10: return printPixel<depth,10>(mat,i,j); break;
+	default: return ">10 channels";
 	}
-	TRACEPOINT;
-	return ss.str();
-}
-template<>
-std::string printPixel<CV_8S>(const cv::Mat& mat, int spalte, int zeile)
-{
-	TRACEPOINT;
-	std::stringstream ss{};
-	auto p=mat.ptr<cvv::qtutil::DepthType<CV_8S>>(zeile)
-				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<CV_8S>);
-	ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(p[0]);
-	for(int c=1;c<mat.channels();c++)
-	{
-		ss<<"\n"<<static_cast<cvv::qtutil::DepthType<CV_16S>>(p[c]);
-	}
-	TRACEPOINT;
-	return ss.str();
 }
 
 std::string printPixel(const cv::Mat& mat, int i, int j)
 {
-	TRACEPOINT;
 	if(i>=0&&j>=0)
 	{
 		if(i<mat.cols&&j<mat.rows)
 		{
 			switch(mat.depth())
 			{
-				case CV_8U: TRACEPOINT;return printPixel<CV_8U >(mat,i,j); break;
-				case CV_8S: TRACEPOINT;return printPixel<CV_8S >(mat,i,j); break;
-				case CV_16U:TRACEPOINT;return printPixel<CV_16U>(mat,i,j); break;
-				case CV_16S:TRACEPOINT;return printPixel<CV_16S>(mat,i,j); break;
-				case CV_32S:TRACEPOINT;return printPixel<CV_32S>(mat,i,j); break;
-				case CV_32F:TRACEPOINT;return printPixel<CV_32F>(mat,i,j); break;
-				case CV_64F:TRACEPOINT;return printPixel<CV_64F>(mat,i,j); break;
+				case CV_8U: return printPixel<CV_8U >(mat,i,j); break;
+				case CV_8S: return printPixel<CV_8S >(mat,i,j); break;
+				case CV_16U:return printPixel<CV_16U>(mat,i,j); break;
+				case CV_16S:return printPixel<CV_16S>(mat,i,j); break;
+				case CV_32S:return printPixel<CV_32S>(mat,i,j); break;
+				case CV_32F:return printPixel<CV_32F>(mat,i,j); break;
+				case CV_64F:return printPixel<CV_64F>(mat,i,j); break;
 			}
+			return "unknown depth";
 		}
 	}
-	TRACEPOINT;
 	return "";
 }
 
@@ -143,18 +141,16 @@ void ZoomableImage::drawValues()
 		delete elem;
 	}
 	values_.clear();
-
 	//draw new values?
 	if(!(autoShowValues_&&(zoom_>=threshold_))){TRACEPOINT;return;}
 	TRACEPOINT;
 	auto r=visibleArea();
-	for(int i=std::max(0,static_cast<int>(r.left())-2);
-		i<std::min(mat_.cols,static_cast<int>(r.right())+2);i++)
+	for(int i=std::max(0,static_cast<int>(r.left())-1);
+		i<std::min(mat_.cols,static_cast<int>(r.right())+1);i++)
 	{
-		for(int j=std::max(0,static_cast<int>(r.top())-2);
-			j<std::min(mat_.rows,static_cast<int>(r.bottom())+2); j++)
+		for(int j=std::max(0,static_cast<int>(r.top())-1);
+			j<std::min(mat_.rows,static_cast<int>(r.bottom())+1); j++)
 		{
-
 			QString s(printPixel(mat_,i,j).c_str());
 
 			s.replace('\n',"<br>");

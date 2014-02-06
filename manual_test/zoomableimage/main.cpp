@@ -35,9 +35,7 @@ int main(int argc, char *argv[])
 	wid.setLayout(lay);
 
 	cv::Mat mat{50,5,CV_8SC4, cv::Scalar{125,125,0,125}};
-	cv::Mat mat2{5,50,CV_64FC4, cv::Scalar{1,0.234523452345432523452,
-	0.75345340e-123
-	,0.5}};
+	cv::Mat mat2{5,50,CV_64FC4, cv::Scalar{1,0.234523452345432523452,0.75345340e-123,0.5}};
 	cv::Mat img=renderImg();
 
 	cvv::qtutil::ZoomableImage* i= new cvv::qtutil::ZoomableImage{mat};
