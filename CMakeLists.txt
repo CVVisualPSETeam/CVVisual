@@ -131,9 +131,6 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_dualfilterview manual_test/dual_filter_view/main.cpp)
     	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core opencv_core opencv_highgui)
 	
-	add_executable(test_manual_difffilterfunction manual_test/diffFilterFunction/main.cpp)
-    	target_link_libraries(test_manual_difffilterfunction cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
-	
 	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
 	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
 
