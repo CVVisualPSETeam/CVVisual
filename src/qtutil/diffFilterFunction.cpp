@@ -48,7 +48,7 @@ const std::array<cv::Mat,1>& DiffFilterFunction::applyFilter(const std::array<cv
 std::pair<bool, QString> DiffFilterFunction::checkInput(const std::array<cv::Mat,2>& in) const
 {
 	TRACEPOINT;
-
+	/*
 	size_t inChannels = in.at(0).channels();
 
 	if (inChannels != static_cast<size_t>(in.at(1).channels()))
@@ -59,18 +59,21 @@ std::pair<bool, QString> DiffFilterFunction::checkInput(const std::array<cv::Mat
 	if (inChannels == 1 && filterType_ != DiffFilterType::GRAYSCALE)
 	{
 		return std::make_pair(false,
-			"image is grayscale, but selected Filter can only progress 3-channel images");
+			"images are grayscale, but selected Filter can only progress 3-channel images");
 	}
 
-	if (inChannels != 1 && filterType_ == DiffFilterType::GRAYSCALE)
+	if (inChannels != 1 && inChannels != 3 && inChannels != 4)
 	{
-		return std::make_pair(true,
-			"filter is grayscale, but image has more channels."
-			"Result will have as many channels as image");
+		return std::make_pair(false,
+			"images must have one, three or four channels");
 	}
 
 	TRACEPOINT;
 
+	return std::make_pair(true, "images can be converted");
+	*/
+
+	(void)in;
 	return std::make_pair(true, "images can be converted");
 }
 

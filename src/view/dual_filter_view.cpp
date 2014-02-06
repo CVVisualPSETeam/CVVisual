@@ -8,6 +8,7 @@
 #include <QPixmap>
 #include <QApplication>
 #include <QtGui>
+#include <QString>
 
 #include "../dbg/dbg.hpp"
 #include "../qtutil/accordion.hpp"
@@ -28,6 +29,7 @@ namespace view
 		slotFilterSelectedChanged_{[this](){
 			std::cout << "slotFilterSelectedChanged was called" << std::endl;
 			auto result = filterSelector_->checkInput(rawImages_);
+			std::cout << "checkInput(rawImages_): " << result.second.toStdString() << std::endl;
 			if(result.first){
 				std::array<cv::Mat,1> out;
 				out = filterSelector_-> applyFilter(rawImages_,out);
@@ -40,6 +42,8 @@ namespace view
 		QHBoxLayout* imageLayout = new QHBoxLayout{};
 		QWidget *imwid = new QWidget{};
 		qtutil::Accordion *accor = new qtutil::Accordion{};
+
+
 
 		auto filterWidget = util::make_unique<qtutil::FilterSelectorWidget<2,1>>();
 		filterSelector_ = filterWidget.get();
@@ -72,7 +76,8 @@ namespace view
 				{new qtutil::DiffFilterFunction{qtutil::DiffFilterType::VALUE, parent}};
 		});
 
-		connect(&(filterSelector_->sigFilterSettingsChanged_),SIGNAL(signal()),&slotFilterSelectedChanged_,SLOT(slot()));
+	//	connect(&(filterSelector_->sigSelect_),SIGNAL(signal()),&slotFilterSelectedChanged_,SLOT(slot()));
+		connect(&(filterSelector_->sigSelect_),&qtutil::Signal::signal,&slotFilterSelectedChanged_,&qtutil::Slot::slot);
 
 		accor->insert("Filter selection", std::move(filterWidget));
 		accor->setMinimumSize(150,0);

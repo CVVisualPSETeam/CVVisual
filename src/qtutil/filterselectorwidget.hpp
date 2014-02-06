@@ -57,6 +57,8 @@ public:
 					&(this->slotInternalFilterChanged_),
 					SLOT(slot()));
 			TRACEPOINT;
+			this->sigSelect_.emitSignal();
+			DEBUGF(1, "Signal was emmitted");
 		}},
 		slotInternalFilterChanged_{[this](){TRACEPOINT;
 			this->sigFilterSettingsChanged_.emitSignal();TRACEPOINT;}}
@@ -104,6 +106,8 @@ public:
 		TRACEPOINT;
 		return currentFilter_->checkInput(in);
 	}
+
+	Signal sigSelect_;
 
 private:
 	/**
