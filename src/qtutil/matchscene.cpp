@@ -12,53 +12,68 @@ namespace cvv{ namespace qtutil{
 		//begin Widget
 			QHBoxLayout *basicLayout = new QHBoxLayout{};
 			graphicScene_		 = new QGraphicsScene{this};
-			graphicView_		 = new QGraphicsView{graphicScene_};
-			leftImage_		 = new ZoomableImage{imageLeft};
-			rightImage_		 = new ZoomableImage{imageRight};
-
+			graphicView_		 = new QGraphicsView{graphicScene_};			
+			
 			basicLayout->addWidget(graphicView_);
 			basicLayout->setSizeConstraint(QLayout::SetNoConstraint);
 			setLayout(basicLayout);
 
+			leftImage_		 = new ZoomableImage{imageLeft};
+			rightImage_		 = new ZoomableImage{imageRight};
 	
 			leftImWidget_ 	= graphicScene_->addWidget(leftImage_);
 			rightImWidget_ 	= graphicScene_->addWidget(rightImage_);
+
+			for(auto key:keypoints_left)
+			{
+				CVVKeyPoint keypoint{key,leftImage_,leftImWidget_};
+				keypoints_left_.push_back(keypoint);
+			};
 			
+			for(auto key:keypoints_right)
+			{
+				CVVKeyPoint keypoint{key,rightImage_,rightImWidget_};
+				keypoints_right_.push_back(keypoint);
+			};
+			
+			for(auto match:matches)
+			{
+				matches_.emplace_back(keypoints_left.at(match.queryIdx),
+					keypoints_right.at(match.trainIdx),match.distance);
+			};
 						
 			QResizeEvent event{size(),size()};
 			resizeEvent(&event);
-
-			draw(keypoints_left,keypoints_right,matches);
 		}
 	//unfinished
-	void MatchScene::draw(const std::vector<cv::KeyPoint>& keypoints_left,
+	/*void MatchScene::draw(const std::vector<cv::KeyPoint>& keypoints_left,
 		const std::vector<cv::KeyPoint>& keypoints_right,const std::vector<cv::DMatch>& matches)
 	{
-		for(auto key:keypoints_left)
+		for(auto key:keypoints_left_)
 		{
-			cv::Point2f pt=key.pt;
+			cv::Point2f pt=key.keyPoint().pt;
 			QPointF point{pt.x,pt.y};
 			QPointF mid = leftImWidget_->mapToScene(leftImage_->mapImagePointToParent(point));
 			QPointF dif{0.5,0.5};
-			graphicScene_->addEllipse(QRectF{mid-dif,mid+dif});
+			QPen pen{Qt::red};
+			graphicScene_->addEllipse(QRectF{mid-dif,mid+dif},pen);
 		}
 
-		for(auto key:keypoints_right)
+		for(auto key:keypoints_right_)
 		{
-			cv::Point2f pt=key.pt;
+			cv::Point2f pt=key.keyPoint().pt;
 			QPointF point{pt.x,pt.y};
-			QPointF mid = leftImWidget_->mapToScene(rightImage_->mapImagePointToParent(point));
+			QPointF mid = rightImWidget_->mapToScene(rightImage_->mapImagePointToParent(point));
 			QPointF dif{0.5,0.5};
 			graphicScene_->addEllipse(QRectF{mid-dif,mid+dif});
 		}
-		(void)matches;
-	}
+	}*/
 
 	void MatchScene::resizeEvent(QResizeEvent * event)
 	{
 			(void) event;
-			int width = graphicView_->width()-2;
-			int heigth = graphicView_->height()-2;
+			int width = graphicView_->viewport()->width();
+			int heigth = graphicView_->viewport()->height();
 			//left
 			leftImWidget_->setPos(0,0);
 			leftImWidget_->setMinimumSize((width/2),heigth);
@@ -68,6 +83,6 @@ namespace cvv{ namespace qtutil{
 			rightImWidget_->setPos(width/2,0);
 			rightImWidget_->setMinimumSize(width/2,heigth);
 			rightImWidget_->setMaximumSize(width/2,heigth);
-			graphicView_->setSceneRect(1,1,width-1,heigth-1);
+			graphicView_->setSceneRect(0,0,width,heigth);
 	}
 }}
