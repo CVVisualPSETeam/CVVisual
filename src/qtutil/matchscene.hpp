@@ -13,6 +13,7 @@
 #include "cvvmatch.hpp"
 #include "cvvkeypoint.hpp"
 #include "zoomableimage.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
 
