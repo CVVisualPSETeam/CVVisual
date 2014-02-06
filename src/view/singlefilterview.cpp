@@ -13,6 +13,8 @@ namespace cvv{ namespace view{
 	SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
 		FilterView{parent},images_(images)
 	{
+		TRACEPOINT;
+
 		QWidget 		*imwid		= new QWidget{};
 		qtutil::Accordion 	*accor 		= new qtutil::Accordion{};
 		QHBoxLayout		*layout 	= new QHBoxLayout{};
@@ -48,10 +50,14 @@ namespace cvv{ namespace view{
 		layout->addWidget(accor);
 		layout->addWidget(imwid);
 		setLayout(layout);
+
+		TRACEPOINT;
 	}
 
 	void SingleFilterView::applyFilter()
 	{
+		TRACEPOINT;
+		
 		int count = 0;
 		for(auto image : images_)
 		{
@@ -64,6 +70,7 @@ namespace cvv{ namespace view{
 			}
 			count++;
 		}
+		TRACEPOINT;
 	}
 
 }}//namespaces

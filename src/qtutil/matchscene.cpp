@@ -8,7 +8,8 @@ namespace cvv{ namespace qtutil{
 	MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight,const std::vector<cv::KeyPoint>& keypoints_left,
 		const std::vector<cv::KeyPoint>& keypoints_right,const std::vector<cv::DMatch>& matches, QWidget* parent):
 			QWidget{parent}//,leftImage_{imageLeft},rightImage_{imageRight}
-		{	
+		{
+			TRACEPOINT;	
 		//begin Widget
 			QHBoxLayout *basicLayout = new QHBoxLayout{};
 			graphicScene_		 = new QGraphicsScene{this};
@@ -44,6 +45,8 @@ namespace cvv{ namespace qtutil{
 						
 			QResizeEvent event{size(),size()};
 			resizeEvent(&event);
+
+			TRACEPOINT;
 		}
 	//unfinished
 	/*void MatchScene::draw(const std::vector<cv::KeyPoint>& keypoints_left,
@@ -71,6 +74,7 @@ namespace cvv{ namespace qtutil{
 
 	void MatchScene::resizeEvent(QResizeEvent * event)
 	{
+			TRACEPOINT;
 			(void) event;
 			int width = graphicView_->viewport()->width();
 			int heigth = graphicView_->viewport()->height();
@@ -84,5 +88,7 @@ namespace cvv{ namespace qtutil{
 			rightImWidget_->setMinimumSize(width/2,heigth);
 			rightImWidget_->setMaximumSize(width/2,heigth);
 			graphicView_->setSceneRect(0,0,width,heigth);
+
+			TRACEPOINT;
 	}
 }}

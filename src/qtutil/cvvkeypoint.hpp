@@ -14,6 +14,7 @@
 #include "zoomableimage.hpp"
 #include "cvvmatch.hpp"
 #include "cvvkeypoint.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv{namespace qtutil{
 
@@ -22,27 +23,27 @@ public:
 	CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image,QGraphicsProxyWidget* imWidget,
 		QPen pen=QPen{},QBrush brush=QBrush{},QGraphicsItem *parent=nullptr):
 		QGraphicsItem{parent},
-		key_{key},image_{image},imWidget_{imWidget},pen_{pen},brush_{brush}{}
+		key_{key},image_{image},imWidget_{imWidget},pen_{pen},brush_{brush}{TRACEPOINT;}
 
 	CVVKeyPoint(const CVVKeyPoint& key):QGraphicsItem{key.parentWidget()},
-		key_{key.key_},image_{key.image_},imWidget_{key.imWidget_},pen_{key.pen_},brush_{key.brush_}{}
+		key_{key.key_},image_{key.image_},imWidget_{key.imWidget_},pen_{key.pen_},brush_{key.brush_}{TRACEPOINT;}
 
 	QPointF imPointInScene()
-		{ return imWidget_->mapToScene(image_->mapImagePointToParent(QPointF{key_.pt.x,key_.pt.y})); }
+		{TRACEPOINT; return imWidget_->mapToScene(image_->mapImagePointToParent(QPointF{key_.pt.x,key_.pt.y})); }
 
 	QRectF boundingRect() const
-		{ return QRectF{QPointF{key_.pt.x-10,key_.pt.y-10},QPointF{key_.pt.x+10,key_.pt.y+10}}; }
+		{ TRACEPOINT;return QRectF{QPointF{key_.pt.x-10,key_.pt.y-10},QPointF{key_.pt.x+10,key_.pt.y+10}}; }
 	
 	cv::KeyPoint keyPoint()
-		{return key_;}
+		{TRACEPOINT;return key_;}
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget);
 public slots:
 	void updatePen(QPen pen)
-		{pen_=pen;}
+		{TRACEPOINT;pen_=pen;}
 	
 	void updateBrush(QBrush brush)
-		{brush_=brush;}
+		{TRACEPOINT;brush_=brush;}
 private:
 
 	cv::KeyPoint key_;

@@ -14,6 +14,7 @@
 #include "opencv2/features2d/features2d.hpp"
 #include "zoomableimage.hpp"
 #include "matchpen.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
 class MatchPen;
@@ -27,23 +28,23 @@ public:
 		left_key_{match.left_key_},
 		rigth_key_{match.rigth_key_},
 		matchValue_{match.matchValue_},
-		pen_{match.pen_}{}
+		pen_{match.pen_}{TRACEPOINT;}
 
 	virtual QRectF boundingRect() const;
 
 	virtual void paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget);
 
 	cv::KeyPoint leftKeyPoint() const
-		{return left_key_;}
+		{TRACEPOINT;return left_key_;}
 
 	cv::KeyPoint rightKeyPoint() const
-		{return rigth_key_;}
+		{TRACEPOINT;return rigth_key_;}
 
 	QPointF leftImPointInScene() const
-		{return leftImWidget_->mapToScene(leftImage_->mapImagePointToParent(QPointF{left_key_.pt.x,left_key_.pt.y}));}
+		{TRACEPOINT;return leftImWidget_->mapToScene(leftImage_->mapImagePointToParent(QPointF{left_key_.pt.x,left_key_.pt.y}));}
 
 	QPointF rightImPointInScene() const
-		{return rightImWidget_->mapToScene(rightImage_->mapImagePointToParent(QPointF{rigth_key_.pt.x,rigth_key_.pt.y}));}
+		{TRACEPOINT;return rightImWidget_->mapToScene(rightImage_->mapImagePointToParent(QPointF{rigth_key_.pt.x,rigth_key_.pt.y}));}
 
 public slots:
 	/*void updatePen(const MatchPen& pen)

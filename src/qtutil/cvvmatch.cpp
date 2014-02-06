@@ -13,11 +13,12 @@ namespace cvv{ namespace qtutil{
 		rigth_key_{right_key},
 		matchValue_{matchValue},
 		pen_{pen}
-	{ }
+	{TRACEPOINT; }
 
 
 	QRectF CVVMatch::boundingRect() const 
 	{
+		TRACEPOINT;
 		return QRectF{QPointF{std::min(leftImPointInScene().rx(),rightImPointInScene().rx()),
 				std::min(leftImPointInScene().ry(),rightImPointInScene().ry())},
 				QPointF{std::max(leftImPointInScene().rx(),rightImPointInScene().rx()),
@@ -26,9 +27,11 @@ namespace cvv{ namespace qtutil{
 
 	void CVVMatch::paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget)
 	{
+		TRACEPOINT;
 		painter->setPen(pen_);
 		painter->drawLine(leftImPointInScene(),rightImPointInScene());
 		(void) widget;
 		(void) option;
+		TRACEPOINT;
 	}
 }}

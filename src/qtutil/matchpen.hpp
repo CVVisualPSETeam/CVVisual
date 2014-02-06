@@ -5,6 +5,8 @@
 #include <QPen>
 
 #include "cvvmatch.hpp"
+#include "../dbg/dbg.hpp"
+
 namespace cvv{ namespace qtutil{
 class CVVMatch;
 
@@ -12,7 +14,7 @@ class MatchPen:public QWidget{
 Q_OBJECT
 
 public:
-	MatchPen(QWidget* parent):QWidget(parent){}
+	MatchPen(QWidget* parent):QWidget(parent){TRACEPOINT;}
 	
 	virtual QPen getPen(const CVVMatch& cvmatch) = 0;
 
