@@ -28,6 +28,7 @@ namespace cvv
 namespace view
 {
 
+/** Debugging method. Prints a QStringList. **/
 void printQStringList(const QStringList& liste)
 {
 	for(auto iter = liste.begin(); iter != liste.end(); iter++)
@@ -45,24 +46,29 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	QHBoxLayout* imageLayout = new QHBoxLayout{};
 	QWidget *imwid = new QWidget{};
 	qtutil::Accordion *accor = new qtutil::Accordion{};
-	auto comboBox = new QComboBox{};
+	auto comboBox = util::make_unique<QComboBox>();
 	
 	//register filters at map
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>("Difference Image - hue",
+	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
+		("Difference Image - hue",
 		[this](){DualFilterView::applyDiffFilter(DiffFilterType::HUE);}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>("Difference Image - saturation",
+	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
+		("Difference Image - saturation",
 		[this](){DualFilterView::applyDiffFilter(DiffFilterType::SATURATION);}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>("Difference Image - value",
+	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
+		("Difference Image - value",
 		[this](){DualFilterView::applyDiffFilter(DiffFilterType::VALUE);}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>("Difference Image - grayscale",
+	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
+		("Difference Image - grayscale",
 		[this](){DualFilterView::applyDiffFilter(DiffFilterType::GRAYSCALE);}));
 	
 	//Register filter names at comboBox
 	comboBox -> addItems(DualFilterView::extractStringListfromMap());
 	printQStringList(DualFilterView::extractStringListfromMap()); //debugging
-	layout -> addWidget(comboBox); //debugging 
+	connect(comboBox.get(), SIGNAL(currentIndexChanged(const QString&)), this,
+		SLOT(updateFilterImg(const QString&)));
 	
-	accor->insert("Filter selection", util::make_unique<QComboBox>(comboBox));
+	accor->insert("Filter selection", std::move(comboBox));
 	accor->setMinimumSize(150,0);
 	layout->addWidget(accor);
 
@@ -70,7 +76,8 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	{
 		auto info = util::make_unique<qtutil::MatInfoWidget>(image);
 
-		connect(&zoomImages_.at(count),SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
+		connect(&zoomImages_.at(count),
+			SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
 			SLOT(updateConvertStatus(ImageConversionResult)));
 
 		connect(info.get(),SIGNAL(getZoom(qreal)),&zoomImages_.at(count),
@@ -181,6 +188,7 @@ QStringList DualFilterView::extractStringListfromMap() const
 void DualFilterView::updateFilterImg(const QString& selectedString)
 {
 	auto selectedFilter = filterMap_.find(selectedString.toStdString()) -> second;
+	selectedFilter();
 }
 
 }
