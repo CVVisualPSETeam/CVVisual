@@ -101,6 +101,7 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 
 	QHBoxLayout *layout=new QHBoxLayout{};
 	layout->addWidget(view_);
+	layout->setMargin(0);
 	setLayout(layout) ;
 	updateMat(mat_);
 	TRACEPOINT;

@@ -23,7 +23,8 @@ namespace cvv{ namespace view{
 		auto filterSelector	= util::make_unique<qtutil::FilterSelectorWidget<1,1>>();
 		filterSelector_ = filterSelector.get();
 
-		accor->setMinimumSize(250,0);
+		accor->setMinimumWidth(250);
+		accor->setMaximumWidth(250);
 		connect(&(filterSelector->sigFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
 		accor->insert("Select a Filter",std::move(filterSelector));
 		int count = 0;
