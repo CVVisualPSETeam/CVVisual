@@ -31,7 +31,14 @@ class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>,
 	static_assert( Out > 0, "Out must not be 0!");
 public:
 
+	/**
+	 * The input type.
+	 */
 	using InputArray  = typename FilterFunctionWidget<In,Out>::InputArray;
+
+	/**
+	 * @brief The output type.
+	 */
 	using OutputArray = typename FilterFunctionWidget<In,Out>::OutputArray;
 
 	/**
@@ -64,7 +71,6 @@ public:
 	 * @param in Input images.
 	 * @param out Output images.
 	 * @throw std::invalid_argument checkInput(in).first==false
-	 * @return parameter out
 	 */
 	virtual void applyFilter(InputArray in,OutputArray out) const override
 	{
@@ -94,6 +100,9 @@ public:
 
 
 private:
+	/**
+	 * @brief Performs the update after a selection occurred.
+	 */
 	void updatedSelectedFilter()
 	{
 		TRACEPOINT;
