@@ -14,8 +14,13 @@
 //cvv
 #include "signalslot.hpp"
 #include "../dbg/dbg.hpp"
+#include "../util/util.hpp"
 
 namespace cvv { namespace qtutil{
+
+template<std::size_t In > using CvvInputArray  = std::array<util::Reference<const cv::Mat>,In>;
+template<std::size_t Out> using CvvOutputArray = std::array<util::Reference<cv::Mat>,Out>;
+
 
 /**
  * @brief The type for the input of the filter.
@@ -30,8 +35,12 @@ namespace cvv { namespace qtutil{
 template< std::size_t In, std::size_t Out>
 class FilterFunctionWidget: public virtual QWidget
 {
-	static_assert( Out > 0, "Out must not be 0!");
+	static_assert( Out > 0, "Out should be >0.");
 public:
+
+	using InputArray  = CvvInputArray<In>;
+	using OutputArray = CvvOutputArray<Out>;
+
 	/**
 	 * @brief virtual destructor.
 	 */
@@ -41,11 +50,8 @@ public:
 	 * @brief Applys the filter to in and saves the result in out.
 	 * @param in The input images.
 	 * @param out The output images.
-	 * @return Returns out.
 	 */
-	virtual const std::array<cv::Mat,Out>&
-		applyFilter(const std::array<cv::Mat,In>& in,
-				std::array<cv::Mat,Out>& out) const = 0;
+	virtual void applyFilter(InputArray in,OutputArray out) const = 0;
 
 	/**
 	 * @brief Checks whether input can be progressed by the applyFilter function.
@@ -54,13 +60,12 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(const std::array<cv::Mat,In>& in) const
+	virtual std::pair<bool, QString> checkInput(InputArray in) const
 												= 0;
-
 	/**
 	 * @brief Signal to emit when user input leads to different parameters.
 	 */
-	Signal sigFilterSettingsChanged_;
+	Signal signFilterSettingsChanged_;
 };
 
 }} // end namespaces qtutil, cvv

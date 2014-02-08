@@ -25,10 +25,10 @@ namespace cvv{ namespace view{
 
 		accor->setMinimumWidth(250);
 		accor->setMaximumWidth(250);
-		connect(&(filterSelector->sigFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
+		connect(&(filterSelector->signFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
 		accor->insert("Select a Filter",std::move(filterSelector));
 		int count = 0;
-		for(auto image:images_)
+		for(auto& image:images_)
 		{
 			zoomImages_.push_back(new qtutil::ZoomableImage{});
 			auto info = util::make_unique<qtutil::MatInfoWidget>(image);
@@ -58,16 +58,18 @@ namespace cvv{ namespace view{
 	void SingleFilterView::applyFilter()
 	{
 		TRACEPOINT;
-		
+
 		int count = 0;
-		for(auto image : images_)
+		for(auto& image : images_)
 		{
-			const std::array<cv::Mat,1> input{image};
+			//const std::array<cv::Mat,1> input{image};
+			qtutil::CvvInputArray<1> input = {image};
 			auto result = filterSelector_->checkInput(input);
 			if(result.first){
-				std::array<cv::Mat,1> out;
+				//std::array<cv::Mat,1> out;
+				qtutil::CvvOutputArray<1> out = {zoomImages_[count]->mat()};
 				filterSelector_->applyFilter(input,out);
-				zoomImages_[count]->updateMat(out[0]);
+				//zoomImages_[count]->updateMat(out[0]);
 			}
 			count++;
 		}

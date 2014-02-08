@@ -30,44 +30,30 @@ class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>,
 {
 	static_assert( Out > 0, "Out must not be 0!");
 public:
+
+	using InputArray  = typename FilterFunctionWidget<In,Out>::InputArray;
+	using OutputArray = typename FilterFunctionWidget<In,Out>::OutputArray;
+
 	/**
 	 * @brief Constuctor
 	 * @param parent The parent widget.
 	 */
-	explicit FilterSelectorWidget(QWidget *parent = nullptr):QWidget{parent},
+	FilterSelectorWidget(QWidget *parent = nullptr):
+		QWidget{parent},
 		RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>{},
-		currentFilter_{nullptr}, layout_{new QVBoxLayout{}},
-		slotFilterSelected_{[this](){TRACEPOINT;
-			if(this->currentFilter_)
-			{
-				TRACEPOINT;
-				this->layout_->removeWidget(this->currentFilter_);
-				delete this->currentFilter_;
-				//disconnect
-				QObject::disconnect(&(this->currentFilter_->sigFilterSettingsChanged_),
-							0,
-							&(this->slotInternalFilterChanged_),
-							0);
-			}
-			this->currentFilter_= ((*this)()(nullptr)).release();
-			this->layout_->addWidget(this->currentFilter_);
-			//connect signals and slots
-			QObject::connect(&(this->currentFilter_->sigFilterSettingsChanged_),
-					SIGNAL(signal()),
-					&(this->slotInternalFilterChanged_),
-					SLOT(slot()));
-			TRACEPOINT;
-			this->sigSelect_.emitSignal();
-			DEBUGF(1, "Signal was emmitted");
-		}},
-		slotInternalFilterChanged_{[this](){TRACEPOINT;
-			this->sigFilterSettingsChanged_.emitSignal();TRACEPOINT;}}
+		currentFilter_{nullptr},
+		layout_{new QVBoxLayout{}},
+		slotFilterSelected_{[this](){this->updatedSelectedFilter();}
+}
 	{
 		TRACEPOINT;
-		layout_->addWidget((this->comboBox_));
-		QObject::connect((this->comboBox_),SIGNAL(currentTextChanged(const QString &)),
-			&slotFilterSelected_, SLOT(slot()));
-		this->setLayout(layout_);
+		this->layout_->addWidget((this->comboBox_));
+		//connect elem selected with update for it
+		QObject::connect(&(this->signElementSelected_),SIGNAL(signal(QString)),
+				 &(this->slotFilterSelected_), SLOT(slot()));
+		this->setLayout((this->layout_));
+		//update for initial selection (if it is valid)
+		if(this->has(this->selection())){updatedSelectedFilter();}
 		TRACEPOINT;
 	}
 
@@ -80,8 +66,7 @@ public:
 	 * @throw std::invalid_argument checkInput(in).first==false
 	 * @return parameter out
 	 */
-	virtual const std::array<cv::Mat,Out>& applyFilter(const std::array<cv::Mat,In>& in,
-					std::array<cv::Mat,Out>& out) const override
+	virtual void applyFilter(InputArray in,OutputArray out) const override
 	{
 		TRACEPOINT;
 		auto check = checkInput(in);
@@ -98,7 +83,7 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(const std::array<cv::Mat,In>& in) const override
+	virtual std::pair<bool, QString> checkInput(InputArray in) const override
 	{
 		TRACEPOINT;
 		if(currentFilter_)
@@ -107,9 +92,31 @@ public:
 		return currentFilter_->checkInput(in);
 	}
 
-	Signal sigSelect_;
 
 private:
+	void updatedSelectedFilter()
+	{
+		TRACEPOINT;
+		if((this->currentFilter_))
+		{
+			TRACEPOINT;
+			layout_->removeWidget((this->currentFilter_));
+			//disconnect
+			QObject::disconnect(&(this->currentFilter_->signFilterSettingsChanged_),0,
+						&(this->signFilterSettingsChanged_),0);
+			delete (this->currentFilter_);
+		}
+		this->currentFilter_= ((*this)()(nullptr)).release();
+		this->layout_->addWidget((this->currentFilter_));
+		//pass signal
+		QObject::connect(&(this->currentFilter_->signFilterSettingsChanged_),
+				 SIGNAL(signal()),
+				 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+		//settings changed
+		this->signFilterSettingsChanged_.emitSignal();
+		TRACEPOINT;
+	}
+
 	/**
 	 * @brief the current filter
 	 */
@@ -124,11 +131,6 @@ private:
 	 * @brief Slot called when user changes selection
 	 */
 	Slot slotFilterSelected_;
-
-	/**
-	 * @brief Slot called whenever the current filter emits sigStateChanged_
-	 */
-	Slot slotInternalFilterChanged_;
 }; //FilterSelectorWidget
 
 }} // end namespaces qtutil, cvv

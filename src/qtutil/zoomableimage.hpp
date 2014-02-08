@@ -25,6 +25,9 @@ public:
 	const cv::Mat& mat() const
 		{TRACEPOINT;return mat_;}
 
+	cv::Mat& mat()
+		{TRACEPOINT;return mat_;}
+
 	QRectF visibleArea() const;
 
 	qreal zoom() const
