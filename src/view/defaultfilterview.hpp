@@ -6,6 +6,8 @@
 #include "opencv2/core/core.hpp"
 
 #include "filter_view.hpp"
+#include "../dbg/dbg.hpp"
+
 
 namespace cvv{ namespace view{
 
@@ -22,11 +24,6 @@ public:
 	 */
 	DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
 
-private: 
-	/*
-	 *@brief the images of this view
-	 */
-	std::vector<cv::Mat> images_;
 };	
 }}//namespaces
 #endif

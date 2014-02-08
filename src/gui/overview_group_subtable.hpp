@@ -22,6 +22,9 @@ namespace cvv { namespace gui {
 
 class OverviewTable;
 
+/**
+ * @brief A table for the a group of overview data sets.
+ */
 class OverviewGroupSubtable : public QWidget
 {
     Q_OBJECT
@@ -29,12 +32,18 @@ class OverviewGroupSubtable : public QWidget
 public:
 
     /**
-     * @todo implement
+     * @brief Constructs an over group subtable.
+	 * @param controller view controller
+	 * @param parent parent table
+	 * @param group the displayed group of overview data sets
      */
     OverviewGroupSubtable(util::Reference<controller::ViewController> controller,
                          OverviewTable *parent,
                          stfl::ElementGroup<OverviewTableCollumn> group);
 
+	/**
+	 * @brief Updates the displayed table UI.
+	 */
     void updateUI();
 
 protected:

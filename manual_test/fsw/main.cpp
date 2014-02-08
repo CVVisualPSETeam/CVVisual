@@ -20,11 +20,10 @@ public:
 
 	~A(){}
 
-	const std::array<cv::Mat,1>& applyFilter(const std::array<const cv::Mat,1>& ,
-					std::array<cv::Mat,1>& ) const override
+	void applyFilter(cvv::qtutil::CvvInputArray<1>,cvv::qtutil::CvvOutputArray<1>)const override
 		{throw std::invalid_argument{"cant use a"};}
 
-	std::pair<bool, QString> checkInput(const std::array<const cv::Mat,1>& ) const override
+	std::pair<bool, QString> checkInput(cvv::qtutil::CvvInputArray<1>) const override
 		{return {false, "testfilter A."};}
 };
 
@@ -41,11 +40,10 @@ public:
 
 	~B(){}
 
-	const std::array<cv::Mat,1>& applyFilter(const std::array<const cv::Mat,1>& ,
-					std::array<cv::Mat,1>& ) const override
+	void applyFilter(cvv::qtutil::CvvInputArray<1>,cvv::qtutil::CvvOutputArray<1>)const override
 		{throw std::invalid_argument{"cant use B"};}
 
-	std::pair<bool, QString> checkInput(const std::array<const cv::Mat,1>& ) const override
+	std::pair<bool, QString> checkInput(cvv::qtutil::CvvInputArray<1>) const override
 		{return {false, "testfilter B."};}
 };
 

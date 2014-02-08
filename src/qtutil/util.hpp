@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_QTUTIL
-#define CVVISUAL_QTUTIL
+#ifndef CVVISUAL_QTUTIL_HPP
+#define CVVISUAL_QTUTIL_HPP
 
 #include <QImage>
 #include <QPixmap>
@@ -7,6 +7,8 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/opencv.hpp"
+
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace qtutil {
 
@@ -29,20 +31,22 @@ enum class ImageConversionResult
  * @param mat The mat to convert.
  * @param skipFloatRangeTest If true Mats with floating types will be checked
  *  wheather all values are within [0,1].
+ * @param threads Number of threads to use (0 will use 1 thread).
  * @return The status of the conversion and the converted mat.
  */
 std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat,
-							bool skipFloatRangeTest=0);
+						bool skipFloatRangeTest=0, int threads = 1);
 
 /**
  * @brief Converts a cv::Mat to a QPixmap.
  * @param mat The mat to convert.
  * @param skipFloatRangeTest If true Mats with floating types will be checked
  *  wheather all values are within [0,1].
+ * @param threads Number of threads to use (0 will use 1 thread).
  * @return The status of the conversion and the converted mat.
  */
 std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat,
-							bool skipFloatRangeTest=0);
+						bool skipFloatRangeTest=0, int threads = 1);
 
 /**
  * @brief Creates a QSet<QString> with the given string as an inherited value.

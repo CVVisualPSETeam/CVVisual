@@ -113,6 +113,7 @@ private:
 	QPushButton* helpButton_;
 	QHBoxLayout* hlayout_;
 	QVBoxLayout* vlayout_;
+	QWidget* upperBar_;
 
 };
 

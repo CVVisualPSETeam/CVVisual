@@ -1,20 +1,22 @@
+#include "../../src/qtutil/zoomableimage.hpp"
+
+#include <sstream>
 #include <iostream>
 
-#include <QApplication>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QColor>
 #include <QPixmap>
 #include <QRect>
 #include <QImage>
-#include <QLabel>
-#include <QGraphicsSimpleTextItem>
+
+#include <QWidget>
+#include <QApplication>
+
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QDoubleSpinBox>
-
-#include "../../src/qtutil/zoomableimage.hpp"
-
-#include <sstream>
+#include <QPushButton>
 
 // from
 // https://github.com/Itseez/opencv/blob/master/samples/cpp/
@@ -32,30 +34,38 @@ int main(int argc, char *argv[])
 
 	wid.setLayout(lay);
 
-	cv::Mat mat{5,50,CV_8SC4, cv::Scalar{125,125,0,125}};
-	cv::Mat mat2{5,50,CV_64FC4, cv::Scalar{1,0.234523452345432523452,
-		0.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000075345340
-	,0.5}};
+	cv::Mat mat{50,5,CV_8SC4, cv::Scalar{125,125,0,125}};
+	cv::Mat mat2{5,50,CV_64FC4, cv::Scalar{1,0.234523452345432523452,0.75345340e-123,0.5}};
 	cv::Mat img=renderImg();
-
-	cv::imshow( "rook_window", img );
-	cv::moveWindow( "rook_window", w, 200 );
-	cv::waitKey( 0 );
 
 	cvv::qtutil::ZoomableImage* i= new cvv::qtutil::ZoomableImage{mat};
 	cvv::qtutil::ZoomableImage* i2= new cvv::qtutil::ZoomableImage{mat2};
 	cvv::qtutil::ZoomableImage* i3= new cvv::qtutil::ZoomableImage{img};
+
+	QVBoxLayout* layleft= new QVBoxLayout{};
 	QDoubleSpinBox* spb=new QDoubleSpinBox{};
-	QObject::connect(spb,SIGNAL(valueChanged(double)),
-			 i, SLOT(updateZoom(qreal)));
-	QObject::connect(spb,SIGNAL(valueChanged(double)),
-			 i2, SLOT(updateZoom(qreal)));
-	QObject::connect(spb,SIGNAL(valueChanged(double)),
-			 i3, SLOT(updateZoom(qreal)));
-	lay->addWidget(spb);
-//	lay->addWidget(i);
+	QObject::connect(spb,SIGNAL(valueChanged(double)),i,  SLOT(updateZoom(qreal)));
+	QObject::connect(spb,SIGNAL(valueChanged(double)),i2, SLOT(updateZoom(qreal)));
+	QObject::connect(spb,SIGNAL(valueChanged(double)),i3, SLOT(updateZoom(qreal)));
+	layleft->addWidget(spb);
+
+	QPushButton* bautoshow=new QPushButton{"autoshow"};
+	bautoshow->setCheckable(true);
+	QObject::connect(bautoshow,SIGNAL(toggled(bool)),i,  SLOT(setAutoShowValues(bool)));
+	QObject::connect(bautoshow,SIGNAL(toggled(bool)),i2, SLOT(setAutoShowValues(bool)));
+	QObject::connect(bautoshow,SIGNAL(toggled(bool)),i3, SLOT(setAutoShowValues(bool)));
+	layleft->addWidget(bautoshow);
+
+	QPushButton* bshowfull=new QPushButton{"fullimg"};
+	QObject::connect(bshowfull,SIGNAL(clicked()),i,  SLOT(showFullImage()));
+	QObject::connect(bshowfull,SIGNAL(clicked()),i2, SLOT(showFullImage()));
+	QObject::connect(bshowfull,SIGNAL(clicked()),i3, SLOT(showFullImage()));
+	layleft->addWidget(bshowfull);
+
+	lay->addLayout(layleft);
+	lay->addWidget(i);
 	lay->addWidget(i2);
-//	lay->addWidget(i3);
+	lay->addWidget(i3);
 
 	wid.show();
 	return a.exec();

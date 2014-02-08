@@ -7,49 +7,52 @@
 
 #include "util.hpp"
 #include "types.hpp"
-/*
-template<int depth> cvv::qtutil::DepthType<depth> transformForPrint(cvv::qtutil::DepthType<depth> i){return i;}
-template<> cvv::qtutil::DepthType<CV_16S> transformForPrint<CV_8U>(cvv::qtutil::DepthType<CV_8U> i){return static_cast<cvv::qtutil::DepthType<CV_16S>>(i);}
-template<> cvv::qtutil::DepthType<CV_16S> transformForPrint<CV_8S>(cvv::qtutil::DepthType<CV_8S> i){return static_cast<cvv::qtutil::DepthType<CV_16S>>(i);}
-*/
+
+#include <iostream>
+
 template<int depth>
+void putInStream(std::stringstream& ss,const cvv::qtutil::DepthType<depth>& val){ss<<val;}
+
+template<> void putInStream<CV_8U>(std::stringstream& ss,const cvv::qtutil::DepthType<CV_8U>& val)
+	{ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(val);}
+
+template<> void putInStream<CV_8S>(std::stringstream& ss,const cvv::qtutil::DepthType<CV_8S>& val)
+	{ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(val);}
+
+
+template<int depth,int channels>
 std::string printPixel(const cv::Mat& mat, int spalte, int zeile)
 {
 	std::stringstream ss{};
-	auto p=mat.ptr<cvv::qtutil::DepthType<depth>>(zeile)
-				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<depth>);
-	ss<<(p[0]);
+	auto p=mat.at<cv::Vec<cvv::qtutil::DepthType<depth>,channels>>(zeile,spalte);
+
+	putInStream<depth>(ss,p[0]);
 	for(int c=1;c<mat.channels();c++)
 	{
-		ss<<"\n"<<(p[c]);
+		ss<<"\n";
+		putInStream<depth>(ss,p[c]);
 	}
 	return ss.str();
 }
-template<>
-std::string printPixel<CV_8U>(const cv::Mat& mat, int spalte, int zeile)
+
+template<int depth>
+std::string printPixel(const cv::Mat& mat, int i, int j)
 {
-	std::stringstream ss{};
-	auto p=mat.ptr<cvv::qtutil::DepthType<CV_8U>>(zeile)
-				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<CV_8U>);
-	ss<<static_cast<cvv::qtutil::DepthType<CV_16U>>(p[0]);
-	for(int c=1;c<mat.channels();c++)
+	if(mat.channels()<1){return "<1 channel";}
+	switch(mat.channels())
 	{
-		ss<<"\n"<<static_cast<cvv::qtutil::DepthType<CV_16U>>(p[c]);
+	case 1: return printPixel<depth,1>(mat,i,j); break;
+	case 2: return printPixel<depth,2>(mat,i,j); break;
+	case 3: return printPixel<depth,3>(mat,i,j); break;
+	case 4: return printPixel<depth,4>(mat,i,j); break;
+	case 5: return printPixel<depth,5>(mat,i,j); break;
+	case 6: return printPixel<depth,6>(mat,i,j); break;
+	case 7: return printPixel<depth,7>(mat,i,j); break;
+	case 8: return printPixel<depth,8>(mat,i,j); break;
+	case 9: return printPixel<depth,9>(mat,i,j); break;
+	case 10: return printPixel<depth,10>(mat,i,j); break;
+	default: return ">10 channels";
 	}
-	return ss.str();
-}
-template<>
-std::string printPixel<CV_8S>(const cv::Mat& mat, int spalte, int zeile)
-{
-	std::stringstream ss{};
-	auto p=mat.ptr<cvv::qtutil::DepthType<CV_8S>>(zeile)
-				+mat.channels()*spalte*sizeof(cvv::qtutil::DepthType<CV_8S>);
-	ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(p[0]);
-	for(int c=1;c<mat.channels();c++)
-	{
-		ss<<"\n"<<static_cast<cvv::qtutil::DepthType<CV_16S>>(p[c]);
-	}
-	return ss.str();
 }
 
 std::string printPixel(const cv::Mat& mat, int i, int j)
@@ -60,14 +63,15 @@ std::string printPixel(const cv::Mat& mat, int i, int j)
 		{
 			switch(mat.depth())
 			{
-				case CV_8U:return printPixel<CV_8U>(mat,i,j); break;
-				case CV_8S:return printPixel<CV_8S>(mat,i,j); break;
+				case CV_8U: return printPixel<CV_8U >(mat,i,j); break;
+				case CV_8S: return printPixel<CV_8S >(mat,i,j); break;
 				case CV_16U:return printPixel<CV_16U>(mat,i,j); break;
 				case CV_16S:return printPixel<CV_16S>(mat,i,j); break;
 				case CV_32S:return printPixel<CV_32S>(mat,i,j); break;
 				case CV_32F:return printPixel<CV_32F>(mat,i,j); break;
 				case CV_64F:return printPixel<CV_64F>(mat,i,j); break;
 			}
+			return "unknown depth";
 		}
 	}
 	return "";
@@ -85,6 +89,7 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	valuesVisible_{false},
 	values_{}
 {
+	TRACEPOINT;
 	// qt5 doc : "The view does not take ownership of scene."
 	view_->setScene(scene_);
 	QObject::connect((view_->horizontalScrollBar()),&QScrollBar::valueChanged,this,
@@ -96,46 +101,40 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 
 	QHBoxLayout *layout=new QHBoxLayout{};
 	layout->addWidget(view_);
+	layout->setMargin(0);
 	setLayout(layout) ;
 	updateMat(mat_);
+	TRACEPOINT;
 }
 
 void ZoomableImage::updateMat(cv::Mat mat)
 {
+	TRACEPOINT;
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
 	emit updateConversionResult(result.first);
 	scene_->clear();
-	scene_->addPixmap(result.second);
+	pixmap_ = scene_->addPixmap(result.second);
 
 	drawValues();
+	TRACEPOINT;
 }
 
 void ZoomableImage::updateZoom(qreal factor)
 {
-	if(factor <= 0) {return;}
-	view_->scale(factor/zoom_,factor/zoom_);
+	TRACEPOINT;
+	if(factor <= 0) {TRACEPOINT;return;}
+	qreal newscale=factor/zoom_;
 	zoom_=factor;
-
-	if(autoShowValues_)
-	{
-		valuesVisible_= zoom_>=threshold_;
-	}
-
-	emit updateArea(visibleArea(),zoom_);
+	view_->scale(newscale,newscale);
+	// will be called in resize event
+	// emit updateArea(visibleArea(),zoom_);
+	TRACEPOINT;
 }
-
-
-void ZoomableImage::showValues(bool show)
-{
-	valuesVisible_= show;
-	drawValues();
-}
-
-
 
 void ZoomableImage::drawValues()
 {
+	TRACEPOINT;
 	//delete old values
 	for(auto& elem:values_)
 	{
@@ -143,17 +142,16 @@ void ZoomableImage::drawValues()
 		delete elem;
 	}
 	values_.clear();
-
 	//draw new values?
-	if(!valuesVisible_){return;}
+	if(!(autoShowValues_&&(zoom_>=threshold_))){TRACEPOINT;return;}
+	TRACEPOINT;
 	auto r=visibleArea();
-	for(int i=std::max(0,static_cast<int>(r.left())-5);
-		i<std::min(mat_.cols,static_cast<int>(r.right())+5);i++)
+	for(int i=std::max(0,static_cast<int>(r.left())-1);
+		i<std::min(mat_.cols,static_cast<int>(r.right())+1);i++)
 	{
-		for(int j=std::max(0,static_cast<int>(r.top())-5);
-			j<std::min(mat_.rows,static_cast<int>(r.bottom())+5); j++)
+		for(int j=std::max(0,static_cast<int>(r.top())-1);
+			j<std::min(mat_.rows,static_cast<int>(r.bottom())+1); j++)
 		{
-
 			QString s(printPixel(mat_,i,j).c_str());
 
 			s.replace('\n',"<br>");
@@ -167,14 +165,36 @@ void ZoomableImage::drawValues()
 			values_.push_back(txt);
 		}
 	}
+	TRACEPOINT;
+}
+
+
+void ZoomableImage::showFullImage()
+{
+	TRACEPOINT;
+	updateZoom(
+		std::min(
+		static_cast<qreal>(view_->viewport()->width())/static_cast<qreal>(imageWidth()),
+		static_cast<qreal>(view_->viewport()->height())/static_cast<qreal>(imageHeight())
+		)
+	);
+	TRACEPOINT;
 }
 
 QRectF ZoomableImage::visibleArea() const
 {
+	TRACEPOINT;
 	QRectF result{};
 	result.setTopLeft(view_->mapToScene(QPoint{0,0}));
-	result.setBottomRight(view_->mapToScene(QPoint{view_->width(),view_->height()}));
+	result.setBottomRight(view_->mapToScene(QPoint{view_->viewport()->width(),
+							view_->viewport()->height()}));
+	TRACEPOINT;
 	return result;
 }
 
+QPointF ZoomableImage::mapImagePointToParent(QPointF point)
+{
+	TRACEPOINT;
+	return mapToParent(view_->mapToParent(view_->mapFromScene(pixmap_->mapToScene(point))));
+}
 }}

@@ -13,19 +13,22 @@ namespace cvv{ namespace view{
 	SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
 		FilterView{parent},images_(images)
 	{
+		TRACEPOINT;
+
 		QWidget 		*imwid		= new QWidget{};
 		qtutil::Accordion 	*accor 		= new qtutil::Accordion{};
 		QHBoxLayout		*layout 	= new QHBoxLayout{};
 		QHBoxLayout		*imageLayout 	= new QHBoxLayout{};
 
-		auto filterSelector			= util::make_unique<qtutil::FilterSelectorWidget<1,1>>();
+		auto filterSelector	= util::make_unique<qtutil::FilterSelectorWidget<1,1>>();
 		filterSelector_ = filterSelector.get();
-		
-		accor->setMinimumSize(250,0);
-		connect(&(filterSelector->sigFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
+
+		accor->setMinimumWidth(250);
+		accor->setMaximumWidth(250);
+		connect(&(filterSelector->signFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
 		accor->insert("Select a Filter",std::move(filterSelector));
 		int count = 0;
-		for(auto image:images_)
+		for(auto& image:images_)
 		{
 			zoomImages_.push_back(new qtutil::ZoomableImage{});
 			auto info = util::make_unique<qtutil::MatInfoWidget>(image);
@@ -42,28 +45,35 @@ namespace cvv{ namespace view{
 			accor->insert("ImageInformation",std::move(info));
 			count++;
 		}
-		
+
 		imwid->setLayout(imageLayout);
 
 		layout->addWidget(accor);
-		layout->addWidget(imwid);		
+		layout->addWidget(imwid);
 		setLayout(layout);
+
+		TRACEPOINT;
 	}
-	
+
 	void SingleFilterView::applyFilter()
 	{
+		TRACEPOINT;
+
 		int count = 0;
-		for(auto image : images_)
+		for(auto& image : images_)
 		{
-			const std::array<const cv::Mat,1> input{image};
+			//const std::array<cv::Mat,1> input{image};
+			qtutil::CvvInputArray<1> input = {image};
 			auto result = filterSelector_->checkInput(input);
 			if(result.first){
-				std::array<cv::Mat,1> out;
+				//std::array<cv::Mat,1> out;
+				qtutil::CvvOutputArray<1> out = {zoomImages_[count]->mat()};
 				filterSelector_->applyFilter(input,out);
-				zoomImages_[count]->updateMat(out[0]);
+				//zoomImages_[count]->updateMat(out[0]);
 			}
 			count++;
 		}
+		TRACEPOINT;
 	}
 
 }}//namespaces

@@ -8,6 +8,8 @@
 #include "filter_view.hpp"
 #include "../qtutil/zoomableimage.hpp"
 #include "../qtutil/filterselectorwidget.hpp"
+#include "../dbg/dbg.hpp"
+
 
 namespace cvv{ namespace view{
 

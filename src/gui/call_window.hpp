@@ -87,14 +87,12 @@ public:
 	/**
 	 * @brief Update the left footer with the given text.
 	 * @param newText given text
-	 * @note Might only updating the left most footer part.
 	 */
 	void updateLeftFooter(QString newText);
 
 	/**
 	 * @brief Update the right footer with the given text.
 	 * @param newText given text
-	 * @note Might only updating the right most footer part.
 	 */
 	void updateRightFooter(QString newText);
 
@@ -110,6 +108,10 @@ public:
 	 */
 	size_t tabCount();
 
+	/**
+	 * @brief Returns the ids of the available call tabs.
+	 * @return available call tabs' ids
+	 */
 	std::vector<size_t> getCallTabIds();
 
 public slots:
@@ -138,6 +140,7 @@ protected:
 	QLabel *leftFooter;
 	QLabel *rightFooter;
 	int currentContextMenuTabId = -1;
+	int tabOffset = 0;
 
 	void initMenu();
 	

@@ -9,17 +9,21 @@
 namespace cvv{ namespace view{
 
 	DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
-		FilterView{parent},images_(images)
+		FilterView{parent}
 	{
+		TRACEPOINT;		
+
 		QHBoxLayout* layout = new QHBoxLayout{};
 		qtutil::Accordion *accor = new qtutil::Accordion{};
-		accor->insert("this is a accordion", util::make_unique<QWidget>());
-		accor->setMinimumSize(150,0);
+		accor->insert("this is an accordion", util::make_unique<QWidget>());
+		accor->setMinimumWidth(250);
+		accor->setMaximumWidth(250);
+		
 		QWidget *imwid = new QWidget{};
 		QHBoxLayout* imageLayout = new QHBoxLayout{};
 		layout->addWidget(accor);
 
-		for(auto image:images_)
+		for(auto image:images)
 		{
 			qtutil::ZoomableImage *zoomim =new qtutil::ZoomableImage{};
 			auto info = util::make_unique<qtutil::MatInfoWidget>(image);
@@ -41,11 +45,8 @@ namespace cvv{ namespace view{
 		layout->addWidget(imwid);
 
 		setLayout(layout);
-	}
 
-/*	static DefaultFilterView create(const std::vecotr<InputArray>& input)
-	{
-		return DefaultFilterView{input};
-	};
-*/	
+		TRACEPOINT;
+	}
+	
 }}//namespaces
