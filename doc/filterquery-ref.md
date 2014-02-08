@@ -1,10 +1,5 @@
----
-layout: page
-title: "Filter query language"
-category: doc
-date: 2014-02-04 08:55:36
-order: 1
----
+#Filter query language
+
 The filter query language is the query language used in the overview and the raw match view to simply the task of filtering, sorting and grouping data sets in a table UI.
 The following is a description of the simple syntax and the supported commands.
 
