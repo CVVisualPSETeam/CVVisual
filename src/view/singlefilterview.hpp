@@ -6,8 +6,6 @@
 #include "opencv2/core/core.hpp"
 
 #include "filter_view.hpp"
-#include "../qtutil/zoomableimage.hpp"
-#include "../qtutil/filterselectorwidget.hpp"
 #include "../dbg/dbg.hpp"
 
 
@@ -24,17 +22,6 @@ public:
 	 * @param images A List of images
 	 * @param parent The parent of this QWidget
 	 */
-	SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
-public slots:
-	void applyFilter();
-
-private: 
-	/*
-	 *@brief the images of this view
-	 */
-	std::vector<cv::Mat> images_;
-	std::vector<cvv::qtutil::ZoomableImage*> zoomImages_;
-	qtutil::FilterSelectorWidget<1,1> *filterSelector_;
-};	
+	SingleFilterView(std::vector<cv::Mat> images,QWidget *parent=nullptr);
 }}//namespaces
 #endif
