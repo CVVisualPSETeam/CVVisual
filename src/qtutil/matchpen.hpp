@@ -16,7 +16,7 @@ Q_OBJECT
 public:
 	MatchPen(QWidget* parent):QWidget(parent){TRACEPOINT;}
 	
-	virtual QPen getPen(const CVVMatch& cvmatch) = 0;
+	virtual QPen getPen(const CVVMatch& cvmatch)const = 0;
 
 signals:
 	void settingsChanged();
