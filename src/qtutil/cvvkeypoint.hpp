@@ -12,38 +12,48 @@
 #include "opencv2/features2d/features2d.hpp"
 
 #include "zoomableimage.hpp"
-#include "cvvmatch.hpp"
+//#include "cvvmatch.hpp"
 #include "cvvkeypoint.hpp"
 #include "../dbg/dbg.hpp"
 
 namespace cvv{namespace qtutil{
 
-class CVVKeyPoint:public QGraphicsItem{
+class CVVKeyPoint:public QGraphicsObject{
+Q_OBJECT
 public:
 	CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image,QGraphicsProxyWidget* imWidget,
-		QPen pen=QPen{},QBrush brush=QBrush{},QGraphicsItem *parent=nullptr):
-		QGraphicsItem{parent},
-		key_{key},image_{image},imWidget_{imWidget},pen_{pen},brush_{brush}{TRACEPOINT;}
+		QPen pen=QPen{Qt::red},QBrush brush=QBrush{Qt::white},QGraphicsItem *parent=nullptr);
 
-	CVVKeyPoint(const CVVKeyPoint& key):QGraphicsItem{key.parentWidget()},
-		key_{key.key_},image_{key.image_},imWidget_{key.imWidget_},pen_{key.pen_},brush_{key.brush_}{TRACEPOINT;}
 
-	QPointF imPointInScene()
-		{TRACEPOINT; return imWidget_->mapToScene(image_->mapImagePointToParent(QPointF{key_.pt.x,key_.pt.y})); }
+	QPointF imPointInScene() const
+		{TRACEPOINT; return image_->mapImagePointToParent(QPointF{key_.pt.x,key_.pt.y}); }
 
-	QRectF boundingRect() const
-		{ TRACEPOINT;return QRectF{QPointF{key_.pt.x-10,key_.pt.y-10},QPointF{key_.pt.x+10,key_.pt.y+10}}; }
-	
-	cv::KeyPoint keyPoint()
+	QRectF boundingRect() const;
+
+	cv::KeyPoint keyPoint() const
 		{TRACEPOINT;return key_;}
+
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget);
+signals:
+	void updateShown(bool);
+
+	void updatePoint(bool visible);
+
 public slots:
-	void updatePen(QPen pen)
-		{TRACEPOINT;pen_=pen;}
+	void updatePen(const QPen& pen)
+		{TRACEPOINT;pen_=pen;TRACEPOINT;}
 	
-	void updateBrush(QBrush brush)
+	void updateBrush(const QBrush& brush)
 		{TRACEPOINT;brush_=brush;}
+
+	void setShow(bool b)
+		{TRACEPOINT;show_=b;emit updateShown(true);TRACEPOINT;}
+	
+	bool isShown() const
+		{TRACEPOINT;return show_;}
+
+	void updateImageSet(const QRectF& visibleArea,const qreal& zoom);
 private:
 
 	cv::KeyPoint key_;
@@ -53,6 +63,8 @@ private:
 	QGraphicsProxyWidget	*imWidget_;
 	QPen pen_;
 	QBrush brush_;
+	qreal zoom_;
+	bool show_;
 };
 }}
 #endif
