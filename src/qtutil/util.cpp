@@ -178,18 +178,16 @@ void convertPart(const cv::Mat& mat, QImage& img, int minRow, int maxRow)
 }
 
 template<int depth, int channels>
-QImage convert(const cv::Mat& mat, int threads)
+QImage convert(const cv::Mat& mat, unsigned int threads)
 {
 	TRACEPOINT;
-	// threads as unsigned
-	// std::hardware_concurrency
 	QImage img=ConvertHelper<depth,channels>::image(mat);
 
 	if(threads>1)
 	{
 		TRACEPOINT;
 		//multithreadding
-		int nThreads=std::min(threads,mat.rows);
+		int nThreads=std::min(threads,std::thread::hardware_concurrency);
 		std::vector<std::thread> workerThreads;
 		workerThreads.reserve(nThreads);
 		int nperthread=mat.rows/nThreads;
@@ -244,7 +242,7 @@ std::pair<ImageConversionResult,QImage> errorResult(ImageConversionResult res, c
 
 //split depth
 template<int channels> std::pair<ImageConversionResult,QImage> convert(const cv::Mat& mat,
-						bool skipFloatRangeTest, int threads)
+						bool skipFloatRangeTest, unsigned int threads)
 {
 	TRACEPOINT;
 	//depth ok?
@@ -317,7 +315,7 @@ template<int channels> std::pair<ImageConversionResult,QImage> convert(const cv:
 
 //convert
 std::pair<ImageConversionResult,QImage> convertMatToQImage(const cv::Mat &mat,
-						bool skipFloatRangeTest, int threads)
+						bool skipFloatRangeTest, unsigned int threads)
 {
 	TRACEPOINT;
 	//empty?
@@ -351,7 +349,7 @@ std::pair<ImageConversionResult,QImage> convertMatToQImage(const cv::Mat &mat,
 
 
 std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat,
-						bool skipFloatRangeTest, int threads)
+						bool skipFloatRangeTest, unsigned int threads)
 {
 	TRACEPOINT;
 	auto converted=convertMatToQImage(mat, skipFloatRangeTest,threads);
