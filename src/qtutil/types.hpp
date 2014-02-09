@@ -8,7 +8,9 @@
 namespace cvv { namespace qtutil {
 
 namespace structures{
-	//depth to type
+	/**
+	 * Helper struct to convert an opencv depth type (an int) back to a type.
+	 */
 	template<int depth> struct DepthTypeConverter
 	{
 		static_assert(!(
@@ -22,15 +24,39 @@ namespace structures{
 				),"Conversion of unknown type");
 		//using type;
 	};
+	/**
+	 * Helper struct to convert an opencv depth type (an int) back to a type.
+	 */
 	template<> struct DepthTypeConverter<CV_8U >{using type = uint8_t;};
+	/**
+	 * Helper struct to convert an opencv depth type (an int) back to a type.
+	 */
 	template<> struct DepthTypeConverter<CV_8S >{using type = int8_t;};
+	/**
+	 * Helper struct to convert an opencv depth type (an int) back to a type.
+	 */
 	template<> struct DepthTypeConverter<CV_16U>{using type = uint16_t;};
+	/**
+	 * Helper struct to convert an opencv depth type (an int) back to a type.
+	 */
 	template<> struct DepthTypeConverter<CV_16S>{using type = int16_t;};
+	/**
+	 * Helper struct to convert an opencv depth type (an int) back to a type.
+	 */
 	template<> struct DepthTypeConverter<CV_32S>{using type = int32_t;};
+	/**
+	 * Helper struct to convert an opencv depth type (an int) back to a type.
+	 */
 	template<> struct DepthTypeConverter<CV_32F>{using type = float;};
+	/**
+	 * Helper struct to convert an opencv depth type (an int) back to a type.
+	 */
 	template<> struct DepthTypeConverter<CV_64F>{using type = double;};
 
-	//depth and channels to type
+	/**
+	 * Helper struct to convert an opencv depth type and a number of channels (1 to 4) into
+	 * a c++ type.
+	 */
 	template<class depthtype, int channels> struct PixelTypeConverter
 	{
 		static_assert(channels>=1&&channels<=4,"Illegal number of channels");
@@ -38,21 +64,66 @@ namespace structures{
 	};
 }
 
-//type conversion
+/**
+ * Converts an opencv depth type (an int) back to a type.
+ */
 template<int depth> using DepthType = typename structures::DepthTypeConverter<depth>::type;
 
+/**
+ * Converts an opencv depth type and a number of channels (1 to 4) into a c++ type.
+ */
 template<int depth, int channels>
 using PixelType = typename structures::PixelTypeConverter<DepthType<depth>,channels>::type;
 
 //convert a depth value to uchar
+/**
+ * @brief Converts the value to an uchar.
+ * @param value The value to convert.
+ * @return The converted value.
+ */
 template<int depth> uchar convertTo8U(const DepthType<depth> value) = delete;
 
+/**
+ * @brief Converts the value to an uchar.
+ * @param value The value to convert.
+ * @return The converted value.
+ */
 template<> uchar convertTo8U<CV_8U >(const DepthType<CV_8U > value);
+/**
+ * @brief Converts the value to an uchar.
+ * @param value The value to convert.
+ * @return The converted value.
+ */
 template<> uchar convertTo8U<CV_16U>(const DepthType<CV_16U> value);
+/**
+ * @brief Converts the value to an uchar.
+ * @param value The value to convert.
+ * @return The converted value.
+ */
 template<> uchar convertTo8U<CV_16S>(const DepthType<CV_16S> value);
+/**
+ * @brief Converts the value to an uchar.
+ * @param value The value to convert.
+ * @return The converted value.
+ */
 template<> uchar convertTo8U<CV_8S >(const DepthType<CV_8S > value);
+/**
+ * @brief Converts the value to an uchar.
+ * @param value The value to convert.
+ * @return The converted value.
+ */
 template<> uchar convertTo8U<CV_32S>(const DepthType<CV_32S> value);
+/**
+ * @brief Converts the value to an uchar.
+ * @param value The value to convert.
+ * @return The converted value.
+ */
 template<> uchar convertTo8U<CV_32F>(const DepthType<CV_32F> value);
+/**
+ * @brief Converts the value to an uchar.
+ * @param value The value to convert.
+ * @return The converted value.
+ */
 template<> uchar convertTo8U<CV_64F>(const DepthType<CV_64F> value);
 }}//namespaces
 
