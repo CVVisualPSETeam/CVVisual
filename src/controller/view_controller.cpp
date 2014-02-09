@@ -98,7 +98,11 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
     removeCallTab(tabId);
     newWindow->addTab(getCallTab(tabId));
     newWindow->show();
-    windowMap[max_window_id] = std::move(newWindow);
+   	if (doesShowExitProgramButton)
+	{
+		newWindow->showExitProgramButton();
+	}
+   	windowMap[max_window_id] = std::move(newWindow);
     removeEmptyWindows();
 }
 
@@ -238,6 +242,7 @@ void ViewController::showExitProgramButton()
     {
         elem.second->showExitProgramButton();
     }
+	doesShowExitProgramButton = true;
 }
 
 bool ViewController::hasCall(size_t id)

@@ -20,8 +20,8 @@ class ElementGroup
 public:
 	
     ElementGroup(){
-        titles = QStringList();
-        elements = QList<Element>();
+        //titles = QStringList();
+        //elements = QList<Element>();
     }
 	
 	/**
@@ -42,7 +42,7 @@ public:
 	/**
 	 * Return the inherited elements.
 	 */
-	const QList<Element> getElements()
+	QList<Element> getElements()
 	{
 		return this->elements;
 	}
