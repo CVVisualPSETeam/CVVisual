@@ -99,7 +99,7 @@ public:
 	}
 
 
-private:
+protected:
 	/**
 	 * @brief Performs the update after a selection occurred.
 	 */
