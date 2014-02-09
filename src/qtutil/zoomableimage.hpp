@@ -33,7 +33,7 @@ public:
 	qreal zoom() const
 		{TRACEPOINT;return zoom_;}
 
-	QPointF mapImagePointToParent(QPointF);
+	QPointF mapImagePointToParent(QPointF) const;
 
 	qreal threshold() const
 		{TRACEPOINT;return threshold_;}

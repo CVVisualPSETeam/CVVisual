@@ -192,7 +192,7 @@ QRectF ZoomableImage::visibleArea() const
 	return result;
 }
 
-QPointF ZoomableImage::mapImagePointToParent(QPointF point)
+QPointF ZoomableImage::mapImagePointToParent(QPointF point) const
 {
 	TRACEPOINT;
 	return mapToParent(view_->mapToParent(view_->mapFromScene(pixmap_->mapToScene(point))));

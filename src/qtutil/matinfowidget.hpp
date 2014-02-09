@@ -9,6 +9,7 @@
 
 #include "opencv2/core/core.hpp"
 #include "util.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace qtutil{
 
@@ -20,7 +21,7 @@ public:
 public slots:
 	void updateMat(cv::Mat mat);
 	void updateConvertStatus(ImageConversionResult result);
-	//void setZoom(qreal);
+	void setZoom(QRectF,qreal);
 
 signals:
 	void getZoom(qreal zoomfac);
