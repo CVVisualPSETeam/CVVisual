@@ -135,10 +135,13 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 		controller->moveCallTabToNewWindow(currentCustomMenuCallTabId);
 		return;
 	}
-    else if (actionText == "Remove call")
-    {
-        controller->removeCallTab(currentCustomMenuCallTabId, true, true);
-    }
+	else if (actionText == "Remove call")
+	{
+		controller->removeCallTab(currentCustomMenuCallTabId, true, true);
+		//TODO: returning here fixes a segfault. IMPORTANT: check wether it is really ok,
+		//to do so
+		return;
+	}
 	for (auto window : windows)
 	{
 		if (actionText == QString("Open in '%1'").arg(window->windowTitle()))
