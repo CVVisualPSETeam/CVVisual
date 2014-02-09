@@ -27,6 +27,7 @@ namespace structures{
 template< std::size_t In, std::size_t Out>
 class AutoFilterWidgetEntry: public QWidget
 {
+public:
 	using InputArray= typename AutoFilterWidget<In,Out>::InputArray;
 	using OutputArray= typename AutoFilterWidget<In,Out>::OutputArray;
 
@@ -119,6 +120,7 @@ class AutoFilterWidgetEntry: public QWidget
 template< std::size_t In, std::size_t Out>
 class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 {
+public:
 	using InputArray= typename FilterSelectorWidget<In,Out>::InputArray;
 	using OutputArray= typename FilterSelectorWidget<In,Out>::OutputArray;
 
