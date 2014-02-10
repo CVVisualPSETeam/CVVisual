@@ -36,8 +36,9 @@ public:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget);
 
-	void setProxyWidget(QGraphicsProxyWidget*imWidget)
-		{imWidget_=imWidget;};
+	void setProxyWidget(QGraphicsProxyWidget*imWidget);
+
+	void setZoomableImage(ZoomableImage *image);
 signals:
 	void updateShown(bool);
 

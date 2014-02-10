@@ -28,18 +28,26 @@ namespace cvv{ namespace view{
 
 		for(auto& keypoint:leftKeyPoints)
 		{
-			leftKeys.push_back(new qtutil::CVVKeyPoint(keypoint));
-			matchscene->addLeftKeypoint(leftKeys.back());
+			qtutil::CVVKeyPoint *key = new qtutil::CVVKeyPoint{keypoint};
+			leftKeys.push_back(key);
+			matchscene->addLeftKeypoint(key);
 		}
 		for(auto& keypoint:rightKeyPoints)
 		{
-			leftKeys.push_back(new qtutil::CVVKeyPoint(keypoint));
-			matchscene->addRightKeyPoint(rightKeys.back());
+			qtutil::CVVKeyPoint *key = new qtutil::CVVKeyPoint{keypoint};
+			rightKeys.push_back(key);
+			matchscene->addRightKeyPoint(key);
 		}
+		DEBUG(0,"left size %s",leftKeys.size());
+		DEBUG(0,"right size %s",rightKeys.size());
 		for(auto& match:matches)
 		{
+			DEBUG(0,"1111111111111111111111111111111111111111111111111111111111111111111111");
 			qtutil::CVVMatch *cvmatch = new qtutil::CVVMatch(leftKeys.at(match.queryIdx),rightKeys.at(match.trainIdx),match.distance);
+			DEBUG(0,"2222222222222222222222222222222222222222222222");
 			matchscene->addMatch(cvmatch);
+			DEBUG(0,"3333333333333333333333333333333333333333333333333333");
 		}
+		setLayout(layout);
 	}
 }}
