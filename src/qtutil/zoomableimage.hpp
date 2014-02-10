@@ -7,6 +7,7 @@
 #include <QGraphicsTextItem>
 #include <QRectF>
 #include <QGraphicsPixmapItem>
+#include <QWheelEvent>
 
 #include "opencv2/core/core.hpp"
 
@@ -15,6 +16,17 @@
 #include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
+namespace structures {
+
+class GraphicsView:public QGraphicsView
+{
+public:    GraphicsView():QGraphicsView{}{}
+protected: virtual void wheelEvent(QWheelEvent * event) override{event->ignore();}
+};
+
+}
+
+
 /**
  * @brief The ZoomableImage class shows an image and adds zoom functionality.
  */
@@ -92,6 +104,12 @@ public:
 	bool autoShowValues() const
 		{TRACEPOINT;return autoShowValues_;}
 
+	/**
+	 * @brief Returns the current scroll factor.
+	 * @return The current scroll factor.
+	 */
+	qreal scrollFactor() const
+		{TRACEPOINT; return scrollFactor_;}
 signals:
 	/**
 	 * @brief Emmited whenever the image is updated. It passes the conversion result.
@@ -135,6 +153,23 @@ public slots:
 	 */
 	void showFullImage();
 
+	/**
+	 * @brief Returns the current scroll factor.
+	 * @return The current scroll factor.
+	 */
+	void updateZoomFactor(qreal factor)
+		{TRACEPOINT; scrollFactor_=factor; TRACEPOINT;}
+
+protected:
+	/**
+	 * @brief The overridden wheel event (from QWidget).
+	 * @param event The event.
+	 */
+	virtual void wheelEvent(QWheelEvent * event) override
+	{TRACEPOINT;
+	updateZoom(scrollFactor_*((event->angleDelta().x())+(event->angleDelta().y()))+zoom_);
+	TRACEPOINT;}
+
 private slots:
 	/**
 	 * @brief Called when the graphic view is scrolled.
@@ -158,7 +193,7 @@ private:
 	/**
 	 * @brief The graphics view showing the scene.
 	 */
-	QGraphicsView* view_;
+	structures::GraphicsView* view_;
 	/**
 	 * @brief The scene containing the pixmap.
 	 */
@@ -180,6 +215,10 @@ private:
 	 * @brief The values on the graphics scene.
 	 */
 	std::vector<QGraphicsTextItem*> values_;
+	/**
+	 * @brief The factor multiplied to the number of scrolled pixels.
+	 */
+	qreal scrollFactor_;
 };
 
 }}
