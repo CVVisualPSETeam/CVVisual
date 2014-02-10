@@ -16,11 +16,11 @@
 
 namespace cvv { namespace gui {
 
-OverviewPanel::OverviewPanel(controller::ViewController *controller):
+OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> controller):
     controller{controller}
 {
     controller->setDefaultSetting("overview", "imgzoom", "20");
-    queryWidget = new qtutil::STFLQueryWidget();
+    queryWidget = new qtutil::STFLQueryWidget(controller);
     table = new OverviewTable(util::makeRef(*controller), this);
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);

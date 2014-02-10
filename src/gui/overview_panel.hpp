@@ -38,7 +38,7 @@ class OverviewPanel : public QWidget
 
 public:
 
-    OverviewPanel(controller::ViewController *controller);
+    OverviewPanel(util::Reference<controller::ViewController> controller);
 
     void addElement(const util::Reference<const impl::Call> newCall);
 
@@ -69,7 +69,7 @@ private:
     stfl::STFLEngine<OverviewTableCollumn> queryEngine;
     qtutil::STFLQueryWidget *queryWidget;
     OverviewTable *table;
-    controller::ViewController *controller;
+    util::Reference<controller::ViewController> controller;
     QLabel *imgSizeSliderLabel;
     QSlider *imgSizeSlider;
     QPushButton *showImgsButton;

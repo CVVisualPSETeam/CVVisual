@@ -127,7 +127,6 @@ public:
 	}
 
 	std::vector<ElementGroup<Element> > query(QString query)
-
 	{
 		lastQuery = query;
 		if (!query.startsWith("#"))
@@ -154,18 +153,18 @@ public:
 	}
 
 	/**
-	 * @brief Sets the elements inherited by this engine.
+	 * @brief Adds the new elements to the elements already inherited by this engine.
 	 *
-	 * @param newElements new elements, now inherited by this engine
+	 * @param newElements new elements
 	 */
-	void setElements(const QList<Element> &newElements)
-	{
+	void addElements(QList<Element> newElements)
+	{							
 		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
 		}
 	}
-
+										
 	/**
 	 * @brief Sets the elements inherited by this engine.
 	 *

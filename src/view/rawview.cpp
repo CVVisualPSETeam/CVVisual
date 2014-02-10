@@ -15,14 +15,14 @@
 
 namespace cvv { namespace view {
 
-Rawview::Rawview(controller::ViewController *controller,
+Rawview::Rawview(util::Reference<controller::ViewController> controller,
 							 const std::vector<cv::KeyPoint>& keypoints1,
 							 const std::vector<cv::KeyPoint>& keypoints2,
 							 const std::vector<std::vector<cv::DMatch>>& matches):
     controller{controller}
 {
     controller->setDefaultSetting("overview", "imgzoom", "20");
-    queryWidget = new qtutil::STFLQueryWidget();
+    queryWidget = new qtutil::STFLQueryWidget(controller);
     table = new gui::RawviewTable(util::makeRef(*controller), this);
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
@@ -35,9 +35,8 @@ Rawview::Rawview(controller::ViewController *controller,
     connect(queryWidget, SIGNAL(filterSignal(QString)), this, SLOT(filterQuery(QString)));
     connect(queryWidget, SIGNAL(requestSuggestions(QString)), this, SLOT(requestSuggestions(QString)));
 
-	(void)keypoints1;
-	(void)keypoints2;
-	(void)matches;
+	queryEngine.addElements(gui::createRawviewTableCollumns(keypoints1, keypoints2, matches));
+	table->updateCollumnGroups(queryEngine.query(""));
 }
 
 void Rawview::initEngine(){

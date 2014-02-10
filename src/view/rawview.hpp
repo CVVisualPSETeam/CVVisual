@@ -44,7 +44,7 @@ class Rawview : public MatchView
 
 public:
 
-    Rawview(controller::ViewController *controller,
+    Rawview(util::Reference<controller::ViewController> controller,
 			const std::vector<cv::KeyPoint>& keypoints1,
 			const std::vector<cv::KeyPoint>& keypoints2,
 			const std::vector<std::vector<cv::DMatch>>& matches);
@@ -66,7 +66,7 @@ private:
     stfl::STFLEngine<gui::RawviewTableCollumn> queryEngine;
     qtutil::STFLQueryWidget *queryWidget;
     gui::RawviewTable *table;
-    controller::ViewController *controller;
+    util::Reference<controller::ViewController> controller;
 
     void initEngine();
 
