@@ -55,28 +55,28 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight/*,const std::vector<
 	TRACEPOINT;
 }
 
-	void MatchScene::addLeftKeypoint(CVVKeyPoint *keypoint)
-	{
-		//keypoints_left_.push_back(keypoint);
-		keypoint->setProxyWidget(leftImWidget_);
-		keypoint->setZoomableImage(leftImage_);
-		graphicScene_->addItem(keypoint);
-		connect(leftImage_,SIGNAL(updateArea(QRectF,qreal)),keypoint,SLOT(updateImageSet(QRectF,qreal)));
-	}
-	void MatchScene::addRightKeyPoint(CVVKeyPoint *keypoint)
-	{
-		//keypoints_right_.push_back(keypoint);
-		keypoint->setProxyWidget(rightImWidget_);
-		keypoint->setZoomableImage(rightImage_);
-		graphicScene_->addItem(keypoint);
-		connect(rightImage_,SIGNAL(updateArea(QRectF,qreal)),keypoint,SLOT(updateImageSet(QRectF,qreal)));
-	}
-	void MatchScene::addMatch(CVVMatch *cvmatch)
-	{
-		//matches_.push_back(cvmatch);
-		graphicScene_->addItem(cvmatch);
-		connect(this,SIGNAL(updatePen(const MatchPen&)),cvmatch,SLOT(updatePen(constMatchPen&)));
-	}
+void MatchScene::addLeftKeypoint(CVVKeyPoint *keypoint)
+{
+	//keypoints_left_.push_back(keypoint);
+	keypoint->setProxyWidget(leftImWidget_);
+	keypoint->setZoomableImage(leftImage_);
+	graphicScene_->addItem(keypoint);
+	connect(leftImage_,SIGNAL(updateArea(QRectF,qreal)),keypoint,SLOT(updateImageSet(QRectF,qreal)));
+}
+void MatchScene::addRightKeyPoint(CVVKeyPoint *keypoint)
+{
+	//keypoints_right_.push_back(keypoint);
+	keypoint->setProxyWidget(rightImWidget_);
+	keypoint->setZoomableImage(rightImage_);
+	graphicScene_->addItem(keypoint);
+	connect(rightImage_,SIGNAL(updateArea(QRectF,qreal)),keypoint,SLOT(updateImageSet(QRectF,qreal)));
+}
+void MatchScene::addMatch(CVVMatch *cvmatch)
+{
+	//matches_.push_back(cvmatch);
+	graphicScene_->addItem(cvmatch);
+	connect(this,SIGNAL(updatePen(const MatchPen&)),cvmatch,SLOT(updatePen(const MatchPen&)));
+}
 
 void MatchScene::resizeEvent(QResizeEvent * event)
 {

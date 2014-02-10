@@ -10,6 +10,7 @@
 namespace cvv { namespace view{
 
 class LineMatchView:public MatchView{
+Q_OBJECT
 public:
 	LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,std::vector<cv::KeyPoint> rightKeyPoints,std::vector<cv::DMatch> matches,cv::Mat leftIm,cv::Mat rightIm,QWidget *parent=nullptr);
 };

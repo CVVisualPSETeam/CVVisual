@@ -16,10 +16,8 @@ CVVMatch::CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint* right_key,const float& mat
 	show_{true}
 {
 	TRACEPOINT;
-	DEBUG(0,"asdgggggggggggggggggggggggggggggggggggggggggggggggggggggggg");
 	connect(left_key_,SIGNAL(updatePoint(bool)),this,SLOT(updateLeftKey(bool)));
 	connect(right_key_,SIGNAL(updatePoint(bool)),this,SLOT(updateRightKey(bool)));
-	DEBUG(0,"asdgggggggggggggggggggggggggggggggggggggggggggggggggggggggg");
 	TRACEPOINT;
 }
 
@@ -57,6 +55,7 @@ void CVVMatch::updateRightKey(bool visible)
 {
 	TRACEPOINT;
 	right_key_visible_=visible;
+	setVisible(show_&&left_key_visible_&&right_key_visible_);
 	prepareGeometryChange();
 	update();
 	TRACEPOINT;
