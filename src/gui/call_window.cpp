@@ -180,13 +180,21 @@ std::vector<size_t> CallWindow::getCallTabIds()
 
 void CallWindow::closeEvent(QCloseEvent *event)
 {
+	TRACEPOINT;
 	controller->removeWindowFromMaps(id);
-	tabWidget->clear();
+	TRACEPOINT;
+	// FIXME: tabWidget is already freed sometimes: Use-after-free Bug
+	//tabWidget->clear();
+	TRACEPOINT;
 	for (auto &elem : tabMap)
 	{
+		DEBUGF(90, "Removing call Tab %s at address %s", elem.first, size_t(elem.second));
 		controller->removeCallTab(elem.first, true);
+		TRACEPOINT;
 	}
+	TRACEPOINT;
 	event->accept();
+	TRACEPOINT;
 }
 
 void CallWindow::tabCloseRequested(int index)

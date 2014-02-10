@@ -76,55 +76,37 @@ template<int depth, int channels>
 using PixelType = typename structures::PixelTypeConverter<DepthType<depth>,channels>::type;
 
 //convert a depth value to uchar
-/**
- * @brief Converts the value to an uchar.
- * @param value The value to convert.
- * @return The converted value.
- */
-template<int depth> uchar convertTo8U(const DepthType<depth> value) = delete;
+
 
 /**
  * @brief Converts the value to an uchar.
  * @param value The value to convert.
  * @return The converted value.
  */
-template<> uchar convertTo8U<CV_8U >(const DepthType<CV_8U > value);
-/**
- * @brief Converts the value to an uchar.
- * @param value The value to convert.
- * @return The converted value.
- */
-template<> uchar convertTo8U<CV_16U>(const DepthType<CV_16U> value);
-/**
- * @brief Converts the value to an uchar.
- * @param value The value to convert.
- * @return The converted value.
- */
-template<> uchar convertTo8U<CV_16S>(const DepthType<CV_16S> value);
-/**
- * @brief Converts the value to an uchar.
- * @param value The value to convert.
- * @return The converted value.
- */
-template<> uchar convertTo8U<CV_8S >(const DepthType<CV_8S > value);
-/**
- * @brief Converts the value to an uchar.
- * @param value The value to convert.
- * @return The converted value.
- */
-template<> uchar convertTo8U<CV_32S>(const DepthType<CV_32S> value);
-/**
- * @brief Converts the value to an uchar.
- * @param value The value to convert.
- * @return The converted value.
- */
-template<> uchar convertTo8U<CV_32F>(const DepthType<CV_32F> value);
-/**
- * @brief Converts the value to an uchar.
- * @param value The value to convert.
- * @return The converted value.
- */
-template<> uchar convertTo8U<CV_64F>(const DepthType<CV_64F> value);
+template<int depth> uchar convertTo8U(const DepthType<depth>);// = delete;
+
+template<> inline uchar convertTo8U<CV_8U>(const DepthType<CV_8U> value)
+	{return value;}
+
+template<> inline uchar convertTo8U<CV_16U>(const DepthType<CV_16U> value)
+	{return cv::saturate_cast<DepthType<CV_8U>>(value/256);}
+
+template<> inline uchar convertTo8U<CV_16S>(const DepthType<CV_16S> value)
+	{return convertTo8U<CV_8U>((value/256)+128);}
+
+template<> inline uchar convertTo8U<CV_8S>(const DepthType<CV_8S> value)
+	{return convertTo8U<CV_16S>(cv::saturate_cast<DepthType<CV_16S>>(value)*256);}
+
+template<> inline uchar convertTo8U<CV_32S>(const DepthType<CV_32S> value)
+	{return convertTo8U<CV_16S>(cv::saturate_cast<DepthType<CV_16S>>(value/(256*256)));}
+
+template<> inline uchar convertTo8U<CV_32F>(const DepthType<CV_32F> value)
+	{return cv::saturate_cast<DepthType<CV_8U>>(value*256.0);}
+
+template<> inline uchar convertTo8U<CV_64F>(const DepthType<CV_64F> value)
+	{return cv::saturate_cast<DepthType<CV_8U>>(value*256.0);}
+
+
 }}//namespaces
 
 #endif // TYPES_HPP
