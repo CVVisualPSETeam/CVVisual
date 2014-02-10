@@ -24,6 +24,8 @@ public:
 	 * @param images A List of images
 	 * @param parent The parent of this QWidget
 	 */
+	//SingleFilterView(std::vector<cv::Mat> images,QWidget *parent=nullptr);
+
 	SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
 public slots:
 	void applyFilter();
@@ -36,5 +38,6 @@ private:
 	std::vector<cvv::qtutil::ZoomableImage*> zoomImages_;
 	qtutil::FilterSelectorWidget<1,1> *filterSelector_;
 };	
+
 }}//namespaces
 #endif

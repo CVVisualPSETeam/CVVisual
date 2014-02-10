@@ -189,8 +189,9 @@ private:
     std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
     //non-owning:
     gui::OverviewPanel* ovPanel;
+	bool doesShowExitProgramButton = false;
 
-    size_t max_window_id = 0;
+	size_t max_window_id = 0;
 
     void removeEmptyWindows();
 

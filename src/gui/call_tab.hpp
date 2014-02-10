@@ -9,7 +9,9 @@
 namespace cvv {
 namespace gui {
 
-/** A call tab.
+/**
+ * @brief Super class of the inner part of a tab or window.
+ * A call tab.
  * The inner part of a tab or a window.
  * Super class for actual call tabs containing views.
  */

@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_OVERVIEW_GROUP_SUBTABLE_HPP
-#define	CVVISUAL_OVERVIEW_GROUP_SUBTABLE_HPP
+#ifndef CVVISUAL_RAWVIEW_GROUP_SUBTABLE_HPP
+#define	CVVISUAL_RAWVIEW_GROUP_SUBTABLE_HPP
 
 #include <memory>
 
@@ -9,7 +9,7 @@
 #include <QResizeEvent>
 
 #include "../stfl/element_group.hpp"
-#include "overview_table_collumn.hpp"
+#include "rawview_table_collumn.hpp"
 #include "../util/optional.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
@@ -20,12 +20,12 @@ class ViewController;
 
 namespace cvv { namespace gui {
 
-class OverviewTable;
+class RawviewTable;
 
 /**
  * @brief A table for the a group of overview data sets.
  */
-class OverviewGroupSubtable : public QWidget
+class RawviewGroupSubtable : public QWidget
 {
 	Q_OBJECT
 
@@ -37,17 +37,14 @@ public:
 	 * @param parent parent table
 	 * @param group the displayed group of overview data sets
      */
-	OverviewGroupSubtable(util::Reference<controller::ViewController> controller,
-		OverviewTable *parent,
-		stfl::ElementGroup<OverviewTableCollumn> group);
+	RawviewGroupSubtable(util::Reference<controller::ViewController> controller,
+		RawviewTable *parent,
+		stfl::ElementGroup<RawviewTableCollumn> group);
 
 	/**
 	 * @brief Updates the displayed table UI.
 	 */
 	void updateUI();
-
-protected:
-	void resizeEvent(QResizeEvent *event);
 
 private slots:
 	void rowClicked(int row, int collumn);
@@ -56,12 +53,9 @@ private slots:
 
 private:
 	util::Reference<controller::ViewController> controller;
-	OverviewTable *parent;
-	stfl::ElementGroup<OverviewTableCollumn> group;
+	RawviewTable *parent;
+	stfl::ElementGroup<RawviewTableCollumn> group;
 	QTableWidget *qTable;
-	int currentCustomMenuCallTabId = -1;
-
-	void initUI();
 };
 
 }}

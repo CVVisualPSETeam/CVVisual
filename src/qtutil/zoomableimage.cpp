@@ -86,7 +86,6 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	zoom_{1},
 	threshold_{60},
 	autoShowValues_{true},
-	valuesVisible_{false},
 	values_{}
 {
 	TRACEPOINT;
