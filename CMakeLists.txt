@@ -9,7 +9,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 # add some nice 'no-ugly-code-enforcers':
 if(CMAKE_BUILD_TYPE MATCHES "Debug")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_DEBUG -fsanitize=address -fno-omit-frame-pointer")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_GLIBCXX_DEBUG")
 elseif(CMAKE_BUILD_TYPE MATCHES "Release")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
 endif()
@@ -19,12 +19,17 @@ endif()
 
 Option(CVV_DEBUG_MODE "cvvisual-debug-mode" ON)
 Option(CVV_BUILD_TESTS "cvvisual-build-tests" ON)
+Option(CVV_ASAN "cvvisual-asan" OFF)
 
 
 #####################
 
 if(CVV_DEBUG_MODE MATCHES ON)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCVVISUAL_DEBUGMODE")
+endif()
+
+if(CVV_ASAN MATCHES ON)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
 endif()
 
 
