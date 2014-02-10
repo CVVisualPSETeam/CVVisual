@@ -22,11 +22,15 @@ class MatchPen;
 class MatchScene:public QWidget{
 Q_OBJECT
 public:	
-	MatchScene(cv::Mat imageLeft,cv::Mat imageRight,const std::vector<cv::KeyPoint>& keypoints_left,
-		const std::vector<cv::KeyPoint>& keypoints_right,const std::vector<cv::DMatch>& matches, QWidget* parent = nullptr);
+	MatchScene(cv::Mat imageLeft,cv::Mat imageRight/*,const std::vector<cv::KeyPoint>& keypoints_left,
+		const std::vector<cv::KeyPoint>& keypoints_right,const std::vector<cv::DMatch>& matches*/, QWidget* parent = nullptr);
+
+public slots:
+	void addLeftKeypoint(CVVKeyPoint*);
+	void addRightKeyPoint(CVVKeyPoint*);
+	void addMatch(CVVMatch*);
 
 signals:
-
 	void updatePen(const MatchPen&);
 
 protected:
@@ -34,9 +38,10 @@ protected:
 
 private:
 
-	std::vector<cvv::qtutil::CVVKeyPoint*> keypoints_left_;	
+	/*std::vector<cvv::qtutil::CVVKeyPoint*> keypoints_left_;	
 	std::vector<cvv::qtutil::CVVKeyPoint*> keypoints_right_;
 	std::vector<cvv::qtutil::CVVMatch*> matches_;
+	*/
 	
 	QGraphicsView 		*graphicView_;
 	QGraphicsScene 		*graphicScene_;	

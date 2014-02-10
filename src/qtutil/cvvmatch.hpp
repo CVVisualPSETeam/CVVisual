@@ -18,7 +18,6 @@
 #include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
-class MatchPen;
 
 class CVVMatch:public QGraphicsObject{
 Q_OBJECT

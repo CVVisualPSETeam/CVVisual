@@ -9,7 +9,10 @@ CVVKeyPoint::CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image,
 {
 	TRACEPOINT;
 	updateImageSet(image->visibleArea(),image->zoom());
-	connect(image,SIGNAL(updateArea(QRectF,qreal)),this,SLOT(updateImageSet(QRectF,qreal)));
+	if(image!=nullptr)
+	{
+		connect(image,SIGNAL(updateArea(QRectF,qreal)),this,SLOT(updateImageSet(QRectF,qreal)));
+	}
 	TRACEPOINT;
 }
 
@@ -27,6 +30,7 @@ void CVVKeyPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 QRectF CVVKeyPoint::boundingRect() const
 {
 	TRACEPOINT;
+	//TODO throw image==nullptr|| imWidget==nullptr
 	return QRectF{QPointF{imPointInScene().x()-3,imPointInScene().y()-3}
 			,QPointF{imPointInScene().x()+3,imPointInScene().y()+3}};
 }
