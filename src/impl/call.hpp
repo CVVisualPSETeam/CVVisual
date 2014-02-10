@@ -10,6 +10,8 @@
 
 #include "call_meta_data.hpp"
 
+#include "../dbg/dbg.hpp"
+
 namespace cvv {
 namespace impl {
 
@@ -17,7 +19,7 @@ size_t newCallId();
 
 class Call {
 public:
-	virtual ~Call() = default;
+	virtual ~Call() {DEBUG(100, "Destructing Call #", id);}
 	size_t getId() const { return id; }
 	
 	const QString& type() const {return calltype;}

@@ -9,6 +9,9 @@
 #include <QComboBox>
 #include <QWidget>
 
+#include "opencv2/core/core.hpp"
+#include "opencv2/features2d/features2d.hpp"
+
 #include "call_tab.hpp"
 #include "../view/match_view.hpp"
 #include "../controller/view_controller.hpp"
@@ -26,7 +29,10 @@ namespace gui {
  * Allows to switch views and to access the help.
  */
 class MatchCallTab:
-		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::MatchView, std::vector<cv::Mat>, QWidget*>
+		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::MatchView, cv::InputArray,
+							std::vector<cv::KeyPoint>,
+							cv::InputArray, std::vector<cv::KeyPoint>,
+							std::vector<cv::DMatch>, QWidget*>
 {
 Q_OBJECT
 
@@ -74,7 +80,10 @@ public:
 	 * Adds a MatchView with a name to the thread local map of all MatchViews.
 	 * @param matchViewId the Id or name of the MatchView.
 	 */
-	static void addMatchViewToMap(const QString& matchViewId, std::function<std::unique_ptr<cvv::view::MatchView>(std::vector<cv::Mat>, QWidget*)>);
+	static void addMatchViewToMap(const QString& matchViewId, std::function<std::unique_ptr<cvv::view::MatchView>(cv::InputArray,
+														      std::vector<cv::KeyPoint>,
+														      cv::InputArray, std::vector<cv::KeyPoint>,
+														      std::vector<cv::DMatch>, QWidget*)> mView);
 
 private slots:
 
@@ -113,6 +122,7 @@ private:
 	QPushButton* helpButton_;
 	QHBoxLayout* hlayout_;
 	QVBoxLayout* vlayout_;
+	QWidget* upperBar_;
 
 };
 
