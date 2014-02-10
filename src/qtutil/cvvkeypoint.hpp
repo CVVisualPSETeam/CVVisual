@@ -21,7 +21,7 @@ namespace cvv{namespace qtutil{
 class CVVKeyPoint:public QGraphicsObject{
 Q_OBJECT
 public:
-	CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image,QGraphicsProxyWidget* imWidget,
+	CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image=nullptr,QGraphicsProxyWidget* imWidget=nullptr,
 		QPen pen=QPen{Qt::red},QBrush brush=QBrush{Qt::white},QGraphicsItem *parent=nullptr);
 
 
@@ -35,6 +35,10 @@ public:
 
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget);
+
+	void setProxyWidget(QGraphicsProxyWidget*imWidget);
+
+	void setZoomableImage(ZoomableImage *image);
 signals:
 	void updateShown(bool);
 

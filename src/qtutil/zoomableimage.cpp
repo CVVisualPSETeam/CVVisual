@@ -81,12 +81,13 @@ namespace cvv{ namespace qtutil{
 ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	QWidget{parent},
 	mat_{mat},
-	view_{new QGraphicsView{}},
+	view_{new structures::GraphicsView{}},
 	scene_{new QGraphicsScene{this}},
 	zoom_{1},
 	threshold_{60},
 	autoShowValues_{true},
-	values_{}
+	values_{},
+	scrollFactor_{0.01}
 {
 	TRACEPOINT;
 	// qt5 doc : "The view does not take ownership of scene."
@@ -97,7 +98,10 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 							&ZoomableImage::viewScrolled);
 	QObject::connect(this,SIGNAL(updateArea(QRectF,qreal)),
 			 this,SLOT(drawValues()));
-
+	//scrollbars should have strong focus
+	view_->horizontalScrollBar()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
+	view_->verticalScrollBar()->setFocusPolicy(Qt::NoFocus);
+	view_->setFocusPolicy(Qt::NoFocus);
 	QHBoxLayout *layout=new QHBoxLayout{};
 	layout->addWidget(view_);
 	layout->setMargin(0);

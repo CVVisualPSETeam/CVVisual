@@ -7,8 +7,8 @@
 
 namespace cvv{ namespace qtutil{
 
-MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight,const std::vector<cv::KeyPoint>& keypoints_left,
-	const std::vector<cv::KeyPoint>& keypoints_right,const std::vector<cv::DMatch>& matches, QWidget* parent):
+MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight/*,const std::vector<cv::KeyPoint>& keypoints_left,
+	const std::vector<cv::KeyPoint>& keypoints_right,const std::vector<cv::DMatch>& matches*/, QWidget* parent):
 		QWidget{parent}//,leftImage_{imageLeft},rightImage_{imageRight}
 {
 	TRACEPOINT;	
@@ -29,7 +29,7 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight,const std::vector<cv
 
 	QResizeEvent event{size(),size()};
 	resizeEvent(&event);
-
+/*
 	for(auto& key:keypoints_left)
 	{
 		CVVKeyPoint *keypoint=new CVVKeyPoint{key,leftImage_,leftImWidget_};
@@ -51,8 +51,32 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight,const std::vector<cv
 		matches_.push_back(cvmatch);
 		graphicScene_->addItem(cvmatch);
 	};
+*/
 	TRACEPOINT;
 }
+
+	void MatchScene::addLeftKeypoint(CVVKeyPoint *keypoint)
+	{
+		//keypoints_left_.push_back(keypoint);
+		keypoint->setProxyWidget(leftImWidget_);
+		keypoint->setZoomableImage(leftImage_);
+		graphicScene_->addItem(keypoint);
+		connect(leftImage_,SIGNAL(updateArea(QRectF,qreal)),keypoint,SLOT(updateImageSet(QRectF,qreal)));
+	}
+	void MatchScene::addRightKeyPoint(CVVKeyPoint *keypoint)
+	{
+		//keypoints_right_.push_back(keypoint);
+		keypoint->setProxyWidget(rightImWidget_);
+		keypoint->setZoomableImage(rightImage_);
+		graphicScene_->addItem(keypoint);
+		connect(rightImage_,SIGNAL(updateArea(QRectF,qreal)),keypoint,SLOT(updateImageSet(QRectF,qreal)));
+	}
+	void MatchScene::addMatch(CVVMatch *cvmatch)
+	{
+		//matches_.push_back(cvmatch);
+		graphicScene_->addItem(cvmatch);
+		connect(this,SIGNAL(updatePen(const MatchPen&)),cvmatch,SLOT(updatePen(constMatchPen&)));
+	}
 
 void MatchScene::resizeEvent(QResizeEvent * event)
 {

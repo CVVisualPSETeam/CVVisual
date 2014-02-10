@@ -22,7 +22,7 @@ Now double-click on the Call or select `Open in 'CVVisual|main window'` from the
 ![](images_tut/dilate_calltab_defaultfview.png)
 A *CallTab* opens. In the center, there are the images from the call.
 In the `View` drop-down menu you find different *Views* of the Call, that is, different visualizations of it. The accordion menu on the left offers information on the images and additional options depending on the View and the type of the Call.
-Important here might be that ImageInformation offers the possibility to zoom; if you zoom in more than 60%, the image pixels will be overlaid with the channel values, in a 3-channel image usually in order (top-down) BGR.  
+Important here might be that `ImageInformation` offers the possibility to zoom (you can also use the mouse wheel); if you zoom in more than 60%, the image pixels will be overlaid with the channel values, in a 3-channel image usually in order (top-down) BGR.  
 As our dilate seems to have produced acceptable results, we want to continue through the code.  
 So, we push the `Resume program execution` button in the upper left.  
 The window will comes up again the next time one of the CVVisual functions is called.
