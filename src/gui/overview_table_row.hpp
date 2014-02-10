@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_OVERVIEWTABLECOLLUMN_HPP
-#define	CVVISUAL_OVERVIEWTABLECOLLUMN_HPP
+#ifndef CVVISUAL_OVERVIEWTABLEROW_HPP
+#define	CVVISUAL_OVERVIEWTABLEROW_HPP
 
 #include <vector>
 
@@ -12,11 +12,11 @@
 
 namespace cvv { namespace gui {
 
-class OverviewTableCollumn
+class OverviewTableRow
 {
 public:
 	
-    OverviewTableCollumn(util::Reference<const impl::Call> call);
+    OverviewTableRow(util::Reference<const impl::Call> call);
     
 	/**
 	 * @todo implement

@@ -6,7 +6,7 @@
 #include <QStringList>
 
 #include "../stfl/element_group.hpp"
-#include "rawview_table_collumn.hpp"
+#include "rawview_table_row.hpp"
 #include "rawview_group_subtable.hpp"
 #include "../qtutil/accordion.hpp"
 
@@ -22,7 +22,7 @@ RawviewTable::RawviewTable(util::Reference<controller::ViewController> controlle
     setLayout(layout);
 }
 
-void RawviewTable::updateCollumnGroups(std::vector<stfl::ElementGroup<RawviewTableCollumn>> newGroups)
+void RawviewTable::updateRowGroups(std::vector<stfl::ElementGroup<RawviewTableRow>> newGroups)
 {
     subtableAccordion->clear();
     subTables.clear();

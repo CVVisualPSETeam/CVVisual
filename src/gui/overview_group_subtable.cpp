@@ -19,7 +19,7 @@ namespace cvv { namespace gui {
 
 OverviewGroupSubtable::OverviewGroupSubtable(util::Reference<controller::ViewController> controller,
 		 OverviewTable *parent,
-		 stfl::ElementGroup<OverviewTableCollumn> group):
+		 stfl::ElementGroup<OverviewTableRow> group):
 	controller{controller}, parent{parent}, group{std::move(group)}
 {
 	controller->setDefaultSetting("overview", "imgsize", QString::number(100));
@@ -137,13 +137,13 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 	if (actionText == "Open in new window")
 	{
 		controller->moveCallTabToNewWindow(currentCustomMenuCallTabId);
+		currentCustomMenuCallTabId = -1;
 		return;
 	}
 	else if (actionText == "Remove call")
 	{
 		controller->removeCallTab(currentCustomMenuCallTabId, true, true);
-		//TODO: returning here fixes a segfault. IMPORTANT: check wether it is really ok,
-		//to do so
+		currentCustomMenuCallTabId = -1;
 		return;
 	}
 	for (auto window : windows)

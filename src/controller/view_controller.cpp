@@ -26,7 +26,7 @@ ViewController::ViewController()
         int zero = 0;
         new QApplication{zero, emptyArray};
     }
-    ovPanel = new gui::OverviewPanel{this};
+    ovPanel = new gui::OverviewPanel{util::makeRef<ViewController>(*this)};
     mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
     windowMap[0] = std::unique_ptr<gui::CallWindow>(mainWindow);
     mainWindow->show();

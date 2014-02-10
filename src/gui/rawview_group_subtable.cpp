@@ -17,7 +17,7 @@ namespace cvv { namespace gui {
 
 RawviewGroupSubtable::RawviewGroupSubtable(util::Reference<controller::ViewController> controller,
                                              RawviewTable *parent,
-                                             stfl::ElementGroup<RawviewTableCollumn> group):
+                                             stfl::ElementGroup<RawviewTableRow> group):
     controller{controller}, parent{parent}, group{std::move(group)}
 {
 	qTable = new QTableWidget(this);
@@ -36,8 +36,9 @@ RawviewGroupSubtable::RawviewGroupSubtable(util::Reference<controller::ViewContr
     setLayout(layout); 
 	
 	QStringList list{};
-    list << "ID";
-	list << "Description" << "Function" << "File" << "Line" << "Type";
+	list << "match distance" << "img idx" << "query idx" << "train idx";
+	list << "key point 1 x" << "y 1" << "size 1" << "angle 1" << "response 1" << "octave 1" << "class id 1";
+	list << "key point 2 x" << "y 2" << "size 2" << "angle 2" << "response 2" << "octave 2" << "class id 2";
 	qTable->setColumnCount(list.size());
     qTable->setHorizontalHeaderLabels(list);
 	

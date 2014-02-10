@@ -9,7 +9,7 @@
 #include <QResizeEvent>
 
 #include "../stfl/element_group.hpp"
-#include "overview_table_collumn.hpp"
+#include "overview_table_row.hpp"
 #include "../util/optional.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
@@ -39,7 +39,7 @@ public:
      */
 	OverviewGroupSubtable(util::Reference<controller::ViewController> controller,
 		OverviewTable *parent,
-		stfl::ElementGroup<OverviewTableCollumn> group);
+		stfl::ElementGroup<OverviewTableRow> group);
 
 	/**
 	 * @brief Updates the displayed table UI.
@@ -57,7 +57,7 @@ private slots:
 private:
 	util::Reference<controller::ViewController> controller;
 	OverviewTable *parent;
-	stfl::ElementGroup<OverviewTableCollumn> group;
+	stfl::ElementGroup<OverviewTableRow> group;
 	QTableWidget *qTable;
 	int currentCustomMenuCallTabId = -1;
 
