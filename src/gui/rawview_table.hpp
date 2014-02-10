@@ -7,7 +7,7 @@
 #include <QList>
 
 #include "../view/rawview.hpp"
-#include "rawview_table_collumn.hpp"
+#include "rawview_table_row.hpp"
 #include "../stfl/element_group.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../util/util.hpp"
@@ -32,7 +32,7 @@ public:
 	
 	RawviewTable(util::Reference<controller::ViewController> controller, view::Rawview *parent);
 	
-	void updateCollumnGroups(const std::vector<stfl::ElementGroup<RawviewTableCollumn>> newGroups);
+	void updateRowGroups(const std::vector<stfl::ElementGroup<RawviewTableRow>> newGroups);
 
 	/**
 	 * @brief Updates the UI

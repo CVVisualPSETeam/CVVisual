@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_RAWVIEWTABLECOLLUMN_HPP
-#define	CVVISUAL_RAWVIEWTABLECOLLUMN_HPP
+#ifndef CVVISUAL_RAWVIEWTABLEROW_HPP
+#define	CVVISUAL_RAWVIEWTABLEROW_HPP
 
 #include <vector>
 
@@ -16,11 +16,11 @@ namespace cvv { namespace gui {
  * @brief A simple container wrapper for the cv::DMatch and cv::KeyPoint class.
  * See the opencv documentation for more information on the getter methods.
  */
-class RawviewTableCollumn
+class RawviewTableRow
 {
 public:
 	
-    RawviewTableCollumn(cv::DMatch match, cv::KeyPoint keyPoint1, cv::KeyPoint keyPoint2);
+    RawviewTableRow(cv::DMatch match, cv::KeyPoint keyPoint1, cv::KeyPoint keyPoint2);
 
     void addToTable(QTableWidget *table, size_t row);
 	
@@ -73,7 +73,7 @@ private:
 	cv::KeyPoint keyPoint2;
 };
 
-QList<RawviewTableCollumn> createRawviewTableCollumns(const std::vector<cv::KeyPoint>& keyPoints1,
+QList<RawviewTableRow> createRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints1,
 										const std::vector<cv::KeyPoint>& keyPoints2,
 										const std::vector<std::vector<cv::DMatch>>& matches);
 

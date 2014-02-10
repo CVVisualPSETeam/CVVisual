@@ -10,7 +10,7 @@
 #include "../stfl/stfl_engine.hpp"
 #include "../impl/call.hpp"
 #include "overview_table.hpp"
-#include "overview_table_collumn.hpp"
+#include "overview_table_row.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 
@@ -29,7 +29,7 @@ namespace qtutil {
 namespace gui {
 
 class OverviewTable;
-class OverviewTableCollumn;
+class OverviewTableRow;
 
 class OverviewPanel : public QWidget
 {
@@ -66,7 +66,7 @@ private slots:
     void toggleImages();
 
 private:
-    stfl::STFLEngine<OverviewTableCollumn> queryEngine;
+    stfl::STFLEngine<OverviewTableRow> queryEngine;
     qtutil::STFLQueryWidget *queryWidget;
     OverviewTable *table;
     util::Reference<controller::ViewController> controller;

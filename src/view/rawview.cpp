@@ -35,8 +35,8 @@ Rawview::Rawview(util::Reference<controller::ViewController> controller,
     connect(queryWidget, SIGNAL(filterSignal(QString)), this, SLOT(filterQuery(QString)));
     connect(queryWidget, SIGNAL(requestSuggestions(QString)), this, SLOT(requestSuggestions(QString)));
 
-	queryEngine.addElements(gui::createRawviewTableCollumns(keypoints1, keypoints2, matches));
-	table->updateCollumnGroups(queryEngine.query(""));
+	queryEngine.addElements(gui::createRawviewTableRows(keypoints1, keypoints2, matches));
+	table->updateRowGroups(queryEngine.query(""));
 }
 
 void Rawview::initEngine(){
@@ -45,7 +45,7 @@ void Rawview::initEngine(){
 
 void Rawview::filterQuery(QString query)
 {
-    table->updateCollumnGroups(queryEngine.query(query));
+    table->updateRowGroups(queryEngine.query(query));
 }
 
 void Rawview::updateQuery(QString query)

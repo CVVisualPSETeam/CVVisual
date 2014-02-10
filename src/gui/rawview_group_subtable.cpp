@@ -17,7 +17,7 @@ namespace cvv { namespace gui {
 
 RawviewGroupSubtable::RawviewGroupSubtable(util::Reference<controller::ViewController> controller,
                                              RawviewTable *parent,
-                                             stfl::ElementGroup<RawviewTableCollumn> group):
+                                             stfl::ElementGroup<RawviewTableRow> group):
     controller{controller}, parent{parent}, group{std::move(group)}
 {
 	qTable = new QTableWidget(this);

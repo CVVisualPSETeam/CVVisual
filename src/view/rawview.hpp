@@ -15,7 +15,7 @@
 #include "../stfl/stfl_engine.hpp"
 #include "../impl/call.hpp"
 #include "../gui/rawview_table.hpp"
-#include "../gui/rawview_table_collumn.hpp"
+#include "../gui/rawview_table_row.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 #include "match_view.hpp"
@@ -32,7 +32,7 @@ namespace qtutil {
 
 namespace gui {
 class RawviewTable;
-class RawviewTableCollumn;
+class RawviewTableRow;
 }
 
 namespace view {
@@ -63,7 +63,7 @@ private slots:
     void requestSuggestions(QString query);
 
 private:
-    stfl::STFLEngine<gui::RawviewTableCollumn> queryEngine;
+    stfl::STFLEngine<gui::RawviewTableRow> queryEngine;
     qtutil::STFLQueryWidget *queryWidget;
     gui::RawviewTable *table;
     util::Reference<controller::ViewController> controller;

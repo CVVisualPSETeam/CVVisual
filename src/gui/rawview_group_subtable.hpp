@@ -9,7 +9,7 @@
 #include <QResizeEvent>
 
 #include "../stfl/element_group.hpp"
-#include "rawview_table_collumn.hpp"
+#include "rawview_table_row.hpp"
 #include "../util/optional.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
@@ -39,7 +39,7 @@ public:
      */
 	RawviewGroupSubtable(util::Reference<controller::ViewController> controller,
 		RawviewTable *parent,
-		stfl::ElementGroup<RawviewTableCollumn> group);
+		stfl::ElementGroup<RawviewTableRow> group);
 
 	/**
 	 * @brief Updates the displayed table UI.
@@ -54,7 +54,7 @@ private slots:
 private:
 	util::Reference<controller::ViewController> controller;
 	RawviewTable *parent;
-	stfl::ElementGroup<RawviewTableCollumn> group;
+	stfl::ElementGroup<RawviewTableRow> group;
 	QTableWidget *qTable;
 };
 

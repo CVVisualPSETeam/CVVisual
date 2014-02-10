@@ -7,7 +7,7 @@
 #include <QList>
 
 #include "overview_panel.hpp"
-#include "overview_table_collumn.hpp"
+#include "overview_table_row.hpp"
 #include "../stfl/element_group.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../util/util.hpp"
@@ -17,7 +17,7 @@
 namespace cvv { namespace gui {
 
 class OverviewPanel;
-class OverviewTableCollumn;
+class OverviewTableRow;
 
 class OverviewTable : public QWidget
 {
@@ -27,7 +27,7 @@ public:
 	
 	OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent);
 	
-	void updateCollumnGroups(const std::vector<stfl::ElementGroup<OverviewTableCollumn>> newGroups);
+	void updateRowGroups(const std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups);
 	
 	void hideImages();
 	

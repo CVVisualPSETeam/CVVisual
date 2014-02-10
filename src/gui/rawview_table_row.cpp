@@ -1,4 +1,4 @@
-#include "rawview_table_collumn.hpp"
+#include "rawview_table_row.hpp"
 
 #include <QTableWidgetItem>
 #include <QImage>
@@ -8,12 +8,12 @@
 
 namespace cvv { namespace gui {
 
-RawviewTableCollumn::RawviewTableCollumn(cv::DMatch match, cv::KeyPoint keyPoint1, cv::KeyPoint keyPoint2):
+RawviewTableRow::RawviewTableRow(cv::DMatch match, cv::KeyPoint keyPoint1, cv::KeyPoint keyPoint2):
 	match{match}, keyPoint1{keyPoint1}, keyPoint2{keyPoint2}
 {
 }
 
-void RawviewTableCollumn::addToTable(QTableWidget *table, size_t row)
+void RawviewTableRow::addToTable(QTableWidget *table, size_t row)
 {
 	std::vector<QString> items {
 		QString::number(matchDistance()),
@@ -45,16 +45,16 @@ void RawviewTableCollumn::addToTable(QTableWidget *table, size_t row)
 
 
 
-QList<RawviewTableCollumn> createRawviewTableCollumns(const std::vector<cv::KeyPoint>& keyPoints1,
+QList<RawviewTableRow> createRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints1,
 										const std::vector<cv::KeyPoint>& keyPoints2,
 										const std::vector<std::vector<cv::DMatch>>& matches)
 {
-	auto retList = QList<RawviewTableCollumn>();
+	auto retList = QList<RawviewTableRow>();
 	for (auto &matchList : matches)
 	{
 		for (auto &match : matchList)
 		{
-			retList.append(RawviewTableCollumn(match, keyPoints1.at(match.queryIdx), keyPoints2.at(match.trainIdx)));
+			retList.append(RawviewTableRow(match, keyPoints1.at(match.queryIdx), keyPoints2.at(match.trainIdx)));
 		}
 	}
 	return retList;
