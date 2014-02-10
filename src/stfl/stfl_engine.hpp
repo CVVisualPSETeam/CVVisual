@@ -333,13 +333,16 @@ private:
 				filters.emplace_back(std::bind(filterCSFuncs[cmd], arguments, _1));
 			}
 		}
+		TRACEPOINT;
 		if(filters.empty())
 		{
+			TRACEPOINT;
 			return elements;
 		}
 		QList<Element> retList;
 		//copy if all filters match
 		using StringFilter = std::function<bool(const Element&)>;
+		TRACEPOINT;
 		auto copy_if = [&](const Element & element)
 		{
 			//find in filters
