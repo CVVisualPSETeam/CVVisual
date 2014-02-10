@@ -16,10 +16,11 @@ Q_OBJECT
 public:
 	MatchPen(QWidget* parent):QWidget(parent){TRACEPOINT;}
 	
-	virtual QPen getPen(const CVVMatch& cvmatch)const = 0;
+	virtual QPen getPen(const CVVMatch& cvmatch)const
+		{TRACEPOINT;(void)cvmatch;TRACEPOINT;return QPen{Qt::black};}
 
 signals:
-	void settingsChanged();
+	void settingsChanged(const MatchPen&);
 };
 
 }}
