@@ -83,9 +83,15 @@ size_t MatchCallTab::getId() const
 }
 
 void MatchCallTab::addMatchViewToMap(const QString& matchViewId,
-				       std::function<std::unique_ptr<cvv::view::MatchView>(std::vector<cv::Mat>, QWidget*)> fView)
+				       std::function<std::unique_ptr<cvv::view::MatchView>(cv::InputArray,
+											   std::vector<cv::KeyPoint>,
+											   cv::InputArray, std::vector<cv::KeyPoint>,
+											   std::vector<cv::DMatch>, QWidget*)> mView)
 {
-	cvv::qtutil::RegisterHelper<cvv::view::MatchView, std::vector<cv::Mat>, QWidget*>::registerElement(matchViewId, fView);
+	cvv::qtutil::RegisterHelper<cvv::view::MatchView, cv::InputArray,
+			std::vector<cv::KeyPoint>,
+			cv::InputArray, std::vector<cv::KeyPoint>,
+			std::vector<cv::DMatch>, QWidget*>::registerElement(matchViewId, mView);
 }
 
 void MatchCallTab::createGui()
@@ -99,12 +105,12 @@ void MatchCallTab::createGui()
 	hlayout_->addWidget(helpButton_);
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
 
-	QWidget* upperBar = new QWidget{this};
-	upperBar->setLayout(hlayout_);
+	upperBar_ = new QWidget{this};
+	upperBar_->setLayout(hlayout_);
 
 	vlayout_ = new QVBoxLayout{this};
 
-	vlayout_->addWidget(upperBar);
+	vlayout_->addWidget(upperBar_);
 	setView(matchViewId_);
 
 	setLayout(vlayout_);
@@ -116,14 +122,12 @@ void MatchCallTab::setView(const QString &viewId)
 	try
 	{
 		auto fct = registeredElements_.at(viewId);
-		std::vector<cv::Mat> images;
-		/*images. push_back(matchCall_->original());
-		images.push_back(matchCall_->result());*/
-		matchView_ = (fct(images, this)).release();
+		matchView_ = (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(), matchCall_->keyPoints2(), matchCall_->matches(), this)).release();
 		vlayout_->addWidget(matchView_);
 	} catch (std::out_of_range)
 	{
 		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
+		throw;
 	}
 
 }

@@ -42,17 +42,20 @@ signals:
 
 public:
 
+public:
 	/**
-	 * @brief factory method to create a MatchView
-	 * Factory method to create MatchViews.
-	 * @param img1
-	 * @param keypoints1
-	 * @param img2
-	 * @param keypoints2
-	 * @param matches
-	 * @return
-	 */
-    //virtual MatchView createMatchView(const std::vector<cv::Mat>& img1, const std::vector<cv::KeyPoint>& keypoints1, const std::vector<cv::Mat>& img2, const std::vector<cv::KeyPoint>& keypoints2, const std::vector<std::vector<cv::DMatch>>& matches);
+	 * @brief default constructor
+	 **/
+	MatchView():MatchView{0}{};
+
+	virtual ~MatchView() = default;
+
+protected:
+	/**
+	 * @brief constructor of QWidget(parent)
+	 * @param parent the parent of this view
+	 **/
+	MatchView(QWidget *parent):QWidget{parent}{};
 };
 
 }} //namespaces
