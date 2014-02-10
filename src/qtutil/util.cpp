@@ -187,7 +187,7 @@ QImage convert(const cv::Mat& mat, unsigned int threads)
 	{
 		TRACEPOINT;
 		//multithreadding
-		int nThreads=std::min(threads,std::thread::hardware_concurrency);
+		int nThreads=std::min(threads,std::thread::hardware_concurrency());
 		std::vector<std::thread> workerThreads;
 		workerThreads.reserve(nThreads);
 		int nperthread=mat.rows/nThreads;
