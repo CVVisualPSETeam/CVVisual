@@ -1,5 +1,5 @@
 
-#include <QColorDialog>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 #include "singlecolorpen.hpp"
@@ -11,12 +11,14 @@ namespace cvv{ namespace qtutil{
 		TRACEPOINT;
 		QVBoxLayout *layout=new QVBoxLayout();
 		layout->setMargin(0);
-		QColorDialog *colorDialog = new QColorDialog{};
-		layout->addWidget(colorDialog);
+		colorDialog_ = new QColorDialog{};
+		QPushButton *button=new QPushButton{"Color Dialog"};
+		layout->addWidget(button);
 		setLayout(layout);
 
-		connect(colorDialog,SIGNAL(colorSelected(const QColor &)),
+		connect(colorDialog_,SIGNAL(currentColorChanged(const QColor &)),
 			this,SLOT(updateColor(const QColor &)));
+		connect(button,SIGNAL(clicked(bool)),this,SLOT(colorButtonClicked()));
 		TRACEPOINT;
 	}
 
