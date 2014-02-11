@@ -61,6 +61,12 @@ Q_OBJECT
 		cv::Mat applyDiffFilter(DiffFilterType filterType);
 		
 		/**
+		* @brief Overlays the rawImages
+		* @return the overlay image
+		*/
+		cv::Mat applyOverlayFilter();
+		
+		/**
 		* @brief Checks whether rawImages_ can be processed by this DiffFilter
 		*/
 		std::pair<bool, QString> checkDiffInput(DiffFilterType filterType) const;

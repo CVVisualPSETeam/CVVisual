@@ -4,6 +4,8 @@
 #include <string>
 #include <unordered_map>
 
+#include "opencv2/core/core.hpp"
+
 #include <QApplication>
 #include <QComboBox>
 #include <QHBoxLayout>
@@ -49,6 +51,8 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	auto comboBox = util::make_unique<QComboBox>();
 	
 	//register filters at map
+	filterMap_.insert(std::make_pair<std::string, std::function<cv::Mat(void)>>
+		("Overlay Image", [this](){return DualFilterView::applyOverlayFilter();}));
 	filterMap_.insert(std::make_pair<std::string, std::function<cv::Mat(void)>>
 		("Difference Image - hue",
 		[this](){return DualFilterView::applyDiffFilter(DiffFilterType::HUE);}));
@@ -169,7 +173,14 @@ std::pair<bool, QString> DualFilterView::checkDiffInput(DiffFilterType filterTyp
 	return std::make_pair(true, "images can be converted");
 }
 
-
+cv::Mat DualFilterView::applyOverlayFilter()
+{
+	cv::Mat out;
+	
+	cv::addWeighted(rawImages_.at(0), 0.5, rawImages_.at(1), 0.5, 0, out);
+	
+	return out;
+}
 
 std::array<cv::Mat, 2> DualFilterView::convertToArray(const std::vector<cv::Mat>& matVec) const
 {
