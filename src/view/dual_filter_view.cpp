@@ -49,7 +49,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	QWidget *imwid = new QWidget{};
 	qtutil::Accordion *accor = new qtutil::Accordion{};
 	auto comboBox = util::make_unique<QComboBox>();
-	
+
 	//register filters at map
 	filterMap_.insert(std::make_pair<std::string, std::function<cv::Mat(void)>>
 		("Overlay Image", [this](){return DualFilterView::applyOverlayFilter();}));
@@ -65,12 +65,12 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	filterMap_.insert(std::make_pair<std::string, std::function<cv::Mat(void)>>
 		("Difference Image - grayscale",
 		[this](){return DualFilterView::applyDiffFilter(DiffFilterType::GRAYSCALE);}));
-	
+
 	//Register filter names at comboBox
 	comboBox -> addItems(DualFilterView::extractStringListfromMap());
 	connect(comboBox.get(), SIGNAL(currentIndexChanged(const QString&)), this,
 		SLOT(updateFilterImg(const QString&)));
-	
+
 	accor->insert("Filter selection", std::move(comboBox));
 	accor->setMinimumSize(150,0);
 	layout->addWidget(accor);
@@ -78,7 +78,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	auto lambda = [this, imageLayout, accor](cv::Mat image, size_t count)
 	{
 		auto info = util::make_unique<qtutil::MatInfoWidget>(image);
-		
+
 		if (count == 1)
 		{
 			filterImgInfo_ = info.get();
@@ -89,19 +89,19 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 			SLOT(updateConvertStatus(ImageConversionResult)));
 
 		connect(info.get(),SIGNAL(getZoom(qreal)),&zoomImages_.at(count),
-			SLOT(updateZoom(qreal)));
+			SLOT(setZoom(qreal)));
 
-		zoomImages_.at(count).updateMat(image);
+		zoomImages_.at(count).setMat(image);
 
 		imageLayout->addWidget(&(zoomImages_.at(count)));
 		accor->insert("ImageInformation",std::move(info));
 	};
-	
+
 	lambda(rawImages_.at(0), 0);
-	
+
 	lambda(rawImages_.at(0), 1);
 	cv::Mat filteredImg = DualFilterView::applyDiffFilter(DiffFilterType::GRAYSCALE);
-	zoomImages_.at(1).updateMat(filteredImg);
+	zoomImages_.at(1).setMat(filteredImg);
 	filterImgInfo_ -> updateMat(filteredImg);
 
 	lambda(rawImages_.at(1), 2);
@@ -143,7 +143,7 @@ cv::Mat DualFilterView::applyDiffFilter(DiffFilterType filterType)
 	cv::split(diffHSV, splitVector.data());
 
 	TRACEPOINT;
-	
+
 	return splitVector.at(static_cast<size_t>(filterType));
 }
 
@@ -176,9 +176,9 @@ std::pair<bool, QString> DualFilterView::checkDiffInput(DiffFilterType filterTyp
 cv::Mat DualFilterView::applyOverlayFilter()
 {
 	cv::Mat out;
-	
+
 	cv::addWeighted(rawImages_.at(0), 0.5, rawImages_.at(1), 0.5, 0, out);
-	
+
 	return out;
 }
 
@@ -207,7 +207,7 @@ void DualFilterView::updateFilterImg(const QString& selectedString)
 {
 	auto selectedFilter = filterMap_.find(selectedString.toStdString()) -> second;
 	cv::Mat filteredImg = selectedFilter();
-	zoomImages_.at(1).updateMat(filteredImg);
+	zoomImages_.at(1).setMat(filteredImg);
 	filterImgInfo_ -> updateMat(filteredImg);
 }
 

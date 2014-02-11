@@ -42,7 +42,7 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *p
 		connect(info.get(),SIGNAL(getZoom(qreal)),zoomIm,
 			SLOT(updateZoom(qreal)));
 
-		zoomIm->updateMat(image);
+		zoomIm->setMat(image);
 
 		imageLayout->addWidget(zoomIm);
 		accor->insert("ImageInformation",std::move(info));

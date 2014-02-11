@@ -87,7 +87,8 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	threshold_{60},
 	autoShowValues_{true},
 	values_{},
-	scrollFactor_{0.005}
+	scrollFactorCTRL_{1.025},
+	scrollFactorCTRLShift_{1.01}
 {
 	TRACEPOINT;
 	// qt5 doc : "The view does not take ownership of scene."
@@ -106,11 +107,11 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	layout->addWidget(view_);
 	layout->setMargin(0);
 	setLayout(layout) ;
-	updateMat(mat_);
+	setMat(mat_);
 	TRACEPOINT;
 }
 
-void ZoomableImage::updateMat(cv::Mat mat)
+void ZoomableImage::setMat(cv::Mat mat)
 {
 	TRACEPOINT;
 	mat_ = mat;
@@ -123,7 +124,7 @@ void ZoomableImage::updateMat(cv::Mat mat)
 	TRACEPOINT;
 }
 
-void ZoomableImage::updateZoom(qreal factor)
+void ZoomableImage::setZoom(qreal factor)
 {
 	TRACEPOINT;
 	if(factor <= 0)
@@ -185,24 +186,35 @@ void ZoomableImage::wheelEvent(QWheelEvent * event)
 
 	if(QApplication::keyboardModifiers() & Qt::ControlModifier)
 	{
-		qreal shift=1;
+		qreal f=scrollFactorCTRL_;;
 		if(QApplication::keyboardModifiers() & Qt::ShiftModifier)
 		{
-			shift=10;
+			f=scrollFactorCTRLShift_;;
 		}
-		updateZoom(shift*scrollFactor_*((event->angleDelta().x())+(event->angleDelta().y()))
-				+zoom_);
+
+		qreal scroll=((event->angleDelta().x())+(event->angleDelta().y()))*f;
+		if(scroll<0.0)
+		{
+			scroll=-1.0/scroll;
+			f=1/f;
+		}
+		setZoom(f*zoom_);
 	}else{
 		QWidget::wheelEvent(event);
 	}
 	TRACEPOINT;
 }
 
+void ZoomableImage::setArea(QRectF rect,qreal zoom)
+{
+	setZoom(zoom);
+	view_->centerOn(rect.bottomRight()-rect.topLeft());
+}
 
 void ZoomableImage::showFullImage()
 {
 	TRACEPOINT;
-	updateZoom(
+	setZoom(
 		std::min(
 		static_cast<qreal>(view_->viewport()->width())/static_cast<qreal>(imageWidth()),
 		static_cast<qreal>(view_->viewport()->height())/static_cast<qreal>(imageHeight())

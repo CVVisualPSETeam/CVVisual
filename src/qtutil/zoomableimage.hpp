@@ -141,13 +141,23 @@ public:
 	}
 
 	/**
-	 * @brief Returns the current scroll factor.
-	 * @return The current scroll factor.
+	 * @brief Returns the current scroll factor for CTRL+scroll.
+	 * @return The current scroll factor for CTRL+scroll.
 	 */
-	qreal scrollFactor() const
+	qreal scrollFactorCTRL() const
 	{
 		TRACEPOINT;
-		return scrollFactor_;
+		return scrollFactorCTRL_;
+	}
+
+	/**
+	 * @brief Returns the current scroll factor for CTRL+shift+scroll.
+	 * @return The current scroll factor for CTRL+shift+scroll.
+	 */
+	qreal scrollFactorCTRLShift() const
+	{
+		TRACEPOINT;
+		return scrollFactorCTRLShift_;
 	}
 signals:
 	/**
@@ -162,16 +172,23 @@ signals:
 
 public slots:
 	/**
+	 * @brief Sets the curent visible area (the center) and zoom factor.
+	 * @param rect The area.
+	 * @param zoom The zoom.
+	 */
+	void setArea(QRectF rect,qreal zoom);
+
+	/**
 	 * @brief Updates the image to display.
 	 * @param mat The new image to display.
 	 */
-	void updateMat(cv::Mat mat);
+	void setMat(cv::Mat mat);
 
 	/**
 	 * @brief Updates the zoom factor.
 	 * @param factor The zoom factor.
 	 */
-	void updateZoom(qreal factor = 1);
+	void setZoom(qreal factor = 1);
 
 	/**
 	 * @brief Sets weather pixel values are shown depending on threshold.
@@ -201,13 +218,24 @@ public slots:
 	void showFullImage();
 
 	/**
-	 * @brief Returns the current scroll factor.
+	 * @brief Returns the current CTRL+scroll zoom factor.
 	 * @return The current scroll factor.
 	 */
-	void updateZoomFactor(qreal factor = 0.005)
+	void setCTRLZoomFactor(qreal factor = 1.025)
 	{
 		TRACEPOINT;
-		scrollFactor_=factor;
+		scrollFactorCTRL_=factor;
+		TRACEPOINT;
+	}
+
+	/**
+	 * @brief Returns the current CTRL+ shift+scroll zoom factor.
+	 * @return The current scroll factor.
+	 */
+	void setCTRLShiftZoomFactor(qreal factor = 1.01)
+	{
+		TRACEPOINT;
+		scrollFactorCTRLShift_=factor;
 		TRACEPOINT;
 	}
 
@@ -271,7 +299,12 @@ private:
 	/**
 	 * @brief The factor multiplied to the number of scrolled pixels.
 	 */
-	qreal scrollFactor_;
+	qreal scrollFactorCTRL_;
+
+	/**
+	 * @brief The factor multiplied to the number of scrolled pixels.
+	 */
+	qreal scrollFactorCTRLShift_;
 };
 
 }}
