@@ -38,7 +38,7 @@ public:
 	 * @param fc the FilterCall containing the information to be visualized.
 	 * @param vc the ViewController this CallTab belongs to.
 	 */
-	FilterCallTab(const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc);
+	FilterCallTab(const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc);
 
 	/**
 	 * @brief Constructor using default view.
@@ -48,7 +48,7 @@ public:
 	 * @param vc the ViewController this CallTab belongs to.
 	 * @attention might be deleted
 	 */
-	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc);
+	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc);
 
 	/**
 	 * @brief Constructor with specific view.
@@ -59,7 +59,7 @@ public:
 	 * @param viewId the ID of the view to be shown inside this CallTab.
 	 * @attention might be deleted
 	 */
-	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, const QString& viewId);
+	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc, const QString& viewId);
 
 	/**
 	 * @brief get ID
@@ -91,6 +91,12 @@ private slots:
 	 */
 	void helpButtonClicked() const;
 
+	/**
+	 * @brief setAsDefaultButton clicked.
+	 * Called when the setAsDefaultButton,which sets the current view as default, is clicked.
+	 */
+	void setAsDefaultButtonClicked();
+
 private:
 
 	/**
@@ -107,11 +113,12 @@ private:
 	void setView(const QString& viewId);
 
 	util::Reference<const cvv::impl::FilterCall> filterCall_;
-	util::Reference<const cvv::controller::ViewController> viewController_;
+	util::Reference<cvv::controller::ViewController> viewController_;
 	QString filterViewId_;
 	cvv::view::FilterView* filterView_;
 
 	QPushButton* helpButton_;
+	QPushButton* setAsDefaultButton_;
 	QHBoxLayout* hlayout_;
 	QVBoxLayout* vlayout_;
 	QWidget* upperBar_;

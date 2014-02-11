@@ -20,10 +20,10 @@
 namespace cvv {
 namespace gui {
 
-FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
+FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc):
 	filterCall_{fc}, viewController_{vc}
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	setName(filterCall_->description());
 	const QString scope{"default_views"};
 	const QString key{"default_filter_view"};
@@ -38,13 +38,13 @@ FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc, const cvv::control
 	filterViewId_ = setting;
 
 	createGui();
-    TRACEPOINT;
+	TRACEPOINT;
 }
 
-FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc):
+FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc):
 	filterCall_{fc}, viewController_{vc}
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	setName(tabName);
 	const QString scope{"default_views"};
 	const QString key{"default_filter_view"};
@@ -59,58 +59,71 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	filterViewId_ = setting;
 
 	createGui();
-    TRACEPOINT;
+	TRACEPOINT;
 }
 
-FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const cvv::controller::ViewController& vc, const QString& viewId):
+FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc, const QString& viewId):
 	filterCall_{fc}, viewController_{vc}
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	setName(tabName);
 	filterViewId_ = viewId;
 
 	createGui();
-    TRACEPOINT;
+	TRACEPOINT;
 }
 
 void FilterCallTab::currentIndexChanged(const QString& text)
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	filterViewId_ = text;
 	delete filterView_;
 	setView(filterViewId_);
-    TRACEPOINT;
+	TRACEPOINT;
 }
 
 void FilterCallTab::helpButtonClicked() const
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	viewController_->openHelpBrowser(filterViewId_);
-    TRACEPOINT;
+	TRACEPOINT;
+}
+
+void FilterCallTab::setAsDefaultButtonClicked()
+{
+	TRACEPOINT;
+	const QString scope{"default_views"};
+	const QString key{"default_filter_view"};
+	const QString value{filterViewId_};
+	viewController_->setDefaultSetting(scope, key, value);
+	TRACEPOINT;
 }
 
 size_t FilterCallTab::getId() const
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	return filterCall_->getId();
 }
 
 void FilterCallTab::addFilterViewToMap(const QString& filterViewId,
 				       std::function<std::unique_ptr<cvv::view::FilterView>(const std::vector<cv::Mat>&, QWidget*)> fView)
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	cvv::qtutil::RegisterHelper<cvv::view::FilterView, const std::vector<cv::Mat>&, QWidget*>::registerElement(filterViewId, fView);
-    TRACEPOINT;
+	TRACEPOINT;
 }
 
 void FilterCallTab::createGui()
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	comboBox_->setCurrentText(filterViewId_);
 	hlayout_ = new QHBoxLayout{this};
 	hlayout_->setAlignment(Qt::AlignTop);
 	hlayout_->addWidget(new QLabel{"View:"});
 	hlayout_->addWidget(comboBox_);
+	setAsDefaultButton_ = new QPushButton{"Set as default", this};
+	hlayout_->addWidget(setAsDefaultButton_);
+	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
 	helpButton_ = new QPushButton{"Help", this};
 	hlayout_->addWidget(helpButton_);
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
@@ -125,12 +138,12 @@ void FilterCallTab::createGui()
 
 	setLayout(vlayout_);
 	connect(comboBox_, SIGNAL(currentTextChanged(QString)), this, SLOT(currentIndexChanged(QString)));
-    TRACEPOINT;
+	TRACEPOINT;
 }
 
 void FilterCallTab::setView(const QString &viewId)
 {
-    TRACEPOINT;
+	TRACEPOINT;
 	try
 	{
 		auto fct = registeredElements_.at(viewId);
@@ -144,7 +157,7 @@ void FilterCallTab::setView(const QString &viewId)
 		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
 		throw;
 	}
-    TRACEPOINT;
+	TRACEPOINT;
 }
 
 }}//namespaces
