@@ -1,4 +1,4 @@
-#include "overview_table_collumn.hpp"
+#include "overview_table_row.hpp"
 
 #include <QTableWidgetItem>
 #include <QImage>
@@ -8,7 +8,7 @@
 
 namespace cvv { namespace gui {
 
-OverviewTableCollumn::OverviewTableCollumn(util::Reference<const impl::Call> call): call_{call}
+OverviewTableRow::OverviewTableRow(util::Reference<const impl::Call> call): call_{call}
 {
 	id_ = call_->getId();
 	idStr = QString::number(call_->getId());
@@ -30,7 +30,7 @@ OverviewTableCollumn::OverviewTableCollumn(util::Reference<const impl::Call> cal
 	typeStr = QString(call_->type());
 }
 
-void OverviewTableCollumn::addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages, int imgHeight, int imgWidth)
+void OverviewTableRow::addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages, int imgHeight, int imgWidth)
 {
 	auto *idItem = new QTableWidgetItem(idStr);
 	std::vector<QTableWidgetItem*> items{};

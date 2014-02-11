@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 
 #include "stfl_query_widget_lineedit.hpp"
+#include "../util/util.hpp"
+#include "../controller/view_controller.hpp"
 
 namespace cvv { namespace qtutil {
 
@@ -17,20 +19,17 @@ class STFLQueryWidget : public QWidget
 	
 public:
 	
-	/**
-	 * @todo implement
-     */
-	STFLQueryWidget();
+	STFLQueryWidget(util::Reference<controller::ViewController> controller);
 	
-	/**
-	 * @todo implement
-     */
 	void showSuggestions(const QStringList &suggestions);
 
 public slots:
     void returnPressed();
+	
     void textChanged();
 
+	void helpRequested();
+	
 signals:
 	
 	void filterSignal(QString query);
@@ -38,8 +37,9 @@ signals:
 	void userInputUpdate(QString query);
 
     void requestSuggestions(QString query);
-
+	
 private:
+	util::Reference<controller::ViewController> controller;
     STFLQueryWidgetLineEdit *lineEdit;
 };
 

@@ -127,7 +127,6 @@ public:
 	}
 
 	std::vector<ElementGroup<Element> > query(QString query)
-
 	{
 		lastQuery = query;
 		if (!query.startsWith("#"))
@@ -154,18 +153,18 @@ public:
 	}
 
 	/**
-	 * @brief Sets the elements inherited by this engine.
+	 * @brief Adds the new elements to the elements already inherited by this engine.
 	 *
-	 * @param newElements new elements, now inherited by this engine
+	 * @param newElements new elements
 	 */
-	void setElements(const QList<Element> &newElements)
-	{
+	void addElements(QList<Element> newElements)
+	{							
 		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
 		}
 	}
-
+										
 	/**
 	 * @brief Sets the elements inherited by this engine.
 	 *
@@ -309,6 +308,7 @@ private:
 	QMap<QString, std::function<QString(const Element&) >> groupFuncs;
 	QList<Element> executeFilters(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
+		TRACEPOINT;
 		std::vector<std::function<bool(const Element&)>> filters;
 
 		for (const QString &cmdString : cmdStrings)
@@ -332,27 +332,30 @@ private:
 				filters.emplace_back(std::bind(filterCSFuncs[cmd], arguments, _1));
 			}
 		}
+		TRACEPOINT;
 		if(filters.empty())
 		{
+			TRACEPOINT;
 			return elements;
 		}
 		QList<Element> retList;
 		//copy if all filters match
 		using StringFilter = std::function<bool(const Element&)>;
+		TRACEPOINT;
 		auto copy_if = [&](const Element & element)
 		{
 			//find in filters
 			auto find_if = [&](StringFilter filter)
 			{
-				DEBUG(1, !filter(element));
+				TRACEPOINT;
 				return !filter(element);
 			};
 			auto returnval = std::find_if(filters.begin(), filters.end(), find_if) == filters.end();
-			DEBUGF(0, "filtercount: %s, returnval: %s", filters.size(), returnval);
+			TRACEPOINT;
 			return returnval;
 		};
 		std::copy_if(elements.begin(), elements.end(), std::back_inserter(retList), copy_if);
-		DEBUG(0, retList.size());
+		TRACEPOINT;
 		return retList;
 	}
 

@@ -11,10 +11,14 @@ namespace cvv{ namespace view{
 	DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
 		FilterView{parent}
 	{
+		TRACEPOINT;		
+
 		QHBoxLayout* layout = new QHBoxLayout{};
 		qtutil::Accordion *accor = new qtutil::Accordion{};
 		accor->insert("this is an accordion", util::make_unique<QWidget>());
-		accor->setMinimumSize(250,0);
+		accor->setMinimumWidth(250);
+		accor->setMaximumWidth(250);
+		
 		QWidget *imwid = new QWidget{};
 		QHBoxLayout* imageLayout = new QHBoxLayout{};
 		layout->addWidget(accor);
@@ -41,6 +45,8 @@ namespace cvv{ namespace view{
 		layout->addWidget(imwid);
 
 		setLayout(layout);
+
+		TRACEPOINT;
 	}
 	
 }}//namespaces

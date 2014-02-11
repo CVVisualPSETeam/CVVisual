@@ -26,7 +26,7 @@ ViewController::ViewController()
         int zero = 0;
         new QApplication{zero, emptyArray};
     }
-    ovPanel = new gui::OverviewPanel{this};
+    ovPanel = new gui::OverviewPanel{util::makeRef<ViewController>(*this)};
     mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
     windowMap[0] = std::unique_ptr<gui::CallWindow>(mainWindow);
     mainWindow->show();
@@ -98,7 +98,11 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
     removeCallTab(tabId);
     newWindow->addTab(getCallTab(tabId));
     newWindow->show();
-    windowMap[max_window_id] = std::move(newWindow);
+   	if (doesShowExitProgramButton)
+	{
+		newWindow->showExitProgramButton();
+	}
+   	windowMap[max_window_id] = std::move(newWindow);
     removeEmptyWindows();
 }
 
@@ -238,6 +242,7 @@ void ViewController::showExitProgramButton()
     {
         elem.second->showExitProgramButton();
     }
+	doesShowExitProgramButton = true;
 }
 
 bool ViewController::hasCall(size_t id)

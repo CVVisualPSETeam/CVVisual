@@ -5,6 +5,7 @@
 #include <vector>
 #include <stdexcept>
 #include <memory>
+#include <functional>
 //QT
 #include <QWidget>
 #include <QString>
@@ -31,7 +32,6 @@ class RegisterHelper
 public:
 	/**
 	 * @brief Constructor
-	 * @param parent The parent
 	 */
 	RegisterHelper()
 		:comboBox_{new QComboBox{}},
@@ -42,13 +42,16 @@ public:
 		}}
 	{
 		TRACEPOINT;
-		QObject::connect(&(this->signElementRegistered_),
-			SIGNAL(signal(QString)),
-			&(this->slotElementRegistered_),
-			SLOT(slot(QString)));
+		//elem registered
+		QObject::connect(&signElementRegistered_,&SignalQString::signal,
+				 &slotElementRegistered_,&SlotQString::slot);
+		//connect
+		QObject::connect(comboBox_, &QComboBox::currentTextChanged,
+				 &signElementSelected_, &SignalQString::signal);
+		//add current list of elements
 		for(auto& elem: RegisterHelper<Value,Args...>::registeredElements_)
 			{comboBox_->addItem(elem.first);}
-		select(selection());
+
 		TRACEPOINT;
 	}
 
@@ -145,6 +148,8 @@ public:
 	 */
 	//thread_local
 	static SignalQString signElementRegistered_;
+
+	SignalQString signElementSelected_;
 
 protected:
 	/**

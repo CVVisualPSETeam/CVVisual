@@ -16,11 +16,11 @@
 
 namespace cvv { namespace gui {
 
-OverviewPanel::OverviewPanel(controller::ViewController *controller):
+OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> controller):
     controller{controller}
 {
     controller->setDefaultSetting("overview", "imgzoom", "20");
-    queryWidget = new qtutil::STFLQueryWidget();
+    queryWidget = new qtutil::STFLQueryWidget(controller);
     table = new OverviewTable(util::makeRef(*controller), this);
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
@@ -57,7 +57,7 @@ OverviewPanel::OverviewPanel(controller::ViewController *controller):
 
 void OverviewPanel::initEngine(){
     //raw and description filter
-    auto rawFilter = [](const OverviewTableCollumn& elem)
+    auto rawFilter = [](const OverviewTableRow& elem)
     {
         return elem.description();
     };
@@ -65,37 +65,37 @@ void OverviewPanel::initEngine(){
     queryEngine.addStringCmdFunc("description", rawFilter, false);
 
     //file filter
-    queryEngine.addStringCmdFunc("file", [](const OverviewTableCollumn &elem)
+    queryEngine.addStringCmdFunc("file", [](const OverviewTableRow &elem)
     {
         return elem.file();
     });
 
     //function filter
-    queryEngine.addStringCmdFunc("function", [](const OverviewTableCollumn &elem)
+    queryEngine.addStringCmdFunc("function", [](const OverviewTableRow &elem)
     {
         return elem.function();
     });
 
     //line filter
-    queryEngine.addIntegerCmdFunc("line", [](const OverviewTableCollumn &elem)
+    queryEngine.addIntegerCmdFunc("line", [](const OverviewTableRow &elem)
     {
         return elem.line();
     });
 
     //id filter
-    queryEngine.addIntegerCmdFunc("id", [](const OverviewTableCollumn &elem)
+    queryEngine.addIntegerCmdFunc("id", [](const OverviewTableRow &elem)
     {
         return elem.id();
     });
 
     //type filter
-    queryEngine.addStringCmdFunc("type", [](const OverviewTableCollumn &elem)
+    queryEngine.addStringCmdFunc("type", [](const OverviewTableRow &elem)
     {
         return elem.type();
     });
 
     //"number of images" filter
-    queryEngine.addIntegerCmdFunc("image_count", [](const OverviewTableCollumn &elem)
+    queryEngine.addIntegerCmdFunc("image_count", [](const OverviewTableRow &elem)
     {
         return elem.call()->matrixCount();
     });
@@ -103,20 +103,20 @@ void OverviewPanel::initEngine(){
 
 void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
 {
-    OverviewTableCollumn col(newCall);
-    queryEngine.addNewElement(col);
-    table->updateCollumnGroups(queryEngine.reexecuteLastQuery());
+    OverviewTableRow row(newCall);
+    queryEngine.addNewElement(row);
+    table->updateRowGroups(queryEngine.reexecuteLastQuery());
 }
 
 void OverviewPanel::deleteElement(size_t id)
 {
-    queryEngine.removeElements([id](OverviewTableCollumn elem) {return elem.id() == id;});
-    table->updateCollumnGroups(queryEngine.reexecuteLastQuery());
+    queryEngine.removeElements([id](OverviewTableRow elem) {return elem.id() == id;});
+    table->updateRowGroups(queryEngine.reexecuteLastQuery());
 }
 
 void OverviewPanel::filterQuery(QString query)
 {
-    table->updateCollumnGroups(queryEngine.query(query));
+    table->updateRowGroups(queryEngine.query(query));
 }
 
 void OverviewPanel::updateQuery(QString query)

@@ -15,22 +15,21 @@ public:
 	LabelRegister(QWidget* parent = nullptr):QWidget{parent},
 			RegisterHelper<QLabel,QWidget*>{},
 		lay{new QVBoxLayout{}}, lab{new QLabel{}},
-		s{[this](){this->updlabel();}},
+		s{[this](){std::cout<<"selection updated\n";this->updlabel();}},
 		reg{[](QString s){std::cout<<"regevent\t"<<s.toStdString()<<std::endl;}}
 	{
 		std::cout<<__LINE__<<"\tlabel register constr begin\n";
 		lay->addWidget(comboBox_);
 		lay->addWidget(lab);
 		setLayout(lay);
-		connect(comboBox_,
-			 SIGNAL(currentTextChanged(const QString &)),
-			 &s, SLOT(slot())
-		);
+		connect(&signElementSelected_,&cvv::qtutil::SignalQString::signal
+			,&s, &cvv::qtutil::Slot::slot);
 		std::cout<<__LINE__<<"\tlabel register constr connected text changed\n";
 		connect( &signElementRegistered_, SIGNAL(signal(QString)),
 			 &reg, SLOT(slot(QString)));
 		std::cout<<__LINE__<<"\tlabel register constr connected elem registered\n";
 		std::cout<<__LINE__<<"\tlabel register constr end\n";
+		if(this->has(this->selection())){this->updlabel();}
 	}
 
 	QVBoxLayout* lay;

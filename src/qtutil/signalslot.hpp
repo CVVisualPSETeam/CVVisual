@@ -5,6 +5,8 @@
 #include <functional>
 #include <stdexcept>
 
+#include "opencv2/core/core.hpp"
+
 //QT
 #include <QObject>
 #include <QString>
@@ -120,5 +122,22 @@ private:
 	std::function<void(QString)> function_;
 };
 
+
+
+class SignalMatRef: public QObject
+{
+	Q_OBJECT
+public:
+	SignalMatRef(QObject* parent = nullptr):QObject{parent}{TRACEPOINT;}
+
+	~SignalMatRef(){TRACEPOINT;}
+
+	void emitSignal(cv::Mat& mat){TRACEPOINT;emit signal(mat);TRACEPOINT;}
+signals:
+	/**
+	 * @brief The signal emited by emitSignal.
+	 */
+	void signal(cv::Mat& mat);
+};
 }} // end namespaces qtutil, cvv
 #endif //CVVISUAL_SIGNALEMITTER_HPP
