@@ -26,7 +26,7 @@ namespace gui {
  * Allows to switch views and to access the help.
  */
 class FilterCallTab:
-		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::FilterView, std::vector<cv::Mat>, QWidget*>
+		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::FilterView, const std::vector<cv::Mat>&, QWidget*>
 {
 Q_OBJECT
 
@@ -74,12 +74,12 @@ public:
 	 * Adds a FilterView with a name to the thread local map of all FilterViews.
 	 * @param filterViewId the Id or name of the FilterView.
 	 */
-	static void addFilterViewToMap(const QString& filterViewId, std::function<std::unique_ptr<cvv::view::FilterView>(std::vector<cv::Mat>, QWidget*)>);
+	static void addFilterViewToMap(const QString& filterViewId, std::function<std::unique_ptr<cvv::view::FilterView>(const std::vector<cv::Mat>&, QWidget*)>);
 
 private slots:
 
 	/**
-	 * @brief View selection change
+	 * @brief View selection change.
 	 * Called when the index of the view selection changes.
 	 * @param text of the current selection in the view selection.
 	 */
@@ -100,8 +100,9 @@ private:
 	void createGui();
 
 	/**
-	 * @brief sets up View referred to by viewId
+	 * @brief sets up View referred to by viewId.
 	 * @param viewId ID of the view to be set.
+	 * @throw std::out_of_range if no view named viewId was registered.
 	 */
 	void setView(const QString& viewId);
 

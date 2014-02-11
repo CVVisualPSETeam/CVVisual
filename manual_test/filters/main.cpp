@@ -30,11 +30,11 @@ void dilateFile(char* filename) {
 	cvv::debugMorphologyEx(src, dest, CVVISUAL_LOCATION, filename);
 }
 
-std::unique_ptr<cvv::view::FilterView> makeDefaultFilterView(std::vector<cv::Mat> images, QWidget* parent)
+std::unique_ptr<cvv::view::FilterView> makeDefaultFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
 {
 	return cvv::util::make_unique<cvv::view::DefaultFilterView>(images, parent);
 }
-std::unique_ptr<cvv::view::FilterView> makeDualFilterView(std::vector<cv::Mat> images, QWidget* parent)
+std::unique_ptr<cvv::view::FilterView> makeDualFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
 {
 	return cvv::util::make_unique<cvv::view::DualFilterView>(images, parent);
 }

@@ -52,7 +52,7 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	try
 	{
 		setting = vc.getSetting(scope, key);
-	} catch (std::invalid_argument)
+	} catch (std::invalid_argument&)
 	{
 		setting = "DefaultFilterView";
 	}
@@ -93,14 +93,13 @@ size_t FilterCallTab::getId() const
 {
     TRACEPOINT;
 	return filterCall_->getId();
-    TRACEPOINT;
 }
 
 void FilterCallTab::addFilterViewToMap(const QString& filterViewId,
-				       std::function<std::unique_ptr<cvv::view::FilterView>(std::vector<cv::Mat>, QWidget*)> fView)
+				       std::function<std::unique_ptr<cvv::view::FilterView>(const std::vector<cv::Mat>&, QWidget*)> fView)
 {
     TRACEPOINT;
-	cvv::qtutil::RegisterHelper<cvv::view::FilterView, std::vector<cv::Mat>, QWidget*>::registerElement(filterViewId, fView);
+	cvv::qtutil::RegisterHelper<cvv::view::FilterView, const std::vector<cv::Mat>&, QWidget*>::registerElement(filterViewId, fView);
     TRACEPOINT;
 }
 
@@ -140,10 +139,10 @@ void FilterCallTab::setView(const QString &viewId)
 		images.push_back(filterCall_->result());
 		filterView_ = (fct(images, this)).release();
 		vlayout_->addWidget(filterView_);
-    } catch (std::out_of_range&)
+	} catch (std::out_of_range&)
 	{
-        vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
-        throw;
+		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
+		throw;
 	}
     TRACEPOINT;
 }

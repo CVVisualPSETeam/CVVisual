@@ -29,10 +29,10 @@ namespace gui {
  * Allows to switch views and to access the help.
  */
 class MatchCallTab:
-		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::MatchView, cv::InputArray,
-							std::vector<cv::KeyPoint>,
-							cv::InputArray, std::vector<cv::KeyPoint>,
-							std::vector<cv::DMatch>, QWidget*>
+		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::InputArray&,
+							const std::vector<cv::KeyPoint>&,
+							const cv::InputArray&, const std::vector<cv::KeyPoint>&,
+							const std::vector<cv::DMatch>&, QWidget*>
 {
 Q_OBJECT
 
@@ -80,15 +80,15 @@ public:
 	 * Adds a MatchView with a name to the thread local map of all MatchViews.
 	 * @param matchViewId the Id or name of the MatchView.
 	 */
-	static void addMatchViewToMap(const QString& matchViewId, std::function<std::unique_ptr<cvv::view::MatchView>(cv::InputArray,
-														      std::vector<cv::KeyPoint>,
-														      cv::InputArray, std::vector<cv::KeyPoint>,
-														      std::vector<cv::DMatch>, QWidget*)> mView);
+	static void addMatchViewToMap(const QString& matchViewId, std::function<std::unique_ptr<cvv::view::MatchView>(const cv::InputArray&,
+														     const  std::vector<cv::KeyPoint>&,
+														     const  cv::InputArray&, const std::vector<cv::KeyPoint>&,
+														     const std::vector<cv::DMatch>&, QWidget*)> mView);
 
 private slots:
 
 	/**
-	 * @brief View selection change
+	 * @brief View selection change.
 	 * Called when the index of the view selection changes.
 	 * @param text of the current selection in the view selection.
 	 */
@@ -111,6 +111,7 @@ private:
 	/**
 	 * @brief sets up View referred to by viewId
 	 * @param viewId ID of the view to be set.
+	 * @throw std::out_of_range if no view named viewId was registered.
 	 */
 	void setView(const QString& viewId);
 

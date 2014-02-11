@@ -93,20 +93,19 @@ size_t MatchCallTab::getId() const
 {
 	TRACEPOINT;
 	return matchCall_->getId();
-	TRACEPOINT;
 }
 
 void MatchCallTab::addMatchViewToMap(const QString& matchViewId,
-				       std::function<std::unique_ptr<cvv::view::MatchView>(cv::InputArray,
-											   std::vector<cv::KeyPoint>,
-											   cv::InputArray, std::vector<cv::KeyPoint>,
-											   std::vector<cv::DMatch>, QWidget*)> mView)
+				       std::function<std::unique_ptr<cvv::view::MatchView>(const cv::InputArray&,
+											   const std::vector<cv::KeyPoint>&,
+											   const cv::InputArray&, const std::vector<cv::KeyPoint>&,
+											   const std::vector<cv::DMatch>&, QWidget*)> mView)
 {
 	TRACEPOINT;
-	cvv::qtutil::RegisterHelper<cvv::view::MatchView, cv::InputArray,
-			std::vector<cv::KeyPoint>,
-			cv::InputArray, std::vector<cv::KeyPoint>,
-			std::vector<cv::DMatch>, QWidget*>::registerElement(matchViewId, mView);
+	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::InputArray&,
+			const std::vector<cv::KeyPoint>&,
+			const cv::InputArray&, const std::vector<cv::KeyPoint>&,
+			const std::vector<cv::DMatch>&, QWidget*>::registerElement(matchViewId, mView);
 	TRACEPOINT;
 }
 

@@ -27,9 +27,9 @@ int main(/*int argc, char *argv[]*/)
 	cvv::controller::ViewController vc{};
 
 	cvv::gui::FilterCallTab::addFilterViewToMap("DefaultFilterView",
-		[] (std::vector<cv::Mat> images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DefaultFilterView>(images, parent); });
+		[] (const std::vector<cv::Mat>& images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DefaultFilterView>(images, parent); });
 	cvv::gui::FilterCallTab::addFilterViewToMap("DualFilterView",
-		[] (std::vector<cv::Mat> images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DualFilterView>(images, parent); });
+		[] (const std::vector<cv::Mat>& images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DualFilterView>(images, parent); });
 
 	cvv::gui::FilterCallTab v{"TestFTab", fc, vc};
 	cvv::gui::FilterCallTab w{"TestFTab", fc, vc, "DualFilterView"};
