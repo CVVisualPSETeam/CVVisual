@@ -62,7 +62,7 @@ public:
 		message_{new QLabel{}},
 		in_(in),
 		out_(out),
-		signals_{}
+		signals_()
 	{
 		TRACEPOINT;
 		auto lay=util::make_unique<QVBoxLayout>();
@@ -78,21 +78,29 @@ public:
 	 * @brief Checks wheather the check box is checked.
 	 */
 	operator bool()
-		{TRACEPOINT;return checkBox_->isChecked();}
+	{
+		TRACEPOINT;
+		return checkBox_->isChecked();
+	}
 
 	/**
 	 * @brief Returns the image input.
 	 * @return The image input.
 	 */
 	InputArray input()
-		{TRACEPOINT;return in_;}
+	{
+		TRACEPOINT;return in_;
+	}
 
 	/**
 	 * @brief Returns the image output.
 	 * @return The image output.
 	 */
 	OutputArray output()
-		{TRACEPOINT;return out_;}
+	{
+		TRACEPOINT;
+		return out_;
+	}
 
 	/**
 	 * @brief Returns references to the update signals.
@@ -287,7 +295,11 @@ public slots:
 	 * @param individually If true each entry that can apply the filter does so.
 	 */
 	void useFilterIndividually(bool individually = true)
-		{TRACEPOINT;applyFilterIndividually_=individually;TRACEPOINT;}
+	{
+		TRACEPOINT;
+		applyFilterIndividually_=individually;
+		TRACEPOINT;
+	}
 private:
 	/**
 	 * @brief Applies the filter wen some settings where changed.
@@ -320,7 +332,11 @@ private:
 					}
 				}
 			}
-			if(failed){TRACEPOINT; return;}
+			if(failed)
+			{
+				TRACEPOINT;
+				return;
+			}
 			//apply filters
 			for(auto& elem:entries_)
 			{

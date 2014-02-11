@@ -45,11 +45,17 @@ public:
 	 * @return The element corrsponding to handle
 	 */
 	Collapsable& element(Handle handle)
-		{TRACEPOINT; return *elements_.at(handle);}
+	{
+		TRACEPOINT;
+		return *elements_.at(handle);
+	}
 
 
 	const Collapsable& element(Handle handle) const
-		{TRACEPOINT;return *elements_.at(handle);}
+	{
+		TRACEPOINT;
+		return *elements_.at(handle);
+	}
 
 	/**
 	 * @brief Sets the title above the element.
@@ -58,7 +64,11 @@ public:
 	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
 	void setTitle(Handle handle, const QString& title)
-		{TRACEPOINT;element(handle).setTitle(title);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		element(handle).setTitle(title);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Returns the current title above the element.
@@ -67,7 +77,10 @@ public:
 	 * @return The current title above the element.
 	 */
 	QString title(Handle handle) const
-		{TRACEPOINT;return element(handle).title();}
+	{
+		TRACEPOINT;
+		return element(handle).title();
+	}
 
 	/**
 	 * @brief Collapses an element
@@ -80,7 +93,11 @@ public:
 	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
 	void collapse(Handle handle, bool b = true)
-		{TRACEPOINT;element(handle).collapse(b);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		element(handle).collapse(b);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Expands an element
@@ -93,7 +110,11 @@ public:
 	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
 	void expand(Handle handle , bool b = true)
-		{TRACEPOINT;collapse(handle, !b);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		collapse(handle, !b);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Collapses all elements
@@ -114,7 +135,11 @@ public:
 	 * @endparblock
 	 */
 	void expandAll(bool b = true)
-		{TRACEPOINT;collapseAll(!b);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		collapseAll(!b);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Makes the element invisible
@@ -127,7 +152,11 @@ public:
 	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
 	void hide(Handle handle, bool b = true)
-		{TRACEPOINT;element(handle).setVisible(!b);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		element(handle).setVisible(!b);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Makes the element visible
@@ -140,7 +169,11 @@ public:
 	 * @throw std::out_of_range If there is no element corresponding to handle
 	 */
 	void show(Handle handle, bool b = true)
-		{TRACEPOINT;hide(handle,!b);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		hide(handle,!b);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Sets all elements visibility to !b
@@ -161,7 +194,11 @@ public:
 	 * @endparblock
 	 */
 	void showAll(bool b = true)
-		{TRACEPOINT;hideAll(!b);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		hideAll(!b);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Inserts a widget at the given position
@@ -184,7 +221,10 @@ public:
 	 * @return The handle to access the element
 	 */
 	Handle push_back(const QString& title, std::unique_ptr<QWidget> widget , bool isCollapsed = true)
-		{TRACEPOINT;return insert(title, std::move(widget), isCollapsed);}
+	{
+		TRACEPOINT;
+		return insert(title, std::move(widget), isCollapsed);
+	}
 
 	/**
 	 * @brief Adds a widget to the front of the Accordion
@@ -194,7 +234,10 @@ public:
 	 * @return The handle to access the element
 	 */
 	Handle push_front(const QString& title, std::unique_ptr<QWidget> widget , bool isCollapsed = true)
-		{TRACEPOINT;return insert(title, std::move(widget), isCollapsed, 0);}
+	{
+		TRACEPOINT;
+		return insert(title, std::move(widget), isCollapsed, 0);
+	}
 
 
 	/**
@@ -231,7 +274,10 @@ public:
 	 * @return The number of elements
 	 */
 	std::size_t size() const
-		{TRACEPOINT; return elements_.size();}
+	{
+		TRACEPOINT;
+		return elements_.size();
+	}
 
 
 private:

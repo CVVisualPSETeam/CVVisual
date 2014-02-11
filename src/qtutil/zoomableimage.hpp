@@ -18,15 +18,26 @@
 
 namespace cvv{ namespace qtutil{
 namespace structures {
-
+/**
+ * @brief A graphics view with overwritten event handlers.
+ */
 class GraphicsView:public QGraphicsView
 {
 public:
-	GraphicsView():QGraphicsView{}{}
+	/**
+	 * @brief Constructor
+	 */
+	GraphicsView():QGraphicsView{}
+	{
+		TRACEPOINT;
+	}
 protected:
+	/**
+	 * @brief Ignores the wheel event if ctrl is pressed.
+	 * @param event The event.
+	 */
 	virtual void wheelEvent(QWheelEvent * event) override;
 };
-
 }
 
 
@@ -49,14 +60,20 @@ public:
 	 * @return The current image.
 	 */
 	const cv::Mat& mat() const
-		{TRACEPOINT;return mat_;}
+	{
+		TRACEPOINT;
+		return mat_;
+	}
 
 	/**
 	 * @brief Returns the current image.
 	 * @return The current image.
 	 */
 	cv::Mat& mat()
-		{TRACEPOINT;return mat_;}
+	{
+		TRACEPOINT;
+		return mat_;
+	}
 
 	/**
 	 * @brief Returns the visible area of the image.
@@ -69,7 +86,10 @@ public:
 	 * @return The zoom factor.
 	 */
 	qreal zoom() const
-		{TRACEPOINT;return zoom_;}
+	{
+		TRACEPOINT;
+		return zoom_;
+	}
 
 	QPointF mapImagePointToParent(QPointF) const;
 
@@ -84,35 +104,51 @@ public:
 	 * @brief The overridden resize event (from QWidget).
 	 */
 	virtual void resizeEvent(QResizeEvent*) override
-		{TRACEPOINT;emit updateArea(visibleArea(),zoom_);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		emit updateArea(visibleArea(),zoom_);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Returns the width of the image.
 	 * @return The width of the image.
 	 */
 	int imageWidth() const
-		{TRACEPOINT;return mat_.cols;}
+	{
+		TRACEPOINT;
+		return mat_.cols;
+	}
 
 	/**
 	 * @brief Returns the height of the image.
 	 * @return The height of the image.
 	 */
 	int imageHeight() const
-		{TRACEPOINT;return mat_.rows;}
+	{
+		TRACEPOINT;
+		return mat_.rows;
+	}
 
 	/**
 	 * @brief Returns weather pixel values are shown depending on threshold.
 	 * @return Weather pixel values are shown depending on threshold.
 	 */
 	bool autoShowValues() const
-		{TRACEPOINT;return autoShowValues_;}
+	{
+		TRACEPOINT;
+		return autoShowValues_;
+	}
 
 	/**
 	 * @brief Returns the current scroll factor.
 	 * @return The current scroll factor.
 	 */
 	qreal scrollFactor() const
-		{TRACEPOINT; return scrollFactor_;}
+	{
+		TRACEPOINT;
+		return scrollFactor_;
+	}
 signals:
 	/**
 	 * @brief Emmited whenever the image is updated. It passes the conversion result.
@@ -142,14 +178,22 @@ public slots:
 	 * @param enable If true pixel values are shown depending on threshold.
 	 */
 	void setAutoShowValues(bool enable = true)
-		{TRACEPOINT;autoShowValues_=enable;TRACEPOINT;}
+	{
+		TRACEPOINT;
+		autoShowValues_=enable;
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Sets the threshold that determines wheather the pixelvalues are shown.
 	 * @param threshold The threshold.
 	 */
 	void setThreshold(qreal threshold = 60)
-		{TRACEPOINT;threshold_=threshold;TRACEPOINT;}
+	{
+		TRACEPOINT;
+		threshold_=threshold;
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Resizes the image so it is fully visible.
@@ -161,7 +205,11 @@ public slots:
 	 * @return The current scroll factor.
 	 */
 	void updateZoomFactor(qreal factor = 0.005)
-		{TRACEPOINT; scrollFactor_=factor; TRACEPOINT;}
+	{
+		TRACEPOINT;
+		scrollFactor_=factor;
+		TRACEPOINT;
+	}
 
 protected:
 	/**
@@ -175,7 +223,12 @@ private slots:
 	 * @brief Called when the graphic view is scrolled.
 	 */
 	void viewScrolled()
-		{TRACEPOINT;emit updateArea(visibleArea(),zoom_);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		emit updateArea(visibleArea(),zoom_);
+		TRACEPOINT;
+	}
+
 	/**
 	 * @brief Draws the pixel value for all visible pixels.
 	 */

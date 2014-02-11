@@ -126,7 +126,11 @@ void ZoomableImage::updateMat(cv::Mat mat)
 void ZoomableImage::updateZoom(qreal factor)
 {
 	TRACEPOINT;
-	if(factor <= 0) {TRACEPOINT;return;}
+	if(factor <= 0)
+	{
+		TRACEPOINT;
+		return;
+	}
 	qreal newscale=factor/zoom_;
 	zoom_=factor;
 	view_->scale(newscale,newscale);
@@ -146,7 +150,11 @@ void ZoomableImage::drawValues()
 	}
 	values_.clear();
 	//draw new values?
-	if(!(autoShowValues_&&(zoom_>=threshold_))){TRACEPOINT;return;}
+	if(!(autoShowValues_&&(zoom_>=threshold_)))
+	{
+		TRACEPOINT;
+		return;
+	}
 	TRACEPOINT;
 	auto r=visibleArea();
 	for(int i=std::max(0,static_cast<int>(r.left())-1);

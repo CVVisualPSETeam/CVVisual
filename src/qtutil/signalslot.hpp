@@ -27,7 +27,10 @@ public:
 	 * @brief Constructor
 	 * @param parent The parent
 	 */
-	Signal(QObject* parent = nullptr):QObject{parent}{TRACEPOINT;}
+	Signal(QObject* parent = nullptr):QObject{parent}
+	{
+		TRACEPOINT;
+	}
 
 	~Signal(){TRACEPOINT;}
 
@@ -35,7 +38,12 @@ public:
 	 * @brief Emits the signal.
 	 * @param args The arguments
 	 */
-	void emitSignal(){TRACEPOINT;emit signal();TRACEPOINT;}
+	void emitSignal()
+	{
+		TRACEPOINT;
+		emit signal();
+		TRACEPOINT;
+	}
 signals:
 	/**
 	 * @brief The signal emited by emitSignal.
@@ -71,7 +79,12 @@ public slots:
 	/**
 	 * @brief The slot calling function()
 	 */
-	void slot(){TRACEPOINT;function_();TRACEPOINT;}
+	void slot()
+	{
+		TRACEPOINT;
+		function_();
+		TRACEPOINT;
+	}
 private:
 	/**
 	 * @brief The function called by the slot slot()
@@ -90,12 +103,19 @@ class SignalQString: public QObject
 	Q_OBJECT
 public:
 	SignalQString(QObject* parent = nullptr):
-		QObject{parent}{TRACEPOINT;}
+		QObject{parent}
+	{
+		TRACEPOINT;
+	}
 
 	~SignalQString(){TRACEPOINT;}
 
 	void emitSignal(const QString& t)
-		{TRACEPOINT;emit signal(t);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		emit signal(t);
+		TRACEPOINT;
+	}
 signals:
 	void signal( QString t);
 };
@@ -116,7 +136,11 @@ public:
 
 public slots:
 	void slot(QString t)
-		{TRACEPOINT;function_(t);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		function_(t);
+		TRACEPOINT;
+	}
 
 private:
 	std::function<void(QString)> function_;
@@ -128,11 +152,18 @@ class SignalMatRef: public QObject
 {
 	Q_OBJECT
 public:
-	SignalMatRef(QObject* parent = nullptr):QObject{parent}{TRACEPOINT;}
+	SignalMatRef(QObject* parent = nullptr):QObject{parent}
+	{
+		TRACEPOINT;
+	}
 
 	~SignalMatRef(){TRACEPOINT;}
 
-	void emitSignal(cv::Mat& mat){TRACEPOINT;emit signal(mat);TRACEPOINT;}
+	void emitSignal(cv::Mat& mat)
+	{
+		TRACEPOINT;
+		emit signal(mat);TRACEPOINT;
+	}
 signals:
 	/**
 	 * @brief The signal emited by emitSignal.

@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_QTUTIL_HPP
 #define CVVISUAL_QTUTIL_HPP
 
+#include  <limits>
+
 #include <QImage>
 #include <QPixmap>
 #include <QSet>
@@ -35,7 +37,7 @@ enum class ImageConversionResult
  * @return The status of the conversion and the converted mat.
  */
 std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat,
-						bool skipFloatRangeTest=0, unsigned int threads = 1);
+	bool skipFloatRangeTest=0, unsigned int threads = std::numeric_limits<unsigned int>::max());
 
 /**
  * @brief Converts a cv::Mat to a QPixmap.
@@ -46,7 +48,7 @@ std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat,
  * @return The status of the conversion and the converted mat.
  */
 std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat,
-						bool skipFloatRangeTest=0, unsigned int threads = 1);
+	bool skipFloatRangeTest=0, unsigned int threads = std::numeric_limits<unsigned int>::max());
 
 /**
  * @brief Creates a QSet<QString> with the given string as an inherited value.

@@ -58,27 +58,40 @@ public:
 	 * @endparblock
 	*/
 	void expand(bool b = true)
-		{TRACEPOINT;collapse(!b);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		collapse(!b);
+		TRACEPOINT;
+	}
 
 	/**
 	* @brief Sets the title above the widget.
 	*/
 	void setTitle(const QString& title)
-		{TRACEPOINT;button_->setText(title);TRACEPOINT;}
+	{
+		TRACEPOINT;
+		button_->setText(title);
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Returns the current title above the widget.
 	 * @return The current title above the widget
 	 */
 	QString title() const
-		{TRACEPOINT;return button_->text();}
+	{
+		TRACEPOINT;
+		return button_->text();
+	}
 
 	/**
 	 * @brief Returns a reference to the contained widget.
 	 * @return A reference to the contained widget.
 	 */
 	QWidget& widget()
-		{TRACEPOINT;return *widget_;}
+	{
+		TRACEPOINT;return *widget_;
+	}
 
 
 	const QWidget& widget() const
@@ -95,7 +108,11 @@ private slots:
 	 * @brief Toggles the visibility.
 	 */
 	void toggleVisibility()
-		{TRACEPOINT;collapse(widget_->isVisible());TRACEPOINT;}
+	{
+		TRACEPOINT;
+		collapse(widget_->isVisible());
+		TRACEPOINT;
+	}
 
 private:
 	/**

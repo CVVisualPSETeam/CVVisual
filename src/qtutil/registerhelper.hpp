@@ -62,7 +62,10 @@ public:
 	 * @return The current selection from the QComboBox
 	 */
 	QString selection() const
-		{TRACEPOINT;return comboBox_->currentText();}
+	{
+		TRACEPOINT;
+		return comboBox_->currentText();
+	}
 
 	/**
 	 * @brief Checks whether a function was registered with the name.
@@ -70,7 +73,10 @@ public:
 	 * @return true if there is a function. false otherwise
 	 */
 	static bool has(const QString& name)
-		{TRACEPOINT;return registeredElements_.find(name) != registeredElements_.end();}
+	{
+		TRACEPOINT;
+		return registeredElements_.find(name) != registeredElements_.end();
+	}
 
 	/**
 	 * @brief Returns the names of all registered functions.
@@ -100,7 +106,10 @@ public:
 	{
 		TRACEPOINT;
 		if(has(name))
-			{TRACEPOINT;return false;};
+		{
+			TRACEPOINT;
+			return false;
+		};
 
 		registeredElements_.emplace(name, fabric);
 
@@ -131,7 +140,10 @@ public:
 	 * @return The function according to the current selection of the QComboBox.
 	 */
 	std::function<std::unique_ptr<Value>(Args...)> operator()()
-		{TRACEPOINT;return (*this)(selection());}
+	{
+		TRACEPOINT;
+		return (*this)(selection());
+	}
 
 	/**
 	 * @brief Returns the function according to name.
@@ -140,7 +152,10 @@ public:
 	 * @return The function according to name.
 	 */
 	std::function<std::unique_ptr<Value>(Args...)> operator()(const QString& name)
-		{TRACEPOINT;return registeredElements_.at(name);}
+	{
+		TRACEPOINT;
+		return registeredElements_.at(name);
+	}
 
 	/**
 	 *@brief Signal emitted whenever a new function is registered.
@@ -170,19 +185,13 @@ protected:
 	 */
 	SlotQString slotElementRegistered_;
 };
-/**
- * @todo SYNCHRONIZE
- */
+
 template<class Value, class...Args>
-	//thread_local
 	std::map<QString,std::function<std::unique_ptr<Value>(Args...)>>
 		RegisterHelper<Value,Args...>::registeredElements_{};
 
-/**
- * @todo SYNCHRONIZE
- */
+
 template<class Value, class...Args>
-	//thread_local
 	SignalQString RegisterHelper<Value,Args...>::signElementRegistered_{};
 }} // end namespaces qtutil, cvv
 

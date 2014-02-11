@@ -44,7 +44,10 @@ public:
 	/**
 	 * @brief virtual destructor.
 	 */
-	virtual ~FilterFunctionWidget(){TRACEPOINT;}
+	virtual ~FilterFunctionWidget()
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Applys the filter to in and saves the result in out.
