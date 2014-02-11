@@ -20,7 +20,7 @@
 namespace cvv {
 namespace gui {
 
-MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc):
+MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc):
 	matchCall_{fc}, viewController_{vc}
 {
 	TRACEPOINT;
@@ -41,7 +41,7 @@ MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, const cvv::controller
 	TRACEPOINT;
 }
 
-MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc):
+MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc):
 	matchCall_{fc}, viewController_{vc}
 {
 	TRACEPOINT;
@@ -62,7 +62,7 @@ MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& f
 	TRACEPOINT;
 }
 
-MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc, const QString& viewId):
+MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc, const QString& viewId):
 	matchCall_{fc}, viewController_{vc}
 {
 	TRACEPOINT;
@@ -86,6 +86,16 @@ void MatchCallTab::helpButtonClicked() const
 {
 	TRACEPOINT;
 	viewController_->openHelpBrowser(matchViewId_);
+	TRACEPOINT;
+}
+
+void MatchCallTab::setAsDefaultButtonClicked()
+{
+	TRACEPOINT;
+	const QString scope{"default_views"};
+	const QString key{"default_match_view"};
+	const QString value{matchViewId_};
+	viewController_->setDefaultSetting(scope, key, value);
 	TRACEPOINT;
 }
 
@@ -117,6 +127,9 @@ void MatchCallTab::createGui()
 	hlayout_->setAlignment(Qt::AlignTop);
 	hlayout_->addWidget(new QLabel{"View:"});
 	hlayout_->addWidget(comboBox_);
+	setAsDefaultButton_ = new QPushButton{"Set as default", this};
+	hlayout_->addWidget(setAsDefaultButton_);
+	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
 	helpButton_ = new QPushButton{"Help", this};
 	hlayout_->addWidget(helpButton_);
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));

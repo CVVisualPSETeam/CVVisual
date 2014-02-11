@@ -44,7 +44,7 @@ public:
 	 * @param fc the MatchCall containing the information to be visualized.
 	 * @param vc the ViewController this CallTab belongs to.
 	 */
-	MatchCallTab(const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc);
+	MatchCallTab(const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc);
 
 	/**
 	 * @brief Constructor using default view.
@@ -54,7 +54,7 @@ public:
 	 * @param vc the ViewController this CallTab belongs to.
 	 * @attention might be deleted
 	 */
-	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc);
+	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc);
 
 	/**
 	 * @brief Constructor with specific view.
@@ -65,7 +65,7 @@ public:
 	 * @param viewId the ID of the view to be shown inside this CallTab.
 	 * @attention might be deleted
 	 */
-	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc, const QString& viewId);
+	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc, const QString& viewId);
 
 	/**
 	 * @brief get ID
@@ -100,6 +100,12 @@ private slots:
 	 */
 	void helpButtonClicked() const;
 
+	/**
+	 * @brief setAsDefaultButton clicked.
+	 * Called when the setAsDefaultButton,which sets the current view as default, is clicked.
+	 */
+	void setAsDefaultButtonClicked();
+
 private:
 
 	/**
@@ -116,10 +122,11 @@ private:
 	void setView(const QString& viewId);
 
 	util::Reference<const cvv::impl::MatchCall> matchCall_;
-	util::Reference<const cvv::controller::ViewController> viewController_;
+	util::Reference<cvv::controller::ViewController> viewController_;
 	QString matchViewId_;
 	cvv::view::MatchView* matchView_;
 
+	QPushButton* setAsDefaultButton_;
 	QPushButton* helpButton_;
 	QHBoxLayout* hlayout_;
 	QVBoxLayout* vlayout_;
