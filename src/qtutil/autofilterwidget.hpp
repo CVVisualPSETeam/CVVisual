@@ -60,8 +60,8 @@ public:
 		name_{name},
 		checkBox_{new QCheckBox{name}},
 		message_{new QLabel{}},
-		in_{in},
-		out_{out},
+		in_(in),
+		out_(out),
 		signals_{}
 	{
 		TRACEPOINT;
