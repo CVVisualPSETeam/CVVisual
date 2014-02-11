@@ -8,6 +8,7 @@
 #include <QRectF>
 #include <QGraphicsPixmapItem>
 #include <QWheelEvent>
+#include <QApplication>
 
 #include "opencv2/core/core.hpp"
 
@@ -20,8 +21,10 @@ namespace structures {
 
 class GraphicsView:public QGraphicsView
 {
-public:    GraphicsView():QGraphicsView{}{}
-protected: virtual void wheelEvent(QWheelEvent * event) override{event->ignore();}
+public:
+	GraphicsView():QGraphicsView{}{}
+protected:
+	virtual void wheelEvent(QWheelEvent * event) override;
 };
 
 }
@@ -157,7 +160,7 @@ public slots:
 	 * @brief Returns the current scroll factor.
 	 * @return The current scroll factor.
 	 */
-	void updateZoomFactor(qreal factor)
+	void updateZoomFactor(qreal factor = 0.005)
 		{TRACEPOINT; scrollFactor_=factor; TRACEPOINT;}
 
 protected:
@@ -165,10 +168,7 @@ protected:
 	 * @brief The overridden wheel event (from QWidget).
 	 * @param event The event.
 	 */
-	virtual void wheelEvent(QWheelEvent * event) override
-	{TRACEPOINT;
-	updateZoom(scrollFactor_*((event->angleDelta().x())+(event->angleDelta().y()))+zoom_);
-	TRACEPOINT;}
+	virtual void wheelEvent(QWheelEvent * event) override;
 
 private slots:
 	/**

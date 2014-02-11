@@ -87,7 +87,7 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	threshold_{60},
 	autoShowValues_{true},
 	values_{},
-	scrollFactor_{0.01}
+	scrollFactor_{0.005}
 {
 	TRACEPOINT;
 	// qt5 doc : "The view does not take ownership of scene."
@@ -171,6 +171,25 @@ void ZoomableImage::drawValues()
 	TRACEPOINT;
 }
 
+void ZoomableImage::wheelEvent(QWheelEvent * event)
+{
+	TRACEPOINT;
+
+	if(QApplication::keyboardModifiers() & Qt::ControlModifier)
+	{
+		qreal shift=1;
+		if(QApplication::keyboardModifiers() & Qt::ShiftModifier)
+		{
+			shift=10;
+		}
+		updateZoom(shift*scrollFactor_*((event->angleDelta().x())+(event->angleDelta().y()))
+				+zoom_);
+	}else{
+		QWidget::wheelEvent(event);
+	}
+	TRACEPOINT;
+}
+
 
 void ZoomableImage::showFullImage()
 {
@@ -200,4 +219,20 @@ QPointF ZoomableImage::mapImagePointToParent(QPointF point) const
 	TRACEPOINT;
 	return mapToParent(view_->mapToParent(view_->mapFromScene(pixmap_->mapToScene(point))));
 }
+
+namespace structures {
+
+void GraphicsView::wheelEvent(QWheelEvent * event){
+	TRACEPOINT;
+	if(QApplication::keyboardModifiers() & Qt::ControlModifier)
+	{
+		event->ignore();
+	}else{
+		QGraphicsView::wheelEvent(event);
+	}
+	TRACEPOINT;
+}
+
+}
+
 }}
