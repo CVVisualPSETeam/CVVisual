@@ -35,7 +35,7 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *p
 		qtutil::ZoomableImage *zoomIm=(new qtutil::ZoomableImage{});
 		auto info = util::make_unique<qtutil::MatInfoWidget>(image);
 		outputs_.emplace_back();
-		//filterSel->addEntry("image",{{util::makeRef<const cv::Mat>(image)}},{{util::makeRef<cv::Mat>(outputs_.back())}});
+		filterSel->addEntry("image",{{util::makeRef<const cv::Mat>(image)}},{{util::makeRef<cv::Mat>(outputs_.back())}});
 		connect(zoomIm,SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
 			SLOT(updateConvertStatus(ImageConversionResult)));
 
