@@ -49,22 +49,21 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	auto comboBox = util::make_unique<QComboBox>();
 	
 	//register filters at map
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
+	filterMap_.insert(std::make_pair<std::string, std::function<cv::Mat(void)>>
 		("Difference Image - hue",
-		[this](){DualFilterView::applyDiffFilter(DiffFilterType::HUE);}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
+		[this](){return DualFilterView::applyDiffFilter(DiffFilterType::HUE);}));
+	filterMap_.insert(std::make_pair<std::string, std::function<cv::Mat(void)>>
 		("Difference Image - saturation",
-		[this](){DualFilterView::applyDiffFilter(DiffFilterType::SATURATION);}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
+		[this](){return DualFilterView::applyDiffFilter(DiffFilterType::SATURATION);}));
+	filterMap_.insert(std::make_pair<std::string, std::function<cv::Mat(void)>>
 		("Difference Image - value",
-		[this](){DualFilterView::applyDiffFilter(DiffFilterType::VALUE);}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
+		[this](){return DualFilterView::applyDiffFilter(DiffFilterType::VALUE);}));
+	filterMap_.insert(std::make_pair<std::string, std::function<cv::Mat(void)>>
 		("Difference Image - grayscale",
-		[this](){DualFilterView::applyDiffFilter(DiffFilterType::GRAYSCALE);}));
+		[this](){return DualFilterView::applyDiffFilter(DiffFilterType::GRAYSCALE);}));
 	
 	//Register filter names at comboBox
 	comboBox -> addItems(DualFilterView::extractStringListfromMap());
-	printQStringList(DualFilterView::extractStringListfromMap()); //debugging
 	connect(comboBox.get(), SIGNAL(currentIndexChanged(const QString&)), this,
 		SLOT(updateFilterImg(const QString&)));
 	
@@ -75,6 +74,11 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	auto lambda = [this, imageLayout, accor](cv::Mat image, size_t count)
 	{
 		auto info = util::make_unique<qtutil::MatInfoWidget>(image);
+		
+		if (count == 1)
+		{
+			filterImgInfo_ = info.get();
+		}
 
 		connect(&zoomImages_.at(count),
 			SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
@@ -92,7 +96,9 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	lambda(rawImages_.at(0), 0);
 	
 	lambda(rawImages_.at(0), 1);
-	DualFilterView::applyDiffFilter(DiffFilterType::GRAYSCALE);
+	cv::Mat filteredImg = DualFilterView::applyDiffFilter(DiffFilterType::GRAYSCALE);
+	zoomImages_.at(1).updateMat(filteredImg);
+	filterImgInfo_ -> updateMat(filteredImg);
 
 	lambda(rawImages_.at(1), 2);
 
@@ -109,7 +115,7 @@ DualFilterView::DualFilterView(const std::vector<cv::Mat>& images, QWidget* pare
 :DualFilterView(convertToArray(images), parent)
 {}
 
-void DualFilterView::applyDiffFilter(DiffFilterType filterType)
+cv::Mat DualFilterView::applyDiffFilter(DiffFilterType filterType)
 {
 	TRACEPOINT;
 
@@ -121,8 +127,7 @@ void DualFilterView::applyDiffFilter(DiffFilterType filterType)
 
 	if(filterType == DiffFilterType::GRAYSCALE)
 	{
-		zoomImages_.at(1).updateMat(cv::abs(rawImages_.at(0) - rawImages_.at(1)));
-		return;
+		return cv::abs(rawImages_.at(0) - rawImages_.at(1));
 	}
 
 	cv::Mat originalHSV, filteredHSV;
@@ -133,9 +138,9 @@ void DualFilterView::applyDiffFilter(DiffFilterType filterType)
 	std::array<cv::Mat, 3> splitVector;
 	cv::split(diffHSV, splitVector.data());
 
-	zoomImages_.at(1).updateMat(splitVector.at(static_cast<size_t>(filterType)));
-
 	TRACEPOINT;
+	
+	return splitVector.at(static_cast<size_t>(filterType));
 }
 
 std::pair<bool, QString> DualFilterView::checkDiffInput(DiffFilterType filterType) const
@@ -164,6 +169,8 @@ std::pair<bool, QString> DualFilterView::checkDiffInput(DiffFilterType filterTyp
 	return std::make_pair(true, "images can be converted");
 }
 
+
+
 std::array<cv::Mat, 2> DualFilterView::convertToArray(const std::vector<cv::Mat>& matVec) const
 {
 	TRACEPOINT;
@@ -188,7 +195,9 @@ QStringList DualFilterView::extractStringListfromMap() const
 void DualFilterView::updateFilterImg(const QString& selectedString)
 {
 	auto selectedFilter = filterMap_.find(selectedString.toStdString()) -> second;
-	selectedFilter();
+	cv::Mat filteredImg = selectedFilter();
+	zoomImages_.at(1).updateMat(filteredImg);
+	filterImgInfo_ -> updateMat(filteredImg);
 }
 
 }

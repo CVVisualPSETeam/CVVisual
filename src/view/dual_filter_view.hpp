@@ -9,6 +9,7 @@
 #include <QString>
 #include <QWidget>
 //CVV
+#include "../qtutil/matinfowidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
 #include "filter_view.hpp"
 
@@ -43,8 +44,10 @@ Q_OBJECT
 		std::array<cvv::qtutil::ZoomableImage, 3> zoomImages_;
 			//< Original, filtered and resulting image
 		
-		std::unordered_map<std::string, std::function<void(void)>> filterMap_;
+		std::unordered_map<std::string, std::function<cv::Mat(void)>> filterMap_;
 			//< Map of all available filters with their names
+		
+		qtutil::MatInfoWidget* filterImgInfo_;
 		
 		/**
 		* @brief Converts vector of size two to array
@@ -52,9 +55,10 @@ Q_OBJECT
 		std::array<cv::Mat, 2> convertToArray(const std::vector<cv::Mat>&) const;
 		
 		/**
-		* @brief Applys given difference filter and updates filter zoomImage_
+		* @brief Applys given difference filter
+		* @return the filtered Image
 		*/
-		void applyDiffFilter(DiffFilterType filterType);
+		cv::Mat applyDiffFilter(DiffFilterType filterType);
 		
 		/**
 		* @brief Checks whether rawImages_ can be processed by this DiffFilter
@@ -69,7 +73,7 @@ Q_OBJECT
 	private slots:
 		/**
 		* @brief Slot invoked when selected Filter changes. Applies newly selected
-		*		filter.
+		*		filter. Updates middle zoomImage and its MatInfoWidget.
 		*/
 		void updateFilterImg(const QString&);
 
