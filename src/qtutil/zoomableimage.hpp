@@ -261,6 +261,8 @@ private slots:
 	 * @brief Draws the pixel value for all visible pixels.
 	 */
 	void drawValues();
+
+	void rightClick(const QPoint & pos);
 private:
 	/**
 	 * @brief The image to display.

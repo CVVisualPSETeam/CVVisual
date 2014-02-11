@@ -4,6 +4,10 @@
 
 #include <QHBoxLayout>
 #include <QScrollBar>
+#include <QAction>
+#include <QMenu>
+#include <QFileDialog>
+#include <QPixmap>
 
 #include "util.hpp"
 #include "types.hpp"
@@ -108,6 +112,10 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	layout->setMargin(0);
 	setLayout(layout) ;
 	setMat(mat_);
+	//rightklick
+	setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(this,SIGNAL(customContextMenuRequested(const QPoint&)),
+			 this,SLOT(rightClick(QPoint)));
 	TRACEPOINT;
 }
 
@@ -232,6 +240,43 @@ QRectF ZoomableImage::visibleArea() const
 							view_->viewport()->height()}));
 	TRACEPOINT;
 	return result;
+}
+
+
+void ZoomableImage::rightClick(const QPoint & pos)
+{
+	TRACEPOINT;
+	QPoint p=mapToGlobal(pos);
+	QMenu menu;
+
+	menu.addAction("Save orginal image");
+	menu.addAction("Save visible image");
+
+	QAction* item = menu.exec(p);
+	if (item)
+	{
+		TRACEPOINT;
+		QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+			"/home/jana/untitled.png",
+			tr("BMP (*.bmp);;GIF (*.gif);;JPG (*.jpg);;PNG (*.png);;"
+				"PBM (*.pbm);;PGM (*.pgm);;PPM (*.ppm);;XBM (*.xbm);;"
+				"XPM (*.xpm)"));
+		if(fileName=="")
+		{
+			TRACEPOINT;
+			return;
+		}
+		QPixmap pmap;
+		if((item->text())=="Save orginal image")
+		{
+			pmap=convertMatToQPixmap(mat_).second;
+		}else{
+			pmap=QPixmap::grabWidget (view_->viewport());
+		}
+
+		pmap.save(fileName,0,100);
+	}
+	TRACEPOINT;
 }
 
 QPointF ZoomableImage::mapImagePointToParent(QPointF point) const
