@@ -148,5 +148,6 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_zoomableimage manual_test/zoomableimage/main.cpp)
 	target_link_libraries(test_manual_zoomableimage cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
 
-	
+	add_executable(test_manual_imageview manual_test/imageview/main.cpp)
+	target_link_libraries(test_manual_imageview cvvisual Qt5Core Qt5Widgets opencv_core)
 endif()
