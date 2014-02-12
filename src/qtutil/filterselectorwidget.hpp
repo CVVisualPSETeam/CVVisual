@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QString>
 #include <QComboBox>
+#include <QPushButton>
 
 //OCV
 #include "opencv2/core/core.hpp"
@@ -59,6 +60,13 @@ public:
 		QObject::connect(&(this->signElementSelected_),SIGNAL(signal(QString)),
 				 &(this->slotFilterSelected_), SLOT(slot()));
 		this->setLayout((this->layout_));
+		//add an apply button
+		auto button=util::make_unique<QPushButton>("apply");
+		//connect it
+		QObject::connect(button.get(),SIGNAL(clicked()),
+					&(this->signFilterSettingsChanged_),SIGNAL(signal()));
+
+		this->layout_->addWidget(button.release());
 		//update for initial selection (if it is valid)
 		if(this->has(this->selection())){updatedSelectedFilter();}
 		TRACEPOINT;
@@ -92,7 +100,7 @@ public:
 	virtual std::pair<bool, QString> checkInput(InputArray in) const override
 	{
 		TRACEPOINT;
-		if(currentFilter_)
+		if(!currentFilter_)
 			{return {false, "No entry selected."};}
 		TRACEPOINT;
 		return currentFilter_->checkInput(in);

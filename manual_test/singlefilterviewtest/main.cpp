@@ -5,18 +5,24 @@
 
 #include "../../src/view/singlefilterview.hpp"
 
+#include "../../src/qtutil/sobelfilterwidget.hpp"
+#include "../../src/qtutil/filterselectorwidget.hpp"
+
 int main(int argc, char *argv[])
 {
+	cvv::dbg::setPriority(200);
+
 	QApplication a(argc, argv);
 	//TODO Filter<1,1> einfügen
-	
+	cvv::qtutil::registerSobel();
+
 	std::vector<cv::Mat> imagelist;
-	
-	cv::Mat whitemat = cv::Mat{100,100,CV_8U};
-	cv::Mat blackmat = cv::Mat{100,100,CV_8U};
-	cv::Mat colormat1 =cv::Mat{100,100,CV_8U};
-	cv::Mat colormat2 =cv::Mat{100,100,CV_8U};
-	cv::Mat colormat3 =cv::Mat{100,100,CV_8U};
+
+	cv::Mat whitemat = cv::Mat{100,100,CV_8UC3};
+	cv::Mat blackmat = cv::Mat{100,100,CV_8UC3};
+	cv::Mat colormat1 =cv::Mat{100,100,CV_8UC3};
+	cv::Mat colormat2 =cv::Mat{100,100,CV_8UC3};
+	cv::Mat colormat3 =cv::Mat{100,100,CV_8UC3};
 
 	whitemat = cv::Scalar(255,255,255);
 	blackmat = cv::Scalar(0,0,0);
@@ -29,7 +35,7 @@ int main(int argc, char *argv[])
 	imagelist.push_back(colormat1);
 	imagelist.push_back(colormat2);
 	imagelist.push_back(colormat3);
-	
+
 	cvv::view::SingleFilterView dfv{imagelist,nullptr};
 
 	dfv.show();

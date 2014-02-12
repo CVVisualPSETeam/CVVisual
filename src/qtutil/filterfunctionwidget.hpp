@@ -63,8 +63,8 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(InputArray in) const
-												= 0;
+	virtual std::pair<bool, QString> checkInput(InputArray in) const = 0;
+
 	/**
 	 * @brief Signal to emit when user input leads to different parameters.
 	 */

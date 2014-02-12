@@ -128,7 +128,7 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core opencv_core)
 	
 	add_executable(test_manual_singlefilterview manual_test/singlefilterviewtest/main.cpp)
-	target_link_libraries(test_manual_singlefilterview cvvisual Qt5Core opencv_core)
+	target_link_libraries(test_manual_singlefilterview cvvisual Qt5Core opencv_core opencv_imgproc)
 
 	add_executable(test_manual_matchscenetest manual_test/matchscenetest/main.cpp)
 	target_link_libraries(test_manual_matchscenetest cvvisual Qt5Core opencv_highgui opencv_core)
