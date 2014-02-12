@@ -4,10 +4,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "dilate.hpp"
-#include "erode.hpp"
-#include "sobel.hpp"
-#include "morphology_ex.hpp"
+#include "filter.hpp"
 #include "final_show.hpp"
 
 #include "../../src/gui/filter_call_tab.hpp"
@@ -21,13 +18,13 @@ void dilateFile(char* filename) {
 	cv::Mat dest;
 	
 	cv::dilate(src, dest, elem);
-	cvv::debugDilate(src, dest, CVVISUAL_LOCATION, filename);
+	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
 	cv::erode(src, dest, elem);
-	cvv::debugErode(src, dest, CVVISUAL_LOCATION, filename);
+	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
 	cv::Sobel(src, dest, -1, 1, 1);
-	cvv::debugSobel(src, dest, CVVISUAL_LOCATION, filename);
+	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
 	cv::morphologyEx(src, dest,cv::MORPH_GRADIENT, elem );
-	cvv::debugMorphologyEx(src, dest, CVVISUAL_LOCATION, filename);
+	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
 }
 
 std::unique_ptr<cvv::view::FilterView> makeDefaultFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
