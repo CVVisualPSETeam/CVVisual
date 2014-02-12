@@ -15,10 +15,10 @@ namespace cvv{ namespace view{
 	LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,std::vector<cv::KeyPoint> rightKeyPoints,std::vector<cv::DMatch> matches,cv::Mat leftIm,cv::Mat rightIm,QWidget *parent):
 		MatchView{parent}
 	{
-		QHBoxLayout *layout		= new QHBoxLayout{};
-		qtutil::Accordion *accor	= new qtutil::Accordion{};
-		qtutil::MatchScene *matchscene	= new qtutil::MatchScene{leftIm,rightIm};
-		auto matchpen			= util::make_unique<qtutil::SingleColorPen>();
+		QHBoxLayout *layout            = new QHBoxLayout{this};
+		qtutil::Accordion *accor       = new qtutil::Accordion{this};
+		qtutil::MatchScene *matchscene = new qtutil::MatchScene{leftIm,rightIm, this};
+		auto matchpen                  = util::make_unique<qtutil::SingleColorPen>();
 
 		connect(matchpen.get(),SIGNAL(settingsChanged(const MatchPen&)),matchscene,SIGNAL(updatePen(const MatchPen&)));
 	
