@@ -38,9 +38,9 @@ int main(int argc, char** argv)
 		match.emplace_back(i,i,1.0f);
 	}
 
-	cvv::view::LineMatchView *matchscene = new cvv::view::LineMatchView{key1, key2,match,src,train};
-	matchscene->setWindowTitle("LineMatchView Test");
-	matchscene->show();
+	cvv::view::LineMatchView matchscene{key1, key2,match,src,train};
+	matchscene.setWindowTitle("LineMatchView Test");
+	matchscene.show();
 	return a.exec();
 	
 }
