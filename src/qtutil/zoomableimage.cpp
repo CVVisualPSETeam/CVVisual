@@ -216,7 +216,7 @@ void ZoomableImage::wheelEvent(QWheelEvent * event)
 void ZoomableImage::setArea(QRectF rect,qreal zoom)
 {
 	setZoom(zoom);
-	view_->centerOn(rect.bottomRight()-rect.topLeft());
+	view_->centerOn(rect.topLeft()+(rect.bottomRight()-rect.topLeft())/2);
 }
 
 void ZoomableImage::showFullImage()
