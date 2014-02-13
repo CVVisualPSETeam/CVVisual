@@ -47,10 +47,7 @@ std::unique_ptr<cvv::gui::FilterCallTab> makeFilterCallTab(
 }
 
 std::map<QString, TabFactory> ViewController::callTabType {
-    {"dilate", makeFilterCallTab},
-    {"erode", makeFilterCallTab},
-    {"morphologyEx", makeFilterCallTab},
-    {"sobel", makeFilterCallTab},
+    {"filter", makeFilterCallTab},
 };
 
 void ViewController::addCall(util::Reference<impl::Call> data)
