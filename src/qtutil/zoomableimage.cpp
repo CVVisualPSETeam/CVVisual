@@ -143,8 +143,8 @@ void ZoomableImage::setZoom(qreal factor)
 	qreal newscale=factor/zoom_;
 	zoom_=factor;
 	view_->scale(newscale,newscale);
-	// will be called in resize event
-	// emit updateArea(visibleArea(),zoom_);
+
+	emit updateArea(visibleArea(),zoom_);
 	TRACEPOINT;
 }
 

@@ -17,6 +17,7 @@
 #include "signalslot.hpp"
 #include "../util/util.hpp"
 #include "../dbg/dbg.hpp"
+#include "signalslot.hpp"
 
 namespace cvv { namespace qtutil{
 
@@ -200,7 +201,7 @@ public:
 template< std::size_t In, std::size_t Out>
 class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 {
-public:
+	public:
 	/**
 	 * The input type for a filter.
 	 */
@@ -216,6 +217,8 @@ public:
 	 */
 	AutoFilterWidget(QWidget* parent = nullptr):
 		FilterSelectorWidget<In,Out>{parent},
+		slotEnableUserSelection_{[this](bool b){this->enableUserSelection(b);}},
+		slotUseFilterIndividually_{[this](bool b){this->useFilterIndividually(b);}},
 		entryLayout_{new QVBoxLayout},
 		applyFilterIndividually_{false},
 		entries_{},
@@ -274,7 +277,6 @@ public:
 		TRACEPOINT;
 	}
 
-public slots:
 	/**
 	 * @brief Enabels / disables the user to select entries to filter per combo boxes.
 	 * @param enabled If true it will be enabled.
@@ -300,6 +302,14 @@ public slots:
 		applyFilterIndividually_=individually;
 		TRACEPOINT;
 	}
+	/**
+	* @brief calls enableUserSelection
+	*/
+	SlotBool slotEnableUserSelection_;
+	/**
+	 * @brief calls seFilterIndividually.
+	 */
+	SlotBool slotUseFilterIndividually_;
 private:
 	/**
 	 * @brief Applies the filter wen some settings where changed.
@@ -309,10 +319,15 @@ private:
 		TRACEPOINT;
 		auto start=std::chrono::high_resolution_clock::now();
 		//activate again?
-		if(start<earliestActivationTime_){return;}
+		if(start<earliestActivationTime_)
+		{
+			TRACEPOINT;
+			return;
+		}
 		//apply filter
 		if(!applyFilterIndividually_)
 		{
+			//only apply all filters at once
 			TRACEPOINT;
 			//check wheather all filters can be applied
 			std::size_t failed = 0;
@@ -325,18 +340,25 @@ private:
 
 					if(!check.first)
 					{
+						//elem cant apply filter
 						failed++;
 						elem.get().setMessage(check.second);
 					}else{
+						//elem can apply filter. delete message
 						elem.get().setMessage("");
 					}
+				}else{
+					//delete message
+					elem.get().setMessage("");
 				}
 			}
 			if(failed)
 			{
+				//one filter failed
 				TRACEPOINT;
 				return;
 			}
+			//all can apply filter
 			//apply filters
 			for(auto& elem:entries_)
 			{
@@ -347,18 +369,18 @@ private:
 					elem.get().emitAll();
 				};
 			}
-		} else{
+		} else{ //applyFilterIndividually_==true
 			TRACEPOINT;
 			//filters can be applied individually
 			for(auto& elem:entries_)
 			{
-
 				//activated?
 				if(elem.get())
 				{
 					auto check=this->checkInput(elem.get().input());
 					if(!check.first)
 					{
+						//set message
 						elem.get().setMessage(check.second);
 					}else{
 						//apply filter+set message
@@ -367,6 +389,9 @@ private:
 								  elem.get().output());
 						elem.get().emitAll();
 					}
+				}else{
+					//delete message
+					elem.get().setMessage("");
 				}
 			}
 		}

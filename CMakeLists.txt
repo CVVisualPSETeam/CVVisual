@@ -154,6 +154,6 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_imageview manual_test/imageview/main.cpp)
 	target_link_libraries(test_manual_imageview cvvisual Qt5Core Qt5Widgets opencv_core)
 
-	add_executable(test_manual_matchcalltab manual_test/match_call_tab/main.cpp)
-	target_link_libraries(test_manual_matchcalltab cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core)
+	add_executable(test_manual_autofilterwidget manual_test/autofilterwidget/main.cpp)
+	target_link_libraries(test_manual_autofilterwidget cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
 endif()

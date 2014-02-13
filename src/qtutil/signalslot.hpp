@@ -170,5 +170,31 @@ signals:
 	 */
 	void signal(cv::Mat& mat);
 };
+
+class SlotBool: public QObject
+{
+	Q_OBJECT
+public:
+	SlotBool(const std::function<void(bool)>& f, QObject* parent = nullptr):
+		QObject{parent}, function_{f}
+	{
+		TRACEPOINT;
+		if(!f) throw std::invalid_argument{"invalide function"};
+		TRACEPOINT;
+	}
+
+	~SlotBool(){TRACEPOINT;}
+
+public slots:
+	void slot(bool t)
+	{
+		TRACEPOINT;
+		function_(t);
+		TRACEPOINT;
+	}
+
+private:
+	std::function<void(bool)> function_;
+};
 }} // end namespaces qtutil, cvv
 #endif //CVVISUAL_SIGNALEMITTER_HPP

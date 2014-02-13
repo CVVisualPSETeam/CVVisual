@@ -182,6 +182,17 @@ public slots:
 	 * @brief Updates the image to display.
 	 * @param mat The new image to display.
 	 */
+	void setMatR(cv::Mat& mat)
+	{
+		TRACEPOINT;
+		setMat(mat);
+		TRACEPOINT;
+	}
+
+	/**
+	 * @brief Updates the image to display.
+	 * @param mat The new image to display.
+	 */
 	void setMat(cv::Mat mat);
 
 	/**
