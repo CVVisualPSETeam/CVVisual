@@ -13,7 +13,9 @@ CVVMatch::CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint* right_key,const float& mat
 	right_key_{right_key},
 	matchValue_{matchValue},
 	pen_{pen},
-	show_{true}
+	show_{true},
+	left_key_visible_{true},
+	right_key_visible_{true}
 {
 	TRACEPOINT;
 	connect(left_key_,SIGNAL(updatePoint(bool)),this,SLOT(updateLeftKey(bool)));

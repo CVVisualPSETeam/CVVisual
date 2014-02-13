@@ -30,6 +30,7 @@ void CVVKeyPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 void CVVKeyPoint::setZoomableImage(ZoomableImage *image)
 {
 	image_=image;
+	connect(image,SIGNAL(updateArea(QRectF,qreal)),this,SLOT(updateImageSet(const QRectF&,const qreal& )));
 }
 
 QRectF CVVKeyPoint::boundingRect() const

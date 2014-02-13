@@ -6,6 +6,7 @@
 #include "../qtutil/cvvkeypoint.hpp"
 #include "../qtutil/cvvmatch.hpp"
 #include "../qtutil/singlecolorpen.hpp"
+#include "../qtutil/singlecolorkeypointpen.hpp"
 #include "../util/util.hpp"
 
 #include "linematchview.hpp"
@@ -19,15 +20,14 @@ namespace cvv{ namespace view{
 		qtutil::Accordion *accor	= new qtutil::Accordion{this};
 		qtutil::MatchScene *matchscene	= new qtutil::MatchScene{leftIm,rightIm,this};
 		auto matchpen			= util::make_unique<qtutil::SingleColorPen>(this);
+		auto keypen			= util::make_unique<qtutil::SingleColorKeyPen>(this);
 
-		connect(matchpen.get(),SIGNAL(settingsChanged(const MatchPen&)),matchscene,SIGNAL(updatePen(const MatchPen&)));
 	
 		layout->addWidget(accor);
 		layout->addWidget(matchscene);
 
 		accor->setMinimumWidth(250);
 		accor->setMaximumWidth(250);
-		accor->insert("Select a Color",std::move(matchpen));
 
 		std::vector<qtutil::CVVKeyPoint*> leftKeys;
 		std::vector<qtutil::CVVKeyPoint*> rightKeys;
@@ -36,19 +36,25 @@ namespace cvv{ namespace view{
 		{
 			qtutil::CVVKeyPoint *key = new qtutil::CVVKeyPoint{keypoint};
 			leftKeys.push_back(key);
+			connect(keypen.get(),SIGNAL(settingsChanged(const KeyPointPen&)),key,SLOT(updatePen(const KeyPointPen&)));
 			matchscene->addLeftKeypoint(key);
 		}
 		for(auto& keypoint:rightKeyPoints)
 		{
 			qtutil::CVVKeyPoint *key = new qtutil::CVVKeyPoint{keypoint};
+			connect(keypen.get(),SIGNAL(settingsChanged(const KeyPointPen&)),key,SLOT(updatePen(const KeyPointPen&)));
 			rightKeys.push_back(key);
 			matchscene->addRightKeyPoint(key);
 		}
 		for(auto& match:matches)
 		{
 			qtutil::CVVMatch *cvmatch = new qtutil::CVVMatch(leftKeys.at(match.queryIdx),rightKeys.at(match.trainIdx),match.distance);
+			connect(matchpen.get(),SIGNAL(settingsChanged(const MatchPen&)),cvmatch,SLOT(updatePen(const MatchPen&)));
 			matchscene->addMatch(cvmatch);
 		}
+
+		accor->insert("Match Color",std::move(matchpen));
+		accor->insert("KeyPoint Color",std::move(keypen));
 		setLayout(layout);
 	}
 }}
