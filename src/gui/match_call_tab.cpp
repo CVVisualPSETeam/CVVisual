@@ -33,7 +33,7 @@ MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, cvv::controller::View
 		setting = vc.getSetting(scope, key);
 	} catch (std::invalid_argument)
 	{
-		setting = "DefaultMatchView";
+		setting = "LineMatchView";
 	}
 	matchViewId_ = setting;
 
@@ -54,7 +54,7 @@ MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& f
 		setting = vc.getSetting(scope, key);
 	} catch (std::invalid_argument)
 	{
-		setting = "DefaultMatchView";
+		setting = "LineMatchView";
 	}
 	matchViewId_ = setting;
 
