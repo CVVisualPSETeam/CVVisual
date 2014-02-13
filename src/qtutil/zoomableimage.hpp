@@ -161,9 +161,10 @@ public:
 	}
 signals:
 	/**
-	 * @brief Emmited whenever the image is updated. It passes the conversion result.
+	 * @brief Emmited whenever the image is updated. It passes the conversion result
+	 * and the image.
 	 */
-	void updateConversionResult(ImageConversionResult);
+	void updateConversionResult(ImageConversionResult,const cv::Mat&);
 
 	/**
 	 *@brief Emitted whenever the visible area changes. Passes the visible area and zoom factor.
@@ -177,17 +178,6 @@ public slots:
 	 * @param zoom The zoom.
 	 */
 	void setArea(QRectF rect,qreal zoom);
-
-	/**
-	 * @brief Updates the image to display.
-	 * @param mat The new image to display.
-	 */
-	void setMatR(cv::Mat& mat)
-	{
-		TRACEPOINT;
-		setMat(mat);
-		TRACEPOINT;
-	}
 
 	/**
 	 * @brief Updates the image to display.

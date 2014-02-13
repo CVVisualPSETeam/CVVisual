@@ -24,7 +24,7 @@ public:
 
 public slots:
 	void updateMat(cv::Mat mat);
-	void updateConvertStatus(ImageConversionResult result);
+	void updateConvertStatus(ImageConversionResult result,const cv::Mat&);
 	void setZoom(QRectF,qreal);
 
 private:

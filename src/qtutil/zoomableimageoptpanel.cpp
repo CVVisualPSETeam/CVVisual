@@ -32,22 +32,21 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage& zoomIm,QWidget *parent):
 	basicLayout->addWidget(labelSize);
 	basicLayout->addWidget(labelDepth);
 	basicLayout->addWidget(buttonFullImage);
+	connect(&zoomIm,SIGNAL(updateConversionResult(ImageConversionResult,const cv::Mat&)),this,SLOT(updateConvertStatus(ImageConversionResult,const cv::Mat&)));
+
+	connect(&zoomIm,SIGNAL(updateArea(QRectF,qreal)),this,SLOT(setZoom(QRectF,qreal)));
+	
+	connect(zoomSpin,SIGNAL(valueChanged(double)),&zoomIm,SLOT(setZoom(qreal)));
+
+	connect(buttonFullImage,SIGNAL(clicked()),&zoomIm,SLOT(showFullImage()));
 
 	setLayout(basicLayout);
 
-	/*connect(&zoomIm,SIGNAL(updateConversionResult(ImageConversionResult)),this,
-		SLOT(updateConvertStatus(ImageConversionResult)));
-
-	connect(zoomSpin,SIGNAL(valueChanged(double)),&zoomIm,SIGNAL(setZoom(qreal)));
-	connect(&zoomIm,SIGNAL(updateArea(QRectF,qreal)),zoomSpin,SLOT(setValue(double)));
-
-	connect(buttonFullImage,SIGNAL(clicked()),&zoomIm,SLOT(showFullImage()));
-	*/
 	updateMat(zoomIm.mat());
 	TRACEPOINT;
 }
 
-void ZoomableOptPanel::updateConvertStatus(ImageConversionResult result){
+void ZoomableOptPanel::updateConvertStatus(ImageConversionResult result,const cv::Mat& mat){
 	TRACEPOINT;
 	QString qs{"Convert Status: "};
 	switch(result)
@@ -77,6 +76,7 @@ void ZoomableOptPanel::updateConvertStatus(ImageConversionResult result){
 			labelConvert->setText(qs.append("Unknown result from convert function"));
 			break;
 	}
+	updateMat(mat);
 	TRACEPOINT;
 }
 
@@ -119,9 +119,8 @@ void ZoomableOptPanel::updateMat(cv::Mat mat){
 	TRACEPOINT;
 }
 
-void ZoomableOptPanel::setZoom(QRectF visibleArea,qreal zoomfac)
+void ZoomableOptPanel::setZoom(QRectF,qreal zoomfac)
 {
 	zoomSpin->setValue(zoomfac);
-	(void) visibleArea;
 }
 }}

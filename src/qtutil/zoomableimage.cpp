@@ -124,7 +124,7 @@ void ZoomableImage::setMat(cv::Mat mat)
 	TRACEPOINT;
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
-	emit updateConversionResult(result.first);
+	emit updateConversionResult(result.first,mat);
 	scene_->clear();
 	pixmap_ = scene_->addPixmap(result.second);
 
@@ -143,8 +143,8 @@ void ZoomableImage::setZoom(qreal factor)
 	qreal newscale=factor/zoom_;
 	zoom_=factor;
 	view_->scale(newscale,newscale);
-
-	emit updateArea(visibleArea(),zoom_);
+	// will be called in resize event
+	// emit updateArea(visibleArea(),zoom_);
 	TRACEPOINT;
 }
 
