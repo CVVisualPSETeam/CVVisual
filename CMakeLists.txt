@@ -109,6 +109,9 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_filters manual_test/filters/main.cpp)
 	target_link_libraries(test_manual_filters cvvisual opencv_highgui)
 	
+	add_executable(test_manual_match manual_test/match/main.cpp)
+	target_link_libraries(test_manual_match cvvisual opencv_core opencv_highgui)
+	
 	add_executable(test_manual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
 	target_link_libraries(test_manual_accordion cvvisual Qt5Core Qt5Widgets)
 

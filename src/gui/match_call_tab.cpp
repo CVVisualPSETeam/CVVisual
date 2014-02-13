@@ -105,16 +105,12 @@ size_t MatchCallTab::getId() const
 	return matchCall_->getId();
 }
 
-void MatchCallTab::addMatchViewToMap(const QString& matchViewId,
-				       std::function<std::unique_ptr<cvv::view::MatchView>(const cv::InputArray&,
-											   const std::vector<cv::KeyPoint>&,
-											   const cv::InputArray&, const std::vector<cv::KeyPoint>&,
-											   const std::vector<cv::DMatch>&, QWidget*)> mView)
+void MatchCallTab::addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView)
 {
 	TRACEPOINT;
-	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::InputArray&,
+	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::Mat&,
 			const std::vector<cv::KeyPoint>&,
-			const cv::InputArray&, const std::vector<cv::KeyPoint>&,
+			const cv::Mat&, const std::vector<cv::KeyPoint>&,
 			const std::vector<cv::DMatch>&, QWidget*>::registerElement(matchViewId, mView);
 	TRACEPOINT;
 }
@@ -153,9 +149,10 @@ void MatchCallTab::setView(const QString &viewId)
 	try
 	{
 		auto fct = registeredElements_.at(viewId);
-		matchView_ = (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(), matchCall_->keyPoints2(), matchCall_->matches(), this)).release();
+		matchView_ = (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(),
+				matchCall_->keyPoints2(), matchCall_->matches(), this)).release();
 		vlayout_->addWidget(matchView_);
-	} catch (std::out_of_range)
+	} catch (std::out_of_range&)
 	{
 		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
 		throw;

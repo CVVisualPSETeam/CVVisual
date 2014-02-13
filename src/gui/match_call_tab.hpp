@@ -29,14 +29,19 @@ namespace gui {
  * Allows to switch views and to access the help.
  */
 class MatchCallTab:
-		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::InputArray&,
+		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::Mat&,
 							const std::vector<cv::KeyPoint>&,
-							const cv::InputArray&, const std::vector<cv::KeyPoint>&,
+							const cv::Mat&, const std::vector<cv::KeyPoint>&,
 							const std::vector<cv::DMatch>&, QWidget*>
 {
 Q_OBJECT
 
 public:
+	
+	using MatchViewBuilder = std::function<std::unique_ptr<cvv::view::MatchView>(
+			const cv::Mat&, const std::vector<cv::KeyPoint>&,
+			const cv::Mat&, const std::vector<cv::KeyPoint>&,
+			const std::vector<cv::DMatch>&, QWidget*)>;
 
 	/**
 	 * @brief Short constructor using name from Call and default view.
@@ -80,10 +85,7 @@ public:
 	 * Adds a MatchView with a name to the thread local map of all MatchViews.
 	 * @param matchViewId the Id or name of the MatchView.
 	 */
-	static void addMatchViewToMap(const QString& matchViewId, std::function<std::unique_ptr<cvv::view::MatchView>(const cv::InputArray&,
-														     const  std::vector<cv::KeyPoint>&,
-														     const  cv::InputArray&, const std::vector<cv::KeyPoint>&,
-														     const std::vector<cv::DMatch>&, QWidget*)> mView);
+	static void addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView);
 
 private slots:
 

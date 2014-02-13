@@ -12,6 +12,7 @@
 #include "../gui/overview_panel.hpp"
 #include "../gui/main_call_window.hpp"
 #include "../gui/filter_call_tab.hpp"
+#include "../gui/match_call_tab.hpp"
 #include "../impl/filter_call.hpp"
 #include "../impl/data_controller.hpp"
 
@@ -40,14 +41,22 @@ void ViewController::addCallType(const QString typeName,
 }
 
 std::unique_ptr<cvv::gui::FilterCallTab> makeFilterCallTab(
-        cvv::util::Reference<cvv::impl::Call> call,
-        cvv::controller::ViewController& vc)
+		cvv::util::Reference<cvv::impl::Call> call,
+		cvv::controller::ViewController& vc)
 {
-    return cvv::util::make_unique<cvv::gui::FilterCallTab>(*call.castTo<cvv::impl::FilterCall>(), vc);
+	return cvv::util::make_unique<cvv::gui::FilterCallTab>(*call.castTo<cvv::impl::FilterCall>(), vc);
+}
+
+std::unique_ptr<cvv::gui::MatchCallTab> makeMatchCallTab(
+		cvv::util::Reference<cvv::impl::Call> call,
+		cvv::controller::ViewController& vc)
+{
+	return cvv::util::make_unique<cvv::gui::MatchCallTab>(*call.castTo<cvv::impl::MatchCall>(), vc);
 }
 
 std::map<QString, TabFactory> ViewController::callTabType {
-    {"filter", makeFilterCallTab},
+	{"filter", makeFilterCallTab},
+	{"match", makeMatchCallTab}
 };
 
 void ViewController::addCall(util::Reference<impl::Call> data)
@@ -202,7 +211,6 @@ gui::CallTab* ViewController::getCallTab(size_t tabId)
         if (callTabType.count(call->type()) == 0)
         {
             throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
-            exit(1);
         }
         callTabMap[tabId] = callTabType[call->type()](util::makeRef(*call), *this);
     }
