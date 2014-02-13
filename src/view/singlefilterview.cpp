@@ -17,10 +17,10 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *p
 	FilterView{parent}
 {
 	TRACEPOINT;
-	QWidget 		*imwid		= new QWidget{this};
-	qtutil::Accordion 	*accor 		= new qtutil::Accordion{this};
-	QHBoxLayout		*layout 	= new QHBoxLayout{this};
-	QHBoxLayout		*imageLayout 	= new QHBoxLayout{this};
+	auto imwid		= util::make_unique<QWidget>();
+	auto accor 		= util::make_unique<qtutil::Accordion>();
+	auto layout 		= util::make_unique<QHBoxLayout>();
+	auto imageLayout 	= util::make_unique<QHBoxLayout>();
 
 	accor->setMinimumWidth(250);
 	accor->setMaximumWidth(250);
@@ -32,23 +32,23 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *p
 	int count = 0;
 	for(auto& image:images)
 	{
-		qtutil::ZoomableImage *zoomIm = new qtutil::ZoomableImage{};
+		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
 
 		filterSel->addEntry(QString("image: ")+QString::number(count),
 			{{util::makeRef<const cv::Mat>(image)}},
 			{{util::makeRef<cv::Mat>(zoomIm->mat())}});
-		zoomIm->setMat(image);
 
 		//connect entry zoomableimage
-		imageLayout->addWidget(zoomIm);
-		accor->insert("ImageInformation",std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
+		accor->insert(QString("ImageInformation: ")+QString::number(count),std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
+		zoomIm->setMat(image);
+		imageLayout->addWidget(zoomIm.release());
 		count++;
 	}
-	imwid->setLayout(imageLayout);
+	imwid->setLayout(imageLayout.release());
 
-	layout->addWidget(accor);
-	layout->addWidget(imwid);
-	setLayout(layout);
+	layout->addWidget(accor.release());
+	layout->addWidget(imwid.release());
+	setLayout(layout.release());
 
 	TRACEPOINT;
 }

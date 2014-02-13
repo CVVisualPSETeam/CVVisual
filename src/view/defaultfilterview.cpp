@@ -13,28 +13,28 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat>& images,QWidget 
 {
 	TRACEPOINT;
 
-	QHBoxLayout* layout = new QHBoxLayout{this};
-	qtutil::Accordion *accor = new qtutil::Accordion{this};
+	auto layout 		= util::make_unique<QHBoxLayout>();
+	auto accor 		= util::make_unique<qtutil::Accordion>();
+	auto imwid 		= util::make_unique<QWidget>();
+	auto imageLayout 	= util::make_unique<QHBoxLayout>();
+
 	accor->setMinimumWidth(250);
 	accor->setMaximumWidth(250);
 
-	QWidget *imwid = new QWidget{};
-	QHBoxLayout* imageLayout = new QHBoxLayout{this};
-	layout->addWidget(accor);
-
 	for(auto image:images)
 	{
-		qtutil::ZoomableImage *zoomIm =new qtutil::ZoomableImage{};
+		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
 
-		imageLayout->addWidget(zoomIm);
-		accor->insert("ImageInformation",std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm,this)));
+		accor->insert("ImageInformation",
+			std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
 		zoomIm->setMat(image);
+		imageLayout->addWidget(zoomIm.release());
 	}
-	imwid->setLayout(imageLayout);
-	layout->addWidget(imwid);
-
-	setLayout(layout);
-
+	
+	layout->addWidget(accor.release());
+	imwid->setLayout(imageLayout.release());
+	layout->addWidget(imwid.release());
+	setLayout(layout.release());
 	TRACEPOINT;
 }
 
