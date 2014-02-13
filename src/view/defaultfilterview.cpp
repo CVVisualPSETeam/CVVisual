@@ -3,50 +3,39 @@
 
 #include "defaultfilterview.hpp"
 #include "../qtutil/accordion.hpp"
-#include "../qtutil/matinfowidget.hpp"
+#include "../qtutil/zoomableimageoptpanel.hpp"
 #include "../qtutil/zoomableimage.hpp"
 
 namespace cvv{ namespace view{
 
-	DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
-		FilterView{parent}
+DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
+	FilterView{parent}
+{
+	TRACEPOINT;
+
+	QHBoxLayout* layout = new QHBoxLayout{this};
+	qtutil::Accordion *accor = new qtutil::Accordion{this};
+	accor->setMinimumWidth(250);
+	accor->setMaximumWidth(250);
+
+	QWidget *imwid = new QWidget{};
+	QHBoxLayout* imageLayout = new QHBoxLayout{this};
+	layout->addWidget(accor);
+
+	for(auto image:images)
 	{
-		TRACEPOINT;
+		qtutil::ZoomableImage *zoomIm =new qtutil::ZoomableImage{};
 
-		QHBoxLayout* layout = new QHBoxLayout{};
-		qtutil::Accordion *accor = new qtutil::Accordion{};
-		accor->insert("this is an accordion", util::make_unique<QWidget>());
-		accor->setMinimumWidth(250);
-		accor->setMaximumWidth(250);
-
-		QWidget *imwid = new QWidget{};
-		QHBoxLayout* imageLayout = new QHBoxLayout{};
-		layout->addWidget(accor);
-
-		for(auto image:images)
-		{
-			qtutil::ZoomableImage *zoomim =new qtutil::ZoomableImage{};
-			auto info = util::make_unique<qtutil::MatInfoWidget>(image);
-
-			connect(zoomim,SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
-				SLOT(updateConvertStatus(ImageConversionResult)));
-
-
-			connect(info.get(),SIGNAL(getZoom(qreal)),zoomim,
-				SLOT(setZoom(qreal)));
-
-
-			zoomim->setMat(image);
-
-			imageLayout->addWidget(zoomim);
-			accor->insert("ImageInformation", std::move(info));
-		}
-		imwid->setLayout(imageLayout);
-		layout->addWidget(imwid);
-
-		setLayout(layout);
-
-		TRACEPOINT;
+		imageLayout->addWidget(zoomIm);
+		accor->insert("ImageInformation",std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm,this)));
+		zoomIm->setMat(image);
 	}
+	imwid->setLayout(imageLayout);
+	layout->addWidget(imwid);
+
+	setLayout(layout);
+
+	TRACEPOINT;
+}
 
 }}//namespaces

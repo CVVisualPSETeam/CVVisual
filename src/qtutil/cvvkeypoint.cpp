@@ -2,10 +2,9 @@
 
 namespace cvv{ namespace qtutil{
 
-CVVKeyPoint::CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image,
-		QGraphicsProxyWidget* imWidget, QPen pen,QBrush brush,QGraphicsItem *parent):
+CVVKeyPoint::CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image, QPen pen,QBrush brush,QGraphicsItem *parent):
 			QGraphicsObject{parent}, key_{key},image_{image},
-			imWidget_{imWidget},pen_{pen},brush_{brush},show_{true}
+			pen_{pen},brush_{brush},show_{true}
 {
 	TRACEPOINT;
 	if(image!=nullptr)
@@ -28,26 +27,15 @@ void CVVKeyPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
 }
 
 
-void CVVKeyPoint::setProxyWidget(QGraphicsProxyWidget*imWidget)
-{
-	imWidget_=imWidget;
-	if(image_!=nullptr){
-		updateImageSet(image_->visibleArea(),image_->zoom());
-	}
-}
-
 void CVVKeyPoint::setZoomableImage(ZoomableImage *image)
 {
 	image_=image;
-	if(imWidget_!=nullptr){
-		updateImageSet(image_->visibleArea(),image_->zoom());
-	}
 }
 
 QRectF CVVKeyPoint::boundingRect() const
 {
 	TRACEPOINT;
-	//TODO throw image==nullptr|| imWidget==nullptr
+	//TODO throw image==nullptr
 	return QRectF{QPointF{imPointInScene().x()-3,imPointInScene().y()-3}
 			,QPointF{imPointInScene().x()+3,imPointInScene().y()+3}};
 }

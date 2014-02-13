@@ -16,6 +16,13 @@ Q_OBJECT
 public:
 	SingleColorPen(QWidget * parent =nullptr);
 
+	~SingleColorPen()
+	{
+		TRACEPOINT;
+		colorDialog_->deleteLater();
+		TRACEPOINT;
+	}
+	
 	virtual QPen getPen(const CVVMatch& cvmatch)const override
 		{TRACEPOINT;(void)cvmatch;TRACEPOINT;return pen_;}
 

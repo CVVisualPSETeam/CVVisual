@@ -11,7 +11,7 @@ namespace cvv{ namespace qtutil{
 		TRACEPOINT;
 		QVBoxLayout *layout=new QVBoxLayout();
 		layout->setMargin(0);
-		colorDialog_ = new QColorDialog{};
+		colorDialog_ = new QColorDialog{this};
 		QPushButton *button=new QPushButton{"Color Dialog"};
 		layout->addWidget(button);
 		setLayout(layout);

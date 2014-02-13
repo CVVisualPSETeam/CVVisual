@@ -12,16 +12,25 @@
 #include "opencv2/features2d/features2d.hpp"
 
 #include "zoomableimage.hpp"
-//#include "cvvmatch.hpp"
 #include "cvvkeypoint.hpp"
+#include "keypointpen.hpp"
 #include "../dbg/dbg.hpp"
 
 namespace cvv{namespace qtutil{
+/**
+ * @brief this class represents a Keypoint which is displayed an a Matchscene.
+ * 
+ **/
 
 class CVVKeyPoint:public QGraphicsObject{
 Q_OBJECT
 public:
-	CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image=nullptr,QGraphicsProxyWidget* imWidget=nullptr,
+	/**
+	 * @brief the construor
+	 * @param key the keypoint with the image point
+	 * @param image the zoomable image 
+	 */
+	CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image=nullptr,
 		QPen pen=QPen{Qt::red},QBrush brush=QBrush{Qt::white},QGraphicsItem *parent=nullptr);
 
 
@@ -36,8 +45,6 @@ public:
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
                QWidget *widget);
 
-	void setProxyWidget(QGraphicsProxyWidget*imWidget);
-
 	void setZoomableImage(ZoomableImage *image);
 signals:
 	void updateShown(bool);
@@ -45,8 +52,8 @@ signals:
 	void updatePoint(bool visible);
 
 public slots:
-	void updatePen(const QPen& pen)
-		{TRACEPOINT;pen_=pen;TRACEPOINT;}
+	void updatePen(const KeyPointPen& pen)
+		{TRACEPOINT;pen_=pen.getPen(*this);TRACEPOINT;}
 	
 	void updateBrush(const QBrush& brush)
 		{TRACEPOINT;brush_=brush;}
@@ -64,7 +71,6 @@ private:
 
 	qtutil::ZoomableImage 	*image_;
 
-	QGraphicsProxyWidget	*imWidget_;
 	QPen pen_;
 	QBrush brush_;
 	qreal zoom_;

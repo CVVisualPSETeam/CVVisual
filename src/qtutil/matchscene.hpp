@@ -13,6 +13,7 @@
 #include "cvvmatch.hpp"
 #include "cvvkeypoint.hpp"
 #include "zoomableimage.hpp"
+#include "zoomableimageoptpanel.hpp"
 #include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
@@ -22,27 +23,23 @@ class MatchPen;
 class MatchScene:public QWidget{
 Q_OBJECT
 public:	
-	MatchScene(cv::Mat imageLeft,cv::Mat imageRight/*,const std::vector<cv::KeyPoint>& keypoints_left,
-		const std::vector<cv::KeyPoint>& keypoints_right,const std::vector<cv::DMatch>& matches*/, QWidget* parent = nullptr);
+	MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent = nullptr);
+	
+	std::unique_ptr<ZoomableOptPanel> getLeftMatInfoWidget()
+		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*leftImage_);}
+
+	std::unique_ptr<ZoomableOptPanel> getRightMatInfoWidget()
+		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*rightImage_);}
 
 public slots:
 	void addLeftKeypoint(CVVKeyPoint*);
 	void addRightKeyPoint(CVVKeyPoint*);
 	void addMatch(CVVMatch*);
 
-signals:
-	void updatePen(const MatchPen&);
-
 protected:
 	 void resizeEvent(QResizeEvent * event);
 
 private:
-
-	/*std::vector<cvv::qtutil::CVVKeyPoint*> keypoints_left_;	
-	std::vector<cvv::qtutil::CVVKeyPoint*> keypoints_right_;
-	std::vector<cvv::qtutil::CVVMatch*> matches_;
-	*/
-	
 	QGraphicsView 		*graphicView_;
 	QGraphicsScene 		*graphicScene_;	
 

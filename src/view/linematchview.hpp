@@ -9,15 +9,10 @@
 #include "match_view.hpp"
 namespace cvv { namespace view{
 
-class LineMatchView: public MatchView{
+class LineMatchView:public MatchView{
 Q_OBJECT
 public:
-LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
-		std::vector<cv::KeyPoint> rightKeyPoints,
-		std::vector<cv::DMatch> matches,
-		const cv::Mat& leftIm,
-		const cv::Mat& rightIm,
-		QWidget *parent=nullptr);
+	LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,std::vector<cv::KeyPoint> rightKeyPoints,std::vector<cv::DMatch> matches,cv::Mat leftIm,cv::Mat rightIm,QWidget *parent=nullptr);
 };
 }}
 #endif

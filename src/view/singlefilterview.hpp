@@ -23,8 +23,6 @@ public:
 	 * @param parent The parent of this QWidget
 	 */
 	SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
-private:
-	std::vector<cv::Mat> outputs_;
 };	
 
 }}//namespaces

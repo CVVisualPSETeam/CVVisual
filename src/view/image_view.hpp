@@ -10,7 +10,7 @@
 #include <opencv2/core/core.hpp>
 
 #include "../qtutil/accordion.hpp"
-#include "../qtutil/matinfowidget.hpp"
+#include "../qtutil/zoomableimageoptpanel.hpp"
 #include "../qtutil/zoomableimage.hpp"
 
 namespace cvv {
@@ -46,14 +46,14 @@ public:
 	ImageView(const cv::Mat& image, QWidget* parent = nullptr): QWidget{parent}
 	{
 		layout_ = new QHBoxLayout{this};
-		accor_ = new qtutil::Accordion{};
+		accor_ = new qtutil::Accordion{this};
 		accor_->setMinimumWidth(250);
 		accor_->setMaximumWidth(250);
 
 		layout_->addWidget(accor_);
 
 		zoomim_ =new qtutil::ZoomableImage{};
-		auto info = util::make_unique<qtutil::MatInfoWidget>(image);
+		auto info = util::make_unique<qtutil::ZoomableOptPanel>(*zoomim_,this);
 
 		connect(zoomim_,SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
 			SLOT(updateConvertStatus(ImageConversionResult)));
