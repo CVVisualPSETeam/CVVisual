@@ -33,7 +33,7 @@ MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, cvv::controller::View
 		setting = vc.getSetting(scope, key);
 	} catch (std::invalid_argument)
 	{
-		setting = "DefaultMatchView";
+		setting = "LineMatchView";
 	}
 	matchViewId_ = setting;
 
@@ -54,7 +54,7 @@ MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& f
 		setting = vc.getSetting(scope, key);
 	} catch (std::invalid_argument)
 	{
-		setting = "DefaultMatchView";
+		setting = "LineMatchView";
 	}
 	matchViewId_ = setting;
 
@@ -105,7 +105,10 @@ size_t MatchCallTab::getId() const
 	return matchCall_->getId();
 }
 
-void MatchCallTab::addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView)
+void MatchCallTab::addMatchViewToMap(const QString& matchViewId, std::function<std::unique_ptr<cvv::view::MatchView>(
+					     const cv::Mat&, const std::vector<cv::KeyPoint>&,
+					     const cv::Mat&, const std::vector<cv::KeyPoint>&,
+					     const std::vector<cv::DMatch>&, QWidget*)> mView)
 {
 	TRACEPOINT;
 	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::Mat&,

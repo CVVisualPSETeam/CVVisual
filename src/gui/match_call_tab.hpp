@@ -85,7 +85,10 @@ public:
 	 * Adds a MatchView with a name to the thread local map of all MatchViews.
 	 * @param matchViewId the Id or name of the MatchView.
 	 */
-	static void addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView);
+	static void addMatchViewToMap(const QString& matchViewId, std::function<std::unique_ptr<cvv::view::MatchView>(
+					      const cv::Mat&, const std::vector<cv::KeyPoint>&,
+					      const cv::Mat&, const std::vector<cv::KeyPoint>&,
+					      const std::vector<cv::DMatch>&, QWidget*)> mView);
 
 private slots:
 
