@@ -33,13 +33,16 @@ template<std::size_t Out> using CvvOutputArray = std::array<util::Reference<cv::
  * @tparam Out The number of output images.
  */
 template< std::size_t In, std::size_t Out>
-class FilterFunctionWidget: public virtual QWidget
+class FilterFunctionWidget: public QWidget
 {
 	static_assert( Out > 0, "Out should be >0.");
 public:
 
 	using InputArray  = CvvInputArray<In>;
 	using OutputArray = CvvOutputArray<Out>;
+
+	FilterFunctionWidget(QWidget* parent = nullptr):
+		QWidget{parent}{}
 
 	/**
 	 * @brief virtual destructor.

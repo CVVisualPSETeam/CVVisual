@@ -454,4 +454,27 @@ std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat
 	TRACEPOINT;
 	return {converted.first, QPixmap::fromImage(converted.second)};
 }
+
+std::vector<cv::Mat> splitChannels(const cv::Mat& mat)
+{
+	TRACEPOINT;
+	if(mat.channels()<1)
+	{
+		TRACEPOINT;
+		return {};
+	}
+	TRACEPOINT;
+	auto chan=std::unique_ptr<cv::Mat[]>(new cv::Mat[mat.channels()]);
+	TRACEPOINT;
+	cv::split(mat,chan.get());
+	TRACEPOINT;
+	std::vector<cv::Mat> result{};
+	//put in vector
+	for(int i=0;i<mat.channels();i++)
+	{
+		result.emplace_back(chan[i]);
+	}
+	TRACEPOINT;
+	return result;
+}
 }}

@@ -8,12 +8,16 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 
+#include "opencv2/core/core.hpp"
+#include "opencv2/opencv.hpp"
+
 #include "../../src/qtutil/filterfunctionwidget.hpp"
 #include "../../src/qtutil/filterselectorwidget.hpp"
-#include "../../src/qtutil/matinfowidget.hpp"
 #include "../../src/qtutil/accordion.hpp"
 #include "../../src/qtutil/zoomableimage.hpp"
 #include "../../src/qtutil/sobelfilterwidget.hpp"
+#include "../../src/util/util.hpp"
+#include "../../src/qtutil/grayfilterwidget.hpp"
 
 
 class MultFilter: public cvv::qtutil::FilterFunctionWidget<1,1>
@@ -23,7 +27,7 @@ public:
 	using OutputArray = cvv::qtutil::FilterFunctionWidget<1,1>::OutputArray;
 
 	MultFilter(QWidget* parent = nullptr):
-		QWidget{parent},
+		FilterFunctionWidget<1,1>{parent},
 		check_{new QCheckBox{}},
 		spin_{new QDoubleSpinBox{}}
 	{
@@ -60,24 +64,27 @@ public:
 };
 
 
+
+
 int main(int argc, char *argv[])
 {
-	cvv::dbg::setPriority(10);
+	cvv::dbg::setPriority(1000);
+	TRACEPOINT;
 
-	cvv::qtutil::FilterSelectorWidget<1,1>::registerElement("multi",
-		[](QWidget* parent){return std::unique_ptr<cvv::qtutil::FilterFunctionWidget<1,1>>(
-			new MultFilter{parent}
-		);}
-	);
 
+	cvv::qtutil::registerFilter<1,1,MultFilter>("multi");
+	cvv::qtutil::registerGray();
+
+	TRACEPOINT;
 	cvv::qtutil::registerSobel();
 
 	QApplication a(argc, argv);
 	QWidget w{};
 
-	cv::Mat m1{200,100,CV_32FC3,cv::Scalar{1,1,0}};
-	cv::Mat m2{200,100,CV_64FC3,cv::Scalar{1,0,0}};
+	cv::Mat m1{200,100,CV_32SC3,cv::Scalar{2,1,2147483640}};
+	cv::Mat m2{200,100,CV_32FC3,cv::Scalar{1,0,0}};
 
+	TRACEPOINT;
 	//something to see for sobel
 	line( m2,cv::Point{0,0},cv::Point{100,100},cv::Scalar{ 0, 0, 0 },10,8);
 
@@ -88,6 +95,7 @@ int main(int argc, char *argv[])
 	//connect area on input 1->2
 	QObject::connect(i1.get(),SIGNAL(updateArea(QRectF,qreal)),
 			i2.get(), SLOT(setArea(QRectF,qreal)));
+	TRACEPOINT;
 
 	auto afw=cvv::util::make_unique<cvv::qtutil::AutoFilterWidget<1,1>>();
 	//buttons
@@ -101,6 +109,7 @@ int main(int argc, char *argv[])
 	QObject::connect(bindiv.get(),SIGNAL(clicked( bool)),
 			 &(afw->slotUseFilterIndividually_),SLOT(slot(bool)));
 
+	TRACEPOINT;
 	//add images
 	auto u1=afw->addEntry("i1",{{i1->mat()}},{{o1->mat()}});
 	auto u2=afw->addEntry("i2",{{i2->mat()}},{{o2->mat()}});
@@ -109,6 +118,8 @@ int main(int argc, char *argv[])
 			 o1.get(),SLOT(setMatR(cv::Mat&)));
 	QObject::connect((u2.at(0).getPtr()),SIGNAL(signal(cv::Mat&)),
 			 o2.get(),SLOT(setMatR(cv::Mat&)));
+
+	TRACEPOINT;
 	//build
 	auto layh=cvv::util::make_unique<QHBoxLayout>();
 	auto layv1=cvv::util::make_unique<QVBoxLayout>();

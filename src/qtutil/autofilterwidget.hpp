@@ -292,7 +292,7 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	}
 
 	/**
-	 * @brief Sets wheather the filter will be applied to entries it can be applied to
+	 * @brief Sets whether the filter will be applied to entries it can be applied to
 	 * even when one other entry cant apply the filter.
 	 * @param individually If true each entry that can apply the filter does so.
 	 */
@@ -312,7 +312,7 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	SlotBool slotUseFilterIndividually_;
 private:
 	/**
-	 * @brief Applies the filter wen some settings where changed.
+	 * @brief Applies the filter when some settings where changed.
 	 */
 	void autoApplyFilter()
 	{
