@@ -22,6 +22,10 @@
 
 namespace cvv { namespace qtutil{
 
+//forward
+template<std::size_t In,std::size_t Out, class Filter>
+bool registerFilter(const QString& name);
+
 /**
  * @brief The FilterSelectorWidget class
  */
@@ -106,6 +110,19 @@ public:
 		return currentFilter_->checkInput(in);
 	}
 
+	/**
+	 * @brief Registers a FilterFunctionWidget with a given name.
+	 * @param name The name.
+	 * @return true: If the function was registered. false: If the name was taken
+	 * (the function was not registered!)
+	 */
+	template<class Filter>
+	static bool registerFilter(const QString& name)
+	{
+		TRACEPOINT;
+		return qtutil::registerFilter<In,Out,Filter>(name);
+	}
+
 
 protected:
 	/**
@@ -149,6 +166,23 @@ protected:
 	 */
 	Slot slotFilterSelected_;
 }; //FilterSelectorWidget
+
+/**
+ * @brief Registers a FilterFunctionWidget with a given name.
+ * @param name The name.
+ * @return true: If the function was registered. false: If the name was taken
+ * (the function was not registered!)
+ */
+template<std::size_t In,std::size_t Out, class Filter>
+bool registerFilter(const QString& name)
+{
+	TRACEPOINT;
+	return FilterSelectorWidget<In,Out>::registerElement(name,
+			[](QWidget* parent){return std::unique_ptr<FilterFunctionWidget<In,Out>>
+		{new Filter{parent}};}
+	);
+}
+
 
 }} // end namespaces qtutil, cvv
 #endif // CVVISUAL_FILTERSELECTORWIDGET_HPP

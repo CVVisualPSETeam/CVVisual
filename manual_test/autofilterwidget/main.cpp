@@ -13,6 +13,7 @@
 #include "../../src/qtutil/matinfowidget.hpp"
 #include "../../src/qtutil/accordion.hpp"
 #include "../../src/qtutil/zoomableimage.hpp"
+#include "../../src/qtutil/sobelfilterwidget.hpp"
 
 
 class MultFilter: public cvv::qtutil::FilterFunctionWidget<1,1>
@@ -69,11 +70,16 @@ int main(int argc, char *argv[])
 		);}
 	);
 
+	cvv::qtutil::registerSobel();
+
 	QApplication a(argc, argv);
 	QWidget w{};
 
 	cv::Mat m1{200,100,CV_32FC3,cv::Scalar{1,1,0}};
 	cv::Mat m2{200,100,CV_64FC3,cv::Scalar{1,0,0}};
+
+	//something to see for sobel
+	line( m2,cv::Point{0,0},cv::Point{100,100},cv::Scalar{ 0, 0, 0 },10,8);
 
 	auto i1=cvv::util::make_unique<cvv::qtutil::ZoomableImage>(m1);
 	auto i2=cvv::util::make_unique<cvv::qtutil::ZoomableImage>(m2);
@@ -105,8 +111,8 @@ int main(int argc, char *argv[])
 			 o2.get(),SLOT(setMatR(cv::Mat&)));
 	//build
 	auto layh=cvv::util::make_unique<QHBoxLayout>();
-	auto layv1=cvv::util::make_unique<QHBoxLayout>();
-	auto layv2=cvv::util::make_unique<QHBoxLayout>();
+	auto layv1=cvv::util::make_unique<QVBoxLayout>();
+	auto layv2=cvv::util::make_unique<QVBoxLayout>();
 
 	auto acc=cvv::util::make_unique<cvv::qtutil::Accordion>();
 	acc->push_back("busele",std::move(busele));

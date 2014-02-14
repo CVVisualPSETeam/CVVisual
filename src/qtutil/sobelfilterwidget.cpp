@@ -23,8 +23,8 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 {
 	TRACEPOINT;
 	//set up elements
-	dx_->setRange(0,7);
-	dy_->setRange(0,7);
+	dx_->setRange(0,6);
+	dy_->setRange(0,6);
 	ksize_->addItem("1");
 	ksize_->addItem("3");
 	ksize_->addItem("5");
@@ -159,11 +159,9 @@ std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray) const
 
  void registerSobel()
 {
-	FilterSelectorWidget<1,1>::registerElement(
-		"sobel",
-		[](QWidget* parent){
-		return std::unique_ptr<FilterFunctionWidget<1,1>>{new SobelFilterWidget{parent}};}
-	);
+	TRACEPOINT;
+	FilterSelectorWidget<1,1>::registerFilter<SobelFilterWidget>("sobel");
+	TRACEPOINT;
 }
 
 }}
