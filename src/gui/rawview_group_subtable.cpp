@@ -8,6 +8,8 @@
 #include <QMenu>
 #include <QAction>
 #include <QHeaderView>
+#include <QApplication>
+#include <QClipboard>
 
 #include "call_window.hpp"
 #include "rawview_table.hpp"
@@ -15,19 +17,17 @@
 
 namespace cvv { namespace gui {
 
-RawviewGroupSubtable::RawviewGroupSubtable(util::Reference<controller::ViewController> controller,
-                                             RawviewTable *parent,
-                                             stfl::ElementGroup<RawviewTableRow> group):
-    controller{controller}, parent{parent}, group{std::move(group)}
+RawviewGroupSubtable::RawviewGroupSubtable(RawviewTable *parent,
+										   stfl::ElementGroup<RawviewTableRow> group):
+	parent{parent}, group{std::move(group)}
 {
 	qTable = new QTableWidget(this);
     qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    qTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    qTable->setSelectionMode(QAbstractItemView::MultiSelection);
 	auto horizontalHeader = qTable->horizontalHeader();
     horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
 	horizontalHeader->setStretchLastSection(false);
 	qTable->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
 	qTable->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customMenuRequested(QPoint)));
     auto *layout = new QVBoxLayout;
@@ -53,10 +53,8 @@ void RawviewGroupSubtable::updateUI(){
     }
 }
 
-void RawviewGroupSubtable::rowClicked(int row, int collumn)
+void RawviewGroupSubtable::selectionChanged()
 {
-    (void)collumn;
-	(void)row;
 }
 
 void RawviewGroupSubtable::customMenuRequested(QPoint location)
@@ -64,17 +62,36 @@ void RawviewGroupSubtable::customMenuRequested(QPoint location)
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	
-    menu->addAction(new QAction("TEST", this));
-	
+	auto formats = RawviewTableRow::getAvailableTextFormats();
+   	for (auto format : formats)
+	{
+		menu->addAction(new QAction(QString("Copy as %1").arg(format), this));
+	}
 	QModelIndex index = qTable->indexAt(location);
 	int row = index.row();
-	(void)row;
+	if (currentRows.size() == 0)
+	{
+		currentRows = { group.get(row) };
+	}
 	menu->popup(qTable->viewport()->mapToGlobal(location));
 }
 
 void RawviewGroupSubtable::customMenuAction(QAction *action)
 {
+	if (currentRows.size() > 0)
+	{
+		auto formats = RawviewTableRow::getAvailableTextFormats();
+		for (auto format : formats)
+		{
+			if (action->text() == QString("Copy as %1").arg(format))
+			{
+				QString formattedRows = RawviewTableRow::rowsToText(currentRows, format);
+				QApplication::clipboard()->setText(formattedRows);
+			}
+		}
+	}
 	std::cerr << "Action: " << action->text().toStdString() << "\n";
+	currentRows = {};
 }
 
 }}

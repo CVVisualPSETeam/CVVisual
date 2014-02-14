@@ -2,17 +2,17 @@
 #define	CVVISUAL_RAWVIEW_GROUP_SUBTABLE_HPP
 
 #include <memory>
+#include <vector>
 
 #include <QWidget>
 #include <QTableWidget>
 #include <QAction>
-#include <QResizeEvent>
+#include <QItemSelection>
 
 #include "../stfl/element_group.hpp"
 #include "rawview_table_row.hpp"
 #include "../util/optional.hpp"
 #include "../util/util.hpp"
-#include "../controller/view_controller.hpp"
 
 namespace cvv { namespace controller {
 class ViewController;
@@ -37,9 +37,7 @@ public:
 	 * @param parent parent table
 	 * @param group the displayed group of overview data sets
      */
-	RawviewGroupSubtable(util::Reference<controller::ViewController> controller,
-		RawviewTable *parent,
-		stfl::ElementGroup<RawviewTableRow> group);
+	RawviewGroupSubtable(RawviewTable *parent, stfl::ElementGroup<RawviewTableRow> group);
 
 	/**
 	 * @brief Updates the displayed table UI.
@@ -47,15 +45,16 @@ public:
 	void updateUI();
 
 private slots:
-	void rowClicked(int row, int collumn);
 	void customMenuRequested(QPoint location);
 	void customMenuAction(QAction *action);
+	void selectionChanged();
+
 
 private:
-	util::Reference<controller::ViewController> controller;
 	RawviewTable *parent;
 	stfl::ElementGroup<RawviewTableRow> group;
 	QTableWidget *qTable;
+	std::vector<RawviewTableRow> currentRows;
 };
 
 }}

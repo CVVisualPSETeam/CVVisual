@@ -12,8 +12,7 @@
 
 namespace cvv { namespace gui {
 
-RawviewTable::RawviewTable(util::Reference<controller::ViewController> controller, view::Rawview *parent):
-    controller{controller}, parent{parent}
+RawviewTable::RawviewTable(view::Rawview *parent): parent{parent}
 {
     subtableAccordion = new qtutil::Accordion{};
     auto *layout = new QVBoxLayout{};
@@ -30,7 +29,7 @@ void RawviewTable::updateRowGroups(std::vector<stfl::ElementGroup<RawviewTableRo
     {
         if (group.size() > 0)
         {
-			auto subtable = util::make_unique<RawviewGroupSubtable>(controller, this, std::move(group));
+			auto subtable = util::make_unique<RawviewGroupSubtable>(this, std::move(group));
 			auto subtablePtr = subtable.get();
             auto titles = group.getTitles();
             QString title = "No grouping specified, use #group to do specify";

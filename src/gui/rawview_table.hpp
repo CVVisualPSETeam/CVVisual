@@ -11,7 +11,6 @@
 #include "../stfl/element_group.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../util/util.hpp"
-#include "../controller/view_controller.hpp"
 #include "rawview_group_subtable.hpp"
 
 namespace cvv { 
@@ -30,7 +29,7 @@ class RawviewTable : public QWidget
 	
 public:
 	
-	RawviewTable(util::Reference<controller::ViewController> controller, view::Rawview *parent);
+	RawviewTable(view::Rawview *parent);
 	
 	void updateRowGroups(const std::vector<stfl::ElementGroup<RawviewTableRow>> newGroups);
 
@@ -40,7 +39,6 @@ public:
 	void updateUI();
 
 private:
-	util::Reference<controller::ViewController> controller;
 	view::Rawview *parent;
 	qtutil::Accordion *subtableAccordion;
 	std::vector<RawviewGroupSubtable*> subTables{};

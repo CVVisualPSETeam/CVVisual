@@ -31,7 +31,7 @@ namespace controller {
 class ViewController;
 
 /**
- * Typedef for a function that creates a CallTab from a impl::Call and a ViewController&
+ * @brief Typedef for a function that creates a CallTab from a impl::Call and a ViewController&.
  */
 using TabFactory = std::function<std::unique_ptr<gui::CallTab>(util::Reference<impl::Call>,
     ViewController&)>;
@@ -39,11 +39,16 @@ using TabFactory = std::function<std::unique_ptr<gui::CallTab>(util::Reference<i
 
 /**
  * @brief Controlls the windows, call tabs and the event fetch loop.
+ * Its the layer between the low level model (aka DataController) an the high
+ * level GUI (aka CallTab, OverviewPanel, ...).
  */
 class ViewController
 {
 public:
 
+	/**
+	 * @brief The default contructor for this class.
+	 */
     ViewController();
 
     /**
@@ -61,7 +66,7 @@ public:
     void addCall(util::Reference<impl::Call> data);
 
     /**
-     * Execute the Qt event loop.
+     * @brief Execute the Qt event loop.
      */
     void exec();
 
@@ -73,7 +78,9 @@ public:
     impl::Call& getCall(size_t id);
 
     /**
-     * @brief Get the current setting [key] in the given scope
+     * @brief Get the current setting [key] in the given scope.
+	 * Please use `setDefaultSetting` to set a default value that's other than
+	 * an empty QString.
      * @param scope given scope (e.g. 'Overview')
      * @param key settings key (e.g. 'autoOpenTabs')
      * @return settings string
@@ -81,18 +88,19 @@ public:
     QString getSetting(const QString &scope, const QString &key) const;
 
     /**
-     * @attention may be deleted
+	 * @brief Get the inherited call windows with tabs.
+	 * @return the inherited CallWindows
      */
     std::vector<util::Reference<gui::CallWindow>> getTabWindows();
 
     /**
-     * @brief Move the call tab with the given id to a new window
+     * @brief Move the call tab with the given id to a new window.
      * @param tabId given call tab id
      */
     void moveCallTabToNewWindow(size_t tabId);
 
     /**
-     * @brief Move the given call tab to the given window
+     * @brief Move the given call tab to the given window.
      * @param tabId id of the given call tab
      * @param windowId id of the given window (0 is the main window)
      */
@@ -109,6 +117,8 @@ public:
      * @brief Opens the users default browser with the topic help page.
      * Current URL: cvv.mostlynerdless.de/help.php?topic=[topic]
      *
+	 * Topics can be added via appending the doc/topics.yml file.
+	 *
      * @param topic help topic
      */
     void openHelpBrowser(const QString &topic) const;
@@ -119,7 +129,7 @@ public:
     void resumeProgramExecution();
 
     /**
-     * @brief Set the default setting for a given stettings key and scope
+     * @brief Set the default setting for a given stettings key and scope.
      * It doesn't override existing settings.
      * @param scope given settings scope
      * @param key given settings key
@@ -128,7 +138,7 @@ public:
     void setDefaultSetting(const QString &scope, const QString &key, const QString &value);
 
     /**
-     * @brief Set the setting for a given stettings key and scope
+     * @brief Set the setting for a given stettings key and scope.
      * @param scope given settings scope
      * @param key given settings key
      * @param value new value of the setting
@@ -137,6 +147,8 @@ public:
 
     /**
      * @brief Show the given call tab and bring it's window to the front.
+	 * @note Its not guaranteed that it really brings the tabs' window to the
+	 * front.
      * @param tabId id of the given call tab
      */
     void showCallTab(size_t tabId);
@@ -149,6 +161,7 @@ public:
 
     /**
      * @brief Show the overview tab (and table) and bring it's window to the front.
+	 * @note The latter is not guaranteed.
      */
     void showOverview();
 
