@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_FILTER_CALL_HPP
 #define CVVISUAL_FILTER_CALL_HPP
 
+#include <QString>
+
 #include "call.hpp"
 
 #include "opencv2/core/core.hpp"
