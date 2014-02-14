@@ -461,7 +461,7 @@ std::vector<cv::Mat> splitChannels(const cv::Mat& mat)
 	if(mat.channels()<1)
 	{
 		TRACEPOINT;
-		return {};
+		return std::vector<cv::Mat>{};
 	}
 	TRACEPOINT;
 	auto chan=std::unique_ptr<cv::Mat[]>(new cv::Mat[mat.channels()]);
