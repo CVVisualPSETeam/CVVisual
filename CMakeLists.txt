@@ -60,11 +60,15 @@ include_directories("${CMAKE_SOURCE_DIR}/include/opencv2")
 ##################################################################
 
 file(GLOB implementation_sources "src/*/*.cpp")
+file(GLOB implementation_sources_2 "src/*/*/*.cpp")
 file(GLOB implementation_headers "src/*/*.hpp")
+file(GLOB implementation_headers_2 "src/*/*/*.hpp")
 file(GLOB api_headers "include/opencv2/*.hpp")
 add_library( cvvisual
         ${implementation_sources}
         ${implementation_headers}
+        ${implementation_sources_2}
+        ${implementation_headers_2}
         ${api_headers}
 )
 target_link_libraries(cvvisual
@@ -131,7 +135,7 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core opencv_core)
 	
 	add_executable(test_manual_singlefilterview manual_test/singlefilterviewtest/main.cpp)
-	target_link_libraries(test_manual_singlefilterview cvvisual Qt5Core opencv_core opencv_imgproc)
+	target_link_libraries(test_manual_singlefilterview cvvisual Qt5Core opencv_core opencv_highgui opencv_imgproc)
 
 	add_executable(test_manual_matchscenetest manual_test/matchscenetest/main.cpp)
 	target_link_libraries(test_manual_matchscenetest cvvisual Qt5Core opencv_highgui opencv_core)
