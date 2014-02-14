@@ -1,7 +1,8 @@
 #ifndef CVVISUAL_QTUTIL_HPP
 #define CVVISUAL_QTUTIL_HPP
 
-#include  <limits>
+#include <limits>
+#include <vector>
 
 #include <QImage>
 #include <QPixmap>
@@ -64,6 +65,13 @@ QSet<QString> createStringSet(QString string);
 std::pair<bool, QString> typeToQString(const cv::Mat& mat);
 
 QString conversionResultToString(const ImageConversionResult& result);
+
+/**
+ * @brief Splits a mat in multiple one channel mats.
+ * @param mat The mat.
+ * @return The splitted mats.
+ */
+std::vector<cv::Mat> splitChannels(const cv::Mat& mat);
 }}
 
 #endif

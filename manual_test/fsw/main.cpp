@@ -11,7 +11,7 @@
 class A: public cvv::qtutil::FilterFunctionWidget<1,1>
 {
 public:
-	A(QWidget* parent = nullptr):QWidget{parent}
+	A(QWidget* parent = nullptr):cvv::qtutil::FilterFunctionWidget<1,1>{parent}
 	{
 		QVBoxLayout* lay = new QVBoxLayout{};
 		lay->addWidget(new QLabel{"A"});
@@ -31,7 +31,7 @@ public:
 class B: public cvv::qtutil::FilterFunctionWidget<1,1>
 {
 public:
-	B(QWidget* parent = nullptr):QWidget{parent}
+	B(QWidget* parent = nullptr):cvv::qtutil::FilterFunctionWidget<1,1>{parent}
 	{
 		QVBoxLayout* lay = new QVBoxLayout{};
 		lay->addWidget(new QLabel{"B"});

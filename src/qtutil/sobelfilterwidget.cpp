@@ -14,7 +14,7 @@ namespace cvv { namespace qtutil{
 
 
 SobelFilterWidget::SobelFilterWidget(QWidget* parent):
-	QWidget{parent},
+	FilterFunctionWidget<1,1>{parent},
 	dx_{new QSpinBox{}},
 	dy_{new QSpinBox{}},
 	ksize_{new QComboBox{}},
