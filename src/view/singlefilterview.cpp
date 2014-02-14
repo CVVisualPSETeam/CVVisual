@@ -34,11 +34,13 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *p
 	{
 		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
 
-		filterSel->addEntry(QString("image: ")+QString::number(count),
+		auto filterSignals = filterSel->addEntry(QString("image: ")+QString::number(count),
 			{{util::makeRef<const cv::Mat>(image)}},
 			{{util::makeRef<cv::Mat>(zoomIm->mat())}});
 
 		//connect entry zoomableimage
+		connect(filterSignals.front().getPtr(),SIGNAL(signal(cv::Mat&)),zoomIm.get(),SLOT(setMatR(cv::Mat&)));
+
 		accor->insert(QString("ImageInformation: ")+QString::number(count),std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
 		zoomIm->setMat(image);
 		imageLayout->addWidget(zoomIm.release());
