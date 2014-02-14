@@ -33,6 +33,9 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 
 	accor->insert("Match Color",std::move(matchpen));
 	accor->insert("KeyPoint Color",std::move(keypen));
+	accor->insert("Left Image ",std::move(matchscene_ptr->getLeftMatInfoWidget()));
+	accor->insert("Right Image ",std::move(matchscene_ptr->getRightMatInfoWidget()));
+
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
 	setLayout(layout.release());
@@ -52,7 +55,7 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 		auto keyinvisible = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
 		keyinvisible->setShow(false);
 		matchscene_ptr->addRightKeyPoint(keyinvisible.get());
-		leftinvisibleKeys.push_back(keyinvisible.release());
+		rightinvisibleKeys.push_back(keyinvisible.release());
 	}
 	for(auto& keypoint:rightKeyPoints)
 	{
@@ -64,7 +67,7 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 		auto keyinvisible = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
 		keyinvisible->setShow(false);
 		matchscene_ptr->addLeftKeypoint(keyinvisible.get());
-		rightinvisibleKeys.push_back(keyinvisible.release());
+		leftinvisibleKeys.push_back(keyinvisible.release());
 	}
 	for(auto& match:matches)
 	{
