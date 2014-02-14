@@ -188,7 +188,7 @@ void CallWindow::closeEvent(QCloseEvent *event)
 	TRACEPOINT;
 	for (auto &elem : tabMap)
 	{
-		DEBUGF(90, "Removing call Tab %s at address %s", elem.first, size_t(elem.second));
+		DEBUGF("Removing call Tab %s at address %s", elem.first, size_t(elem.second));
 		controller->removeCallTab(elem.first, true);
 		TRACEPOINT;
 	}

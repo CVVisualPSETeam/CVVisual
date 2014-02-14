@@ -11,33 +11,27 @@
 namespace cvv {namespace dbg {
 
 namespace {
-Priority priority = TRACE - 1;
+	std::atomic_bool loggingState{false};
 }
 
-Priority getPriority() {return priority;}
-void setPriority(Priority p) {priority = p;}
+bool getLoggingState()
+{
+	return loggingState.load();
+}
 
+void setLoggingState(bool b) {
+	loggingState.store(b);
+}
 
 void printLocation(std::ostream& stream, const Location& loc) {
 	stream << "[“" << loc.file << "”, " << loc.line << ": " << loc.function << "]";
 }
 
-void printPriority(std::ostream& stream, Priority p) {
-	if(p >= TRACE) {
-		stream << "[Trace(";
-	}
-	else {
-		stream << "[Debug(";
-	}
-	stream << std::setw(4) << std::setfill(' ') << p << ")]";
-}
-
 namespace impl {
 
-void log(const Location& loc, Priority p, const std::string msg) {
+void log(const Location& loc, const std::string msg) {
 	std::stringstream stream;
 	
-	printPriority(stream, p);
 	printLocation(stream, loc);
 	
 	stream << ": ";

@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 		std::cerr << argv[0] << " must be callled with one files as arguments\n";
 		return 1;
 	}
-	cvv::dbg::setPriority(200);
+	cvv::dbg::setLoggingState(true);
 	cvv::gui::MatchCallTab::addMatchViewToMap("LineMatchView", makeLineMatchView);
 	
 	auto src = cv::imread(argv[1]);

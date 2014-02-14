@@ -14,7 +14,7 @@ namespace cvv { namespace qtutil{
 
 
 SobelFilterWidget::SobelFilterWidget(QWidget* parent):
-	QWidget{parent},
+	FilterFunctionWidget<1,1>{parent},
 	dx_{new QSpinBox{}},
 	dy_{new QSpinBox{}},
 	ksize_{new QComboBox{}},
@@ -97,7 +97,7 @@ void SobelFilterWidget::applyFilter(InputArray in,OutputArray out) const
 	int dx=dx_->value();
 	int dy=dy_->value();
 
-	DEBUGF(400,"\n%s    %s    %s    %s\n",dx,dy,ksize,borderType);
+	DEBUGF("\n%s    %s    %s    %s\n",dx,dy,ksize,borderType);
 
 	TRACEPOINT;
 	try

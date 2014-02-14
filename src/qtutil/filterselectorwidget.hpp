@@ -51,8 +51,8 @@ public:
 	 * @param parent The parent widget.
 	 */
 	FilterSelectorWidget(QWidget *parent = nullptr):
-		QWidget{parent},
 		RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>{},
+		FilterFunctionWidget<In,Out>{parent},
 		currentFilter_{nullptr},
 		layout_{new QVBoxLayout{}},
 		slotFilterSelected_{[this](){this->updatedSelectedFilter();}

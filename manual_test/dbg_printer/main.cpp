@@ -17,9 +17,9 @@ void someOtherFunc() {
 
 int main() {
 	
-	cvv::dbg::setPriority(200);
+	cvv::dbg::setLoggingState(true);
 	
-	DEBUG(0, "test debug");
+	DEBUG("test debug");
 	
 	std::vector<int> simple_vec{0,1,2,3};
 	
@@ -34,12 +34,12 @@ int main() {
 	TRACEPOINT;
 	
 	QString qstring= "some QString";
-	DEBUG(cvv::dbg::DEBUG, qstring);
+	DEBUG(qstring);
 	
 	TRACEPOINT;
 	
 	std::map<int, std::string> map{{1, "a"}, {2,"b"}};
-	DEBUG(42, map);
+	DEBUG(map);
 	TRACEPOINT;
 	
 	someOtherFunc();

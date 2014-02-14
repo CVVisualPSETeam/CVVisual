@@ -19,7 +19,7 @@ size_t newCallId();
 
 class Call {
 public:
-	virtual ~Call() {DEBUG(100, "Destructing Call #", id);}
+	virtual ~Call() {DEBUG("Destructing Call #", id);}
 	size_t getId() const { return id; }
 	
 	const QString& type() const {return calltype;}
