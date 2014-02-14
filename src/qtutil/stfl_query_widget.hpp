@@ -6,10 +6,10 @@
 #include <QStringList>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QPushButton>
 
 #include "stfl_query_widget_lineedit.hpp"
 #include "../util/util.hpp"
-#include "../controller/view_controller.hpp"
 
 namespace cvv { namespace qtutil {
 
@@ -19,7 +19,7 @@ class STFLQueryWidget : public QWidget
 	
 public:
 	
-	STFLQueryWidget(util::Reference<controller::ViewController> controller);
+	STFLQueryWidget();
 	
 	void showSuggestions(const QStringList &suggestions);
 
@@ -38,8 +38,9 @@ signals:
 
     void requestSuggestions(QString query);
 	
+	void showHelp(QString topic);
+	
 private:
-	util::Reference<controller::ViewController> controller;
     STFLQueryWidgetLineEdit *lineEdit;
 };
 

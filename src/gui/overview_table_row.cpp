@@ -46,8 +46,8 @@ void OverviewTableRow::addToTable(QTableWidget *table, size_t row, bool showImag
 		}
 	}
 	items.push_back(new QTableWidgetItem(description_));
-	items.push_back(new QTableWidgetItem(stfl::shortenString(functionStr, 30)));
-	items.push_back(new QTableWidgetItem(stfl::shortenString(fileStr, 30, false)));
+	items.push_back(new QTableWidgetItem(functionStr, 30));
+	items.push_back(new QTableWidgetItem(fileStr));
 	items.push_back(new QTableWidgetItem(lineStr));
 	items.push_back(new QTableWidgetItem(typeStr));
 	for (size_t i = 0; i < items.size(); i++)

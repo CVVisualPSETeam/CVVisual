@@ -19,24 +19,46 @@ namespace cvv { namespace gui {
 class OverviewPanel;
 class OverviewTableRow;
 
+/**
+ * @brief A table displaying the different calls in the overview.
+ * It's actually an accordion of subtables to support grouping.
+ */
 class OverviewTable : public QWidget
 {
 	Q_OBJECT
 	
 public:
 	
+	/**
+	 * @brief Constructs a new OverviewTable.
+	 * @param controller it's ViewController
+	 * @param parent it's parent overview
+	 */
 	OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent);
 	
+	/**
+	 * @brief Update the inherited groups of rows and rebuild the UI fully.
+	 */
 	void updateRowGroups(const std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups);
 	
+	/**
+	 * @brief Hide the thumbnail images in the tables.
+	 */
 	void hideImages();
 	
+	/**
+	 * @brief Show thumbnail images in the tables.
+	 */
 	void showImages();
 	
+	/**
+	 * @brief Does this the tables show thumbnail images?
+	 */
 	bool isShowingImages();
 
 	/**
-	 * @brief Updates the UI
+	 * @brief Updates the UI.
+	 * Updates all subtables.
 	 */
 	void updateUI();
 

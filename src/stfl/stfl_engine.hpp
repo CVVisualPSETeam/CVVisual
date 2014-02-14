@@ -283,6 +283,49 @@ public:
 	}
 
 	/**
+	 * @brief Derives a basic filter, group and sort function from the given function.
+	 * Slightly slower than just creating the methods on your on and adding them
+	 * with the appropriate setters.
+	 * Please call this method only during the initialization of the STFLEngine object
+	 * with in your code.
+	 */
+	void addFloatCmdFunc(QString key, std::function<float(const Element&)> func, bool withFilterCS = true)
+	{
+		if (withFilterCS)
+		{
+			filterCSFuncs[key] = [func](const QStringList& args, const Element &elem)
+			{
+				return args.contains(QString::number(func(elem)));
+			};
+			filterCSPoolFuncs[key] = [func](const Element &elem)
+			{
+				return qtutil::createStringSet(QString::number(func(elem)));
+			};
+		}
+		else
+		{
+			filterFuncs[key] = [func](const QString& query, const Element& elem)
+			{
+				return query.toFloat() == func(elem);
+			};
+			filterPoolFuncs[key] = [func](const Element& elem)
+			{
+				return QString::number(func(elem));
+			};
+		}
+		sortFuncs[key] = [func](const Element &elem1, const Element& elem2)
+		{
+			return func(elem1) < func(elem2);
+		};
+		groupFuncs[key] = [func, key](const Element& elem)
+		{
+			return QString(key + " %1").arg(func(elem));
+		};
+		initSupportedCommandsList();
+	}
+
+
+	/**
 	 * @brief Removes the elements that match the filter function.
 	 * @brief filterFunc filter function
 	 */

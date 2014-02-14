@@ -32,9 +32,15 @@ signals:
 	 * @param newText
 	 */
 	void updateRightFoooter(QString newText);
+	
+	/**
+	 * @brief Show help to the given topic
+	 * @param topic given topic
+	 */
+	void showHelp(QString topic);
 
 	/**
-	 * @todo comment
+	 * @todo Hä?!?!?!
 	 * @brief output internal selection
 	 * @param matchCalls
 	 */

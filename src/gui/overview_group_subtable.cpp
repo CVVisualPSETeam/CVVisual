@@ -32,6 +32,7 @@ void OverviewGroupSubtable::initUI()
 	qTable = new QTableWidget(this);
 	qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 	qTable->setSelectionMode(QAbstractItemView::SingleSelection);
+	qTable->setTextElideMode(Qt::ElideNone);
 	auto verticalHeader = qTable->verticalHeader();
 	verticalHeader->setVisible(false);
 	auto horizontalHeader = qTable->horizontalHeader();
@@ -113,7 +114,6 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	menu->addAction(new QAction("Open in new window", this));
 	for (auto window : windows)
 	{
-		// TODO: is this code really the best we can come up with?
 		menu->addAction(new QAction(QString("Open in '%1'").arg(
 						window->windowTitle()), this));
 	}
@@ -133,7 +133,6 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 		return;
 	}
 	QString actionText = action->text();
-	auto windows = controller->getTabWindows();
 	if (actionText == "Open in new window")
 	{
 		controller->moveCallTabToNewWindow(currentCustomMenuCallTabId);
@@ -146,9 +145,9 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 		currentCustomMenuCallTabId = -1;
 		return;
 	}
+	auto windows = controller->getTabWindows();
 	for (auto window : windows)
 	{
-		//TODO: see above: is string-compare really the best solution to this?
 		if (actionText == QString("Open in '%1'").arg(window->windowTitle()))
 		{
 			controller->moveCallTabToWindow(currentCustomMenuCallTabId, window->getId());

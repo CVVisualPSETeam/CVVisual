@@ -1,14 +1,11 @@
 #include "stfl_query_widget.hpp"
 
-#include <iostream>
-
 namespace cvv { namespace qtutil {
 
-STFLQueryWidget::STFLQueryWidget(util::Reference<controller::ViewController> controller):
-	controller{controller}
+STFLQueryWidget::STFLQueryWidget()
 {
     lineEdit = new STFLQueryWidgetLineEdit(this);
-    auto *layout = new QVBoxLayout;
+    auto *layout = new QHBoxLayout;
     layout->addWidget(lineEdit);
 	auto helpButton = new QPushButton("Help", this);
 	layout->addWidget(helpButton);
@@ -35,7 +32,7 @@ void STFLQueryWidget::textChanged(){
 
 void STFLQueryWidget::helpRequested()
 {
-	controller->openHelpBrowser("filterquery");
+	showHelp("filterquery");
 }
 
 }}

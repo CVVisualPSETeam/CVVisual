@@ -20,7 +20,7 @@ OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> control
     controller{controller}
 {
     controller->setDefaultSetting("overview", "imgzoom", "20");
-    queryWidget = new qtutil::STFLQueryWidget(controller);
+    queryWidget = new qtutil::STFLQueryWidget();
     table = new OverviewTable(util::makeRef(*controller), this);
     QVBoxLayout *layout = new QVBoxLayout;
     layout->setContentsMargins(0, 0, 0, 0);
@@ -50,6 +50,7 @@ OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> control
 
     setLayout(layout);
     initEngine();
+	connect(queryWidget, SIGNAL(showHelp(QString)), this, SLOT(showHelp(QString)));
     connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
     connect(queryWidget, SIGNAL(filterSignal(QString)), this, SLOT(filterQuery(QString)));
     connect(queryWidget, SIGNAL(requestSuggestions(QString)), this, SLOT(requestSuggestions(QString)));
@@ -147,6 +148,11 @@ void OverviewPanel::toggleImages()
         table->hideImages();
         showImgsButton->setText("Show images");
     }
+}
+
+void OverviewPanel::showHelp(QString topic)
+{
+	controller->openHelpBrowser(topic);
 }
 
 }}
