@@ -10,7 +10,7 @@
 
 int main(int argc, char *argv[])
 {
-	cvv::dbg::setPriority(200);
+	cvv::dbg::setLoggingState(true);
 
 	QApplication a(argc, argv);
 	//TODO Filter<1,1> einfügen

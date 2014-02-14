@@ -68,7 +68,7 @@ public:
 
 int main(int argc, char *argv[])
 {
-	cvv::dbg::setPriority(1000);
+	cvv::dbg::setLoggingState(true);
 	TRACEPOINT;
 
 

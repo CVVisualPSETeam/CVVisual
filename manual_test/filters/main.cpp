@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
 		std::cerr << argv[0] << " must be callled with one or more files as arguments\n";
 		return 1;
 	}
-	cvv::dbg::setPriority(200);
+	cvv::dbg::setLoggingState(true);
 	
 	cvv::gui::FilterCallTab::addFilterViewToMap("DefaultFilterView", makeDefaultFilterView);
 	cvv::gui::FilterCallTab::addFilterViewToMap("DualFilterView", makeDualFilterView);
