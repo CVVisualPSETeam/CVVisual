@@ -11,10 +11,10 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
 
-#include "zoomableimage.hpp"
+#include "../zoomableimage.hpp"
 #include "cvvkeypoint.hpp"
 #include "keypointpen.hpp"
-#include "../dbg/dbg.hpp"
+#include "../../dbg/dbg.hpp"
 
 namespace cvv{namespace qtutil{
 /**
@@ -46,6 +46,10 @@ public:
                QWidget *widget);
 
 	void setZoomableImage(ZoomableImage *image);
+
+	bool imagePointisVisible()
+		{TRACEPOINT;
+		return image_->visibleArea().contains(key_.pt.x,key_.pt.y); }
 signals:
 	void updateShown(bool);
 
@@ -65,6 +69,7 @@ public slots:
 		{TRACEPOINT;return show_;}
 
 	void updateImageSet(const QRectF& visibleArea,const qreal& zoom);
+
 private:
 
 	cv::KeyPoint key_;

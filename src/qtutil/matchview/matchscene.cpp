@@ -4,7 +4,7 @@
 #include <QScrollBar>
 
 #include "matchscene.hpp"
-#include "../dbg/dbg.hpp"
+#include "../../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
 
@@ -31,8 +31,7 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
 	leftImWidget_ 	= graphicScene_->addWidget(leftImage_);
 	rightImWidget_ 	= graphicScene_->addWidget(rightImage_);
 
-	QResizeEvent event{size(),size()};
-	resizeEvent(&event);
+	adjustImages();
 
 	TRACEPOINT;
 }
@@ -50,6 +49,14 @@ void MatchScene::addRightKeyPoint(CVVKeyPoint *keypoint)
 void MatchScene::addMatch(CVVMatch *cvmatch)
 {
 	graphicScene_->addItem(cvmatch);
+}
+
+void MatchScene::adjustImages()
+{
+	TRACEPOINT;
+	QResizeEvent event{size(),size()};
+	resizeEvent(&event);
+	TRACEPOINT;
 }
 
 void MatchScene::resizeEvent(QResizeEvent*)

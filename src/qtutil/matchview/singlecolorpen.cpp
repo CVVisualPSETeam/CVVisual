@@ -9,16 +9,16 @@ namespace cvv{ namespace qtutil{
 	SingleColorPen::SingleColorPen(QWidget * parent):MatchPen{parent}
 	{
 		TRACEPOINT;
-		QVBoxLayout *layout=new QVBoxLayout();
+		auto layout=util::make_unique<QVBoxLayout>();
+		colorDialog_ = new QColorDialog{};
+		auto button=util::make_unique<QPushButton>("Color Dialog");
 		layout->setMargin(0);
-		colorDialog_ = new QColorDialog{this};
-		QPushButton *button=new QPushButton{"Color Dialog"};
-		layout->addWidget(button);
-		setLayout(layout);
 
 		connect(colorDialog_,SIGNAL(currentColorChanged(const QColor &)),
 			this,SLOT(updateColor(const QColor &)));
-		connect(button,SIGNAL(clicked(bool)),this,SLOT(colorButtonClicked()));
+		connect(button.get(),SIGNAL(clicked(bool)),this,SLOT(colorButtonClicked()));
+		layout->addWidget(button.release());
+		setLayout(layout.release());
 		TRACEPOINT;
 	}
 

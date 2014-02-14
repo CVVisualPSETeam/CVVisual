@@ -5,7 +5,7 @@
 #include <QPen>
 
 
-#include "../dbg/dbg.hpp"
+#include "../../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
 

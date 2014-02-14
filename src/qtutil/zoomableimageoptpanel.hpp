@@ -28,13 +28,13 @@ public slots:
 	void setZoom(QRectF,qreal);
 
 private:
-	QDoubleSpinBox *zoomSpin;
-	QLabel *labelConvert;
-	QLabel *labelDim;
-	QLabel *labelType;
-	QLabel *labelChannel;
-	QLabel *labelSize;
-	QLabel *labelDepth;
+	QDoubleSpinBox *zoomSpin_;
+	QLabel *labelConvert_;
+	QLabel *labelDim_;
+	QLabel *labelType_;
+	QLabel *labelChannel_;
+	QLabel *labelSize_;
+	QLabel *labelDepth_;
 
 };
 

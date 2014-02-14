@@ -2,21 +2,25 @@
 #include <QPushButton>
 
 #include "singlecolorkeypointpen.hpp"
+#include "../../util/util.hpp"
 
 namespace cvv{namespace qtutil{
 
-SingleColorKeyPen::SingleColorKeyPen(QWidget * parent):KeyPointPen{parent},colordia_{new QColorDialog{this}}
+SingleColorKeyPen::SingleColorKeyPen(QWidget * parent):KeyPointPen{parent},colordia_{new QColorDialog{}}
 {
 	TRACEPOINT;
-	QVBoxLayout *layout=new QVBoxLayout();
+	auto layout=util::make_unique<QVBoxLayout>();
+	auto button=util::make_unique<QPushButton>("Color Dialog");
+
 	layout->setMargin(0);
-	QPushButton *button=new QPushButton{"Color Dialog"};
-	layout->addWidget(button);
-	setLayout(layout);
 
 	connect(colordia_,SIGNAL(currentColorChanged(const QColor &)),
 		this,SLOT(updateColor(const QColor &)));
-	connect(button,SIGNAL(clicked(bool)),this,SLOT(colorButtonClicked()));
+	connect(button.get(),SIGNAL(clicked(bool)),this,SLOT(colorButtonClicked()));
+
+	layout->addWidget(button.release());
+	setLayout(layout.release());
+
 	TRACEPOINT;
 }
 

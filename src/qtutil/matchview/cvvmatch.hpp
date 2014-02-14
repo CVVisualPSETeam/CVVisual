@@ -12,10 +12,10 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
-#include "zoomableimage.hpp"
+#include "../zoomableimage.hpp"
 #include "matchpen.hpp"
 #include "cvvkeypoint.hpp"
-#include "../dbg/dbg.hpp"
+#include "../../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
 
@@ -56,7 +56,7 @@ public slots:
 	
 	void updateLeftKey(bool visible);
 	
-private:
+protected:
 	
 	CVVKeyPoint *left_key_;
 	CVVKeyPoint *right_key_;

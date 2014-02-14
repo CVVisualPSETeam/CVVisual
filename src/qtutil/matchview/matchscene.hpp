@@ -12,9 +12,9 @@
 #include "opencv2/features2d/features2d.hpp"
 #include "cvvmatch.hpp"
 #include "cvvkeypoint.hpp"
-#include "zoomableimage.hpp"
-#include "zoomableimageoptpanel.hpp"
-#include "../dbg/dbg.hpp"
+#include "../zoomableimage.hpp"
+#include "../zoomableimageoptpanel.hpp"
+#include "../../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
 
@@ -30,6 +30,7 @@ public:
 
 	std::unique_ptr<ZoomableOptPanel> getRightMatInfoWidget()
 		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*rightImage_);}
+	void adjustImages();
 
 public slots:
 	void addLeftKeypoint(CVVKeyPoint*);

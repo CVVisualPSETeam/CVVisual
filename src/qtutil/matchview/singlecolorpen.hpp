@@ -8,7 +8,7 @@
 
 #include "matchpen.hpp"
 #include "cvvmatch.hpp"
-#include "../dbg/dbg.hpp"
+#include "../../dbg/dbg.hpp"
 
 namespace cvv{namespace qtutil{
 
