@@ -49,7 +49,7 @@ public:
 	/**
 	 * @brief The default contructor for this class.
 	 */
-    ViewController();
+	ViewController();
 
     /**
      * @brief Adds the new call tab type.

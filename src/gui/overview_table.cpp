@@ -81,4 +81,16 @@ void OverviewTable::updateUI()
 	TRACEPOINT;
 }
 
+void OverviewTable::removeElement(size_t id)
+{
+	for (auto *subTable : subTables)
+	{
+		if (subTable->hasRow(id))
+		{
+			subTable->removeRow(id);
+			break;
+		}
+	}
+}
+
 }}

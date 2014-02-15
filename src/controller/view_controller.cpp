@@ -158,7 +158,7 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
     TRACEPOINT;
 	if (deleteCall && hasCall(tabId))
     {
-        ovPanel->deleteElement(tabId);
+        ovPanel->removeElement(tabId);
         impl::dataController().removeCall(tabId);
     }
     TRACEPOINT;

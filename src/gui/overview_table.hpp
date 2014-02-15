@@ -62,6 +62,12 @@ public:
 	 * Updates all subtables.
 	 */
 	void updateUI();
+	
+	/**
+	 * @brief Removes the table element with the given id.
+	 * @param id given element id
+	 */
+	void removeElement(size_t id);
 
 private:
 	util::Reference<controller::ViewController> controller;

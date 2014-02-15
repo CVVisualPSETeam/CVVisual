@@ -60,7 +60,7 @@ public:
      * @brief Removes and deletes the element with the given id.
      * @param id given element id
      */
-    void deleteElement(size_t id);
+    void removeElement(size_t id);
 
 private slots:
 

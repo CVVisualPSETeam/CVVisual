@@ -182,4 +182,31 @@ void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
 	TRACEPOINT;
 }
 
+void OverviewGroupSubtable::removeRow(size_t id)
+{
+	TRACEPOINT;
+	for (size_t i = 0; i < group.size(); i++)
+	{
+		if (group.get(i).id() == id)
+		{
+			group.removeElement(i);
+			updateUI();
+			break;
+		}
+	}
+	TRACEPOINT;
+}
+
+bool OverviewGroupSubtable::hasRow(size_t id)
+{
+	for (size_t i = 0; i < group.size(); i++)
+	{
+		if (group.get(i).id() == id)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 }}

@@ -116,12 +116,12 @@ void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
     TRACEPOINT;
 }
 
-void OverviewPanel::deleteElement(size_t id)
+void OverviewPanel::removeElement(size_t id)
 {
 	TRACEPOINT;
     queryEngine.removeElements([id](OverviewTableRow elem) {return elem.id() == id;});
     TRACEPOINT;
-    table->updateRowGroups(queryEngine.reexecuteLastQuery());
+    table->removeElement(id);
     TRACEPOINT;
 }
 

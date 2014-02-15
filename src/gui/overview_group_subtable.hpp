@@ -45,6 +45,19 @@ public:
 	 * @brief Updates the displayed table UI.
 	 */
 	void updateUI();
+	
+	/**
+	 * @brief Remove the row with the given id.
+	 * @param given table row id
+	 */
+	void removeRow(size_t id);
+	
+	/**
+	 * @brief Checks whether or not the table shows the row with the given id.
+	 * @param id given row id
+	 * @return Does the table show the row with the given id?
+	 */
+	bool hasRow(size_t id);
 
 protected:
 	void resizeEvent(QResizeEvent *event);

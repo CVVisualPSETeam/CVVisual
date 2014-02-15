@@ -31,7 +31,7 @@ public:
 	 * @param _titles title of this group, consisting of several sub titles
 	 * @param _elements elements of this group 
 	 */
-    ElementGroup(const QStringList _titles, const QList<Element> &_elements):
+    ElementGroup(const QStringList _titles, QList<Element> &_elements):
         titles{_titles}, elements{_elements} {}
 	/**
 	 * @brief Checks whether or not this group contains the element.
@@ -92,9 +92,23 @@ public:
 		return this->elements[index];
 	}
 
+	/**
+	 * @brief Remove the element at the given index.
+	 * @param index given element index
+	 */
+	void removeElement(size_t index)
+	{
+		TRACEPOINT;
+		if (index < elements.size())
+		{
+			elements.removeAt(index);
+		}
+		TRACEPOINT;
+	}
+	
 private:
 	const QStringList titles;
-	const QList<Element> elements;
+	QList<Element> elements;
 };
 
 
