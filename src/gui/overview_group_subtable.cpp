@@ -174,4 +174,12 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 	TRACEPOINT;
 }
 
+void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
+{
+	TRACEPOINT;
+	(void)event;
+	updateUI();
+	TRACEPOINT;
+}
+
 }}

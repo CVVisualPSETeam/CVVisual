@@ -36,8 +36,6 @@ void STFLQueryWidgetLineEdit::keyPressEvent(QKeyEvent *e)
         // The following keys are forwarded by the completer to the widget
         switch (e->key())
         {
-        case Qt::Key_Enter:
-        case Qt::Key_Return:
         case Qt::Key_Escape:
         case Qt::Key_Backtab:
             e->ignore();

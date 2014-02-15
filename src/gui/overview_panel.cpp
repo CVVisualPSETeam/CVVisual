@@ -53,7 +53,7 @@ OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> control
     setLayout(layout);
     initEngine();
 	connect(queryWidget, SIGNAL(showHelp(QString)), this, SLOT(showHelp(QString)));
-    connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
+    //connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
     connect(queryWidget, SIGNAL(filterSignal(QString)), this, SLOT(filterQuery(QString)));
     connect(queryWidget, SIGNAL(requestSuggestions(QString)), this, SLOT(requestSuggestions(QString)));
     TRACEPOINT;

@@ -305,8 +305,11 @@ public:
 	 * @param func function returning an integer for an element, which is used for filtering,
 	 * sorting and grouping
 	 * @param withFilterCS does the filter allow several, comma separated arguments? 
+	 * @param widthRangeCmd add `[command]_range` (inclusive) range filter?
+	 * @note Range filter only works if withFilterCS is true.
 	 */
-	void addIntegerCmdFunc(QString command, std::function<int(const Element&)> func, bool withFilterCS = true)
+	void addIntegerCmdFunc(QString command, std::function<int(const Element&)> func, 
+		bool withFilterCS = true, bool withRangeCmd = true)
 	{
 		TRACEPOINT;
 		if (withFilterCS)
@@ -319,6 +322,25 @@ public:
 			{
 				return qtutil::createStringSet(QString::number(func(elem)));
 			};
+			
+			if (withRangeCmd)
+			{
+				QString range_cmd = command + "_range";
+				auto filterFunc = filterCSFuncs[command];
+				filterCSFuncs[range_cmd] = [func, filterFunc](const QStringList& args, const Element &elem)
+				{
+					if (args.size() < 2)
+					{
+						return true;
+					}
+					bool ok = true;
+					long first = args[0].toLong(&ok);
+					long second = args[1].toLong(&ok);
+					int intElem = func(elem);
+					return !ok || (first <= intElem  && intElem <= second);
+				};
+				filterCSPoolFuncs[range_cmd] = filterCSPoolFuncs[command];
+			}
 		}
 		else
 		{
@@ -351,9 +373,12 @@ public:
 	 * @param command filter, group and sort command name
 	 * @param func function returning a float for an element, which is used for filtering,
 	 * sorting and grouping
-	 * @param withFilterCS does the filter allow several, comma separated arguments? 
+	 * @param withFilterCS does the filter allow several, comma separated arguments?
+	 * @param widthRangeCmd add `[command]_range` (inclusive) range filter?
+	 * @note Range filter only works if withFilterCS is true.
 	 */
-	void addFloatCmdFunc(QString command, std::function<float(const Element&)> func, bool withFilterCS = true)
+	void addFloatCmdFunc(QString command, std::function<float(const Element&)> func,
+		bool withFilterCS = true, bool withRangeCmd = true)
 	{
 		TRACEPOINT;
 		if (withFilterCS)
@@ -366,6 +391,25 @@ public:
 			{
 				return qtutil::createStringSet(QString::number(func(elem)));
 			};
+			
+			if (withRangeCmd)
+			{
+				QString range_cmd = command + "_range";
+				auto filterFunc = filterCSFuncs[command];
+				filterCSFuncs[range_cmd] = [func, filterFunc](const QStringList& args, const Element &elem)
+				{
+					if (args.size() < 2)
+					{
+						return true;
+					}
+					bool ok = true;
+					long first = args[0].toDouble(&ok);
+					long second = args[1].toDouble(&ok);
+					float floatElem = func(elem);
+					return !ok || (first <= floatElem  && floatElem <= second);
+				};
+				filterCSPoolFuncs[range_cmd] = filterCSPoolFuncs[command];
+			}
 		}
 		else
 		{
@@ -850,7 +894,9 @@ private:
 				{
 					auto wordB = word2.leftJustified(15, ' ');
 					int editDist = editDistance(wordA, wordB);
-					if (word.startsWith(word2) || word2.startsWith(word))
+					if (word.startsWith(word2) || word2.startsWith(word)
+						|| (word.size() > 2 && (word2.endsWith(word) ||
+							word.endsWith(word2))))
 					{
 						editDist /= 8;
 					}

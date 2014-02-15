@@ -46,6 +46,9 @@ public:
 	 */
 	void updateUI();
 
+protected:
+	void resizeEvent(QResizeEvent *event);
+
 private slots:
 	void rowClicked(int row, int collumn);
 	void customMenuRequested(QPoint location);
