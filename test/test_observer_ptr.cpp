@@ -10,10 +10,10 @@ using cvv::util::ObserverPtr;
 TEST_F(ObserverPtrTest, ConstructionAssignment)
 {
 	ObserverPtr<int> ptr = nullptr;
-	EXPECT_EQ(true, ptr.isNull());
+	EXPECT_TRUE(ptr.isNull());
 	int x = 3;
 	ptr = x;
-	EXPECT_EQ(false, ptr.isNull());
+	EXPECT_FALSE(ptr.isNull());
 	EXPECT_EQ(&x, ptr.getPtr());
 
 }
