@@ -116,6 +116,7 @@ private:
 	util::Reference<cvv::controller::ViewController> viewController_;
 	QString filterViewId_;
 	cvv::view::FilterView* filterView_;
+	std::map<QString, cvv::view::FilterView*> viewHistory_;
 
 	QPushButton* helpButton_;
 	QPushButton* setAsDefaultButton_;

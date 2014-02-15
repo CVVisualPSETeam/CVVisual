@@ -77,7 +77,9 @@ void FilterCallTab::currentIndexChanged(const QString& text)
 {
 	TRACEPOINT;
 	filterViewId_ = text;
-	delete filterView_;
+	//delete filterView_;
+	vlayout_->removeWidget(filterView_);
+	filterView_->setVisible(false);
 	setView(filterViewId_);
 	TRACEPOINT;
 }
@@ -146,16 +148,25 @@ void FilterCallTab::setView(const QString &viewId)
 	TRACEPOINT;
 	try
 	{
+		filterView_ = viewHistory_.at(viewId);
+		vlayout_->addWidget(filterView_);
+		filterView_->setVisible(true);
+	} catch (std::out_of_range&)
+	{
+	try
+	{
 		auto fct = registeredElements_.at(viewId);
 		std::vector<cv::Mat> images;
 		images. push_back(filterCall_->original());
 		images.push_back(filterCall_->result());
-		filterView_ = (fct(images, this)).release();
+		viewHistory_.emplace(viewId, (fct(images, this).release()));
+		filterView_ = viewHistory_.at(viewId);
 		vlayout_->addWidget(filterView_);
 	} catch (std::out_of_range&)
 	{
 		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
 		throw;
+	}
 	}
 	TRACEPOINT;
 }
