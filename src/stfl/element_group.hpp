@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <stdexcept>
 
+#include "../dbg/dbg.hpp"
+
 namespace cvv {
 namespace stfl {
 
@@ -19,62 +21,74 @@ class ElementGroup
 {
 public:
 	
-    ElementGroup(){
-        //titles = QStringList();
-        //elements = QList<Element>();
-    }
+	/**
+	 * @brief Contructs an empty ElementGroup.
+	 */
+    ElementGroup(){}
 	
 	/**
-	 * Constructs a new ElementGroup
+	 * @brief Constructs a new ElementGroup
 	 * @param _titles title of this group, consisting of several sub titles
 	 * @param _elements elements of this group 
 	 */
     ElementGroup(const QStringList _titles, const QList<Element> &_elements):
         titles{_titles}, elements{_elements} {}
 	/**
-	 * Checks whether or not this group contains the element.
+	 * @brief Checks whether or not this group contains the element.
+	 * @param element element to be checked
+	 * @return does this group contain the given element?
 	 */
 	bool contains(const Element &element)
 	{
+		TRACEPOINT;
 		return this->elements.contains(element);
 	}
 
 	/**
-	 * Return the inherited elements.
+	 * @brief Return the inherited elements.
+	 * @return the interited elements
 	 */
 	QList<Element> getElements()
 	{
+		TRACEPOINT;
 		return this->elements;
 	}
 
 	/**
-	 * Returns the number of elements in this group.
+	 * @brief Returns the number of elements in this group.
+	 * @return number of elements in this group
 	 */
     size_t size() const
 	{
+		TRACEPOINT;
 		return this->elements.size();
 	}
 
     /**
-     * Returns the title (consisting of sub titles).
+     * @brief Returns the title (consisting of sub titles).
+     * @return the group title
      */
     QStringList getTitles() const
     {
+		TRACEPOINT;
         return this->titles;
     }
 
 	/**
-	 * Get the element at the given index (in this group).
+	 * @brief Get the element at the given index (in this group).
 	 * 
 	 * @param index given index
+	 * @return element at the given index
 	 * @throws std::invalid_argument if no such element exists
 	 */
 	Element get(size_t index)
 	{
+		TRACEPOINT;
 		if (index >= size())
 		{
 			throw std::invalid_argument{"there is no call with this id"};
 		}
+		TRACEPOINT;
 		return this->elements[index];
 	}
 

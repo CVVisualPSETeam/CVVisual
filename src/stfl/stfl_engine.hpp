@@ -25,7 +25,9 @@ namespace cvv {
 namespace stfl {
 
 /**
- * Parses and interprets text queries on its inherited elements.
+ * @brief Parses and interprets text queries on its inherited elements.
+ * The queries are written in a simple filter language.
+ * @see http://cvv.mostlynerdless.de/ref/filterquery.html
  */
 template<typename Element>
 class STFLEngine
@@ -40,7 +42,16 @@ public:
 
 	/**
 	 * @brief Constructs (and initializes) a new engine.
-	 * @todo add function parameters
+	 * 
+	 * @param filterFuncs map mapping a filter command to a filter function
+	 * @param filterPoolFuncs map mapping a filter command to a filter pool function
+	 * (that returns a value the filter command filters on for a given element)
+	 * @param filterCSFuncs map mapping a filter cs command (it allows comma separated arguments
+	 * to a filter function
+	 * @param filterCSPoolFuncs map mapping a filter cs command to a filter pool function
+	 * @param sortFuncs map mapping a sort command to sort function
+	 * @param groupFuncs map mapping a group command to a grouping function (a function returning a grooup name 
+	 * for a given element)
 	 */
 	STFLEngine(QMap<QString, std::function<bool(const QString&, const Element&) > > filterFuncs,
 			   QMap<QString, std::function<QString(const Element&)> > filterPoolFuncs,
@@ -51,7 +62,9 @@ public:
 		filterFuncs{filterFuncs}, filterPoolFuncs{filterPoolFuncs}, filterCSFuncs{filterCSFuncs},
 		filterCSPoolFuncs{filterCSPoolFuncs}, sortFuncs{sortFuncs}, groupFuncs{groupFuncs}
 	{
+		TRACEPOINT;
 		initSupportedCommandsList();
+		TRACEPOINT;
 	}
 
 	/**
@@ -60,19 +73,10 @@ public:
 	 */
 	void addNewElement(Element element)
 	{
+		TRACEPOINT;
 		elements.append(element);
-		auto it = filterPoolFuncs.begin();
-		while (it != filterPoolFuncs.end())
-		{
-			filterPool[it.key()].insert(it.value()(element));
-			++it;
-		}
-		auto it2 = filterCSPoolFuncs.begin();
-		while (it2 != filterCSPoolFuncs.end())
-		{
-			filterCSPool[it2.key()].unite(it2.value()(element));
-			++it2;
-		}
+		updateFilterPools(element);
+		TRACEPOINT;
 	}
 
 	/**
@@ -84,6 +88,7 @@ public:
 	 */
 	QStringList getSuggestions(QString _query, size_t number = 100)
 	{
+		TRACEPOINT;
 		QString query(_query);
 		bool addedRaw = false;
 		if (!query.startsWith("#")){
@@ -123,11 +128,18 @@ public:
 				replaceIfStartsWith(suggs[i], "raw ", "");
 			}
 		}
+		TRACEPOINT;
 		return suggs;
 	}
 
+	/**
+	 * @brief Executes the given query on its elements.
+	 * @param query given query
+	 * @return the resulting element groups
+	 */
 	std::vector<ElementGroup<Element> > query(QString query)
 	{
+		TRACEPOINT;
 		lastQuery = query;
 		if (!query.startsWith("#"))
 		{
@@ -138,12 +150,13 @@ public:
 		elemList = executeFilters(elements, cmdStrings);
 		elemList = executeSortCmds(elemList, cmdStrings);
 		auto groups = executeGroupCmds(elemList, cmdStrings);
+		TRACEPOINT;
 		return groups;
 	}
 
 	/**
 	 * @brief Reexecutes the last query.
-	 * If no query had been executed before, a blank string is used.
+	 * @note If no query had been executed before, a blank string is used.
 	 *
 	 * @return query result.
 	 */
@@ -158,11 +171,13 @@ public:
 	 * @param newElements new elements
 	 */
 	void addElements(QList<Element> newElements)
-	{							
+	{
+		TRACEPOINT;
 		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
 		}
+		TRACEPOINT;
 	}
 										
 	/**
@@ -172,167 +187,222 @@ public:
 	 */
 	void setElements(std::vector<Element> &newElements)
 	{
+		TRACEPOINT;
 		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
 		}
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
-	void setFilterFunc(QString key, std::function<bool(const QString&, const Element&)> func){
-		filterFuncs[key] = func;
+	/**
+	 * @brief Sets the filter function for the given filter command.
+	 * @param command given filter command
+	 * @param func filter function
+	 */
+	void setFilterFunc(QString command, std::function<bool(const QString&, const Element&)> func){
+		TRACEPOINT;
+		filterFuncs[command] = func;
 		initSupportedCommandsList();
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
-	void setFilterPoolFunc(QString key, std::function<QString(const Element&)> func){
-		filterPoolFuncs[key] = func;
+	/**
+	 * @brief Sets the filter pool function for the given filter command.
+	 * @param command given filter command
+	 * @param func filter pool function
+	 */
+	void setFilterPoolFunc(QString command, std::function<QString(const Element&)> func){
+		TRACEPOINT;
+		filterPoolFuncs[command] = func;
 		initSupportedCommandsList();
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
-	void setFilterCSFunc(QString key, std::function<bool(const QStringList&, const Element&) >  func){
-		filterCSFuncs[key] = func;
+	/**
+	 * @brief Sets the filter cs function for the given filter command.
+	 * A filter cs is a filter that accepts several comma separated arguments.
+	 * @param command given filter command
+	 * @param func filter function
+	 */
+	void setFilterCSFunc(QString command, std::function<bool(const QStringList&, const Element&) >  func){
+		TRACEPOINT;
+		filterCSFuncs[command] = func;
 		initSupportedCommandsList();
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
-	void setFilterCSPoolFunc(QString key, std::function<QSet<QString>(const Element&) > func){
-		filterCSPoolFuncs[key] = func;
+	/**
+	 * @brief Sets the filter cs pool function for the given filter command.
+	 * A filter cs is a filter that accepts several comma separated arguments.
+	 * @param command given filter command
+	 * @param func filter pool function
+	 */
+	void setFilterCSPoolFunc(QString command, std::function<QSet<QString>(const Element&) > func){
+		TRACEPOINT;
+		filterCSPoolFuncs[command] = func;
 		initSupportedCommandsList();
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
 	/**
 	 * @brief Derives a basic filter, group and sort function from the given function.
-	 * Slightly slower than just creating the methods on your on and adding them
+	 * @note It's slightly slower than just creating the methods on your on and adding them
 	 * with the appropriate setters.
-	 * Please call this method only during the initialization of the STFLEngine object
-	 * with in your code.
+	 * @param command filter, group and sort command name
+	 * @param func function returning a string for an element, which is used for filtering,
+	 * sorting and grouping
+	 * @param withFilterCS does the filter allow several, comma separated arguments? 
 	 */
-	void addStringCmdFunc(QString key, std::function<QString(const Element&)> func, bool withFilterCS = true)
+	void addStringCmdFunc(QString command, std::function<QString(const Element&)> func, bool withFilterCS = true)
 	{
+		TRACEPOINT;
 		if (withFilterCS)
 		{
-			filterCSFuncs[key] = [func](const QStringList& args, const Element &elem)
+			filterCSFuncs[command] = [func](const QStringList& args, const Element &elem)
 			{
 					return args.contains(func(elem));
 			};
-			filterCSPoolFuncs[key] = [func](const Element &elem)
+			filterCSPoolFuncs[cpmmand] = [func](const Element &elem)
 			{
 				return qtutil::createStringSet(func(elem));
 			};
 		}
 		else
 		{
-			filterFuncs[key] = [func](const QString& query, const Element& elem)
+			filterFuncs[command] = [func](const QString& query, const Element& elem)
 			{
 				return query == func(elem);
 			};
-			filterPoolFuncs[key] = [func](const Element& elem)
+			filterPoolFuncs[command] = [func](const Element& elem)
 			{
 				return func(elem);
 			};
 		}
-		sortFuncs[key] = [func](const Element &elem1, const Element& elem2)
+		sortFuncs[command] = [func](const Element &elem1, const Element& elem2)
 		{
 			return func(elem1) < func(elem2);
 		};
-		groupFuncs[key] = [func](const Element& elem)
+		groupFuncs[command] = [func](const Element& elem)
 		{
 			return func(elem);
 		};
 		initSupportedCommandsList();
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
 	/**
-	 * @brief Derives a basic filter, group and sort function from the given function.
-	 * Slightly slower than just creating the methods on your on and adding them
+	 * @brief Derives a basic (int based) filter, group and sort function from the given function.
+	 * @note It's slightly slower than just creating the methods on your on and adding them
 	 * with the appropriate setters.
-	 * Please call this method only during the initialization of the STFLEngine object
-	 * with in your code.
+	 * @param command filter, group and sort command name
+	 * @param func function returning an integer for an element, which is used for filtering,
+	 * sorting and grouping
+	 * @param withFilterCS does the filter allow several, comma separated arguments? 
 	 */
-	void addIntegerCmdFunc(QString key, std::function<int(const Element&)> func, bool withFilterCS = true)
+	void addIntegerCmdFunc(QString command, std::function<int(const Element&)> func, bool withFilterCS = true)
 	{
+		TRACEPOINT;
 		if (withFilterCS)
 		{
-			filterCSFuncs[key] = [func](const QStringList& args, const Element &elem)
+			filterCSFuncs[command] = [func](const QStringList& args, const Element &elem)
 			{
 				return args.contains(QString::number(func(elem)));
 			};
-			filterCSPoolFuncs[key] = [func](const Element &elem)
+			filterCSPoolFuncs[command] = [func](const Element &elem)
 			{
 				return qtutil::createStringSet(QString::number(func(elem)));
 			};
 		}
 		else
 		{
-			filterFuncs[key] = [func](const QString& query, const Element& elem)
+			filterFuncs[command] = [func](const QString& query, const Element& elem)
 			{
 				return query.toInt() == func(elem);
 			};
-			filterPoolFuncs[key] = [func](const Element& elem)
+			filterPoolFuncs[command] = [func](const Element& elem)
 			{
 				return QString::number(func(elem));
 			};
 		}
-		sortFuncs[key] = [func](const Element &elem1, const Element& elem2)
+		sortFuncs[command] = [func](const Element &elem1, const Element& elem2)
 		{
 			return func(elem1) < func(elem2);
 		};
-		groupFuncs[key] = [func, key](const Element& elem)
+		groupFuncs[command] = [func, command](const Element& elem)
 		{
-			return QString(key + " %1").arg(func(elem));
+			return QString(command + " %1").arg(func(elem));
 		};
 		initSupportedCommandsList();
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
 	/**
-	 * @brief Derives a basic filter, group and sort function from the given function.
-	 * Slightly slower than just creating the methods on your on and adding them
+	 * @brief Derives a basic (float based) filter, group and sort function from the given function.
+	 * @note It's slightly slower than just creating the methods on your on and adding them
 	 * with the appropriate setters.
-	 * Please call this method only during the initialization of the STFLEngine object
-	 * with in your code.
+	 * @param command filter, group and sort command name
+	 * @param func function returning a float for an element, which is used for filtering,
+	 * sorting and grouping
+	 * @param withFilterCS does the filter allow several, comma separated arguments? 
 	 */
-	void addFloatCmdFunc(QString key, std::function<float(const Element&)> func, bool withFilterCS = true)
+	void addFloatCmdFunc(QString command, std::function<float(const Element&)> func, bool withFilterCS = true)
 	{
+		TRACEPOINT;
 		if (withFilterCS)
 		{
-			filterCSFuncs[key] = [func](const QStringList& args, const Element &elem)
+			filterCSFuncs[command] = [func](const QStringList& args, const Element &elem)
 			{
 				return args.contains(QString::number(func(elem)));
 			};
-			filterCSPoolFuncs[key] = [func](const Element &elem)
+			filterCSPoolFuncs[command] = [func](const Element &elem)
 			{
 				return qtutil::createStringSet(QString::number(func(elem)));
 			};
 		}
 		else
 		{
-			filterFuncs[key] = [func](const QString& query, const Element& elem)
+			filterFuncs[command] = [func](const QString& query, const Element& elem)
 			{
 				return query.toFloat() == func(elem);
 			};
-			filterPoolFuncs[key] = [func](const Element& elem)
+			filterPoolFuncs[command] = [func](const Element& elem)
 			{
 				return QString::number(func(elem));
 			};
 		}
-		sortFuncs[key] = [func](const Element &elem1, const Element& elem2)
+		sortFuncs[command] = [func](const Element &elem1, const Element& elem2)
 		{
 			return func(elem1) < func(elem2);
 		};
-		groupFuncs[key] = [func, key](const Element& elem)
+		groupFuncs[command] = [func, command](const Element& elem)
 		{
-			return QString(key + " %1").arg(func(elem));
+			return QString(command + " %1").arg(func(elem));
 		};
 		initSupportedCommandsList();
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
 
 	/**
-	 * @brief Removes the elements that match the filter function.
-	 * @brief filterFunc filter function
+	 * @brief Removes the elements that match the given function.
+	 * @param matchFunc given match function
 	 */
-	void removeElements(std::function<bool(const Element&)> filterFunc)
+	void removeElements(std::function<bool(const Element&)> matchFunc)
 	{
+		TRACEPOINT;
 		auto newEnd = std::remove_if(elements.begin(), elements.end(), filterFunc);
 		elements.erase(newEnd, elements.end());
+		reinitFilterPools();
+		TRACEPOINT;
 	}
 
 private:
@@ -349,6 +419,7 @@ private:
 
 	QMap<QString, std::function<int(const Element&, const Element&) >> sortFuncs;
 	QMap<QString, std::function<QString(const Element&) >> groupFuncs;
+	
 	QList<Element> executeFilters(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
 		TRACEPOINT;
@@ -404,6 +475,7 @@ private:
 
 	QList<Element> executeSortCmds(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
+		TRACEPOINT;
 		QList < std::pair<QString, bool> > sortCmds;
 		for (QString cmdString : cmdStrings)
 		{
@@ -438,6 +510,7 @@ private:
 				}
 			}
 		}
+		TRACEPOINT;
 		QList<Element> resList(elements);
 		for (auto sortCmd : sortCmds)
 		{
@@ -458,6 +531,7 @@ private:
 				});
 			}
 		}
+		TRACEPOINT;
 		return resList;
 	}
 
@@ -466,8 +540,7 @@ private:
 	 */
 	std::vector<ElementGroup<Element> > executeGroupCmds(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
-		(void)cmdStrings;
-		(void)elements;
+		TRACEPOINT;
 		QStringList groupCmds;
 		for (QString cmdString : cmdStrings)
 		{
@@ -496,6 +569,7 @@ private:
 				groupCmds.append(cmdPartList[0]);
 			}
 		}
+		TRACEPOINT;
 		std::vector<ElementGroup<Element> > groupList;
 		std::map<QString, QList<Element>> groups{};
 		for (auto &element : elements)
@@ -516,11 +590,13 @@ private:
 			ElementGroup<Element> elementGroup(it->first.split("\\|" , QString::SkipEmptyParts), it->second);
 			groupList.push_back(elementGroup);
 		}
+		TRACEPOINT;
 		return groupList;
 	}
 
 	QStringList getSuggestionsForCmdQuery(const QString &cmdQuery, size_t number)
 	{
+		TRACEPOINT;
 		QStringList tokens = cmdQuery.split(" ");
 		QStringList suggs;
 		if (tokens.empty())
@@ -528,12 +604,6 @@ private:
 			return suggs;
 		}
 		bool hasByString = tokens.size() >= 2 && tokens[1] == "by";
-		/*bool cmdFollowedBySpace = false;
-		if (hasByString && tokens.size() >= 3)
-			cmdFollowedBySpace = tokens[2] == "";
-		else if (tokens.size() >= 2)
-			cmdFollowedBySpace = tokens[1];*/
-
 		QString cmd = tokens[0];
 		if (cmd == "group" || cmd == "sort")
 		{
@@ -590,11 +660,13 @@ private:
 				sugg = cmd + " " + sugg;
 			}
 		}
+		TRACEPOINT;
 		return suggs.mid(0, number);
 	}
 
 	QStringList getSuggestionsForSortCmd(QStringList args)
 	{
+		TRACEPOINT;
 		QString last;
 		if (args.empty())
 		{
@@ -630,11 +702,13 @@ private:
 		{
 			joinCommand(item, "sort by ", args);
 		}
+		TRACEPOINT;
 		return list;
 	}
 
 	QStringList getSuggestionsForGroupCmd(QStringList args)
 	{
+		TRACEPOINT;
 		QString last;
 		if (args.empty())
 		{
@@ -650,17 +724,20 @@ private:
 		{
 			joinCommand(item, "group by ", args);
 		}
+		TRACEPOINT;
 		return list;
 	}
 
 	QStringList getSuggestionsForFilterCmd(const QString &cmd, const QString &argument)
 	{
+		TRACEPOINT;
 		QStringList pool(filterPool[cmd].toList());
 		return sortStringsByStringEquality(pool, argument);
 	}
 
 	QStringList getSuggestionsForFilterCSCmd(const QString &cmd, QStringList args)
 	{
+		TRACEPOINT;
 		QString last;
 		if (args.empty())
 		{
@@ -676,11 +753,13 @@ private:
 		{
 			joinCommand(item, cmd, args, true);
 		}
+		TRACEPOINT;
 		return list;
 	}
 
 	QStringList getSuggestionsForCmd(const QString &cmd)
 	{
+		TRACEPOINT;
 		return sortStringsByStringEquality(supportedCmds, cmd);
 	}
 
@@ -690,6 +769,7 @@ private:
 	 */
 	void initSupportedCommandsList()
 	{
+		TRACEPOINT;
 		QStringList list;
 		list.append(filterFuncs.keys());
 		list.append(filterCSFuncs.keys());
@@ -702,6 +782,51 @@ private:
 			list.append("sort by " + key);
 		}
 		supportedCmds = list;
+		TRACEPOINT;
+	}
+	
+	void updateFilterPools(Element element)
+	{
+		TRACEPOINT;
+		auto it = filterPoolFuncs.begin();
+		while (it != filterPoolFuncs.end())
+		{
+			filterPool[it.key()].insert(it.value()(element));
+			++it;
+		}
+		auto it2 = filterCSPoolFuncs.begin();
+		while (it2 != filterCSPoolFuncs.end())
+		{
+			filterCSPool[it2.key()].unite(it2.value()(element));
+			++it2;
+		}
+		TRACEPOINT;
+	}
+	
+	void reinitFilterPools()
+	{
+		TRACEPOINT;
+		auto it = filterPoolFuncs.begin();
+		while (it != filterPoolFuncs.end())
+		{
+			filterPool[it.key()].clear();
+			for (auto element : elements)
+			{
+				filterPool[it.key()].insert(it.value()(element));
+			}
+			++it;
+		}
+		auto it2 = filterCSPoolFuncs.begin();
+		while (it != filterCSPoolFuncs.end())
+		{
+			filterCSPool[it.key()].clear();
+			for (auto element : elements)
+			{
+				filterCSPool[it.key()].insert(it.value()(element));
+			}
+			++it;
+		}
+		TRACEPOINT;
 	}
 
 	/**
@@ -712,6 +837,7 @@ private:
 	 */
 	QStringList sortStringsByStringEquality(const QStringList &strings, QString compareWith)
 	{
+		TRACEPOINT;
 		QMap<int, QStringList> weightedStrings;
 		auto compareWithWords = compareWith.split(" ", QString::SkipEmptyParts);
 		for (const QString &str : strings)
@@ -743,31 +869,37 @@ private:
 			list.sort();
 			retList.append(list);
 		}
+		TRACEPOINT;
 		return retList;
 	}
 
 	bool isSortCmd(const QString &cmd)
 	{
+		TRACEPOINT;
 		return sortFuncs.count(cmd) > 0;
 	}
 
 	bool isGroupCmd(const QString &cmd)
 	{
+		TRACEPOINT;
 		return groupFuncs.count(cmd) > 0;
 	}
 
 	bool isFilterCmd(const QString &cmd)
 	{
+		TRACEPOINT;
 		return filterFuncs.count(cmd) > 0;
 	}
 
 	bool isFilterCSCmd(const QString &cmd)
 	{
+		TRACEPOINT;
 		return filterCSFuncs.count(cmd) > 0;
 	}
 
 	void joinCommand(QString &item, const QString &cmd, QStringList args, bool omitCmd = false)
 	{
+		TRACEPOINT;
 		if (args.size() == 0)
 		{
 			item = "";
@@ -783,10 +915,11 @@ private:
 		{
 			item = cmd + item;
 		}
+		TRACEPOINT;
 	}
 };
 
 }
 }
 
-#endif // BERRYENGINE_H
+#endif

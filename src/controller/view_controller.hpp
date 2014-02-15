@@ -196,11 +196,9 @@ private:
     QSettings settings{"CVVisual", QSettings::IniFormat};
 
     std::map<size_t, std::unique_ptr<gui::CallWindow>> windowMap{};
-    //non-owning:
     gui::MainCallWindow *mainWindow;
 
     std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
-    //non-owning:
     gui::OverviewPanel* ovPanel;
 	bool doesShowExitProgramButton = false;
 
