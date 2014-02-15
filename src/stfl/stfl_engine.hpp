@@ -27,7 +27,7 @@ namespace stfl {
 /**
  * @brief Parses and interprets text queries on its inherited elements.
  * The queries are written in a simple filter language.
- * @see http://cvv.mostlynerdless.de/ref/filterquery.html
+ * @see http://cvv.mostlynerdless.de/ref/filterquery-ref.html
  */
 template<typename Element>
 class STFLEngine
@@ -268,7 +268,7 @@ public:
 			{
 					return args.contains(func(elem));
 			};
-			filterCSPoolFuncs[cpmmand] = [func](const Element &elem)
+			filterCSPoolFuncs[command] = [func](const Element &elem)
 			{
 				return qtutil::createStringSet(func(elem));
 			};
@@ -399,7 +399,7 @@ public:
 	void removeElements(std::function<bool(const Element&)> matchFunc)
 	{
 		TRACEPOINT;
-		auto newEnd = std::remove_if(elements.begin(), elements.end(), filterFunc);
+		auto newEnd = std::remove_if(elements.begin(), elements.end(), matchFunc);
 		elements.erase(newEnd, elements.end());
 		reinitFilterPools();
 		TRACEPOINT;
@@ -817,14 +817,14 @@ private:
 			++it;
 		}
 		auto it2 = filterCSPoolFuncs.begin();
-		while (it != filterCSPoolFuncs.end())
+		while (it2 != filterCSPoolFuncs.end())
 		{
-			filterCSPool[it.key()].clear();
+			filterCSPool[it2.key()].clear();
 			for (auto element : elements)
 			{
-				filterCSPool[it.key()].insert(it.value()(element));
+				filterCSPool[it2.key()].unite(it2.value()(element));
 			}
-			++it;
+			++it2;
 		}
 		TRACEPOINT;
 	}
