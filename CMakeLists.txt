@@ -118,6 +118,9 @@ if(CVV_BUILD_TESTS)
 
 	add_executable(test_manual_filtercalltab manual_test/filter_call_tab/main.cpp)
 	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
+
+	add_executable(test_manual_matchcalltab manual_test/match_call_tab/main.cpp)
+	target_link_libraries(test_manual_matchcalltab cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
 	
 	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
 	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
