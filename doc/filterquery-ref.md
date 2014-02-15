@@ -65,11 +65,7 @@ It has the following structure:
 The following commands are supported in the overview.
 
 feauture/command | sorting supported | grouping supported | filtering supported | description
-<<<<<<< HEAD
 -----------------|:-----------------:|:------------------:|:-------------------:|:---------------------
-=======
-----------------:|:-----------------:|:------------------:|:-------------------:|:---------------------
->>>>>>> b323442d7eb52ee4ede9c7c064e1ae0f26581fbe
 id               | yes               | yes                | yes, also range     |
 raw              | yes               | yes                | only basic filter   | alias for description
 description      | yes               | yes                | only basic filter   |
