@@ -8,16 +8,19 @@
 
 #include "../qtutil/util.hpp"
 #include "../stfl/stringutils.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace gui {
 
 RawviewTableRow::RawviewTableRow(cv::DMatch match, cv::KeyPoint keyPoint1, cv::KeyPoint keyPoint2):
 	match{match}, keyPoint1{keyPoint1}, keyPoint2{keyPoint2}
 {
+	TRACEPOINT;
 }
 
 void RawviewTableRow::addToTable(QTableWidget *table, size_t row)
 {
+	TRACEPOINT;
 	std::vector<QString> items {
 		QString::number(matchDistance()),
 		QString::number(matchImgIdx()),
@@ -44,11 +47,12 @@ void RawviewTableRow::addToTable(QTableWidget *table, size_t row)
 		item->setFlags(item->flags() ^ Qt::ItemIsEditable);
 		table->setItem(row, i, item);
 	}
+	TRACEPOINT;
 }
 
 QString RawviewTableRow::rowsToText(const std::vector<RawviewTableRow> &rows, const QString format)
 {
-
+	TRACEPOINT;
 	QStringList lines;
 	//header
 	if (format == "CSV")
@@ -137,11 +141,13 @@ QString RawviewTableRow::rowsToText(const std::vector<RawviewTableRow> &rows, co
 	{
 		text = QString("[%1]").arg(lines.join(",\n"));
 	}
+	TRACEPOINT;
 	return text;
 }
 
 std::vector<QString> RawviewTableRow::getAvailableTextFormats()
 {
+	TRACEPOINT;
 	return { QString("CSV"), QString("JSON"), QString("PYTHON"), QString("RUBY") };
 }
 
@@ -149,11 +155,13 @@ QList<RawviewTableRow> createRawviewTableRows(const std::vector<cv::KeyPoint>& k
 										const std::vector<cv::KeyPoint>& keyPoints2,
 										const std::vector<cv::DMatch>& matches)
 {
+	TRACEPOINT;
 	auto retList = QList<RawviewTableRow>();
 	for (auto &match : matches)
 	{
 		retList.append(RawviewTableRow(match, keyPoints1.at(match.queryIdx), keyPoints2.at(match.trainIdx)));
 	}
+	TRACEPOINT;
 	return retList;
 }
 

@@ -17,6 +17,7 @@
 #include "../gui/rawview_table.hpp"
 #include "../gui/rawview_table_row.hpp"
 #include "../util/util.hpp"
+#include "../controller/view_controller.hpp"
 #include "match_view.hpp"
 
 namespace cvv {
@@ -48,29 +49,28 @@ public:
 
 	/**
 	 * @brief Constructor of this class.
+	 * @param controller view controller, for help and settings
 	 * @param keypoints1 left keypoints
 	 * @param keypoints2 right keypoints
 	 * @param matches matches between the left and the right keypoints.
 	 */
-    Rawview(const std::vector<cv::KeyPoint>& keypoints1,
+    Rawview(util::Reference<controller::ViewController> controller,
+			const std::vector<cv::KeyPoint>& keypoints1,
 			const std::vector<cv::KeyPoint>& keypoints2,
 			const std::vector<cv::DMatch>& matches);
-	/**
-	 * @todo remove.
-	 */
-	Rawview(const std::vector<cv::KeyPoint>& keypoints1,
-			const std::vector<cv::KeyPoint>& keypoints2,
-			const std::vector<std::vector<cv::DMatch>>& matches);
 
 signals:
 	/**
-	 * @brief 
+	 * @brief Requests to update the left footer of the window that displays this view.
+	 * @param newText new text of the left footer
 	 */
 	void updateLeftFooter(QString newText);
 
+	/**
+	 * @brief Requests to update the right footer of the window that displays this view.
+	 * @param newText new text of the right footer
+	 */
 	void updateRightFooter(QString newText);
-	
-	void showHelp(QString topic);
 	
 private slots:
 
@@ -80,7 +80,10 @@ private slots:
 
     void requestSuggestions(QString query);
 
+	void showHelp(QString topic);
+
 private:
+	util::Reference<controller::ViewController> controller;
     stfl::STFLEngine<gui::RawviewTableRow> queryEngine;
     qtutil::STFLQueryWidget *queryWidget;
     gui::RawviewTable *table;

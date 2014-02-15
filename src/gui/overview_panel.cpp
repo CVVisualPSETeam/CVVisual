@@ -13,12 +13,14 @@
 #include "../controller/view_controller.hpp"
 #include "../qtutil/stfl_query_widget.hpp"
 #include "../qtutil/util.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace gui {
 
 OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> controller):
     controller{controller}
 {
+	TRACEPOINT;
     controller->setDefaultSetting("overview", "imgzoom", "20");
     queryWidget = new qtutil::STFLQueryWidget();
     table = new OverviewTable(util::makeRef(*controller), this);
@@ -54,9 +56,11 @@ OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> control
     connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
     connect(queryWidget, SIGNAL(filterSignal(QString)), this, SLOT(filterQuery(QString)));
     connect(queryWidget, SIGNAL(requestSuggestions(QString)), this, SLOT(requestSuggestions(QString)));
+    TRACEPOINT;
 }
 
 void OverviewPanel::initEngine(){
+	TRACEPOINT;
     //raw and description filter
     auto rawFilter = [](const OverviewTableRow& elem)
     {
@@ -100,44 +104,59 @@ void OverviewPanel::initEngine(){
     {
         return elem.call()->matrixCount();
     });
+    TRACEPOINT;
 }
 
 void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
 {
+	TRACEPOINT;
     OverviewTableRow row(newCall);
     queryEngine.addNewElement(row);
     table->updateRowGroups(queryEngine.reexecuteLastQuery());
+    TRACEPOINT;
 }
 
 void OverviewPanel::deleteElement(size_t id)
 {
+	TRACEPOINT;
     queryEngine.removeElements([id](OverviewTableRow elem) {return elem.id() == id;});
+    TRACEPOINT;
     table->updateRowGroups(queryEngine.reexecuteLastQuery());
+    TRACEPOINT;
 }
 
 void OverviewPanel::filterQuery(QString query)
 {
+	TRACEPOINT;
     table->updateRowGroups(queryEngine.query(query));
+    TRACEPOINT;
 }
 
 void OverviewPanel::updateQuery(QString query)
 {
+	TRACEPOINT;
     filterQuery(query);
+    TRACEPOINT;
 }
 
 void OverviewPanel::requestSuggestions(QString query)
 {
+	TRACEPOINT;
     queryWidget->showSuggestions(queryEngine.getSuggestions(query));
+    TRACEPOINT;
 }
 
 void OverviewPanel::imgSizeSliderAction()
 {
+	TRACEPOINT;
     controller->setSetting("overview", "imgzoom", QString::number(imgSizeSlider->value()));
     table->updateUI();
+    TRACEPOINT;
 }
 
 void OverviewPanel::toggleImages()
 {
+	TRACEPOINT;
     if (showImgsButton->text() == "Show images")
     {
         table->showImages();
@@ -148,11 +167,14 @@ void OverviewPanel::toggleImages()
         table->hideImages();
         showImgsButton->setText("Show images");
     }
+    TRACEPOINT;
 }
 
 void OverviewPanel::showHelp(QString topic)
 {
+	TRACEPOINT;
 	controller->openHelpBrowser(topic);
+	TRACEPOINT;
 }
 
 }}

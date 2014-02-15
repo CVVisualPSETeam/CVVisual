@@ -20,8 +20,20 @@ class RawviewTableRow
 {
 public:
 	
+	/**
+	 * @brief Constructor of this class.
+	 * @param match match that this row inherits.
+	 * @param keyPoint1 "left" key point of the match
+	 * @param keyPoint1 "right" key point of the match
+	 */
     RawviewTableRow(cv::DMatch match, cv::KeyPoint keyPoint1, cv::KeyPoint keyPoint2);
 
+	/**
+	 * @brief Add this row to the given table.
+	 * @note It does only fills the row in the table with the given index with its data.
+	 * @param table given table
+	 * @param row given row index
+	 */ 
     void addToTable(QTableWidget *table, size_t row);
 	
 	
@@ -70,11 +82,11 @@ public:
 	/**
 	 * @brief Serealizes the given rows into a single block of text.
 	 * The currently supported formats are:
-	 *  - `CSV`: Valid RFC 4180 CSV, with the same columns like the table.
-	 *  - `JSON`: Valid JSON (each row is an object consisting of three sub objects:
+	 *  - `CSV`   : Valid RFC 4180 CSV, with the same columns like the table.
+	 *  - `JSON`  : Valid JSON (each row is an object consisting of three sub objects:
 	 * 			  `match`, `keypoint 1` and `keypoint 2`).
 	 *  - `PYTHON`: Valid python code (see JSON).
-	 *  - `RUBY`: Valid ruby code (see JSON).
+	 *  - `RUBY`  : Valid ruby code (see JSON).
 	 *  @param rows given rows
 	 *  @param format the format of the resulting representation (see above)
 	 *  @return block representation of the given rows. 
@@ -93,6 +105,14 @@ private:
 	cv::KeyPoint keyPoint2;
 };
 
+/**
+ * @brief Create a list of rows from the given key points and matches.
+ * It creates a row for each match and uses the key points to get the two 
+ * locations of each one.  
+ * @param keyPoints1 given "left" key points
+ * @param keyPoints2 given "right" key points
+ * @param matches given matches
+ */
 QList<RawviewTableRow> createRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints1,
 										const std::vector<cv::KeyPoint>& keyPoints2,
 										const std::vector<cv::DMatch>& matches);

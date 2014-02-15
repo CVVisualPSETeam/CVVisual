@@ -22,12 +22,15 @@ OverviewGroupSubtable::OverviewGroupSubtable(util::Reference<controller::ViewCon
 		 stfl::ElementGroup<OverviewTableRow> group):
 	controller{controller}, parent{parent}, group{std::move(group)}
 {
+	TRACEPOINT;
 	controller->setDefaultSetting("overview", "imgsize", QString::number(100));
 	initUI();
+	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::initUI()
 {
+	TRACEPOINT;
 	controller->setDefaultSetting("overview", "imgzoom", "30");
 	qTable = new QTableWidget(this);
 	qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -47,9 +50,11 @@ void OverviewGroupSubtable::initUI()
 	layout->addWidget(qTable);
 	setLayout(layout);
 	updateUI();
+	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::updateUI(){
+	TRACEPOINT;
 	int imgSize = controller->getSetting("overview", "imgzoom").toInt() * width() / 400;
 	QStringList list{};
 	list << "ID";
@@ -97,17 +102,21 @@ void OverviewGroupSubtable::updateUI(){
 	}
 	header->setSectionResizeMode(maxImages + 4, QHeaderView::ResizeToContents);
 	header->setSectionResizeMode(maxImages + 5, QHeaderView::ResizeToContents);
+	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::rowClicked(int row, int collumn)
 {
+	TRACEPOINT;
 	(void)collumn;
 	size_t tabId = group.get(row).id();
 	controller->showAndOpenCallTab(tabId);
+	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::customMenuRequested(QPoint location)
 {
+	TRACEPOINT;
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	auto windows = controller->getTabWindows();
@@ -128,6 +137,7 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 
 void OverviewGroupSubtable::customMenuAction(QAction *action)
 {
+	TRACEPOINT;
 	if (currentCustomMenuCallTabId == -1)
 	{
 		return;
@@ -135,13 +145,17 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 	QString actionText = action->text();
 	if (actionText == "Open in new window")
 	{
+		TRACEPOINT;
 		controller->moveCallTabToNewWindow(currentCustomMenuCallTabId);
+		TRACEPOINT;
 		currentCustomMenuCallTabId = -1;
 		return;
 	}
 	else if (actionText == "Remove call")
 	{
+		TRACEPOINT;
 		controller->removeCallTab(currentCustomMenuCallTabId, true, true);
+		TRACEPOINT;
 		currentCustomMenuCallTabId = -1;
 		return;
 	}
@@ -150,17 +164,14 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 	{
 		if (actionText == QString("Open in '%1'").arg(window->windowTitle()))
 		{
+			TRACEPOINT;
 			controller->moveCallTabToWindow(currentCustomMenuCallTabId, window->getId());
+			TRACEPOINT;
 			break;
 		}
 	}
 	currentCustomMenuCallTabId = -1;
-}
-
-void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
-{
-	(void)event;
-	updateUI();
+	TRACEPOINT;
 }
 
 }}

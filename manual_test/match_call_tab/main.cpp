@@ -65,14 +65,15 @@ int main(/*int argc, char *argv[]*/)
 			const std::vector<cv::KeyPoint>&, const std::vector<cv::DMatch>&, QWidget*)> mlmv = makeLineMatchView;
 	cvv::gui::MatchCallTab::addMatchViewToMap("LineMatchView", mlmv);
 
-	cvv::gui::MatchCallTab::addMatchViewToMap("RawView",
+	//Doesn't work!!
+	/*cvv::gui::MatchCallTab::addMatchViewToMap("RawView",
 						[] (const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
 							const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
 							const std::vector<cv::DMatch>& match, QWidget* parent)
 						{	(void) img1; (void) img2; (void) parent;
 							std::vector<std::vector<cv::DMatch>> vect{};
 							vect.push_back(match);
-							return cvv::util::make_unique<cvv::view::Rawview>(key1, key2, vect); });
+							return cvv::util::make_unique<cvv::view::Rawview>(key1, key2, vect); });*/
 
 	cvv::gui::MatchCallTab v{mc, vc};
 	v.show();

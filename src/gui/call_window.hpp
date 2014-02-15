@@ -19,8 +19,6 @@
 #include "../util/util.hpp"
 #include "tabwidget.hpp"
 
-#include "../dbg/dbg.hpp"
-
 namespace cvv { 
 
 namespace controller {

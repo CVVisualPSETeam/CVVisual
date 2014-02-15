@@ -14,8 +14,6 @@
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 
-
-
 namespace cvv {
 
 namespace controller {
@@ -60,7 +58,7 @@ public:
 
     /**
      * @brief Removes and deletes the element with the given id.
-     * @param id element id
+     * @param id given element id
      */
     void deleteElement(size_t id);
 

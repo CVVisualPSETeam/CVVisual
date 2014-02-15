@@ -14,6 +14,7 @@
 #include "call_window.hpp"
 #include "rawview_table.hpp"
 #include "../controller/view_controller.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace gui {
 
@@ -21,6 +22,7 @@ RawviewGroupSubtable::RawviewGroupSubtable(RawviewTable *parent,
 										   stfl::ElementGroup<RawviewTableRow> group):
 	parent{parent}, group{std::move(group)}
 {
+	TRACEPOINT;
 	qTable = new QTableWidget(this);
     qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
     qTable->setSelectionMode(QAbstractItemView::MultiSelection);
@@ -43,22 +45,27 @@ RawviewGroupSubtable::RawviewGroupSubtable(RawviewTable *parent,
     qTable->setHorizontalHeaderLabels(list);
 	
 	updateUI();
+	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::updateUI(){
+	TRACEPOINT;
     qTable->setRowCount(group.size());
     for (size_t i = 0; i < group.size(); i++)
     {
         group.get(i).addToTable(qTable, i);
     }
+    TRACEPOINT;
 }
 
 void RawviewGroupSubtable::selectionChanged()
 {
+	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::customMenuRequested(QPoint location)
 {
+	TRACEPOINT;
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	
@@ -74,10 +81,12 @@ void RawviewGroupSubtable::customMenuRequested(QPoint location)
 		currentRows = { group.get(row) };
 	}
 	menu->popup(qTable->viewport()->mapToGlobal(location));
+	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::customMenuAction(QAction *action)
 {
+	TRACEPOINT;
 	if (currentRows.size() > 0)
 	{
 		auto formats = RawviewTableRow::getAvailableTextFormats();
@@ -87,11 +96,13 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 			{
 				QString formattedRows = RawviewTableRow::rowsToText(currentRows, format);
 				QApplication::clipboard()->setText(formattedRows);
+				break;
 			}
 		}
 	}
-	std::cerr << "Action: " << action->text().toStdString() << "\n";
+	DEBUG("Action: " + action->text().toStdString());
 	currentRows = {};
+	TRACEPOINT;
 }
 
 }}

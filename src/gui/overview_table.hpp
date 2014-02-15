@@ -38,6 +38,7 @@ public:
 	
 	/**
 	 * @brief Update the inherited groups of rows and rebuild the UI fully.
+	 * @param newGroups new groups for this table
 	 */
 	void updateRowGroups(const std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups);
 	

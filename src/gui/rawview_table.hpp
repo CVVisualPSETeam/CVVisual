@@ -23,14 +23,25 @@ namespace gui {
 
 class RawviewTableCollumn;
 
+/**
+ * @brief A table (consisting of subtables) displaying raw match data.
+ */
 class RawviewTable : public QWidget
 {
 	Q_OBJECT
 	
 public:
 	
+	/**
+	 * @brief Constructor of this class.
+	 * @param parent parent view
+	 */
 	RawviewTable(view::Rawview *parent);
 	
+	/**
+	 * @brief Update the inherited groups of rows and rebuild the UI fully.
+	 * @param newGroups new groups for this table
+	 */ 
 	void updateRowGroups(const std::vector<stfl::ElementGroup<RawviewTableRow>> newGroups);
 
 	/**
