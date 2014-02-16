@@ -19,10 +19,21 @@ size_t newCallId();
 
 class Call {
 public:
-	virtual ~Call() {DEBUG("Destructing Call #", id);}
-	size_t getId() const { return id; }
+	virtual ~Call()
+	{
+		DEBUG("Destructing Call #", id);
+	}
+	size_t getId() const
+	{
+		TRACEPOINT;
+		return id;
+	}
 	
-	const QString& type() const {return calltype;}
+	const QString& type() const
+	{
+		TRACEPOINT;
+		return calltype;
+	}
 	
 	/**
 	 * @brief Returns the number of images that are part of the call.
@@ -33,10 +44,22 @@ public:
 	/**
 	 * @brief provides a description of the call.
 	 */
-	const QString& description() const {return description_;}
-	const QString& requestedView() const {return requestedView_;}
+	const QString& description() const
+	{
+		TRACEPOINT;
+		return description_;
+	}
+	const QString& requestedView() const
+	{
+		TRACEPOINT;
+		return requestedView_;
+	}
 	
-	const CallMetaData& metaData() const {return metaData_;}
+	const CallMetaData& metaData() const
+	{
+		TRACEPOINT;
+		return metaData_;
+	}
 protected:
 	Call();
 	Call(impl::CallMetaData callData, QString type, QString description, QString requestedView);
