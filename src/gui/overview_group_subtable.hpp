@@ -59,6 +59,13 @@ public:
 	 */
 	bool hasRow(size_t id);
 
+	/**
+	 * @brief Set the displayed rows.
+	 * @note This method does some optimisations to only fully rebuild all rows if neccessary.
+	 * @param newGroup new group of rows that will be displayed
+	 */
+	void setRowGroup(stfl::ElementGroup<OverviewTableRow> &newGroup);
+	
 protected:
 	void resizeEvent(QResizeEvent *event);
 
@@ -73,6 +80,9 @@ private:
 	stfl::ElementGroup<OverviewTableRow> group;
 	QTableWidget *qTable;
 	int currentCustomMenuCallTabId = -1;
+	size_t maxImages = 0;
+	int imgSize = 0;
+	int rowHeight = 0;
 
 	void initUI();
 };

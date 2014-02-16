@@ -1,6 +1,7 @@
 #include "overview_table.hpp"
 
 #include <utility>
+#include <algorithm>
 
 #include <QVBoxLayout>
 #include <QStringList>
@@ -28,24 +29,54 @@ OverviewTable::OverviewTable(util::Reference<controller::ViewController> control
 void OverviewTable::updateRowGroups(std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups)
 {
 	TRACEPOINT;
-	subtableAccordion->clear();
-	subTables.clear();
-	for (auto &group : newGroups)
+	bool startTheSame = true;
+	for (size_t i = 0; i < std::min(groups.size(), newGroups.size()); i++)
 	{
-		if (group.size() > 0)
+		if (!newGroups.at(i).hasSameTitles(groups.at(i)))
 		{
-			auto subtable = util::make_unique<OverviewGroupSubtable>(controller, this, std::move(group));
-			auto subtablePtr = subtable.get();
-			auto titles = group.getTitles();
-			QString title = "No grouping specified, use #group to do specify";
-			if (titles.size() != 0)
-			{
-				title = titles.join(", ");
-			}
-			subtableAccordion->push_back(title, std::move(subtable), false);
-			subTables.push_back(subtablePtr);
+			startTheSame = false;
+			break;
 		}
 	}
+	TRACEPOINT;
+	if (startTheSame)
+	{
+		TRACEPOINT;
+		for (size_t i = 0; i < std::min(groups.size(), newGroups.size()); i++)
+		{
+			subTables.at(i)->setRowGroup(newGroups.at(i));
+		}
+		if (groups.size() < newGroups.size())
+		{
+			for (size_t i = groups.size(); i < newGroups.size(); i++)
+			{
+				appendRowGroupToTable(newGroups.at(i));
+				subTables.at(i)->setRowGroup(newGroups.at(i));
+			}
+		}
+		else if (groups.size() > newGroups.size())
+		{
+			TRACEPOINT;
+			for (size_t i = groups.size(); i >= newGroups.size(); i--)
+			{
+				subTables.pop_back();
+				subtableAccordion->deleteLast();
+			}
+		}
+		TRACEPOINT;
+	}
+	else
+	{
+		TRACEPOINT;
+		subtableAccordion->clear();
+		subTables.clear();
+		for (auto &group : newGroups)
+		{
+			appendRowGroupToTable(group);
+		}
+		TRACEPOINT;
+	}
+	groups = newGroups;
 	TRACEPOINT;
 }
 	
@@ -90,6 +121,23 @@ void OverviewTable::removeElement(size_t id)
 			subTable->removeRow(id);
 			break;
 		}
+	}
+}
+
+void OverviewTable::appendRowGroupToTable(stfl::ElementGroup<OverviewTableRow> group)
+{
+	if (group.size() > 0)
+	{
+		auto subtable = util::make_unique<OverviewGroupSubtable>(controller, this, std::move(group));
+		auto subtablePtr = subtable.get();
+		auto titles = group.getTitles();
+		QString title = "No grouping specified, use #group to specify one";
+		if (titles.size() != 0)
+		{
+			title = titles.join(", ");
+		}
+		subtableAccordion->push_back(title, std::move(subtable), false);
+		subTables.push_back(subtablePtr);
 	}
 }
 

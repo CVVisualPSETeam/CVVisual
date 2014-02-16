@@ -31,7 +31,7 @@ public:
 	 * @param _titles title of this group, consisting of several sub titles
 	 * @param _elements elements of this group 
 	 */
-    ElementGroup(const QStringList _titles, QList<Element> &_elements):
+    ElementGroup(QStringList _titles, QList<Element> &_elements):
         titles{_titles}, elements{_elements} {}
 	/**
 	 * @brief Checks whether or not this group contains the element.
@@ -73,7 +73,52 @@ public:
 		TRACEPOINT;
         return this->titles;
     }
-
+	
+	/**
+	 * @brief Checks whether this an the given element group have the same titles.
+	 * @param other given other element group
+	 * @return Does this element group and the given have the same titles.
+	 */
+	bool hasSameTitles(ElementGroup<Element> &other)
+	{
+		TRACEPOINT;
+		for (auto title : other.getTitles())
+		{
+			if (!titles.contains(title))
+			{
+				return false;
+			}
+		}
+		TRACEPOINT;
+		return true;
+	}
+	
+	/**
+	 * @brief Checks whether this an the given element have the same list of elements.
+	 * @param other given other element group
+	 * @param elementCompFunc element comparison function that gets two elements passed 
+	 * and returns true if both can be considered equal
+	 * @return Does this element group and the given have the same list of elements.
+	 */
+	bool hasSameElementList(ElementGroup<Element> &other,
+							std::function<bool(const Element&, const Element&)> elementCompFunc)
+	{
+		TRACEPOINT;
+		if (other.getElements().size() != elements.size())
+		{
+			return false;
+		}
+		for (int i = 0; i < elements.size(); i++)
+		{
+			if (!elementCompFunc(elements[i], other.get(i)))
+			{
+				return false;
+			}
+		}
+		TRACEPOINT;
+		return true;
+	}
+	
 	/**
 	 * @brief Get the element at the given index (in this group).
 	 * 
@@ -106,8 +151,19 @@ public:
 		TRACEPOINT;
 	}
 	
+	/**
+	 * @brief Sets the inhereted elements. 
+	 * @param newElements new elements of this group
+	 */
+	void setElements(QList<Element> newElements)
+	{
+		TRACEPOINT;
+		elements = newElements;
+		TRACEPOINT;
+	}
+	
 private:
-	const QStringList titles;
+	QStringList titles;
 	QList<Element> elements;
 };
 

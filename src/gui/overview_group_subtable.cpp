@@ -1,6 +1,7 @@
 #include "overview_group_subtable.hpp"
 
 #include <utility>
+#include <algorithm>
 
 #include <QVBoxLayout>
 #include <QStringList>
@@ -8,6 +9,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QHeaderView>
+#include <QList>
 
 #include "call_window.hpp"
 #include "overview_table.hpp"
@@ -17,7 +19,8 @@
 
 namespace cvv { namespace gui {
 
-OverviewGroupSubtable::OverviewGroupSubtable(util::Reference<controller::ViewController> controller,
+OverviewGroupSubtable::OverviewGroupSubtable(
+		 util::Reference<controller::ViewController> controller,
 		 OverviewTable *parent,
 		 stfl::ElementGroup<OverviewTableRow> group):
 	controller{controller}, parent{parent}, group{std::move(group)}
@@ -44,7 +47,8 @@ void OverviewGroupSubtable::initUI()
 	qTable->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
 	qTable->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(customMenuRequested(QPoint)));
+	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), 
+			this, SLOT(customMenuRequested(QPoint)));
 	auto *layout = new QVBoxLayout;
 	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(qTable);
@@ -55,10 +59,10 @@ void OverviewGroupSubtable::initUI()
 
 void OverviewGroupSubtable::updateUI(){
 	TRACEPOINT;
-	int imgSize = controller->getSetting("overview", "imgzoom").toInt() * width() / 400;
+	imgSize = controller->getSetting("overview", "imgzoom").toInt() * width() / 400;
 	QStringList list{};
 	list << "ID";
-	size_t maxImages = 0;
+	maxImages = 0;
 	for (auto element : group.getElements ())
 	{
 		if (maxImages < element.call()->matrixCount())
@@ -84,10 +88,11 @@ void OverviewGroupSubtable::updateUI(){
 	qTable->setRowCount(group.size());
 	qTable->setColumnCount(list.size());
 	qTable->setHorizontalHeaderLabels(list);
-	int rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
+	rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
 	for (size_t i = 0; i < group.size(); i++)
 	{
-		group.get(i).addToTable(qTable, i, parent->isShowingImages(), maxImages, imgSize, imgSize);
+		group.get(i).addToTable(qTable, i, parent->isShowingImages(),
+								maxImages, imgSize, imgSize);
 		qTable->setRowHeight(i, rowHeight);
 	}
 	auto header = qTable->horizontalHeader();
@@ -209,6 +214,63 @@ bool OverviewGroupSubtable::hasRow(size_t id)
 		}
 	}
 	return false;
+}
+
+void OverviewGroupSubtable::setRowGroup(stfl::ElementGroup<OverviewTableRow> &newGroup)
+{
+	auto compFunc = [](const OverviewTableRow &first, const OverviewTableRow &second){
+		return first.id() == second.id();
+	};
+	if (group.hasSameElementList(newGroup, compFunc))
+	{
+		return;
+	}
+	//Now both groups aren't the same 
+	size_t newMax = 0;
+	for (auto row : newGroup.getElements())
+	{
+		if (row.call()->matrixCount() > newMax)
+		{
+			newMax = row.call()->matrixCount();
+		}
+	}
+	if (newMax == maxImages)
+	{
+		group = newGroup;
+		updateUI();
+		return;
+	}
+	//Now both groups have the same maximum number of images within their elements
+	size_t minLength = std::min(group.size(), newGroup.size());
+	for (size_t i = 0; i < minLength; i++)
+	{
+		if (group.get(i).id() != newGroup.get(i).id())
+		{
+			group = newGroup;
+			updateUI();
+			return;
+		}
+	}
+	//Now the bigger group's element lists starts with the smaller group's one
+	if (group.size() < newGroup.size())
+	{
+		//Now the new group appends the current group
+		for (size_t row = group.size(); row < newGroup.size(); row++)
+		{
+			newGroup.get(row).addToTable(qTable, row, parent->isShowingImages(),
+											maxImages, imgSize, imgSize);
+			qTable->setRowHeight(row, rowHeight);
+		}
+	}
+	else
+	{
+		//Now the new group deletes elements from the current group
+		for (size_t row = group.size() - 1; row >= newGroup.size(); row--)
+		{
+			qTable->removeRow(row);
+		}
+	}
+	group = newGroup;
 }
 
 }}

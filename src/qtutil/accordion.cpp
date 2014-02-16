@@ -97,6 +97,19 @@ std::pair<QString, Collapsable*> Accordion::pop(Handle handle)
 	return result;
 }
 
+void Accordion::deleteLast()
+{
+	TRACEPOINT;
+	if (elements_.size() > 0)
+	{
+		auto elem = layout_->takeAt(layout_->count() - 1)->widget();
+		elements_.erase(elem);
+		elem->setParent(0);
+		delete elem;
+	}
+	TRACEPOINT;
+}
+
 std::vector<std::pair<QString, Collapsable*>> Accordion::popAll()
 {
 	TRACEPOINT;

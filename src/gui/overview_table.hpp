@@ -75,6 +75,9 @@ private:
 	bool doesShowImages = true;
 	qtutil::Accordion *subtableAccordion;
 	std::vector<OverviewGroupSubtable*> subTables{};
+	std::vector<stfl::ElementGroup<OverviewTableRow>> groups;
+	
+	void appendRowGroupToTable(stfl::ElementGroup<OverviewTableRow> group);
 
 };
 
