@@ -189,7 +189,11 @@ public:
      * @brief Shows an "Exit program" button on each window.
      */
     void showExitProgramButton();
-
+	/**
+	 * @brief Removes the empty windows.
+	 */
+    void removeEmptyWindows();
+	
 private:
 
     static std::map<QString, TabFactory> callTabType;
@@ -204,9 +208,8 @@ private:
 
 	size_t max_window_id = 0;
 
-    void removeEmptyWindows();
-
     bool hasCall(size_t id);
+	
 };
 
 }}

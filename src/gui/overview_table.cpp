@@ -45,12 +45,15 @@ void OverviewTable::updateRowGroups(std::vector<stfl::ElementGroup<OverviewTable
 		for (size_t i = 0; i < std::min(groups.size(), newGroups.size()); i++)
 		{
 			subTables.at(i)->setRowGroup(newGroups.at(i));
+			subTables.at(i)->updateUI();
 		}
 		if (groups.size() < newGroups.size())
 		{
 			for (size_t i = groups.size(); i < newGroups.size(); i++)
 			{
+				TRACEPOINT;
 				appendRowGroupToTable(newGroups.at(i));
+				TRACEPOINT;
 				subTables.at(i)->setRowGroup(newGroups.at(i));
 			}
 		}

@@ -104,7 +104,8 @@ std::vector<util::Reference<gui::CallWindow>> ViewController::getTabWindows()
 {
 	TRACEPOINT;
     std::vector<util::Reference<gui::CallWindow>>  windows{};
-    for (auto& it: windowMap)
+    TRACEPOINT;
+    for (auto &it : windowMap)
     {
         windows.push_back(util::makeRef(*(it.second)));
     }
@@ -126,7 +127,6 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
 		newWindow->showExitProgramButton();
 	}
    	windowMap[max_window_id] = std::move(newWindow);
-    removeEmptyWindows();
     TRACEPOINT;
 }
 
@@ -138,7 +138,6 @@ void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
     removeCallTab(tabId);
     auto tab = getCallTab(tabId);
     windowMap[windowId]->addTab(tab);
-    removeEmptyWindows();
     TRACEPOINT;
 }
 
@@ -153,7 +152,6 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
         {
             callTabMap.erase(tabId);
         }
-        removeEmptyWindows();
     }
     TRACEPOINT;
 	if (deleteCall && hasCall(tabId))
@@ -270,22 +268,20 @@ void ViewController::removeWindowFromMaps(size_t windowId)
 
 void ViewController::removeEmptyWindows()
 {
-	TRACEPOINT;
     std::vector<size_t> remIds{};
-    for (auto &elem : windowMap)
-    {
-        if (elem.second->tabCount() == 0 && elem.second->getId() != 0)
-        {
-            remIds.push_back(elem.first);
-        }
-    }
-    for (auto windowId : remIds)
-    {
-        windowMap.erase(windowId);
-    }
-    TRACEPOINT;
+	for (auto &elem : windowMap)
+	{
+	  if (elem.second->tabCount() == 0 && elem.second->getId() != 0)
+	  {
+		  remIds.push_back(elem.first);
+	  }
+	}
+	for (auto windowId : remIds)
+	{
+	  windowMap.erase(windowId);
+	}
 }
-
+											  
 void ViewController::showExitProgramButton()
 {
 	TRACEPOINT;

@@ -85,6 +85,9 @@ private:
 	int rowHeight = 0;
 
 	void initUI();
+	
+	void updateMinimumSize();
+	
 };
 
 }}

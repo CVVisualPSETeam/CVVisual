@@ -44,6 +44,9 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
 
+private slots:
+	void doPeriodically();
+	
 private:
 	OverviewPanel *ovPanel;
 };

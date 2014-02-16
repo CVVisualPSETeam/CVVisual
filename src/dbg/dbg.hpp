@@ -13,7 +13,7 @@
 #else
 #	define DEBUG(...) ::cvv::dbg::log({__FILE__, __PRETTY_FUNCTION__, __LINE__}, __VA_ARGS__)
 #	define DEBUGF(...) ::cvv::dbg::logF({__FILE__, __PRETTY_FUNCTION__, __LINE__},__VA_ARGS__)
-#	define TRACEPOINT ::cvv::dbg::log({__FILE__, __PRETTY_FUNCTION__, __LINE__}, "tracepoint")
+#	define TRACEPOINT ::cvv::dbg::log({__FILE__, "", __LINE__}, "tracepoint")
 #endif
 
 namespace cvv{ namespace dbg {

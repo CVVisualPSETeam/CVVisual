@@ -100,7 +100,7 @@ std::pair<QString, Collapsable*> Accordion::pop(Handle handle)
 void Accordion::deleteLast()
 {
 	TRACEPOINT;
-	if (elements_.size() > 0)
+	if (layout_->count() > 0)
 	{
 		auto elem = layout_->takeAt(layout_->count() - 1)->widget();
 		elements_.erase(elem);

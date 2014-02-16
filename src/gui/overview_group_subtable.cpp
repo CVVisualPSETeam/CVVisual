@@ -10,6 +10,7 @@
 #include <QAction>
 #include <QHeaderView>
 #include <QList>
+#include <QSize>
 
 #include "call_window.hpp"
 #include "overview_table.hpp"
@@ -107,6 +108,7 @@ void OverviewGroupSubtable::updateUI(){
 	}
 	header->setSectionResizeMode(maxImages + 4, QHeaderView::ResizeToContents);
 	header->setSectionResizeMode(maxImages + 5, QHeaderView::ResizeToContents);
+	updateMinimumSize();
 	TRACEPOINT;
 }
 
@@ -138,7 +140,7 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	currentCustomMenuCallTabId = idStr.toInt();  
 	TRACEPOINT;
 	// FIXME: for some reasons this sometimes results in HUGE allocations followed by bad_alloc
-	menu->popup(qTable->viewport()->mapToGlobal(location));
+	menu->popup(mapToGlobal(location));
 	TRACEPOINT;
 }
 
@@ -185,7 +187,15 @@ void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
 {
 	TRACEPOINT;
 	(void)event;
-	updateUI();
+	imgSize = controller->getSetting("overview", "imgzoom").toInt() * width() / 400;
+	rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
+	for (size_t row = 0; row < group.size(); row++)
+	{
+		group.get(row).addToTable(qTable, row, parent->isShowingImages(),
+										maxImages, imgSize, imgSize);
+		qTable->setRowHeight(row, rowHeight);
+	}
+	updateMinimumSize();
 	TRACEPOINT;
 }
 
@@ -271,6 +281,20 @@ void OverviewGroupSubtable::setRowGroup(stfl::ElementGroup<OverviewTableRow> &ne
 		}
 	}
 	group = newGroup;
+	updateMinimumSize();
+}
+
+void OverviewGroupSubtable::updateMinimumSize()
+{
+	int width = qTable->sizeHint().width();
+	setMinimumWidth(width);
+	int height = qTable->horizontalHeader()->height();
+	for (int a = 0; a < qTable->rowCount(); ++a)
+	{
+		height += qTable->rowHeight(a);
+	}
+	setMinimumHeight(height + (qTable->rowCount() * 1));
+	DEBUG(height);
 }
 
 }}

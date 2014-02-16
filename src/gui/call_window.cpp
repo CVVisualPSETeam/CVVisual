@@ -5,6 +5,7 @@
 #include <QPushButton>
 
 #include "../dbg/dbg.hpp"
+#include "../stfl/stringutils.hpp"
 
 namespace cvv { 
 
@@ -66,14 +67,14 @@ void CallWindow::addTab(CallTab *tab)
 {
 	TRACEPOINT;
 	tabMap[tab->getId()] = tab;
-	int index = tabWidget->addTab(tab, tab->getName());
+	QString name = tab->getName() + "";
+	int index = tabWidget->addTab(tab, QString("[%1] ").arg(tab->getId()) + stfl::shortenString(name , 20));
 	tabAtTabIndex[index] = tab;
 	TRACEPOINT;
 }
 	
 size_t CallWindow::getId()
 {
-	TRACEPOINT;
 	return id;
 }
 
@@ -186,14 +187,20 @@ void CallWindow::contextMenuAction(QAction *action)
 	} 
 	else 
 	{
+		TRACEPOINT;
 		auto windows = controller->getTabWindows();
+		TRACEPOINT;
 		for (auto window : windows)
 		{
+			TRACEPOINT;
 			if (text == QString("Open in '%1'").arg(window->windowTitle()))
 			{
+				TRACEPOINT;
 				controller->moveCallTabToWindow(currentContextMenuTabId, window->getId());
+				TRACEPOINT;
 				break;
 			}
+			TRACEPOINT;
 		}
 	}
 	currentContextMenuTabId = -1;
