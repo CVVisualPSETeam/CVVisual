@@ -131,6 +131,8 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	int row = index.row();
 	QString idStr = qTable->item(row, 0)->text();
 	currentCustomMenuCallTabId = idStr.toInt();  
+	TRACEPOINT;
+	// FIXME: for some reasons this sometimes results in HUGE allocations followed by bad_alloc
 	menu->popup(qTable->viewport()->mapToGlobal(location));
 	TRACEPOINT;
 }
