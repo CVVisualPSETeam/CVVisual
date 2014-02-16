@@ -77,7 +77,8 @@ void MatchCallTab::currentIndexChanged(const QString& text)
 {
 	TRACEPOINT;
 	matchViewId_ = text;
-	delete matchView_;
+	vlayout_->removeWidget(matchView_);
+	matchView_->setVisible(false);
 	setView(matchViewId_);
 	TRACEPOINT;
 }
@@ -148,14 +149,23 @@ void MatchCallTab::setView(const QString &viewId)
 	TRACEPOINT;
 	try
 	{
-		auto fct = registeredElements_.at(viewId);
-		matchView_ = (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(),
-				matchCall_->keyPoints2(), matchCall_->matches(), this)).release();
+		matchView_ = viewHistory_.at(viewId);
 		vlayout_->addWidget(matchView_);
+		matchView_->setVisible(true);
 	} catch (std::out_of_range&)
 	{
-		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
-		throw;
+		try
+		{
+			auto fct = registeredElements_.at(viewId);
+			viewHistory_.emplace(viewId, (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(),
+							  matchCall_->keyPoints2(), matchCall_->matches(), this).release()));
+			matchView_ = viewHistory_.at(viewId);
+			vlayout_->addWidget(matchView_);
+		} catch (std::out_of_range&)
+		{
+			vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
+			throw;
+		}
 	}
 	TRACEPOINT;
 

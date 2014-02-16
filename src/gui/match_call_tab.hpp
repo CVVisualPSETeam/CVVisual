@@ -127,6 +127,7 @@ private:
 	util::Reference<cvv::controller::ViewController> viewController_;
 	QString matchViewId_;
 	cvv::view::MatchView* matchView_;
+	std::map<QString, cvv::view::MatchView*> viewHistory_;
 
 	QPushButton* setAsDefaultButton_;
 	QPushButton* helpButton_;
