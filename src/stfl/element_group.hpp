@@ -99,7 +99,7 @@ public:
 	void removeElement(size_t index)
 	{
 		TRACEPOINT;
-		if (index < elements.size())
+		if (index < static_cast<size_t>(elements.size()))
 		{
 			elements.removeAt(index);
 		}
