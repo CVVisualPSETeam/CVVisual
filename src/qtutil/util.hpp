@@ -3,6 +3,8 @@
 
 #include <limits>
 #include <vector>
+#include <stdexcept>
+
 
 #include <QImage>
 #include <QPixmap>
@@ -72,6 +74,15 @@ QString conversionResultToString(const ImageConversionResult& result);
  * @return The splitted mats.
  */
 std::vector<cv::Mat> splitChannels(const cv::Mat& mat);
+
+/**
+ * @brief Merges multiple one channel mats into one.
+ * @param mats The mats to merge.
+ * @return Merged mat
+ * @throw std::invalid_argument If the images have different depths. Or one mat has more than 1
+ * channel.
+ */
+cv::Mat mergeChannels(std::vector<cv::Mat> mats);
 }}
 
 #endif

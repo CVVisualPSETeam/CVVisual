@@ -295,8 +295,26 @@ bool checkValueRange(const cv::Mat& mat, DepthType<depth> min, DepthType<depth> 
  * @param res The error code.
  * @return The result.
  */
-std::pair<ImageConversionResult,QImage> errorResult(ImageConversionResult res, const cv::Mat&)
+std::pair<ImageConversionResult,QImage> errorResult(ImageConversionResult res, const cv::Mat& mat)
 {
+	TRACEPOINT;
+	switch(res)
+	{
+	case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:TRACEPOINT;
+	case ImageConversionResult::MAT_NOT_2D:TRACEPOINT;
+	case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:TRACEPOINT;
+	case ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED:
+		{
+			TRACEPOINT;
+			QImage imgresult{mat.cols,mat.rows,QImage::Format_RGB444};
+			imgresult.fill(Qt::black);
+			return {res, imgresult};
+		}
+	break;
+	case ImageConversionResult::SUCCESS:;
+	case ImageConversionResult::MAT_EMPTY:;
+	case ImageConversionResult::MAT_INVALID_SIZE:;
+	}
 	TRACEPOINT;
 	return {res, QImage{0,0,QImage::Format_Invalid}};
 }
@@ -474,6 +492,47 @@ std::vector<cv::Mat> splitChannels(const cv::Mat& mat)
 	{
 		result.emplace_back(chan[i]);
 	}
+	TRACEPOINT;
+	return result;
+}
+
+
+cv::Mat mergeChannels(std::vector<cv::Mat> mats)
+{
+	TRACEPOINT;
+	if(mats.size()<=0)
+	{
+		TRACEPOINT;
+		throw std::invalid_argument{"no input mat"};
+	}
+
+	//check
+	if(mats.at(0).channels()!=1)
+	{
+		TRACEPOINT;
+		throw std::invalid_argument{"mat 0 not 1 channel"};
+	}
+	int type=mats.at(0).type();
+	auto size=mats.at(0).size();
+	for(std::size_t i=1;i<mats.size();i++)
+	{
+		if((type!=mats.at(i).type())||(size!=mats.at(i).size()))
+		{
+			TRACEPOINT;
+			throw std::invalid_argument{"mats have different sizes or depths."
+							"(or not 1 channel)"};
+		}
+	}
+	//merge
+	cv::Mat result{mats.at(0).rows,mats.at(0).cols,mats.at(0).type()};
+
+	std::unique_ptr<cv::Mat[]> mergeinput(new cv::Mat[mats.size()]);
+	for(std::size_t i=0;i<mats.size();i++)
+	{
+		mergeinput[i]=mats.at(i);
+	}
+	merge(mergeinput.get(),mats.size(),result);
+
 	TRACEPOINT;
 	return result;
 }

@@ -71,7 +71,6 @@ int main(int argc, char *argv[])
 	cvv::dbg::setLoggingState(true);
 	TRACEPOINT;
 
-
 	cvv::qtutil::registerFilter<1,1,MultFilter>("multi");
 	cvv::qtutil::registerGray();
 
@@ -81,8 +80,15 @@ int main(int argc, char *argv[])
 	QApplication a(argc, argv);
 	QWidget w{};
 
-	cv::Mat m1{200,100,CV_32SC3,cv::Scalar{2,1,2147483640}};
+	cv::Mat m{200,100,CV_32SC3,cv::Scalar{2,1,2147483640}};
 	cv::Mat m2{200,100,CV_32FC3,cv::Scalar{1,0,0}};
+
+
+	auto matvec=cvv::qtutil::splitChannels(m);
+	matvec.push_back(matvec.back());
+	matvec.push_back(matvec.back());
+	matvec.push_back(matvec.back());
+	cv::Mat m1= cvv::qtutil::mergeChannels(matvec);
 
 	TRACEPOINT;
 	//something to see for sobel
@@ -92,9 +98,11 @@ int main(int argc, char *argv[])
 	auto i2=cvv::util::make_unique<cvv::qtutil::ZoomableImage>(m2);
 	auto o1=cvv::util::make_unique<cvv::qtutil::ZoomableImage>();
 	auto o2=cvv::util::make_unique<cvv::qtutil::ZoomableImage>();
-	//connect area on input 1->2
-	QObject::connect(i1.get(),SIGNAL(updateArea(QRectF,qreal)),
-			i2.get(), SLOT(setArea(QRectF,qreal)));
+	//connect area on input
+	QObject::connect(i1.get(),SIGNAL(updateArea(QRectF,qreal,unsigned int)),
+			i2.get(), SLOT(setArea(QRectF,qreal,unsigned int)));
+	QObject::connect(i2.get(),SIGNAL(updateArea(QRectF,qreal,unsigned int)),
+			i1.get(), SLOT(setArea(QRectF,qreal,unsigned int)));
 	TRACEPOINT;
 
 	auto afw=cvv::util::make_unique<cvv::qtutil::AutoFilterWidget<1,1>>();
@@ -114,9 +122,9 @@ int main(int argc, char *argv[])
 	auto u1=afw->addEntry("i1",{{i1->mat()}},{{o1->mat()}});
 	auto u2=afw->addEntry("i2",{{i2->mat()}},{{o2->mat()}});
 	//connect
-	QObject::connect((u1.at(0).getPtr()),SIGNAL(signal(cv::Mat&)),
+	QObject::connect((u1.at(0).getPtr()),SIGNAL(signal(cv::Mat&, unsigned int)),
 			 o1.get(),SLOT(setMatR(cv::Mat&)));
-	QObject::connect((u2.at(0).getPtr()),SIGNAL(signal(cv::Mat&)),
+	QObject::connect((u2.at(0).getPtr()),SIGNAL(signal(cv::Mat&, unsigned int)),
 			 o2.get(),SLOT(setMatR(cv::Mat&)));
 
 	TRACEPOINT;
