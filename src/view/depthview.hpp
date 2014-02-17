@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_TRANLSATION_MATCH_VIEW
-#define CVVISUAL_TRANLSATION_MATCH_VIEW
+#ifndef CVVISUAL_DEPTH_MATCH_VIEW
+#define CVVISUAL_DEPTH_MATCH_VIEW
 
 #include <vector>
 
@@ -8,12 +8,12 @@
 
 #include "match_view.hpp"
 namespace cvv{ namespace view{
-/*
- * @brief this view shows the matches as tranlations line/arrows.
- *
- */
 
-class TranslationMatchView: public MatchView{
+/*
+ * @brief this class interprets the translation of matches as depth value.
+ * Unfinished
+ */
+class DepthMatchView: public MatchView{
 
 Q_OBJECT
 public:
@@ -26,7 +26,7 @@ public:
 	 *	the imIdx will be taken
 	 * @param parent the parent widget
 	 */
-	TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoints,std::vector<cv::KeyPoint> rightKeyPoints,
+	DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,std::vector<cv::KeyPoint> rightKeyPoints,
 		std::vector<cv::DMatch> matches,cv::Mat leftIm,cv::Mat rightIm,QWidget *parent=nullptr);
 };
 }}

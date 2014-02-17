@@ -25,7 +25,7 @@ CVVMatch::CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint* right_key,const float& mat
 }
 
 
-QRectF CVVMatch::boundingRect() const 
+QRectF CVVMatch::boundingRect() const
 {
 	TRACEPOINT;
 	//TODO minmax
@@ -40,6 +40,14 @@ void CVVMatch::paint(QPainter *painter,const QStyleOptionGraphicsItem*,QWidget *
 	TRACEPOINT;
 	painter->setPen(pen_);
 	painter->drawLine(leftImPointInScene(),rightImPointInScene());
+	TRACEPOINT;
+}
+
+void CVVMatch::setShow(const bool &b)
+{
+	TRACEPOINT;
+	show_=b;
+	setVisible(show_&&left_key_visible_&&right_key_visible_);
 	TRACEPOINT;
 }
 

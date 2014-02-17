@@ -15,6 +15,9 @@
 
 namespace cvv { namespace qtutil{
 
+/*
+ * This Widget shows some Infos about the given cv::Mat from the given ZoomabelImage and has some Options for zooming
+ */
 class ZoomableOptPanel : public QWidget{
 
 Q_OBJECT

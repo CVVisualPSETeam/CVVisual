@@ -18,18 +18,36 @@
 
 namespace cvv{ namespace qtutil{
 
-class MatchPen;
-
+/**
+ * @brief this scene shows two (zoomable)images with keypoints and matches.
+ */
 class MatchScene:public QWidget{
 Q_OBJECT
-public:	
+public:
+
+	/**
+	 * @brief the constructor
+	 * @param imageLeft the left image
+	 * @param imageRight the right iamge
+	 * @param parent the parent Widget
+	 */
 	MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent = nullptr);
-	
+
+	/**
+	 * @brief returns a ZoomableOptPanel of the left Image
+	 * @return a ZoomableOptPanel of the left Image
+	 */
 	std::unique_ptr<ZoomableOptPanel> getLeftMatInfoWidget()
 		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*leftImage_);}
 
+	/**
+	 * @brief returns a ZoomableOptPanel of the right Image
+	 * @return a ZoomableOptPanel of the right Image
+	 */
 	std::unique_ptr<ZoomableOptPanel> getRightMatInfoWidget()
 		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*rightImage_);}
+
+
 	void adjustImages();
 
 public slots:
@@ -42,7 +60,7 @@ protected:
 
 private:
 	QGraphicsView 		*graphicView_;
-	QGraphicsScene 		*graphicScene_;	
+	QGraphicsScene 		*graphicScene_;
 
 	qtutil::ZoomableImage 	*leftImage_;
 	qtutil::ZoomableImage 	*rightImage_;

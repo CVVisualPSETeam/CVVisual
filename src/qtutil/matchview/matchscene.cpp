@@ -11,25 +11,28 @@ namespace cvv{ namespace qtutil{
 MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
 		QWidget{parent}
 {
-	TRACEPOINT;	
+	TRACEPOINT;
 
 	QHBoxLayout *basicLayout = new QHBoxLayout{};
 	graphicScene_		 = new QGraphicsScene{this};
-	graphicView_		 = new QGraphicsView{graphicScene_};			
-	
+	graphicView_		 = new QGraphicsView{graphicScene_};
+
 	basicLayout->addWidget(graphicView_);
 	basicLayout->setSizeConstraint(QLayout::SetNoConstraint);
 	setLayout(basicLayout);
-
+/*
 	graphicView_->horizontalScrollBar()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 	graphicView_->verticalScrollBar()->setFocusPolicy(Qt::NoFocus);
 	graphicView_->setFocusPolicy(Qt::NoFocus);
+*/
 
-	leftImage_		= new ZoomableImage{imageLeft};
-	rightImage_		= new ZoomableImage{imageRight};
+	leftImage_	= new ZoomableImage{imageLeft};
+	rightImage_	= new ZoomableImage{imageRight};
 
 	leftImWidget_ 	= graphicScene_->addWidget(leftImage_);
 	rightImWidget_ 	= graphicScene_->addWidget(rightImage_);
+
+	leftImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
 
 	adjustImages();
 

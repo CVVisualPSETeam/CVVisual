@@ -118,13 +118,11 @@ if(CVV_BUILD_TESTS)
 
 	add_executable(test_manual_filtercalltab manual_test/filter_call_tab/main.cpp)
 	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
-
+	
 	add_executable(test_manual_matchcalltab manual_test/match_call_tab/main.cpp)
 	target_link_libraries(test_manual_matchcalltab cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
 
-	add_executable(test_manual_imagecalltab manual_test/image_call_tab/main.cpp)
-	target_link_libraries(test_manual_imagecalltab cvvisual Qt5Core Qt5Widgets opencv_core)
-	
+
 	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
 	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
 
@@ -182,4 +180,7 @@ if(CVV_BUILD_TESTS)
 
 	add_executable(test_manual_translationviewtest manual_test/translationviewtest/main.cpp)
 	target_link_libraries(test_manual_translationviewtest cvvisual Qt5Core opencv_highgui opencv_core)
+
+	add_executable(test_manual_depthviewtest manual_test/depthviewtest/main.cpp)
+	target_link_libraries(test_manual_depthviewtest cvvisual Qt5Core opencv_highgui opencv_core)
 endif()

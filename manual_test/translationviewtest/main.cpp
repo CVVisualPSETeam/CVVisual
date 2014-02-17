@@ -21,9 +21,9 @@ int main(int argc, char** argv)
 	auto train 	= cv::imread(argv[2]);
 	std::vector<cv::KeyPoint> key1;
 
-	for(int i=0;i<std::min(src.rows,src.cols);i+=30)
+	for(int i=std::min(src.rows,src.cols);i>0;i-=30)
 	{
-		cv::Point2f pt{static_cast<float>(i),static_cast<float>(i)};
+		cv::Point2f pt{static_cast<float>(std::min(src.rows,src.cols)-i),static_cast<float>(i)};
 		key1.emplace_back(pt,0.0f);
 	}
 	std::vector<cv::KeyPoint> key2;
@@ -38,9 +38,9 @@ int main(int argc, char** argv)
 		match.emplace_back(i,i+1,1.0f);
 	}
 
-	cvv::view::TranslationMatchView matchscene{key1, key2,match,src,train};
-	matchscene.setWindowTitle("LineMatchView Test");
-	matchscene.show();
+	cvv::view::TranslationMatchView view{key1, key2,match,src,train};
+	view.setWindowTitle("LineMatchView Test");
+	view.show();
 	return a.exec();
 
 }

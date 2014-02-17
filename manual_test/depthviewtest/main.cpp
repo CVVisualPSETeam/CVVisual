@@ -6,7 +6,7 @@
 #include "opencv2/features2d/features2d.hpp"
 #include <opencv2/highgui/highgui.hpp>
 
-#include "../../src/view/linematchview.hpp"
+#include "../../src/view/depthview.hpp"
 
 int main(int argc, char** argv)
 {
@@ -35,11 +35,11 @@ int main(int argc, char** argv)
 	std::vector<cv::DMatch> match;
 	for(size_t i=0;i<std::min(key1.size()-1,key2.size()-1);i++)
 	{
-		match.emplace_back(i,i+1,1.0f);
+		match.emplace_back(i,i+1,1.0f*i/20);
 	}
 
-	cvv::view::LineMatchView view{key1, key2,match,src,train};
-	view.setWindowTitle("LineMatchView Test");
+	cvv::view::DepthMatchView view{key1, key2,match,src,train};
+	view.setWindowTitle("DepthView Test");
 	view.show();
 	return a.exec();
 
