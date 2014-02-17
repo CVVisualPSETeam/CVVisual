@@ -17,6 +17,8 @@
 #include "../gui/call_tab.hpp"
 #include "../gui/call_window.hpp"
 
+#include "../dbg/dbg.hpp"
+
 namespace cvv {
 
 namespace gui {
@@ -50,6 +52,8 @@ public:
 	 * @brief The default contructor for this class.
 	 */
 	ViewController();
+	
+	~ViewController() {TRACEPOINT;}
 
     /**
      * @brief Adds the new call tab type.
