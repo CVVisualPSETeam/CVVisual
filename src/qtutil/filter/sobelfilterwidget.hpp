@@ -5,7 +5,7 @@
 #include <QComboBox>
 #include <QLabel>
 
-#include"filterfunctionwidget.hpp"
+#include"../filterfunctionwidget.hpp"
 
 namespace cvv { namespace qtutil{
 /**
@@ -14,8 +14,14 @@ namespace cvv { namespace qtutil{
 class SobelFilterWidget: public FilterFunctionWidget<1,1>
 {
 public:
-
+	/**
+	 * @brief The input type.
+	 */
 	using InputArray  = typename FilterFunctionWidget<1,1>::InputArray;
+
+	/**
+	 * @brief The output type.
+	 */
 	using OutputArray = typename FilterFunctionWidget<1,1>::OutputArray;
 
 	/**

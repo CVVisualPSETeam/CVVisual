@@ -15,9 +15,9 @@
 #include "../../src/qtutil/filterselectorwidget.hpp"
 #include "../../src/qtutil/accordion.hpp"
 #include "../../src/qtutil/zoomableimage.hpp"
-#include "../../src/qtutil/sobelfilterwidget.hpp"
+#include "../../src/qtutil/filter/sobelfilterwidget.hpp"
 #include "../../src/util/util.hpp"
-#include "../../src/qtutil/grayfilterwidget.hpp"
+#include "../../src/qtutil/filter/grayfilterwidget.hpp"
 
 
 class MultFilter: public cvv::qtutil::FilterFunctionWidget<1,1>

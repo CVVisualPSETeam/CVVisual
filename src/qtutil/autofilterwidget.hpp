@@ -217,13 +217,14 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	 */
 	AutoFilterWidget(QWidget* parent = nullptr):
 		FilterSelectorWidget<In,Out>{parent},
-		slotEnableUserSelection_{[this](bool b){this->enableUserSelection(b);}},
-		slotUseFilterIndividually_{[this](bool b){this->useFilterIndividually(b);}},
+		slotEnableUserSelection_{[this](bool b){TRACEPOINT; this->enableUserSelection(b);}},
+		slotUseFilterIndividually_{[this](bool b){TRACEPOINT;
+						this->useFilterIndividually(b);}},
 		entryLayout_{new QVBoxLayout},
 		applyFilterIndividually_{false},
 		entries_{},
 		earliestActivationTime_{},
-		slotApplyFilter_{[this](){this->autoApplyFilter();}}
+		slotApplyFilter_{[this](){TRACEPOINT; this->autoApplyFilter();}}
 	{
 		TRACEPOINT;
 		//add sublayout

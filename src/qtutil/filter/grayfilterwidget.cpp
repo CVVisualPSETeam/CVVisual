@@ -1,10 +1,11 @@
 #include "grayfilterwidget.hpp"
 
 #include <QPushButton>
+#include <QLabel>
 
-#include "filterselectorwidget.hpp"
-#include "../util/util.hpp"
-#include "util.hpp"
+#include "../filterselectorwidget.hpp"
+#include "../../util/util.hpp"
+#include "../util.hpp"
 
 namespace cvv { namespace qtutil {
 
@@ -27,7 +28,9 @@ GrayFilterWidget::GrayFilterWidget(QWidget* parent):
 	TRACEPOINT;
 	//build ui
 	layout_->addWidget(button.release());
+	layout_->addWidget(util::make_unique<QLabel>("Number of channels").release());
 	layout_->addWidget(channel_);
+	layout_->addWidget(util::make_unique<QLabel>("Percentage for channels").release());
 	setLayout(layout_);
 
 	TRACEPOINT;
@@ -123,7 +126,7 @@ void GrayFilterWidget::setStd()
 void registerGray()
 {
 	TRACEPOINT;
-	registerFilter<1,1,cvv::qtutil::GrayFilterWidget>("gray");
+	registerFilter<1,1,cvv::qtutil::GrayFilterWidget>("Gray filter");
 	TRACEPOINT;
 }
 }}

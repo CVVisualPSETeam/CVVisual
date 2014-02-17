@@ -117,6 +117,8 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	QObject::connect(this,SIGNAL(customContextMenuRequested(const QPoint&)),
 			 this,SLOT(rightClick(QPoint)));
 	TRACEPOINT;
+	showFullImage();
+	TRACEPOINT;
 }
 
 void ZoomableImage::setMat(cv::Mat mat)
@@ -143,8 +145,7 @@ void ZoomableImage::setZoom(qreal factor)
 	qreal newscale=factor/zoom_;
 	zoom_=factor;
 	view_->scale(newscale,newscale);
-	// will be called in resize event
-	// emit updateArea(visibleArea(),zoom_);
+	emit updateArea(visibleArea(),zoom_);
 	TRACEPOINT;
 }
 
@@ -222,10 +223,17 @@ void ZoomableImage::setArea(QRectF rect,qreal zoom)
 void ZoomableImage::showFullImage()
 {
 	TRACEPOINT;
+	qreal iw=static_cast<qreal>(imageWidth());
+	qreal ih=static_cast<qreal>(imageHeight());
+	if(!((iw!=0)&&(ih!=0)))
+	{
+		TRACEPOINT;
+		return;
+	}
 	setZoom(
 		std::min(
-		static_cast<qreal>(view_->viewport()->width())/static_cast<qreal>(imageWidth()),
-		static_cast<qreal>(view_->viewport()->height())/static_cast<qreal>(imageHeight())
+		static_cast<qreal>(view_->viewport()->width())/iw,
+		static_cast<qreal>(view_->viewport()->height())/ih
 		)
 	);
 	TRACEPOINT;

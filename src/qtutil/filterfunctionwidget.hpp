@@ -42,7 +42,7 @@ public:
 	using OutputArray = CvvOutputArray<Out>;
 
 	FilterFunctionWidget(QWidget* parent = nullptr):
-		QWidget{parent}{}
+		QWidget{parent}{TRACEPOINT;}
 
 	/**
 	 * @brief virtual destructor.

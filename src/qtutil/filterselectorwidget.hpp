@@ -37,7 +37,7 @@ class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>,
 public:
 
 	/**
-	 * The input type.
+	 * @brief The input type.
 	 */
 	using InputArray  = typename FilterFunctionWidget<In,Out>::InputArray;
 
@@ -55,7 +55,7 @@ public:
 		FilterFunctionWidget<In,Out>{parent},
 		currentFilter_{nullptr},
 		layout_{new QVBoxLayout{}},
-		slotFilterSelected_{[this](){this->updatedSelectedFilter();}
+		slotFilterSelected_{[this](){TRACEPOINT;this->updatedSelectedFilter();}
 }
 	{
 		TRACEPOINT;
@@ -178,8 +178,8 @@ bool registerFilter(const QString& name)
 {
 	TRACEPOINT;
 	return FilterSelectorWidget<In,Out>::registerElement(name,
-			[](QWidget* parent){return std::unique_ptr<FilterFunctionWidget<In,Out>>
-		{new Filter{parent}};}
+			[](QWidget* parent){TRACEPOINT;
+			return std::unique_ptr<FilterFunctionWidget<In,Out>>{new Filter{parent}};}
 	);
 }
 
