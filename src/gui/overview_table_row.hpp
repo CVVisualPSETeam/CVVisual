@@ -9,6 +9,7 @@
 
 #include "../impl/call.hpp"
 #include "../util/util.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace gui {
 
@@ -27,6 +28,8 @@ public:
 	 */
     OverviewTableRow(util::Reference<const impl::Call> call);
     
+	~OverviewTableRow() { TRACEPOINT; }
+	
 	/**
 	 * @brief Adds the inherited data set to the given table.
 	 * @param table given table

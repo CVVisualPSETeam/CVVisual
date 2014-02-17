@@ -30,6 +30,26 @@ namespace gui {
 
 namespace controller {
 
+/**
+ * @brief Modes that this cvv application can be running in.
+ */
+enum Mode
+{
+	/**
+	 * @brief The normal mode.
+	 */
+	NORMAL = 0,
+	/**
+	 * @brief The cvv UI is hidden.
+	 */
+	HIDE = 1,
+	/**
+	 * @brief The cvv UI stops only at the final call 
+	 * The final call is the call which is called after `cvv::finalShow()`)
+	 */
+	FAST_FORWARD = 2
+};
+
 class ViewController;
 
 /**
@@ -96,6 +116,12 @@ public:
 	 * @return the inherited CallWindows
      */
     std::vector<util::Reference<gui::CallWindow>> getTabWindows();
+	
+	/**
+	 * @brief Get the inherited main window.
+	 * @return the inherited main window
+     */
+    util::Reference<gui::MainCallWindow> getMainWindow();
 
     /**
      * @brief Move the call tab with the given id to a new window.
@@ -186,6 +212,7 @@ public:
     /**
      * @brief Remove the window from the internal data structures.
      * @param windowId id of the window
+     * @note Only call this method if you now the implacations of deleting the window.
      */
     void removeWindowFromMaps(size_t windowId);
 
@@ -193,10 +220,47 @@ public:
      * @brief Shows an "Exit program" button on each window.
      */
     void showExitProgramButton();
+
 	/**
 	 * @brief Removes the empty windows.
+	 * @note It's safer to call the removeEmptyWindowsWithDelay method instead.
 	 */
     void removeEmptyWindows();
+	
+	/**
+	 * @brief Removes the empty windows with a small delay.
+	 */
+	void removeEmptyWindowsWithDelay();
+	
+	/**
+	 * @brief Checks whether or not is useful to call the removeEmptyWindows() method.
+	 * @return Is is useful to call the removeEmptyWindows() method?
+	 * @note Please don't call this method outside a periodcally called method.
+	 */
+	bool shouldRunRemoveEmptyWindows();
+	
+	/**
+	 * @brief Set the mode that this application is running in.
+	 * @param newMode mode to be set
+	 */
+	void setMode(Mode newMode);
+	
+	/**
+	 * @brief Returns the mode this program is running in.
+	 * @return the current mode, NROMAL, HIDE or FAST_FORWARD
+	 */
+	Mode getMode();
+	
+	/**
+	 * @brief Checks whether or not the `cvv::finalCall()` method has been called?
+	 * @return Has the `cvv::finalCall()` method been called?
+	 */
+	bool hasFinalCall();
+	
+	/**
+	 * @brief Hide the close window of the main window.
+	 */
+	void hideCloseWindow();
 	
 private:
 
@@ -209,10 +273,20 @@ private:
     std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
     gui::OverviewPanel* ovPanel;
 	bool doesShowExitProgramButton = false;
+	/**
+	 * @brief Counter == 0 <=> you should run `removeEmptyWindows()`.
+	 */
+	bool shouldRunRemoveEmptyWindows_ = true;
+	
+	Mode mode = Mode::NORMAL;
 
 	size_t max_window_id = 0;
 
     bool hasCall(size_t id);
+	
+	void updateMode();
+	
+	void hideAll();
 	
 };
 

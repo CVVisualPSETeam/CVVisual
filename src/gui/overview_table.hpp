@@ -11,6 +11,7 @@
 #include "../stfl/element_group.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../util/util.hpp"
+#include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
 #include "overview_group_subtable.hpp"
 
@@ -35,6 +36,8 @@ public:
 	 * @param parent it's parent overview
 	 */
 	OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent);
+	
+	~OverviewTable() { TRACEPOINT; }
 	
 	/**
 	 * @brief Update the inherited groups of rows and rebuild the UI fully.

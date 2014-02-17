@@ -12,6 +12,7 @@
 #include "overview_table.hpp"
 #include "overview_table_row.hpp"
 #include "../util/util.hpp"
+#include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
 
 namespace cvv {
@@ -45,6 +46,8 @@ public:
 	 */
     OverviewPanel(util::Reference<controller::ViewController> controller);
 
+	~OverviewPanel() { TRACEPOINT; }
+	
 	/**
 	 * @brief Adds the given calll to the shown overview table.
 	 * @param newCall given call

@@ -15,6 +15,7 @@
 #include <QPushButton>
 
 #include "call_tab.hpp"
+#include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
 #include "../util/util.hpp"
 #include "tabwidget.hpp"
@@ -42,6 +43,8 @@ public:
 	 * @param id id of the window
 	 */
 	CallWindow(util::Reference<controller::ViewController> controller, size_t id);
+	
+	~CallWindow() {TRACEPOINT;}
 	
 	/**
 	 * @brief Shows an "Exit program" button.
@@ -149,6 +152,7 @@ protected:
 	void initFooter();
 
 	void closeEvent(QCloseEvent *event);
+	
 };
 
 }}

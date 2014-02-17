@@ -142,6 +142,7 @@ bool CallWindow::hasTab(size_t tabId){
 void CallWindow::contextMenuRequested(const QPoint &location)
 {
 	TRACEPOINT;
+	controller->removeEmptyWindows();
 	auto tabBar = tabWidget->getTabBar();
 	int tabIndex = tabBar->tabAt(location);
 	if (tabIndex == tabOffset - 1)

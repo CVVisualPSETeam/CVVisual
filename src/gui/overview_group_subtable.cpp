@@ -124,8 +124,14 @@ void OverviewGroupSubtable::rowClicked(int row, int collumn)
 void OverviewGroupSubtable::customMenuRequested(QPoint location)
 {
 	TRACEPOINT;
+	if (qTable->rowCount() == 0)
+	{
+		return;
+	}
+	controller->removeEmptyWindows();
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
+	TRACEPOINT;
 	auto windows = controller->getTabWindows();
 	menu->addAction(new QAction("Open in new window", this));
 	for (auto window : windows)
@@ -133,6 +139,7 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 		menu->addAction(new QAction(QString("Open in '%1'").arg(
 						window->windowTitle()), this));
 	}
+	TRACEPOINT;
 	menu->addAction(new QAction("Remove call", this));
 	QModelIndex index = qTable->indexAt(location);
 	int row = index.row();

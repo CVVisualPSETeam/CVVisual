@@ -20,6 +20,7 @@
 namespace cvv {
 namespace controller {
 
+//It's only used for instatiating a QApplication.
 char *emptyArray[] = {nullptr};
 
 ViewController::ViewController()
@@ -69,15 +70,26 @@ std::map<QString, TabFactory> ViewController::callTabType {
 void ViewController::addCall(util::Reference<impl::Call> data)
 {
 	TRACEPOINT;
-    mainWindow->showOverviewTab();
-    ovPanel->addElement(*data);
+	updateMode();
+	if (mode == Mode::NORMAL)
+	{
+		mainWindow->showOverviewTab();
+	}
+	if (mode != Mode::HIDE)
+	{
+		ovPanel->addElement(*data);
+	}
 	TRACEPOINT;
 }
 
 void ViewController::exec()
 {
 	TRACEPOINT;
-    QApplication::instance()->exec();
+	updateMode();
+	if (mode == Mode::NORMAL)
+	{
+		QApplication::instance()->exec();
+	}
 	TRACEPOINT;
 }
 
@@ -104,13 +116,18 @@ std::vector<util::Reference<gui::CallWindow>> ViewController::getTabWindows()
 {
 	TRACEPOINT;
     std::vector<util::Reference<gui::CallWindow>>  windows{};
-    TRACEPOINT;
     for (auto &it : windowMap)
     {
         windows.push_back(util::makeRef(*(it.second)));
     }
     TRACEPOINT;
     return windows;
+}
+
+util::Reference<gui::MainCallWindow> ViewController::getMainWindow()
+{
+    TRACEPOINT;
+    return util::makeRef(*mainWindow);
 }
 
 void ViewController::moveCallTabToNewWindow(size_t tabId)
@@ -127,6 +144,7 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
 		newWindow->showExitProgramButton();
 	}
    	windowMap[max_window_id] = std::move(newWindow);
+   	removeEmptyWindowsWithDelay();
     TRACEPOINT;
 }
 
@@ -138,6 +156,7 @@ void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
     removeCallTab(tabId);
     auto tab = getCallTab(tabId);
     windowMap[windowId]->addTab(tab);
+    removeEmptyWindowsWithDelay();
     TRACEPOINT;
 }
 
@@ -159,6 +178,7 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
         ovPanel->removeElement(tabId);
         impl::dataController().removeCall(tabId);
     }
+    removeEmptyWindowsWithDelay();
     TRACEPOINT;
 }
 
@@ -201,6 +221,7 @@ void ViewController::showCallTab(size_t tabId)
 	TRACEPOINT;
     auto *window = getCurrentWindowOfTab(tabId);
     window->showTab(tabId);
+    window->setWindowState( (window->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
     window->raise();
     TRACEPOINT;
 }
@@ -221,6 +242,7 @@ void ViewController::showAndOpenCallTab(size_t tabId)
 void ViewController::showOverview()
 {
 	TRACEPOINT;
+	mainWindow->setWindowState( (mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
     mainWindow->raise();
     mainWindow->showOverviewTab();
     TRACEPOINT;
@@ -268,6 +290,7 @@ void ViewController::removeWindowFromMaps(size_t windowId)
 
 void ViewController::removeEmptyWindows()
 {
+	TRACEPOINT;
     std::vector<size_t> remIds{};
 	for (auto &elem : windowMap)
 	{
@@ -280,8 +303,20 @@ void ViewController::removeEmptyWindows()
 	{
 	  windowMap.erase(windowId);
 	}
+	shouldRunRemoveEmptyWindows_ = false;
+	TRACEPOINT;
 }
-											  
+
+void ViewController::removeEmptyWindowsWithDelay()
+{
+	shouldRunRemoveEmptyWindows_ = true;
+}
+	
+bool ViewController::shouldRunRemoveEmptyWindows()
+{
+	return shouldRunRemoveEmptyWindows_;
+}
+										  
 void ViewController::showExitProgramButton()
 {
 	TRACEPOINT;
@@ -296,7 +331,69 @@ void ViewController::showExitProgramButton()
 bool ViewController::hasCall(size_t id)
 {
 	TRACEPOINT;
-    return impl::dataController().hasCall(id);
+	return impl::dataController().hasCall(id);
+}
+											  
+void ViewController::setMode(Mode newMode)
+{
+	TRACEPOINT;
+	DEBUG(newMode);
+	mode = newMode;
+	switch (newMode)
+	{
+		case Mode::NORMAL:
+			break;
+		case Mode::HIDE:
+			hideAll();
+			QApplication::instance()->exit();
+			break;
+		case Mode::FAST_FORWARD:
+			if (!doesShowExitProgramButton)
+			{
+				QApplication::instance()->exit();
+			}
+			else
+			{
+				mode = Mode::NORMAL;
+			}
+			break;
+	}
+	TRACEPOINT;
+}
+
+Mode ViewController::getMode()
+{
+	return mode;
+}
+
+void ViewController::updateMode()
+{
+	TRACEPOINT;
+	if (mode == Mode::FAST_FORWARD && hasFinalCall())
+	{
+		mode = Mode::NORMAL;
+	}
+	TRACEPOINT;
+}
+
+void ViewController::hideAll()
+{
+	TRACEPOINT;
+	for (auto &window : windowMap)
+    {
+        window.second->hide();
+    }
+    TRACEPOINT;
+}
+
+bool ViewController::hasFinalCall()
+{
+	return doesShowExitProgramButton;
+}
+
+void ViewController::hideCloseWindow()
+{
+	mainWindow->hideCloseWindow();
 }
 
 }}

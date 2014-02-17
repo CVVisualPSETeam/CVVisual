@@ -10,6 +10,7 @@
 
 #include "../stfl/element_group.hpp"
 #include "overview_table_row.hpp"
+#include "../dbg/dbg.hpp"
 #include "../util/optional.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
@@ -41,6 +42,8 @@ public:
 		OverviewTable *parent,
 		stfl::ElementGroup<OverviewTableRow> group);
 
+	~OverviewGroupSubtable() { TRACEPOINT; }
+	
 	/**
 	 * @brief Updates the displayed table UI.
 	 */

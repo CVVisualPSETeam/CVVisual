@@ -60,10 +60,13 @@ void OverviewTable::updateRowGroups(std::vector<stfl::ElementGroup<OverviewTable
 		else if (groups.size() > newGroups.size())
 		{
 			TRACEPOINT;
-			for (size_t i = groups.size(); i >= newGroups.size(); i--)
+			for (size_t i = groups.size(); i > newGroups.size(); i--)
 			{
+				DEBUG(i);
 				subTables.pop_back();
+				TRACEPOINT;
 				subtableAccordion->deleteLast();
+				TRACEPOINT;
 			}
 		}
 		TRACEPOINT;

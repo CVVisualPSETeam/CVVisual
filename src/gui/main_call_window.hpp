@@ -1,12 +1,16 @@
 #ifndef CVVISUAL_MAINCALLWINDOW_HPP
 #define	CVVISUAL_MAINCALLWINDOW_HPP
 
+#include <memory>
+
 #include <QCloseEvent>
 
 #include "call_window.hpp"
 #include "overview_panel.hpp"
 #include "../controller/view_controller.hpp"
 #include "../util/util.hpp"
+#include "close_window.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { 
 
@@ -36,19 +40,29 @@ public:
 	MainCallWindow(util::Reference<controller::ViewController> controller, size_t id,
 				 OverviewPanel *ovPanel);
 	
+	~MainCallWindow() { TRACEPOINT; }
+	
 	/**
 	 * @brief Show the overview tab.
 	 */
 	void showOverviewTab();
+	
+	/**
+	 * @brief Hides the close window.
+	 */
+	void hideCloseWindow();
 
 protected:
     void closeEvent(QCloseEvent *event);
 
 private slots:
-	void doPeriodically();
+	void removeEmptyWindowsDelayed();
 	
 private:
 	OverviewPanel *ovPanel;
+	std::unique_ptr<CloseWindow> closeWindow;
+	int removeEmptyWindowsDelayedCounter = 4;
+	bool isCloseWindowHidden = true;
 };
 
 }}

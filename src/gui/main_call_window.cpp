@@ -1,14 +1,17 @@
 #include "main_call_window.hpp"
 
 #include <QTimer>
+#include <QPoint>
 
 #include "../dbg/dbg.hpp"
+#include "../util/util.hpp"
 
 namespace cvv { namespace gui {
 
 MainCallWindow::MainCallWindow(util::Reference<controller::ViewController> controller,
 							   size_t id, OverviewPanel *ovPanel)
-								: CallWindow(controller, id), ovPanel{ovPanel}
+								: CallWindow(controller, id), ovPanel{ovPanel},
+								  closeWindow{util::make_unique<CloseWindow>(controller)}
 {
 	TRACEPOINT;
 	tabOffset = 1;
@@ -17,8 +20,8 @@ MainCallWindow::MainCallWindow(util::Reference<controller::ViewController> contr
     tabBar->tabButton(0,  QTabBar::RightSide)->hide();
     setWindowTitle(QString("CVVisual | main window"));
 	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(doPeriodically()));
-	timer->start(100);
+	connect(timer, SIGNAL(timeout()), this, SLOT(removeEmptyWindowsDelayed()));	
+	timer->start(125);
     TRACEPOINT;
 }
 	
@@ -31,14 +34,49 @@ void MainCallWindow::showOverviewTab()
 void MainCallWindow::closeEvent(QCloseEvent *event)
 {
 	TRACEPOINT;
-    controller->resumeProgramExecution();
-    event->ignore();
+	if (!controller->hasFinalCall()){
+		int x = (width() - closeWindow->width()) / 2;
+		int y = (height() - closeWindow->height()) / 2;
+		QPoint point{x, y};
+		closeWindow->move(mapToGlobal(point));
+		closeWindow->show();
+		closeWindow->setWindowState( (closeWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+		closeWindow->raise();
+		isCloseWindowHidden = false;
+		event->ignore();
+	}
     TRACEPOINT;
 }
 
-void MainCallWindow::doPeriodically()
+void MainCallWindow::removeEmptyWindowsDelayed()
 {
-	controller->removeEmptyWindows();
+	if (controller->shouldRunRemoveEmptyWindows())
+	{
+		if (removeEmptyWindowsDelayedCounter <= 0)
+		{
+			controller->removeEmptyWindows();
+			removeEmptyWindowsDelayedCounter = 4;
+		}
+		else
+		{
+			removeEmptyWindowsDelayedCounter--;
+		}
+	}
+	else
+	{
+		removeEmptyWindowsDelayedCounter = 4;
+	}
+}
+
+void MainCallWindow::hideCloseWindow()
+{
+	DEBUG(isCloseWindowHidden);
+	if (!isCloseWindowHidden)
+	{
+		TRACEPOINT;
+		closeWindow->close();
+		isCloseWindowHidden = true;
+	}
 }
 
 }}
