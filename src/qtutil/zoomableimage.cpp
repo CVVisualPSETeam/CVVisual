@@ -200,6 +200,7 @@ void ZoomableImage::drawValues()
 	for(auto& elem:values_)
 	{
 		scene_->removeItem(elem);
+		//QGraphicsItem has no delete later
 		delete elem;
 	}
 	values_.clear();

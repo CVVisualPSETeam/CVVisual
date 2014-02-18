@@ -138,10 +138,10 @@ protected:
 			//disconnect
 			QObject::disconnect(&(this->currentFilter_->signFilterSettingsChanged_),0,
 						&(this->signFilterSettingsChanged_),0);
-			delete (this->currentFilter_);
+			currentFilter_->deleteLater();
 		}
 		this->currentFilter_= ((*this)()(nullptr)).release();
-		this->layout_->addWidget((this->currentFilter_));
+		this->layout_->insertWidget(1,(this->currentFilter_));
 		//pass signal
 		QObject::connect(&(this->currentFilter_->signFilterSettingsChanged_),
 				 SIGNAL(signal()),

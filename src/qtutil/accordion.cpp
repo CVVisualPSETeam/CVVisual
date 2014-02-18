@@ -66,7 +66,7 @@ void Accordion::remove(Handle handle)
 	layout_->removeWidget(elem);
 	elements_.erase(handle);
 	elem->setParent(0);
-	delete elem;
+	elem->deleteLater();
 	TRACEPOINT;
 }
 
@@ -78,7 +78,7 @@ void Accordion::clear()
 	{
 		layout_->removeWidget(elem.second);
 		elem.second->setParent(0);
-		delete elem.second;
+		elem.second->deleteLater();
 	}
 	elements_.clear();
 	TRACEPOINT;
@@ -105,7 +105,7 @@ void Accordion::deleteLast()
 		auto elem = layout_->takeAt(layout_->count() - 1)->widget();
 		elements_.erase(elem);
 		elem->setParent(0);
-		delete elem;
+		elem->deleteLater();
 	}
 	TRACEPOINT;
 }

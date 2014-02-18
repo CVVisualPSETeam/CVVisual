@@ -83,7 +83,7 @@ using PixelType = typename structures::PixelTypeConverter<DepthType<depth>,chann
  * @param value The value to convert.
  * @return The converted value.
  */
-template<int depth> uchar convertTo8U(const DepthType<depth>);// = delete;
+template<int depth> uchar convertTo8U(const DepthType<depth>) = delete;
 
 /**
  * @brief Converts the value to an uchar.
