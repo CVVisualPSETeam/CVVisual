@@ -17,16 +17,15 @@ namespace cvv{ namespace view{
 class SingleFilterView : public cvv::view::FilterView{
 	Q_OBJECT
 public:
-	/*
+
+	/**
 	 * @brief the constructor
-	 * @param lefKeyPoints (queryindx) the keypoint from the left image
-	 * @param rightKeyPoint (trainIdx/imIdx) the keypoints from the right Image
-	 * @param matches the matches between the images
-	 * @param usetrainIdx if true the trainIdx will be taken for rightKeyPoint if false
-	 *	the imIdx will be taken
-	 * @param parent the parent widget
+	 * @param images a vector of images which will be shown
+	 * @param parent the parent Widget
 	 */
 	SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
+
+	~SingleFilterView(){TRACEPOINT;}
 };
 
 }}//namespaces

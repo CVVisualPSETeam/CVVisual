@@ -31,7 +31,8 @@ public:
 	 * @param image the zoomable image
 	 */
 	CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image=nullptr,
-		QPen pen=QPen{Qt::red},QBrush brush=QBrush{Qt::white},QGraphicsItem *parent=nullptr);
+		QPen pen=QPen{Qt::red},QBrush brush=QBrush{Qt::white},
+		QGraphicsItem *parent=nullptr);
 
 
 	/**
@@ -39,7 +40,7 @@ public:
 	 * @return maps the imagepoint to the scene
 	 */
 	QPointF imPointInScene() const
-		{TRACEPOINT; return image_->mapImagePointToParent(QPointF{key_.pt.x,key_.pt.y}); }
+		{TRACEPOINT; return image_->mapImagePointToParent(QPointF{key_.pt.x,key_.pt.y});}
 
 	/**
 	 * @brief boundingRect
@@ -57,7 +58,7 @@ public:
 	/**
 	 * @brief the paint function.
 	 */
-	void paint(QPainter *painter, const QStyleOptionGraphicsItem *option,QWidget *widget);
+	void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
 	/**
 	 * @brief this method sets and connects this keypoint which the given ZoomableImage.
@@ -72,7 +73,7 @@ public:
 	 */
 	bool imagePointisVisible()
 		{TRACEPOINT;
-		return image_->visibleArea().contains(key_.pt.x,key_.pt.y); }
+		return image_->visibleArea().contains(key_.pt.x,key_.pt.y);}
 signals:
 	/**
 	 * @brief this signal will be emited when the imagepoint in the scene has changed

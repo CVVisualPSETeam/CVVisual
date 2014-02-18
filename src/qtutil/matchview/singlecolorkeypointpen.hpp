@@ -27,11 +27,9 @@ public:
 	 * @brief the destructor
 	 */
 	~SingleColorKeyPen()
-	{
-		TRACEPOINT;
+		{TRACEPOINT;
 		colordia_->deleteLater();
-		TRACEPOINT;
-	}
+		TRACEPOINT;}
 
 	/**
 	 * @brief this method returns the same PEn for all CVVKeyPoints

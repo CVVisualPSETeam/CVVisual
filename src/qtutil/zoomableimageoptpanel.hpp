@@ -16,14 +16,20 @@
 namespace cvv { namespace qtutil{
 
 /*
- * This Widget shows some Infos about the given cv::Mat from the given ZoomabelImage and has some Options for zooming
+ * @brief This Widget shows some Infos about the given cv::Mat from the given ZoomabelImage
+ * and has some Options for zooming
  */
 class ZoomableOptPanel : public QWidget{
 
 Q_OBJECT
 
 public:
-	ZoomableOptPanel(const ZoomableImage&,QWidget *parent=nullptr);
+	/**
+	 * @brief the constructor
+	 * @param image the ZoomableImage which will be connected
+	 * @param parent the parent Widget
+	 */
+	ZoomableOptPanel(const ZoomableImage& zoomIm,QWidget *parent=nullptr);
 
 public slots:
 	void updateMat(cv::Mat mat);

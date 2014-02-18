@@ -16,11 +16,23 @@ namespace cvv { namespace view{
 class LineMatchView:public MatchView{
 Q_OBJECT
 public:
-	/*
+
+	/**
 	 * @brief the constructor
-	 * @param
+	 * @param lefKeyPoints (queryindx) the keypoint from the left image
+	 * @param rightKeyPoint (trainIdx/imIdx) the keypoints from the right Image
+	 * @param matches the matches between the images
+	 * @param usetrainIdx if true the trainIdx will be taken for rightKeyPoint if false
+	 *	the imIdx will be taken
+	 * @param parent the parent widget
 	 */
-	LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,std::vector<cv::KeyPoint> rightKeyPoints,std::vector<cv::DMatch> matches,cv::Mat leftIm,cv::Mat rightIm,QWidget *parent=nullptr);
+	LineMatchView(	std::vector<cv::KeyPoint> leftKeyPoints,
+			std::vector<cv::KeyPoint> rightKeyPoints,
+			std::vector<cv::DMatch> matches,
+			cv::Mat leftIm,cv::Mat rightIm,
+			QWidget *parent=nullptr);
+
+	~LineMatchView(){TRACEPOINT;}
 };
 }}
 #endif

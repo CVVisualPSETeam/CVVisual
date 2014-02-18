@@ -17,7 +17,7 @@ class DepthMatchView: public MatchView{
 
 Q_OBJECT
 public:
-	/*
+	/**
 	 * @brief the constructor
 	 * @param lefKeyPoints (queryindx) the keypoint from the left image
 	 * @param rightKeyPoint (trainIdx/imIdx) the keypoints from the right Image
@@ -26,8 +26,12 @@ public:
 	 *	the imIdx will be taken
 	 * @param parent the parent widget
 	 */
-	DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,std::vector<cv::KeyPoint> rightKeyPoints,
-		std::vector<cv::DMatch> matches,cv::Mat leftIm,cv::Mat rightIm,QWidget *parent=nullptr);
+	DepthMatchView(	std::vector<cv::KeyPoint> leftKeyPoints,
+			std::vector<cv::KeyPoint> rightKeyPoints,
+			std::vector<cv::DMatch> matches,
+			cv::Mat leftIm,
+			cv::Mat rightIm,
+			QWidget *parent=nullptr);
 };
 }}
 #endif

@@ -12,7 +12,6 @@ QColor getFalseColor(double value,double max,double min=0)
 	color.setHsvF(((value-min)/(max-min))*255,255,255);
 	TRACEPOINT;
 	return color;
-
 }
 
 }}
