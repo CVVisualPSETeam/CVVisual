@@ -4,6 +4,7 @@
 
 #include <QVBoxLayout>
 #include <QStringList>
+#include <QModelIndexList>
 #include <QModelIndex>
 #include <QMenu>
 #include <QAction>
@@ -43,7 +44,6 @@ RawviewGroupSubtable::RawviewGroupSubtable(RawviewTable *parent,
 	list << "keypoint 2 x" << "y 2" << "size 2" << "angle 2" << "response 2" << "octave 2" << "class id 2";
 	qTable->setColumnCount(list.size());
     qTable->setHorizontalHeaderLabels(list);
-	
 	updateUI();
 	TRACEPOINT;
 }
@@ -61,11 +61,31 @@ void RawviewGroupSubtable::updateUI(){
 void RawviewGroupSubtable::selectionChanged()
 {
 	TRACEPOINT;
+	currentRowIndexes = {};
+	QModelIndexList indexList = qTable->selectionModel()->selectedIndexes();
+	for (QModelIndex index : indexList) 
+	{
+		if (index.isValid())
+		{
+			auto row = index.row();
+			if (row < qTable->rowCount() && row >= 0)
+			{
+				currentRowIndexes.push_back(row);
+			}
+		}
+	}
+	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::customMenuRequested(QPoint location)
 {
 	TRACEPOINT;
+	QModelIndex index = qTable->indexAt(location);
+	if (!index.isValid())
+	{
+		return;
+	}
+	
 	QMenu *menu = new QMenu(this);
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	
@@ -74,11 +94,10 @@ void RawviewGroupSubtable::customMenuRequested(QPoint location)
 	{
 		menu->addAction(new QAction(QString("Copy as %1").arg(format), this));
 	}
-	QModelIndex index = qTable->indexAt(location);
 	int row = index.row();
-	if (currentRows.size() == 0)
+	if (currentRowIndexes.size() == 0)
 	{
-		currentRows = { group.get(row) };
+		currentRowIndexes = { row };
 	}
 	menu->popup(qTable->viewport()->mapToGlobal(location));
 	TRACEPOINT;
@@ -87,21 +106,29 @@ void RawviewGroupSubtable::customMenuRequested(QPoint location)
 void RawviewGroupSubtable::customMenuAction(QAction *action)
 {
 	TRACEPOINT;
-	if (currentRows.size() > 0)
+	if (currentRowIndexes.size() > 0)
 	{
+		std::vector<RawviewTableRow> rows;
+		for (auto index : currentRowIndexes)
+		{
+			if (index < qTable->rowCount() && index > 0)
+			{
+				rows.push_back(group.get(index));
+			}
+		}
 		auto formats = RawviewTableRow::getAvailableTextFormats();
 		for (auto format : formats)
 		{
 			if (action->text() == QString("Copy as %1").arg(format))
 			{
-				QString formattedRows = RawviewTableRow::rowsToText(currentRows, format);
+				QString formattedRows = RawviewTableRow::rowsToText(rows, format);
 				QApplication::clipboard()->setText(formattedRows);
 				break;
 			}
 		}
 	}
 	DEBUG("Action: " + action->text().toStdString());
-	currentRows = {};
+	currentRowIndexes = {};
 	TRACEPOINT;
 }
 
