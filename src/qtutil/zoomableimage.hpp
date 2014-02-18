@@ -14,6 +14,7 @@
 
 #include "util.hpp"
 #include "../util/util.hpp"
+#include "../util/observer_ptr.hpp"
 #include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
@@ -285,15 +286,15 @@ private:
 	/**
 	 * @brief The pixmap containing the converted image.
 	 */
-	QGraphicsPixmapItem* pixmap_;
+	util::ObserverPtr<QGraphicsPixmapItem> pixmap_;
 	/**
 	 * @brief The graphics view showing the scene.
 	 */
-	structures::GraphicsView* view_;
+	util::ObserverPtr<structures::GraphicsView> view_;
 	/**
 	 * @brief The scene containing the pixmap.
 	 */
-	QGraphicsScene* scene_;
+	util::ObserverPtr<QGraphicsScene> scene_;
 	/**
 	 * @brief The current zoom factor.
 	 */

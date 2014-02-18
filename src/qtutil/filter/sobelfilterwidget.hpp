@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QCheckBox>
 
+#include "../../util/observer_ptr.hpp"
 #include"../filterfunctionwidget.hpp"
 #include "grayfilterwidget.hpp"
 
@@ -58,28 +59,28 @@ private:
 	/**
 	 * @brief Selection for parameter dx.
 	 */
-	QSpinBox* dx_;
+	util::ObserverPtr<QSpinBox> dx_;
 	/**
 	 * @brief Selection for parameter dy.
 	 */
-	QSpinBox* dy_;
+	util::ObserverPtr<QSpinBox> dy_;
 	/**
 	 * @brief Selection for parameter ksize.
 	 */
-	QComboBox* ksize_;
+	util::ObserverPtr<QComboBox> ksize_;
 	/**
 	 * @brief Selection for parameter borderType.
 	 */
-	QComboBox* borderType_;
+	util::ObserverPtr<QComboBox> borderType_;
 	/**
 	 * @brief Wheather a gray filter should be applied first.
 	 */
-	QCheckBox* gray_;
+	util::ObserverPtr<QCheckBox> gray_;
 
 	/**
 	 * @brief a gray filter.
 	 */
-	GrayFilterWidget* grayFilter_;
+	util::ObserverPtr<GrayFilterWidget> grayFilter_;
 };
 
 }}

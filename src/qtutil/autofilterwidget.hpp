@@ -16,6 +16,7 @@
 #include "filterselectorwidget.hpp"
 #include "signalslot.hpp"
 #include "../util/util.hpp"
+#include"../util/observer_ptr.hpp"
 #include "../dbg/dbg.hpp"
 #include "signalslot.hpp"
 
@@ -59,18 +60,24 @@ public:
 			QWidget* parent = nullptr):
 		QWidget{parent},
 		name_{name},
-		checkBox_{new QCheckBox{name}},
-		message_{new QLabel{}},
+		checkBox_{nullptr},
+		message_{nullptr},
 		in_(in),
 		out_(out),
 		signals_()
 	{
 		TRACEPOINT;
+		auto box=util::make_unique<QCheckBox>(name);
+		checkBox_=*box;
+
+		auto msg=util::make_unique<QLabel>();
+		message_=*msg;
+
 		auto lay=util::make_unique<QVBoxLayout>();
 		lay->setAlignment(Qt::AlignTop);;
 		lay->setSpacing(0);
-		lay->addWidget(checkBox_);
-		lay->addWidget(message_);
+		lay->addWidget(box.release());
+		lay->addWidget(msg.release());
 		message_->setVisible(false);
 		setLayout(lay.release());
 		enableUserSelection(true);
@@ -176,11 +183,11 @@ public:
 	/**
 	 * @brief The check box.
 	 */
-	QCheckBox* checkBox_;
+	util::ObserverPtr<QCheckBox> checkBox_;
 	/**
 	 * @brief The label to display messages.
 	 */
-	QLabel* message_;
+	util::ObserverPtr<QLabel> message_;
 	/**
 	 * @brief Image input.
 	 */
@@ -222,7 +229,7 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 		slotEnableUserSelection_{[this](bool b){TRACEPOINT; this->enableUserSelection(b);}},
 		slotUseFilterIndividually_{[this](bool b){TRACEPOINT;
 						this->useFilterIndividually(b);}},
-		entryLayout_{new QVBoxLayout},
+		entryLayout_{nullptr},
 		applyFilterIndividually_{false},
 		entries_{},
 		earliestActivationTime_{},
@@ -230,7 +237,9 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	{
 		TRACEPOINT;
 		//add sublayout
-		this->layout_->insertLayout(0,entryLayout_);
+		auto lay=util::make_unique<QVBoxLayout>();
+		entryLayout_=*lay;
+		this->layout_->insertLayout(0,lay.release());
 		//connect auto filter slot
 		QObject::connect(&(this->signFilterSettingsChanged_),
 				 SIGNAL(signal()),//&AutoFilterWidget<In,Out>::signFilterSettingsChanged_::signal,
@@ -407,7 +416,7 @@ private:
 	/**
 	 * @brief The layout containing the entries.
 	 */
-	QVBoxLayout* entryLayout_;
+	util::ObserverPtr<QVBoxLayout> entryLayout_;
 	/**
 	 * @brief Wheater each entry that can apply the filter does so.
 	 */

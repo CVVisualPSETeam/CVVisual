@@ -11,6 +11,7 @@
 #include <QFrame>
 
 #include "../util/util.hpp"
+#include "../util/observer_ptr.hpp"
 #include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
@@ -128,7 +129,7 @@ private:
 	/**
 	 * @brief The layout containing the header and widget
 	 */
-	QVBoxLayout* layout_;
+	util::ObserverPtr<QVBoxLayout> layout_;
 }; //Collapsable
 }} // end namespaces qtutil, cvv
 

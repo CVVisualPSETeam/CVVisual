@@ -16,6 +16,8 @@
 
 #include "../filterfunctionwidget.hpp"
 #include "../../dbg/dbg.hpp"
+#include "../../util/observer_ptr.hpp"
+
 
 namespace cvv { namespace qtutil {
 
@@ -84,15 +86,15 @@ private:
 	/**
 	 * @brief The layout.
 	 */
-	QVBoxLayout* layout_;
+	util::ObserverPtr<QVBoxLayout> layout_;
 	/**
 	 * @brief The spinbox to select the number of channels.
 	 */
-	QSpinBox* channel_;
+	util::ObserverPtr<QSpinBox> channel_;
 	/**
 	 * @brief Spin boxes for the channels.
 	 */
-	std::vector<QDoubleSpinBox*> chanValues_;
+	std::vector<util::ObserverPtr<QDoubleSpinBox>> chanValues_;
 };
 
 }}

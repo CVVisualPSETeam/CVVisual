@@ -25,7 +25,7 @@ template<std::size_t Out> using CvvOutputArray = std::array<util::Reference<cv::
 /**
  * @brief The type for the input of the filter.
  *
- * Inherit from it if you want to provide a new image filter.
+ * Inherit from it if you want to provide an image filter.
  * Use the widget to let the user choose parameters.
  * Emit stateChanged when user input leads to different parameters.
  *

@@ -15,17 +15,17 @@
 namespace cvv { namespace util {
 /**
  * ObserverPtr-class to signal that a type is not owned.
- * 
+ *
  * Note that const ObserverPtr<Foo> does not mean that the pointed to Foo is const. If that is what
  * you want use ObserverPtr<const Foo>.
- * 
+ *
  * Unlike util::Reference ObserverPtr may be null, even though this is not really recommended. If it
  * points to null the only things that you may do are:
- * 
+ *
  * 1) reassign another value
  * 2) compare it to another ObserverPtr
  * 3) request whether it is null via isNull()
- * 
+ *
  * Everything else will result in a std::logical_error being thrown.
  */
 template<typename T>
@@ -34,13 +34,13 @@ class ObserverPtr
 public:
 	// Since null is often a bad idea, don't create it by default:
 	ObserverPtr() = delete;
-	
+
 	// these are all just the defaults but it is nice to see them explicitly
 	ObserverPtr(const ObserverPtr&) = default;
 	ObserverPtr(ObserverPtr&&) = default;
 	ObserverPtr& operator=(const ObserverPtr&) = default;
 	ObserverPtr& operator=(ObserverPtr&&) = default;
-	
+
 	//Constructing only works from references
 	ObserverPtr(T& pointee) : ptr{&pointee} {}
 	ObserverPtr& operator=(T& pointee)
@@ -48,17 +48,17 @@ public:
 		ptr = &pointee;
 		return *this;
 	}
-	
+
 	// there is no point in having a ObserverPtr to a temporary object:
 	ObserverPtr(T&&) = delete;
-	
+
 	ObserverPtr(std::nullptr_t): ptr{nullptr} {}
 	ObserverPtr& operator=(std::nullptr_t)
 	{
 		ptr = nullptr;
 		return *this;
 	}
-	
+
 	/**
 	 * @brief Creates a Ref from a ObserverPtr to a type that inherits T.
 	 *
@@ -71,7 +71,7 @@ public:
 				"ObserverPtr<T> can only be constructed from ObserverPtr<U> if "
 				"T is either equal to U or a base-class of U");
 	}
-	
+
 	/**
 	 * @brief Get a reference to the referenced object.
 	 */
@@ -80,13 +80,13 @@ public:
 		enforceNotNull();
 		return *ptr;
 	}
-	
+
 	T* operator->() const
 	{
 		enforceNotNull();
 		return ptr;
 	}
-	
+
 	/**
 	 * @brief Get a reference to the referenced object.
 	 */
@@ -95,7 +95,7 @@ public:
 		enforceNotNull();
 		return *ptr;
 	}
-	
+
 	/**
 	 * @brief Get a pointer to the referenced object.
 	 */
@@ -104,10 +104,10 @@ public:
 		enforceNotNull();
 		return ptr;
 	}
-	
+
 	/**
 	 * @brief Tries to create a ObserverPtr to a type that inherits T.
-	 * 
+	 *
 	 * If the target-type does not inherit T, a compiler-error is created.
 	 * @throws std::bad_cast if the pointee is not of the requested type.
 	 */
@@ -120,7 +120,7 @@ public:
 		enforceNotNull();
 		return makeRef(dynamic_cast<TargetType&>(*ptr));
 	}
-	
+
 	/**
 	 * Requests whether this points to nullptr;
 	 */
@@ -128,10 +128,18 @@ public:
 	{
 		return !ptr;
 	}
-	
+
+	/**
+	 * @brief True if this is no nullptr.
+	 */
+	operator bool() const
+	{
+		return ptr;
+	}
+
 	/**
 	 * @brief Compare to references for identity of the referenced object.
-	 * 
+	 *
 	 * @note identity != equality: two references to two different ints that both happen to have
 	 * the value 1, will still compare unequal.
 	 */
@@ -139,7 +147,7 @@ public:
 	{
 		return l.ptr == r.ptr;
 	}
-	
+
 	/**
 	 * Dito.
 	 */
@@ -147,10 +155,10 @@ public:
 	{
 		return l.ptr != r.ptr;
 	}
-	
+
 private:
 	T* ptr;
-	
+
 	void enforceNotNull() const {
 		if(!ptr)
 		{
@@ -159,6 +167,6 @@ private:
 	}
 };
 
-}} // namespaces 
+}} // namespaces
 
 #endif

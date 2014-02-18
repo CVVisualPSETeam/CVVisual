@@ -11,11 +11,15 @@ namespace cvv { namespace qtutil {
 
 GrayFilterWidget::GrayFilterWidget(QWidget* parent):
 	FilterFunctionWidget<1,1>{parent},
-	layout_{new QVBoxLayout{}},
-	channel_{new QSpinBox{}},
+	layout_{nullptr},
+	channel_{nullptr},
 	chanValues_{}
 {
 	TRACEPOINT;
+	auto lay=util::make_unique<QVBoxLayout>();
+	layout_=*lay;
+	auto channel=util::make_unique<QSpinBox>();
+	channel_=*channel;
 	//button
 	auto button=util::make_unique<QPushButton>("use default rgb to gray");
 	QObject::connect(button.get(),SIGNAL(clicked()),this, SLOT(setStd()));
@@ -23,15 +27,15 @@ GrayFilterWidget::GrayFilterWidget(QWidget* parent):
 	TRACEPOINT;
 	//channelselector
 	channel_->setRange(1,10);
-	QObject::connect(channel_,SIGNAL(valueChanged(int)),this, SLOT(setChannel(int)));
+	QObject::connect(channel_.getPtr(),SIGNAL(valueChanged(int)),this, SLOT(setChannel(int)));
 
 	TRACEPOINT;
 	//build ui
 	layout_->addWidget(button.release());
 	layout_->addWidget(util::make_unique<QLabel>("Number of channels").release());
-	layout_->addWidget(channel_);
+	layout_->addWidget(channel.release());
 	layout_->addWidget(util::make_unique<QLabel>("Percentage for channels").release());
-	setLayout(layout_);
+	setLayout(lay.release());
 
 	TRACEPOINT;
 	//std rgba
@@ -91,7 +95,7 @@ void GrayFilterWidget::setChannel(std::size_t n)
 	{
 		//remove one channel
 		TRACEPOINT;
-		QDoubleSpinBox* box=chanValues_.back();
+		QDoubleSpinBox* box=chanValues_.back().getPtr();
 		chanValues_.pop_back();
 		layout_->removeWidget(box);
 		box->setParent(nullptr);
@@ -102,7 +106,7 @@ void GrayFilterWidget::setChannel(std::size_t n)
 		auto box=util::make_unique<QDoubleSpinBox>();
 		box->setRange(0,1);
 		box->setSingleStep(0.01);
-		chanValues_.emplace_back(box.get());
+		chanValues_.emplace_back(*box);
 		//connect
 		QObject::connect(box.get(),SIGNAL(valueChanged(double)),
 				 &(this->signFilterSettingsChanged_),SIGNAL(signal()));

@@ -22,9 +22,10 @@ namespace cvv { namespace qtutil{
  *
  * The registered functions are shared between all instances of a class.
  * A QComboBox is provided for user selection.
- * The content of the QComboBox is updated whenever a new function is registered.
+ * The content of the QComboBox is updated whenever a function is registered.
  *
- * @todo SYNCHRONIZE
+ * Inheriting classes have to delete the member comboBox_ on destruction!
+ * (e.g. by putting it into a layout)
  */
 template<class Value, class...Args>
 class RegisterHelper
@@ -95,7 +96,7 @@ public:
 	}
 
 	/**
-	 * @brief Registers a new function.
+	 * @brief Registers a function.
 	 * @param name The name.
 	 * @param fabric The fabric function.
 	 * @return true if the function was registered. false if the name was taken
@@ -158,7 +159,7 @@ public:
 	}
 
 	/**
-	 *@brief Signal emitted whenever a new function is registered.
+	 *@brief Signal emitted whenever a function is registered.
 	 *@todo SYNCHRONIZE
 	 */
 	//thread_local
@@ -181,7 +182,7 @@ protected:
 	QComboBox* comboBox_;
 
 	/**
-	 * @brief Slot called whenever a new function is registered
+	 * @brief Slot called whenever a function is registered
 	 */
 	SlotQString slotElementRegistered_;
 };

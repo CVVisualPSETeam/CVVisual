@@ -15,14 +15,26 @@ namespace cvv { namespace qtutil{
 
 SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 	FilterFunctionWidget<1,1>{parent},
-	dx_{new QSpinBox{}},
-	dy_{new QSpinBox{}},
-	ksize_{new QComboBox{}},
-	borderType_{new QComboBox{}},
-	gray_{new QCheckBox{"Apply gray filter."}},
-	grayFilter_{new GrayFilterWidget{}}
+	dx_{nullptr},
+	dy_{nullptr},
+	ksize_{nullptr},
+	borderType_{nullptr},
+	gray_{nullptr},
+	grayFilter_{nullptr}
 {
 	TRACEPOINT;
+	auto dx = util::make_unique<QSpinBox>();
+	dx_=*dx;
+	auto dy = util::make_unique<QSpinBox>();
+	dy_=*dy;
+	auto ksize = util::make_unique<QComboBox>();
+	ksize_=*ksize;
+	auto borderType = util::make_unique<QComboBox>();
+	borderType_=*borderType;
+	auto gray = util::make_unique<QCheckBox>("Apply gray filter");
+	gray_=*gray;
+	auto grayFilter = util::make_unique<GrayFilterWidget>();
+	grayFilter_=*grayFilter;
 	//set up elements
 	dx_->setRange(0,6);
 	dy_->setRange(0,6);
@@ -41,39 +53,40 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 	TRACEPOINT;
 
 	//connect
-	QObject::connect(dx_,SIGNAL(valueChanged(int)),
+	QObject::connect(dx_.getPtr(),SIGNAL(valueChanged(int)),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(dy_,SIGNAL(valueChanged(int)),
+	QObject::connect(dy_.getPtr(),SIGNAL(valueChanged(int)),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(ksize_,SIGNAL(currentIndexChanged(int)),
+	QObject::connect(ksize_.getPtr(),SIGNAL(currentIndexChanged(int)),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(borderType_,SIGNAL(currentIndexChanged(int)),
+	QObject::connect(borderType_.getPtr(),SIGNAL(currentIndexChanged(int)),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
 	TRACEPOINT;
 
 	//subfilter gray
-	QObject::connect(gray_,SIGNAL(clicked(bool)),grayFilter_,SLOT(setVisible(bool)));
+	QObject::connect(gray_.getPtr(),SIGNAL(clicked(bool)),grayFilter_.getPtr(),
+								SLOT(setVisible(bool)));
 	gray_->setChecked(false);
 	grayFilter_->setVisible(false);
-	QObject::connect(gray_,SIGNAL(clicked()),
+	QObject::connect(gray_.getPtr(),SIGNAL(clicked()),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(&(grayFilter_->signFilterSettingsChanged_),SIGNAL(signal()),
+	QObject::connect(&(grayFilter_.getPtr()->signFilterSettingsChanged_),SIGNAL(signal()),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
 	TRACEPOINT;
 
 
 	//build ui
 	auto lay=util::make_unique<QVBoxLayout>();
-	lay->addWidget(gray_);
-	lay->addWidget(grayFilter_);
+	lay->addWidget(gray.release());
+	lay->addWidget(grayFilter.release());
 	lay->addWidget(util::make_unique<QLabel>("dx").release());
-	lay->addWidget(dx_);
+	lay->addWidget(dx.release());
 	lay->addWidget(util::make_unique<QLabel>("dy").release());
-	lay->addWidget(dy_);
+	lay->addWidget(dy.release());
 	lay->addWidget(util::make_unique<QLabel>("ksize").release());
-	lay->addWidget(ksize_);
+	lay->addWidget(ksize.release());
 	lay->addWidget(util::make_unique<QLabel>("borderType").release());
-	lay->addWidget(borderType_);
+	lay->addWidget(borderType.release());
 	setLayout(lay.release());
 	TRACEPOINT;
 	//emit first update
@@ -108,7 +121,7 @@ void SobelFilterWidget::applyFilter(InputArray in,OutputArray out) const
 	int dx=dx_->value();
 	int dy=dy_->value();
 
-	if(gray_)
+	if(gray_->isChecked())
 	{
 		TRACEPOINT;
 		grayFilter_->applyFilter(in,out);

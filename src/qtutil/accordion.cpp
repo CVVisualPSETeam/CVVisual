@@ -5,24 +5,25 @@
 namespace cvv{ namespace qtutil{
 
 Accordion::Accordion(QWidget *parent):
-	QWidget{parent}, elements_{}, layout_{new QVBoxLayout{}}
+	QWidget{parent}, elements_{}, layout_{nullptr}
 {
 	TRACEPOINT;
+	auto lay=util::make_unique<QVBoxLayout>();
+	layout_=*lay;
 	layout_->setAlignment(Qt::AlignTop);
-	setLayout(layout_);
 
 	//needed because scrollArea->setLayout(layout_); does not work
-	QWidget* resizehelper= new QWidget{};
-	resizehelper->setLayout(layout_);
+	auto resizehelper= util::make_unique<QWidget>();
+	resizehelper->setLayout(lay.release());
 
-	QScrollArea* scrollArea = new QScrollArea{};
-	scrollArea->setWidget(resizehelper);
+	auto scrollArea = util::make_unique<QScrollArea>();
+	scrollArea->setWidget(resizehelper.release());
 	//needed because no contained widget demands a size
 	scrollArea->setWidgetResizable(true);
 
-	QVBoxLayout* mainLayout = new QVBoxLayout{};
-	mainLayout->addWidget(scrollArea);
-	setLayout(mainLayout);
+	auto mainLayout = util::make_unique<QVBoxLayout>();
+	mainLayout->addWidget(scrollArea.release());
+	setLayout(mainLayout.release());
 	TRACEPOINT;
 }
 
@@ -52,7 +53,8 @@ Accordion::Handle Accordion::insert(const QString& title, std::unique_ptr<QWidge
 	TRACEPOINT;
 	//create element
 	auto widgetPtr = widget.get();
-	elements_.emplace(widgetPtr, new Collapsable{title, std::move(widget), isCollapsed});
+	elements_.emplace(widgetPtr,
+		util::make_unique<Collapsable>(title, std::move(widget), isCollapsed).release());
 	//insert element
 	layout_->insertWidget(position, &element(widgetPtr));
 	TRACEPOINT;

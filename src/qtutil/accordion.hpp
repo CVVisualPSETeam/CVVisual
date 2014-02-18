@@ -12,6 +12,7 @@
 //CVV
 #include "collapsable.hpp"
 #include "../util/util.hpp"
+#include "../util/observer_ptr.hpp"
 #include "../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil
@@ -266,7 +267,7 @@ public:
 	 * @brief Deletes and removes the last element (if any are present).
 	 */
 	void deleteLast();
-	
+
 	/**
 	 * @brief Removes alle elements from the Accordion and returns their titles
 	 *	and Collapsables  (ownership remains)
@@ -295,7 +296,7 @@ private:
 	/**
 	 * @brief Layout for all elements
 	 */
-	QVBoxLayout* layout_;
+	util::ObserverPtr<QVBoxLayout> layout_;
 }; // Accordion
 }} // end namespaces qtutil, cvv
 #endif // CVVISUAL_ACCORDION_HPP

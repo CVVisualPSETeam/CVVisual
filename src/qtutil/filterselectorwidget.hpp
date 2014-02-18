@@ -19,6 +19,8 @@
 #include "registerhelper.hpp"
 #include "filterfunctionwidget.hpp"
 #include "../dbg/dbg.hpp"
+#include "../util/util.hpp"
+#include "../util/observer_ptr.hpp"
 
 namespace cvv { namespace qtutil{
 
@@ -54,18 +56,20 @@ public:
 		RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>{},
 		FilterFunctionWidget<In,Out>{parent},
 		currentFilter_{nullptr},
-		layout_{new QVBoxLayout{}},
+		layout_{nullptr},
 		slotFilterSelected_{[this](){TRACEPOINT;this->updatedSelectedFilter();}
 }
 	{
 		TRACEPOINT;
+		auto lay= util::make_unique<QVBoxLayout>();
+		layout_=*lay;
 		this->layout_->setAlignment(Qt::AlignTop);
 		this->layout_->setSpacing(0);
 		this->layout_->addWidget((this->comboBox_));
 		//connect elem selected with update for it
 		QObject::connect(&(this->signElementSelected_),SIGNAL(signal(QString)),
 				 &(this->slotFilterSelected_), SLOT(slot()));
-		this->setLayout((this->layout_));
+		this->setLayout(lay.release());
 		TRACEPOINT;
 		//update for initial selection (if it is valid)
 		if(this->has(this->selection())){updatedSelectedFilter();}
@@ -137,14 +141,15 @@ protected:
 		if((this->currentFilter_))
 		{
 			TRACEPOINT;
-			layout_->removeWidget((this->currentFilter_));
+			layout_->removeWidget((this->currentFilter_.getPtr()));
 			//disconnect
 			QObject::disconnect(&(this->currentFilter_->signFilterSettingsChanged_),0,
 						&(this->signFilterSettingsChanged_),0);
 			currentFilter_->deleteLater();
 		}
-		this->currentFilter_= ((*this)()(nullptr)).release();
-		this->layout_->insertWidget(2,(this->currentFilter_));
+		auto filt=(*this)()(nullptr);
+		this->currentFilter_= *filt;
+		this->layout_->insertWidget(2,filt.release());
 		//pass signal
 		QObject::connect(&(this->currentFilter_->signFilterSettingsChanged_),
 				 SIGNAL(signal()),
@@ -157,12 +162,12 @@ protected:
 	/**
 	 * @brief the current filter
 	 */
-	FilterFunctionWidget<In, Out>* currentFilter_;
+	util::ObserverPtr<FilterFunctionWidget<In, Out>> currentFilter_;
 
 	/**
 	 * @brief The layout
 	 */
-	QVBoxLayout* layout_;
+	util::ObserverPtr<QVBoxLayout> layout_;
 
 	/**
 	 * @brief Slot called when user changes selection
