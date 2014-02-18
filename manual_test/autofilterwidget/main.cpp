@@ -15,6 +15,7 @@
 #include "../../src/qtutil/filterselectorwidget.hpp"
 #include "../../src/qtutil/accordion.hpp"
 #include "../../src/qtutil/zoomableimage.hpp"
+#include "../../src/qtutil/filter/sobelfilterwidget.hpp"
 #include "../../src/util/util.hpp"
 #include "../../src/impl/init.hpp"
 
