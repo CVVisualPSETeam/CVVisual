@@ -67,6 +67,8 @@ public:
 	{
 		TRACEPOINT;
 		auto lay=util::make_unique<QVBoxLayout>();
+		lay->setAlignment(Qt::AlignTop);;
+		lay->setSpacing(0);
 		lay->addWidget(checkBox_);
 		lay->addWidget(message_);
 		message_->setVisible(false);

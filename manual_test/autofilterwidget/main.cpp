@@ -19,58 +19,11 @@
 #include "../../src/util/util.hpp"
 #include "../../src/impl/init.hpp"
 
-class MultFilter: public cvv::qtutil::FilterFunctionWidget<1,1>
-{
-public:
-	using InputArray  = cvv::qtutil::FilterFunctionWidget<1,1>::InputArray;
-	using OutputArray = cvv::qtutil::FilterFunctionWidget<1,1>::OutputArray;
-
-	MultFilter(QWidget* parent = nullptr):
-		FilterFunctionWidget<1,1>{parent},
-		check_{new QCheckBox{}},
-		spin_{new QDoubleSpinBox{}}
-	{
-		auto lay=cvv::util::make_unique<QHBoxLayout>();
-		lay->addWidget(check_);
-		lay->addWidget(spin_);
-		spin_->setRange(0,1);
-		spin_->setSingleStep(0.025);
-		QObject::connect(spin_,SIGNAL(valueChanged(double)),
-				 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-		setLayout(lay.release());
-
-	}
-
-	virtual void applyFilter(InputArray in,OutputArray out) const
-	{
-		out.at(0).get()=in.at(0).get()*(spin_->value());
-	}
-
-	virtual std::pair<bool, QString> checkInput(InputArray in) const
-	{
-		if(check_->isChecked ())
-		{
-			if(in.at(0).get().type()==CV_32FC3)
-			{
-				return {false,"mat CV_32FC3"};
-			}
-		}
-		return {true,""};
-	}
-
-	QCheckBox* check_;
-	QDoubleSpinBox* spin_;
-};
-
-
-
-
 int main(int argc, char *argv[])
 {
 	cvv::dbg::setLoggingState(true);
 	TRACEPOINT;
 
-	cvv::qtutil::registerFilter<1,1,MultFilter>("multi");
 	cvv::impl::initializeFilterAndViews();
 
 	TRACEPOINT;
@@ -103,11 +56,13 @@ int main(int argc, char *argv[])
 
 	auto afw=cvv::util::make_unique<cvv::qtutil::AutoFilterWidget<1,1>>();
 	//buttons
-	auto busele=cvv::util::make_unique<QPushButton>("user selec");
-	auto bindiv=cvv::util::make_unique<QPushButton>("indiv");
-
+	auto busele=cvv::util::make_unique<QPushButton>("user select for afw");
+	auto bindiv=cvv::util::make_unique<QPushButton>("individual filter for afw");
 	busele->setCheckable (true);
 	bindiv->setCheckable (true);
+	busele->setChecked(true);
+	bindiv->setChecked(true);
+
 	QObject::connect(busele.get(),SIGNAL(clicked( bool)),
 			 &(afw->slotEnableUserSelection_),SLOT(slot(bool)));
 	QObject::connect(bindiv.get(),SIGNAL(clicked( bool)),
@@ -130,8 +85,8 @@ int main(int argc, char *argv[])
 	auto layv2=cvv::util::make_unique<QVBoxLayout>();
 
 	auto acc=cvv::util::make_unique<cvv::qtutil::Accordion>();
-	acc->push_back("busele",std::move(busele));
-	acc->push_back("bindiv",std::move(bindiv));
+	acc->push_back("button user select",std::move(busele));
+	acc->push_back("button individual filter",std::move(bindiv));
 	acc->push_back("afw",std::move(afw));
 
 	layv1->addWidget(i1.release());

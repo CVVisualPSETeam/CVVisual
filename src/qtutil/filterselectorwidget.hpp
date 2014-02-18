@@ -59,20 +59,23 @@ public:
 }
 	{
 		TRACEPOINT;
+		this->layout_->setAlignment(Qt::AlignTop);
+		this->layout_->setSpacing(0);
 		this->layout_->addWidget((this->comboBox_));
 		//connect elem selected with update for it
 		QObject::connect(&(this->signElementSelected_),SIGNAL(signal(QString)),
 				 &(this->slotFilterSelected_), SLOT(slot()));
 		this->setLayout((this->layout_));
+		TRACEPOINT;
+		//update for initial selection (if it is valid)
+		if(this->has(this->selection())){updatedSelectedFilter();}
+		TRACEPOINT;
 		//add an apply button
 		auto button=util::make_unique<QPushButton>("apply");
 		//connect it
 		QObject::connect(button.get(),SIGNAL(clicked()),
 					&(this->signFilterSettingsChanged_),SIGNAL(signal()));
-
 		this->layout_->addWidget(button.release());
-		//update for initial selection (if it is valid)
-		if(this->has(this->selection())){updatedSelectedFilter();}
 		TRACEPOINT;
 	}
 
@@ -141,7 +144,7 @@ protected:
 			currentFilter_->deleteLater();
 		}
 		this->currentFilter_= ((*this)()(nullptr)).release();
-		this->layout_->insertWidget(1,(this->currentFilter_));
+		this->layout_->insertWidget(2,(this->currentFilter_));
 		//pass signal
 		QObject::connect(&(this->currentFilter_->signFilterSettingsChanged_),
 				 SIGNAL(signal()),

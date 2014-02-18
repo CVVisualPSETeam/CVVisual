@@ -6,9 +6,9 @@
 #include <QString>
 #include <QWidget>
 #include <QPushButton>
-#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QFrame>
 
 #include "../util/util.hpp"
 #include "../dbg/dbg.hpp"
@@ -21,7 +21,7 @@ namespace cvv{ namespace qtutil{
  * The widget can be collapsed and expanded with a button.
  * If the widget is collapsed only button and title are shown.
  */
-class Collapsable : public QWidget
+class Collapsable : public QFrame
 {
 	Q_OBJECT
 public:
