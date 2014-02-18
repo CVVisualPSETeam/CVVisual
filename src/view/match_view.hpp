@@ -32,12 +32,6 @@ signals:
 	 * @param newText
 	 */
 	void updateRightFoooter(QString newText);
-	
-	/**
-	 * @brief Show help to the given topic
-	 * @param topic given topic
-	 */
-	void showHelp(QString topic);
 
 public:
 	/**

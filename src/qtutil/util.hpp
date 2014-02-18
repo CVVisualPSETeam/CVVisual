@@ -83,6 +83,17 @@ std::vector<cv::Mat> splitChannels(const cv::Mat& mat);
  * channel.
  */
 cv::Mat mergeChannels(std::vector<cv::Mat> mats);
+
+/**
+ * @brief Opens the users default browser with the topic help page.
+ * Current URL: cvv.mostlynerdless.de/help.php?topic=[topic]
+ *
+ * Topics can be added via appending the doc/topics.yml file.
+ *
+ * @param topic help topic
+ */
+void openHelpBrowser(const QString &topic);
+
 }}
 
 #endif

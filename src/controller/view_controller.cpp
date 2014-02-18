@@ -16,6 +16,7 @@
 #include "../impl/filter_call.hpp"
 #include "../impl/data_controller.hpp"
 #include "../dbg/dbg.hpp"
+#include "../qtutil/util.hpp"
 
 namespace cvv {
 namespace controller {
@@ -182,12 +183,11 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
     TRACEPOINT;
 }
 
-void ViewController::openHelpBrowser(const QString &topic) const
+void ViewController::openHelpBrowser(const QString &topic)
 {
 	TRACEPOINT;
-    auto topicEncoded = QUrl::toPercentEncoding(topic);
-    QDesktopServices::openUrl(QUrl(QString("http://cvv.mostlynerdless.de/help.php?topic=") + topicEncoded));
-    TRACEPOINT;
+	qtutil::openHelpBrowser(topic);
+	TRACEPOINT;
 }
 
 void ViewController::resumeProgramExecution()

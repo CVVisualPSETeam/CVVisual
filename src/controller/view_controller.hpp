@@ -151,7 +151,7 @@ public:
 	 *
      * @param topic help topic
      */
-    void openHelpBrowser(const QString &topic) const;
+    void openHelpBrowser(const QString &topic);
 
     /**
      * @brief Resume the execution of the calling program.

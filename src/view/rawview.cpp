@@ -16,11 +16,10 @@
 
 namespace cvv { namespace view {
 
-Rawview::Rawview(//util::Reference<controller::ViewController> controller,
+Rawview::Rawview(
 				 const std::vector<cv::KeyPoint>& keypoints1,
 				 const std::vector<cv::KeyPoint>& keypoints2,
-				 const std::vector<cv::DMatch>& matches)//:
-				 //controller{controller}
+				 const std::vector<cv::DMatch>& matches)
 {
 	TRACEPOINT;
     queryWidget = new qtutil::STFLQueryWidget();
@@ -123,8 +122,7 @@ void Rawview::requestSuggestions(QString query)
 void Rawview::showHelp(QString topic)
 {
 	TRACEPOINT;
-	(void)topic;
-	//controller->openHelpBrowser(topic);
+	qtutil::openHelpBrowser(topic);
 	TRACEPOINT;
 }
 

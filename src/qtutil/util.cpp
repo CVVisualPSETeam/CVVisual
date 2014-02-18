@@ -5,8 +5,10 @@
 #include <thread>
 #include <functional>
 
-
 #include <opencv/highgui.h>
+
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "types.hpp"
 #include "../../src/dbg/dbg.hpp"
@@ -536,4 +538,13 @@ cv::Mat mergeChannels(std::vector<cv::Mat> mats)
 	TRACEPOINT;
 	return result;
 }
+
+void openHelpBrowser(const QString &topic)
+{
+	TRACEPOINT;
+    auto topicEncoded = QUrl::toPercentEncoding(topic);
+    QDesktopServices::openUrl(QUrl(QString("http://cvv.mostlynerdless.de/help.php?topic=") + topicEncoded));
+    TRACEPOINT;
+}
+
 }}

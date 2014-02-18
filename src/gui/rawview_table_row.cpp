@@ -126,8 +126,10 @@ QString RawviewTableRow::rowsToText(const std::vector<RawviewTableRow> &rows, co
 				 << combinestr("response", floatstr(row.keyPoint2Response())) 
 				 << combinestr("octave", intstr(row.keyPoint2Octave()))
 				 << combinestr("class id", floatstr(row.keyPoint2ClassId()));
-				lines << QString("{{%1}, {%2}, {%3}}").arg(
-				match.join(", "), keyPoint1.join(", "), keyPoint2.join(", "));
+				lines << QString("{%1, %2, %3}").arg(
+							 combinestr("match", match.join(", ")),
+							 combinestr("key point 1", keyPoint1.join(", ")),
+							 combinestr("key point 2", keyPoint2.join(", ")));
 			}
 		}
 	
