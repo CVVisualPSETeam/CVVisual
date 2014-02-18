@@ -264,14 +264,14 @@ public:
 	
 private:
 
-    static std::map<QString, TabFactory> callTabType;
-    QSettings settings{"CVVisual", QSettings::IniFormat};
+	static std::map<QString, TabFactory> callTabType;
+	QSettings settings{"CVVisual", QSettings::IniFormat};
 
     std::map<size_t, std::unique_ptr<gui::CallWindow>> windowMap{};
-    gui::MainCallWindow *mainWindow;
+	gui::MainCallWindow *mainWindow;
 
-    std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
-    gui::OverviewPanel* ovPanel;
+	std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
+	gui::OverviewPanel* ovPanel;
 	bool doesShowExitProgramButton = false;
 	/**
 	 * @brief Counter == 0 <=> you should run `removeEmptyWindows()`.
