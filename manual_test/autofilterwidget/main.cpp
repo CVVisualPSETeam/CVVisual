@@ -15,10 +15,8 @@
 #include "../../src/qtutil/filterselectorwidget.hpp"
 #include "../../src/qtutil/accordion.hpp"
 #include "../../src/qtutil/zoomableimage.hpp"
-#include "../../src/qtutil/filter/sobelfilterwidget.hpp"
 #include "../../src/util/util.hpp"
-#include "../../src/qtutil/filter/grayfilterwidget.hpp"
-
+#include "../../src/impl/init.hpp"
 
 class MultFilter: public cvv::qtutil::FilterFunctionWidget<1,1>
 {
@@ -72,7 +70,7 @@ int main(int argc, char *argv[])
 	TRACEPOINT;
 
 	cvv::qtutil::registerFilter<1,1,MultFilter>("multi");
-	cvv::qtutil::registerGray();
+	cvv::impl::initializeFilterAndViews();
 
 	TRACEPOINT;
 	cvv::qtutil::registerSobel();
@@ -99,10 +97,8 @@ int main(int argc, char *argv[])
 	auto o1=cvv::util::make_unique<cvv::qtutil::ZoomableImage>();
 	auto o2=cvv::util::make_unique<cvv::qtutil::ZoomableImage>();
 	//connect area on input
-	QObject::connect(i1.get(),SIGNAL(updateArea(QRectF,qreal,unsigned int)),
-			i2.get(), SLOT(setArea(QRectF,qreal,unsigned int)));
-	QObject::connect(i2.get(),SIGNAL(updateArea(QRectF,qreal,unsigned int)),
-			i1.get(), SLOT(setArea(QRectF,qreal,unsigned int)));
+	QObject::connect(i1.get(),SIGNAL(updateArea(QRectF,qreal)),
+			i2.get(), SLOT(setArea(QRectF,qreal)));
 	TRACEPOINT;
 
 	auto afw=cvv::util::make_unique<cvv::qtutil::AutoFilterWidget<1,1>>();

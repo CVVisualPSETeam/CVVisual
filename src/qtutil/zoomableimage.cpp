@@ -14,16 +14,38 @@
 
 #include <iostream>
 
+/**
+ * @brief Puts a value into a stringstream. (used to print char and uchar as a value instead a char.
+ * @param ss The stringstream.
+ * @param val The value.
+ */
 template<int depth>
 void putInStream(std::stringstream& ss,const cvv::qtutil::DepthType<depth>& val){ss<<val;}
 
+/**
+ * @brief Puts a value into a stringstream. (used to print char and uchar as a value instead a char.
+ * @param ss The stringstream.
+ * @param val The value.
+ */
 template<> void putInStream<CV_8U>(std::stringstream& ss,const cvv::qtutil::DepthType<CV_8U>& val)
 	{ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(val);}
 
+/**
+ * @brief Puts a value into a stringstream. (used to print char and uchar as a value instead a char.
+ * @param ss The stringstream.
+ * @param val The value.
+ */
 template<> void putInStream<CV_8S>(std::stringstream& ss,const cvv::qtutil::DepthType<CV_8S>& val)
 	{ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(val);}
 
 
+/**
+ * @brief Returns the channels of pixel mat,col from mat as a string.
+ * @param mat The mat.
+ * @param col The col.
+ * @param row The row.
+ * @return The channels of pixel mat,col from mat as a string.
+ */
 template<int depth,int channels>
 std::string printPixel(const cv::Mat& mat, int spalte, int zeile)
 {
@@ -39,6 +61,14 @@ std::string printPixel(const cv::Mat& mat, int spalte, int zeile)
 	return ss.str();
 }
 
+/**
+ * @brief Returns the channels of pixel mat,col from mat as a string.
+ * (This step spilts at the number of channels)
+ * @param mat The mat.
+ * @param i The col.
+ * @param j The row.
+ * @return The channels of pixel mat,col from mat as a string. (or ">6 channels")
+ */
 template<int depth>
 std::string printPixel(const cv::Mat& mat, int i, int j)
 {
@@ -59,6 +89,14 @@ std::string printPixel(const cv::Mat& mat, int i, int j)
 	}
 }
 
+/**
+ * @brief Returns the channels of pixel mat,col from mat as a string.
+ * (This step spilts at the depth)
+ * @param mat The mat.
+ * @param i The col.
+ * @param j The row.
+ * @return The channels of pixel mat,col from mat as a string. (or ">6 channels")
+ */
 std::string printPixel(const cv::Mat& mat, int i, int j)
 {
 	if(i>=0&&j>=0)
