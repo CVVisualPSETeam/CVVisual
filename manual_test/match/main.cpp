@@ -24,22 +24,28 @@ std::unique_ptr<cvv::view::MatchView> makeLineMatchView(
 }
 
 int main(int argc, char** argv) {
+	TRACEPOINT;
 	if(argc != 2)
 	{
 		std::cerr << argv[0] << " must be callled with one files as arguments\n";
 		return 1;
 	}
-	cvv::dbg::setLoggingState(true);
+	//cvv::dbg::setLoggingState(true);
+	TRACEPOINT;
 	cvv::gui::MatchCallTab::addMatchViewToMap("LineMatchView", makeLineMatchView);
+	TRACEPOINT;
 	
 	auto src = cv::imread(argv[1]);
+	TRACEPOINT;
 	
 	std::vector<cv::KeyPoint> key;
+	TRACEPOINT;
 	for(int i=0;i<std::min(src.rows,src.cols);i+=30)
 	{
 		cv::Point2f pt{static_cast<float>(i),static_cast<float>(i)};
 		key.emplace_back(pt,0.0f);
 	}
+	TRACEPOINT;
 
 	std::vector<cv::DMatch> match;
 	for(size_t i=0;i<key.size();i++)
@@ -47,7 +53,8 @@ int main(int argc, char** argv) {
 		match.emplace_back(i,i,1.0f);
 	}
 	
-		cvv::debugDMatch(src, key, src, key, match, CVVISUAL_LOCATION);
+	TRACEPOINT;
+	cvv::debugDMatch(src, key, src, key, match, CVVISUAL_LOCATION);
 	
 	std::cout << "All calculation done" << std::endl;
 	cvv::finalShow();

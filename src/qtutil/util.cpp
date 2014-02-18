@@ -102,9 +102,19 @@ struct ColorTable
 		table{}
 	{
 		TRACEPOINT;
+		//TODO: I guess this should be 256?
 		for(int i=0;i<265;i++){table.push_back(qRgb(i,i,i));}
 		TRACEPOINT;
 	}
+	
+	/**
+	 * @brief Destructor
+	 */
+	~ColorTable()
+	{
+		TRACEPOINT;
+	}
+	
 	/**
 	 * @brief The colortable
 	 */

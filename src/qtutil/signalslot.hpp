@@ -108,7 +108,7 @@ public:
 		TRACEPOINT;
 	}
 
-	~SignalQString(){TRACEPOINT;}
+	~SignalQString(){DEBUGF("this=%s", reinterpret_cast<size_t>(this));}
 
 	void emitSignal(const QString& t)
 	{

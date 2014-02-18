@@ -11,7 +11,7 @@
 namespace cvv {namespace dbg {
 
 namespace {
-	std::atomic_bool loggingState{false};
+	std::atomic_bool loggingState{true};
 }
 
 bool getLoggingState()

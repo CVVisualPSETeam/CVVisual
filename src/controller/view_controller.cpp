@@ -28,7 +28,9 @@ ViewController::ViewController()
 	TRACEPOINT;
     if(!QApplication::instance()) {
         int zero = 0;
-        new QApplication{zero, emptyArray};
+        auto tmp = new QApplication{zero, emptyArray};
+	(void) tmp;
+	DEBUGF("QApplication is at %s", tmp);
     }
     ovPanel = new gui::OverviewPanel{util::makeRef<ViewController>(*this)};
     mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
