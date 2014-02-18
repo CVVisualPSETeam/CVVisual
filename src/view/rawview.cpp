@@ -16,11 +16,10 @@
 
 namespace cvv { namespace view {
 
-Rawview::Rawview(util::Reference<controller::ViewController> controller,
+Rawview::Rawview(
 				 const std::vector<cv::KeyPoint>& keypoints1,
 				 const std::vector<cv::KeyPoint>& keypoints2,
-				 const std::vector<cv::DMatch>& matches):
-				 controller{controller}
+				 const std::vector<cv::DMatch>& matches)
 {
 	TRACEPOINT;
     queryWidget = new qtutil::STFLQueryWidget();
@@ -43,7 +42,60 @@ Rawview::Rawview(util::Reference<controller::ViewController> controller,
 }
 
 void Rawview::initEngine(){
-   
+	queryEngine.addFloatCmdFunc("match_distance", [](const gui::RawviewTableRow& row){
+		return row.matchDistance();
+	});
+	queryEngine.addIntegerCmdFunc("img_idx", [](const gui::RawviewTableRow& row){
+		return row.matchImgIdx();
+	});
+	queryEngine.addIntegerCmdFunc("query_idx", [](const gui::RawviewTableRow& row){
+		return row.matchQueryIdx();
+	});
+	queryEngine.addIntegerCmdFunc("train_idx", [](const gui::RawviewTableRow& row){
+		return row.matchTrainIdx();
+	});
+	queryEngine.addFloatCmdFunc ("x_1", [](const gui::RawviewTableRow& row){
+		return row.keyPoint1XCoord();
+	});
+	queryEngine.addFloatCmdFunc ("y_1", [](const gui::RawviewTableRow& row){
+		return row.keyPoint1YCoord();
+	});
+	queryEngine.addFloatCmdFunc ("size_1", [](const gui::RawviewTableRow& row){
+		return row.keyPoint1Size();
+	});
+	queryEngine.addFloatCmdFunc ("angle_1", [](const gui::RawviewTableRow& row){
+		return row.keyPoint1Angle();
+	});
+	queryEngine.addFloatCmdFunc ("response_1", [](const gui::RawviewTableRow& row){
+		return row.keyPoint1Response();
+	});
+	queryEngine.addIntegerCmdFunc ("octave_1", [](const gui::RawviewTableRow& row){
+		return row.keyPoint1Octave();
+	});
+	queryEngine.addFloatCmdFunc ("class_id_1", [](const gui::RawviewTableRow& row){
+		return row.keyPoint1ClassId();
+	});
+	queryEngine.addFloatCmdFunc ("x_2", [](const gui::RawviewTableRow& row){
+		return row.keyPoint2XCoord();
+	});
+	queryEngine.addFloatCmdFunc ("y_2", [](const gui::RawviewTableRow& row){
+		return row.keyPoint2YCoord();
+	});
+	queryEngine.addFloatCmdFunc ("size_2", [](const gui::RawviewTableRow& row){
+		return row.keyPoint2Size();
+	});
+	queryEngine.addFloatCmdFunc ("angle_2", [](const gui::RawviewTableRow& row){
+		return row.keyPoint2Angle();
+	});
+	queryEngine.addFloatCmdFunc ("response_2", [](const gui::RawviewTableRow& row){
+		return row.keyPoint2Response();
+	});
+	queryEngine.addIntegerCmdFunc ("octave_2", [](const gui::RawviewTableRow& row){
+		return row.keyPoint2Octave();
+	});
+	queryEngine.addFloatCmdFunc ("class_id_2", [](const gui::RawviewTableRow& row){
+		return row.keyPoint2ClassId();
+	});
 }
 
 void Rawview::filterQuery(QString query)
@@ -70,7 +122,7 @@ void Rawview::requestSuggestions(QString query)
 void Rawview::showHelp(QString topic)
 {
 	TRACEPOINT;
-	controller->openHelpBrowser(topic);
+	qtutil::openHelpBrowser(topic);
 	TRACEPOINT;
 }
 

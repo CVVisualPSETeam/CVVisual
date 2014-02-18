@@ -97,7 +97,9 @@ private:
 // ///////////////////////////////////////////////////////////////
 
 
-
+/**
+ * @brief Similar to Signal (difference: it accepts a QStriang).
+ */
 class SignalQString: public QObject
 {
 	Q_OBJECT
@@ -120,6 +122,9 @@ signals:
 	void signal( QString t);
 };
 
+/**
+ * @brief Similar to Slot (difference: it accepts a QString).
+ */
 class SlotQString: public QObject
 {
 	Q_OBJECT
@@ -147,7 +152,9 @@ private:
 };
 
 
-
+/**
+ * @brief Similar to Signal (difference: it accepts a cv::Mat&).
+ */
 class SignalMatRef: public QObject
 {
 	Q_OBJECT
@@ -171,6 +178,9 @@ signals:
 	void signal(cv::Mat& mat);
 };
 
+/**
+ * @brief Similar to Slot (difference: it accepts a bool).
+ */
 class SlotBool: public QObject
 {
 	Q_OBJECT

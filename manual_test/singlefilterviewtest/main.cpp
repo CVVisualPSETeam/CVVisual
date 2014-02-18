@@ -5,7 +5,7 @@
 
 #include "../../src/view/singlefilterview.hpp"
 
-#include "../../src/qtutil/sobelfilterwidget.hpp"
+#include "../../src/qtutil/filter/sobelfilterwidget.hpp"
 #include "../../src/qtutil/filterselectorwidget.hpp"
 
 int main(int argc, char *argv[])

@@ -55,7 +55,7 @@ void MainCallWindow::removeEmptyWindowsDelayed()
 		if (removeEmptyWindowsDelayedCounter <= 0)
 		{
 			controller->removeEmptyWindows();
-			removeEmptyWindowsDelayedCounter = 4;
+			removeEmptyWindowsDelayedCounter = 8;
 		}
 		else
 		{
@@ -64,7 +64,7 @@ void MainCallWindow::removeEmptyWindowsDelayed()
 	}
 	else
 	{
-		removeEmptyWindowsDelayedCounter = 4;
+		removeEmptyWindowsDelayedCounter = 8;
 	}
 }
 

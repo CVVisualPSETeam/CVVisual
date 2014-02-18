@@ -54,7 +54,7 @@ private:
 	RawviewTable *parent;
 	stfl::ElementGroup<RawviewTableRow> group;
 	QTableWidget *qTable;
-	std::vector<RawviewTableRow> currentRows;
+	std::vector<int> currentRowIndexes;
 };
 
 }}

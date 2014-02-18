@@ -62,10 +62,10 @@ It has the following structure:
 
 
 ##Overview
-The following commands are supported in the overview.
+The following commands are supported in the overview:
 
 feauture/command | sorting supported | grouping supported | filtering supported | description
------------------|:-----------------:|:------------------:|:-------------------:|:---------------------
+-----------------|:-----------------:|:------------------:|:--------------------|:---------------------
 id               | yes               | yes                | yes, also range     |
 raw              | yes               | yes                | only basic filter   | alias for description
 description      | yes               | yes                | only basic filter   |
@@ -76,5 +76,31 @@ line             | yes               | yes                | yes, also range     
 type             | yes               | yes                | yes                 | call type   
             
 
-##TODO
-Add raw match view paragraphs... 
+##Rawview
+The following command are supported in the raw (match) view:
+
+feauture/command | numeric type | description/property
+-----------------|:-------------|:---------------------------------------------
+match_distance   | float        | match distance
+img_idx          | integer      | match img idx 
+query_idx        | integer      | match query idx  
+train_idx        | integer      | match train idx
+x_1              | float        | x coordinate of the "left" key point
+y_1              | float        | y coordinate of the "left" key point 
+size_1           | float        | size of the "left" key point
+angle_1          | float        | angle of the "left" key point
+response_1       | float        | response (or strength) of the "left" key point
+octave_1         | integer      | octave of the "left" key point
+x_2              | float        | x coordinate of the "right" key point
+y_2              | float        | y coordinate of the "right" key point 
+size_2           | float        | size of the "right" key point
+angle_2          | float        | angle of the "right" key point
+response_2       | float        | response (or strength) of the "right" key point
+octave_2         | integer      | octave of the "right" key point
+
+
+
+All commands support range filtering, sorting and grouping and therefore only the used numeric type
+(integer or float) is given.
+
+See the opencv documentation for more information about the features.

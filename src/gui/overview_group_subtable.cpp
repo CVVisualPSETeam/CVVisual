@@ -141,9 +141,17 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	}
 	TRACEPOINT;
 	menu->addAction(new QAction("Remove call", this));
+	TRACEPOINT;
 	QModelIndex index = qTable->indexAt(location);
+	if (!index.isValid())
+	{
+		return;
+	}
+	TRACEPOINT;
 	int row = index.row();
+	TRACEPOINT;
 	QString idStr = qTable->item(row, 0)->text();
+	TRACEPOINT;
 	currentCustomMenuCallTabId = idStr.toInt();  
 	TRACEPOINT;
 	// FIXME: for some reasons this sometimes results in HUGE allocations followed by bad_alloc

@@ -14,6 +14,7 @@
 
 #include "../../src/view/match_view.hpp"
 #include "../../src/view/linematchview.hpp"
+#include "../../src/view/rawview.hpp"
 
 std::unique_ptr<cvv::view::MatchView> makeLineMatchView(
 		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
@@ -23,16 +24,29 @@ std::unique_ptr<cvv::view::MatchView> makeLineMatchView(
 	return cvv::util::make_unique<cvv::view::LineMatchView>(key1, key2, matches, img1, img2, parent);
 }
 
+std::unique_ptr<cvv::view::Rawview> makeRawview(
+		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
+		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
+		const std::vector<cv::DMatch>& matches, QWidget* parent)
+{
+	(void)img1;
+	(void)img2;
+	(void)parent;
+	return cvv::util::make_unique<cvv::view::Rawview>(key1, key2, matches);
+}
+
 int main(int argc, char** argv) {
 	TRACEPOINT;
 	if(argc != 2)
 	{
-		std::cerr << argv[0] << " must be callled with one files as arguments\n";
+		std::cerr << argv[0] << " must be called with two files as arguments\n";
 		return 1;
 	}
 	//cvv::dbg::setLoggingState(true);
 	TRACEPOINT;
 	cvv::gui::MatchCallTab::addMatchViewToMap("LineMatchView", makeLineMatchView);
+	TRACEPOINT;
+	cvv::gui::MatchCallTab::addMatchViewToMap("RawView", makeRawview);
 	TRACEPOINT;
 	
 	auto src = cv::imread(argv[1]);

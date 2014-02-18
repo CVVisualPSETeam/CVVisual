@@ -5,10 +5,10 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-#include "../dbg/dbg.hpp"
-#include "../util/util.hpp"
-#include "filterfunctionwidget.hpp"
-#include "filterselectorwidget.hpp"
+#include "../../dbg/dbg.hpp"
+#include "../../util/util.hpp"
+#include "../filterfunctionwidget.hpp"
+#include "../filterselectorwidget.hpp"
 
 namespace cvv { namespace qtutil{
 
