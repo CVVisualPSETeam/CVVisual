@@ -20,7 +20,7 @@
 namespace cvv {
 namespace gui {
 
-MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc):
+MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc):
 	matchCall_{fc}, viewController_{vc}
 {
 	TRACEPOINT;
@@ -33,7 +33,7 @@ MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, const cvv::controller
 		setting = vc.getSetting(scope, key);
 	} catch (std::invalid_argument)
 	{
-		setting = "DefaultMatchView";
+		setting = "LineMatchView";
 	}
 	matchViewId_ = setting;
 
@@ -41,7 +41,7 @@ MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, const cvv::controller
 	TRACEPOINT;
 }
 
-MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc):
+MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc):
 	matchCall_{fc}, viewController_{vc}
 {
 	TRACEPOINT;
@@ -54,7 +54,7 @@ MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& f
 		setting = vc.getSetting(scope, key);
 	} catch (std::invalid_argument)
 	{
-		setting = "DefaultMatchView";
+		setting = "LineMatchView";
 	}
 	matchViewId_ = setting;
 
@@ -62,7 +62,7 @@ MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& f
 	TRACEPOINT;
 }
 
-MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const cvv::controller::ViewController& vc, const QString& viewId):
+MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc, const QString& viewId):
 	matchCall_{fc}, viewController_{vc}
 {
 	TRACEPOINT;
@@ -77,7 +77,8 @@ void MatchCallTab::currentIndexChanged(const QString& text)
 {
 	TRACEPOINT;
 	matchViewId_ = text;
-	delete matchView_;
+	vlayout_->removeWidget(matchView_);
+	matchView_->setVisible(false);
 	setView(matchViewId_);
 	TRACEPOINT;
 }
@@ -89,24 +90,29 @@ void MatchCallTab::helpButtonClicked() const
 	TRACEPOINT;
 }
 
+void MatchCallTab::setAsDefaultButtonClicked()
+{
+	TRACEPOINT;
+	const QString scope{"default_views"};
+	const QString key{"default_match_view"};
+	const QString value{matchViewId_};
+	viewController_->setDefaultSetting(scope, key, value);
+	TRACEPOINT;
+}
+
 size_t MatchCallTab::getId() const
 {
 	TRACEPOINT;
 	return matchCall_->getId();
-	TRACEPOINT;
 }
 
-void MatchCallTab::addMatchViewToMap(const QString& matchViewId,
-				       std::function<std::unique_ptr<cvv::view::MatchView>(cv::InputArray,
-											   std::vector<cv::KeyPoint>,
-											   cv::InputArray, std::vector<cv::KeyPoint>,
-											   std::vector<cv::DMatch>, QWidget*)> mView)
+void MatchCallTab::addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView)
 {
 	TRACEPOINT;
-	cvv::qtutil::RegisterHelper<cvv::view::MatchView, cv::InputArray,
-			std::vector<cv::KeyPoint>,
-			cv::InputArray, std::vector<cv::KeyPoint>,
-			std::vector<cv::DMatch>, QWidget*>::registerElement(matchViewId, mView);
+	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::Mat&,
+			const std::vector<cv::KeyPoint>&,
+			const cv::Mat&, const std::vector<cv::KeyPoint>&,
+			const std::vector<cv::DMatch>&, QWidget*>::registerElement(matchViewId, mView);
 	TRACEPOINT;
 }
 
@@ -118,6 +124,9 @@ void MatchCallTab::createGui()
 	hlayout_->setAlignment(Qt::AlignTop);
 	hlayout_->addWidget(new QLabel{"View:"});
 	hlayout_->addWidget(comboBox_);
+	setAsDefaultButton_ = new QPushButton{"Set as default", this};
+	hlayout_->addWidget(setAsDefaultButton_);
+	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
 	helpButton_ = new QPushButton{"Help", this};
 	hlayout_->addWidget(helpButton_);
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
@@ -140,13 +149,23 @@ void MatchCallTab::setView(const QString &viewId)
 	TRACEPOINT;
 	try
 	{
-		auto fct = registeredElements_.at(viewId);
-		matchView_ = (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(), matchCall_->keyPoints2(), matchCall_->matches(), this)).release();
+		matchView_ = viewHistory_.at(viewId);
 		vlayout_->addWidget(matchView_);
-	} catch (std::out_of_range)
+		matchView_->setVisible(true);
+	} catch (std::out_of_range&)
 	{
-		vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
-		throw;
+		try
+		{
+			auto fct = registeredElements_.at(viewId);
+			viewHistory_.emplace(viewId, (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(),
+							  matchCall_->keyPoints2(), matchCall_->matches(), this).release()));
+			matchView_ = viewHistory_.at(viewId);
+			vlayout_->addWidget(matchView_);
+		} catch (std::out_of_range&)
+		{
+			vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
+			throw;
+		}
 	}
 	TRACEPOINT;
 

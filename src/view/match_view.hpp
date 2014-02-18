@@ -33,15 +33,6 @@ signals:
 	 */
 	void updateRightFoooter(QString newText);
 
-	/**
-	 * @todo comment
-	 * @brief output internal selection
-	 * @param matchCalls
-	 */
-	void outputInternalSelection(const std::vector<cvv::impl::MatchCall>& matchCalls);
-
-public:
-
 public:
 	/**
 	 * @brief default constructor

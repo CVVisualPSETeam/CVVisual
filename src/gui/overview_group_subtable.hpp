@@ -10,6 +10,7 @@
 
 #include "../stfl/element_group.hpp"
 #include "overview_table_row.hpp"
+#include "../dbg/dbg.hpp"
 #include "../util/optional.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
@@ -41,11 +42,33 @@ public:
 		OverviewTable *parent,
 		stfl::ElementGroup<OverviewTableRow> group);
 
+	~OverviewGroupSubtable() { TRACEPOINT; }
+	
 	/**
 	 * @brief Updates the displayed table UI.
 	 */
 	void updateUI();
+	
+	/**
+	 * @brief Remove the row with the given id.
+	 * @param given table row id
+	 */
+	void removeRow(size_t id);
+	
+	/**
+	 * @brief Checks whether or not the table shows the row with the given id.
+	 * @param id given row id
+	 * @return Does the table show the row with the given id?
+	 */
+	bool hasRow(size_t id);
 
+	/**
+	 * @brief Set the displayed rows.
+	 * @note This method does some optimisations to only fully rebuild all rows if neccessary.
+	 * @param newGroup new group of rows that will be displayed
+	 */
+	void setRowGroup(stfl::ElementGroup<OverviewTableRow> &newGroup);
+	
 protected:
 	void resizeEvent(QResizeEvent *event);
 
@@ -60,8 +83,14 @@ private:
 	stfl::ElementGroup<OverviewTableRow> group;
 	QTableWidget *qTable;
 	int currentCustomMenuCallTabId = -1;
+	size_t maxImages = 0;
+	int imgSize = 0;
+	int rowHeight = 0;
 
 	void initUI();
+	
+	void updateMinimumSize();
+	
 };
 
 }}

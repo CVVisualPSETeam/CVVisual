@@ -4,22 +4,48 @@
 
 #include <QHBoxLayout>
 #include <QScrollBar>
+#include <QAction>
+#include <QMenu>
+#include <QFileDialog>
+#include <QPixmap>
 
 #include "util.hpp"
 #include "types.hpp"
 
 #include <iostream>
 
+/**
+ * @brief Puts a value into a stringstream. (used to print char and uchar as a value instead a char.
+ * @param ss The stringstream.
+ * @param val The value.
+ */
 template<int depth>
 void putInStream(std::stringstream& ss,const cvv::qtutil::DepthType<depth>& val){ss<<val;}
 
+/**
+ * @brief Puts a value into a stringstream. (used to print char and uchar as a value instead a char.
+ * @param ss The stringstream.
+ * @param val The value.
+ */
 template<> void putInStream<CV_8U>(std::stringstream& ss,const cvv::qtutil::DepthType<CV_8U>& val)
 	{ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(val);}
 
+/**
+ * @brief Puts a value into a stringstream. (used to print char and uchar as a value instead a char.
+ * @param ss The stringstream.
+ * @param val The value.
+ */
 template<> void putInStream<CV_8S>(std::stringstream& ss,const cvv::qtutil::DepthType<CV_8S>& val)
 	{ss<<static_cast<cvv::qtutil::DepthType<CV_16S>>(val);}
 
 
+/**
+ * @brief Returns the channels of pixel mat,col from mat as a string.
+ * @param mat The mat.
+ * @param col The col.
+ * @param row The row.
+ * @return The channels of pixel mat,col from mat as a string.
+ */
 template<int depth,int channels>
 std::string printPixel(const cv::Mat& mat, int spalte, int zeile)
 {
@@ -35,6 +61,14 @@ std::string printPixel(const cv::Mat& mat, int spalte, int zeile)
 	return ss.str();
 }
 
+/**
+ * @brief Returns the channels of pixel mat,col from mat as a string.
+ * (This step spilts at the number of channels)
+ * @param mat The mat.
+ * @param i The col.
+ * @param j The row.
+ * @return The channels of pixel mat,col from mat as a string. (or ">6 channels")
+ */
 template<int depth>
 std::string printPixel(const cv::Mat& mat, int i, int j)
 {
@@ -55,6 +89,14 @@ std::string printPixel(const cv::Mat& mat, int i, int j)
 	}
 }
 
+/**
+ * @brief Returns the channels of pixel mat,col from mat as a string.
+ * (This step spilts at the depth)
+ * @param mat The mat.
+ * @param i The col.
+ * @param j The row.
+ * @return The channels of pixel mat,col from mat as a string. (or ">6 channels")
+ */
 std::string printPixel(const cv::Mat& mat, int i, int j)
 {
 	if(i>=0&&j>=0)
@@ -87,7 +129,8 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	threshold_{60},
 	autoShowValues_{true},
 	values_{},
-	scrollFactor_{0.005}
+	scrollFactorCTRL_{1.025},
+	scrollFactorCTRLShift_{1.01}
 {
 	TRACEPOINT;
 	// qt5 doc : "The view does not take ownership of scene."
@@ -106,16 +149,22 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	layout->addWidget(view_);
 	layout->setMargin(0);
 	setLayout(layout) ;
-	updateMat(mat_);
+	setMat(mat_);
+	//rightklick
+	setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(this,SIGNAL(customContextMenuRequested(const QPoint&)),
+			 this,SLOT(rightClick(QPoint)));
+	TRACEPOINT;
+	showFullImage();
 	TRACEPOINT;
 }
 
-void ZoomableImage::updateMat(cv::Mat mat)
+void ZoomableImage::setMat(cv::Mat mat)
 {
 	TRACEPOINT;
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
-	emit updateConversionResult(result.first);
+	emit updateConversionResult(result.first,mat);
 	scene_->clear();
 	pixmap_ = scene_->addPixmap(result.second);
 
@@ -123,15 +172,18 @@ void ZoomableImage::updateMat(cv::Mat mat)
 	TRACEPOINT;
 }
 
-void ZoomableImage::updateZoom(qreal factor)
+void ZoomableImage::setZoom(qreal factor)
 {
 	TRACEPOINT;
-	if(factor <= 0) {TRACEPOINT;return;}
+	if(factor <= 0)
+	{
+		TRACEPOINT;
+		return;
+	}
 	qreal newscale=factor/zoom_;
 	zoom_=factor;
 	view_->scale(newscale,newscale);
-	// will be called in resize event
-	// emit updateArea(visibleArea(),zoom_);
+	emit updateArea(visibleArea(),zoom_);
 	TRACEPOINT;
 }
 
@@ -146,7 +198,11 @@ void ZoomableImage::drawValues()
 	}
 	values_.clear();
 	//draw new values?
-	if(!(autoShowValues_&&(zoom_>=threshold_))){TRACEPOINT;return;}
+	if(!(autoShowValues_&&(zoom_>=threshold_)))
+	{
+		TRACEPOINT;
+		return;
+	}
 	TRACEPOINT;
 	auto r=visibleArea();
 	for(int i=std::max(0,static_cast<int>(r.left())-1);
@@ -177,27 +233,45 @@ void ZoomableImage::wheelEvent(QWheelEvent * event)
 
 	if(QApplication::keyboardModifiers() & Qt::ControlModifier)
 	{
-		qreal shift=1;
+		qreal f=scrollFactorCTRL_;;
 		if(QApplication::keyboardModifiers() & Qt::ShiftModifier)
 		{
-			shift=10;
+			f=scrollFactorCTRLShift_;;
 		}
-		updateZoom(shift*scrollFactor_*((event->angleDelta().x())+(event->angleDelta().y()))
-				+zoom_);
+
+		qreal scroll=((event->angleDelta().x())+(event->angleDelta().y()))*f;
+		if(scroll<0.0)
+		{
+			scroll=-1.0/scroll;
+			f=1/f;
+		}
+		setZoom(f*zoom_);
 	}else{
 		QWidget::wheelEvent(event);
 	}
 	TRACEPOINT;
 }
 
+void ZoomableImage::setArea(QRectF rect,qreal zoom)
+{
+	setZoom(zoom);
+	view_->centerOn(rect.topLeft()+(rect.bottomRight()-rect.topLeft())/2);
+}
 
 void ZoomableImage::showFullImage()
 {
 	TRACEPOINT;
-	updateZoom(
+	qreal iw=static_cast<qreal>(imageWidth());
+	qreal ih=static_cast<qreal>(imageHeight());
+	if(!((iw!=0)&&(ih!=0)))
+	{
+		TRACEPOINT;
+		return;
+	}
+	setZoom(
 		std::min(
-		static_cast<qreal>(view_->viewport()->width())/static_cast<qreal>(imageWidth()),
-		static_cast<qreal>(view_->viewport()->height())/static_cast<qreal>(imageHeight())
+		static_cast<qreal>(view_->viewport()->width())/iw,
+		static_cast<qreal>(view_->viewport()->height())/ih
 		)
 	);
 	TRACEPOINT;
@@ -212,6 +286,43 @@ QRectF ZoomableImage::visibleArea() const
 							view_->viewport()->height()}));
 	TRACEPOINT;
 	return result;
+}
+
+
+void ZoomableImage::rightClick(const QPoint & pos)
+{
+	TRACEPOINT;
+	QPoint p=mapToGlobal(pos);
+	QMenu menu;
+
+	menu.addAction("Save orginal image");
+	menu.addAction("Save visible image");
+
+	QAction* item = menu.exec(p);
+	if (item)
+	{
+		TRACEPOINT;
+		QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
+			"/home/jana/untitled.png",
+			tr("BMP (*.bmp);;GIF (*.gif);;JPG (*.jpg);;PNG (*.png);;"
+				"PBM (*.pbm);;PGM (*.pgm);;PPM (*.ppm);;XBM (*.xbm);;"
+				"XPM (*.xpm)"));
+		if(fileName=="")
+		{
+			TRACEPOINT;
+			return;
+		}
+		QPixmap pmap;
+		if((item->text())=="Save orginal image")
+		{
+			pmap=convertMatToQPixmap(mat_).second;
+		}else{
+			pmap=QPixmap::grabWidget (view_->viewport());
+		}
+
+		pmap.save(fileName,0,100);
+	}
+	TRACEPOINT;
 }
 
 QPointF ZoomableImage::mapImagePointToParent(QPointF point) const

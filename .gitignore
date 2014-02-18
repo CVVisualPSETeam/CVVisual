@@ -5,3 +5,5 @@ CMakeLists.txt.user
 test.sh
 release.sh
 *.swp
+*.swo
+src/dbg/dbg.hpp

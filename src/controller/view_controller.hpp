@@ -17,6 +17,8 @@
 #include "../gui/call_tab.hpp"
 #include "../gui/call_window.hpp"
 
+#include "../dbg/dbg.hpp"
+
 namespace cvv {
 
 namespace gui {
@@ -28,10 +30,30 @@ namespace gui {
 
 namespace controller {
 
+/**
+ * @brief Modes that this cvv application can be running in.
+ */
+enum Mode
+{
+	/**
+	 * @brief The normal mode.
+	 */
+	NORMAL = 0,
+	/**
+	 * @brief The cvv UI is hidden.
+	 */
+	HIDE = 1,
+	/**
+	 * @brief The cvv UI stops only at the final call 
+	 * The final call is the call which is called after `cvv::finalShow()`)
+	 */
+	FAST_FORWARD = 2
+};
+
 class ViewController;
 
 /**
- * Typedef for a function that creates a CallTab from a impl::Call and a ViewController&
+ * @brief Typedef for a function that creates a CallTab from a impl::Call and a ViewController&.
  */
 using TabFactory = std::function<std::unique_ptr<gui::CallTab>(util::Reference<impl::Call>,
     ViewController&)>;
@@ -39,12 +61,19 @@ using TabFactory = std::function<std::unique_ptr<gui::CallTab>(util::Reference<i
 
 /**
  * @brief Controlls the windows, call tabs and the event fetch loop.
+ * Its the layer between the low level model (aka DataController) an the high
+ * level GUI (aka CallTab, OverviewPanel, ...).
  */
 class ViewController
 {
 public:
 
-    ViewController();
+	/**
+	 * @brief The default contructor for this class.
+	 */
+	ViewController();
+	
+	~ViewController() {TRACEPOINT;}
 
     /**
      * @brief Adds the new call tab type.
@@ -61,7 +90,7 @@ public:
     void addCall(util::Reference<impl::Call> data);
 
     /**
-     * Execute the Qt event loop.
+     * @brief Execute the Qt event loop.
      */
     void exec();
 
@@ -73,7 +102,9 @@ public:
     impl::Call& getCall(size_t id);
 
     /**
-     * @brief Get the current setting [key] in the given scope
+     * @brief Get the current setting [key] in the given scope.
+	 * Please use `setDefaultSetting` to set a default value that's other than
+	 * an empty QString.
      * @param scope given scope (e.g. 'Overview')
      * @param key settings key (e.g. 'autoOpenTabs')
      * @return settings string
@@ -81,18 +112,25 @@ public:
     QString getSetting(const QString &scope, const QString &key) const;
 
     /**
-     * @attention may be deleted
+	 * @brief Get the inherited call windows with tabs.
+	 * @return the inherited CallWindows
      */
     std::vector<util::Reference<gui::CallWindow>> getTabWindows();
+	
+	/**
+	 * @brief Get the inherited main window.
+	 * @return the inherited main window
+     */
+    util::Reference<gui::MainCallWindow> getMainWindow();
 
     /**
-     * @brief Move the call tab with the given id to a new window
+     * @brief Move the call tab with the given id to a new window.
      * @param tabId given call tab id
      */
     void moveCallTabToNewWindow(size_t tabId);
 
     /**
-     * @brief Move the given call tab to the given window
+     * @brief Move the given call tab to the given window.
      * @param tabId id of the given call tab
      * @param windowId id of the given window (0 is the main window)
      */
@@ -109,9 +147,11 @@ public:
      * @brief Opens the users default browser with the topic help page.
      * Current URL: cvv.mostlynerdless.de/help.php?topic=[topic]
      *
+	 * Topics can be added via appending the doc/topics.yml file.
+	 *
      * @param topic help topic
      */
-    void openHelpBrowser(const QString &topic) const;
+    void openHelpBrowser(const QString &topic);
 
     /**
      * @brief Resume the execution of the calling program.
@@ -119,7 +159,7 @@ public:
     void resumeProgramExecution();
 
     /**
-     * @brief Set the default setting for a given stettings key and scope
+     * @brief Set the default setting for a given stettings key and scope.
      * It doesn't override existing settings.
      * @param scope given settings scope
      * @param key given settings key
@@ -128,7 +168,7 @@ public:
     void setDefaultSetting(const QString &scope, const QString &key, const QString &value);
 
     /**
-     * @brief Set the setting for a given stettings key and scope
+     * @brief Set the setting for a given stettings key and scope.
      * @param scope given settings scope
      * @param key given settings key
      * @param value new value of the setting
@@ -137,6 +177,8 @@ public:
 
     /**
      * @brief Show the given call tab and bring it's window to the front.
+	 * @note Its not guaranteed that it really brings the tabs' window to the
+	 * front.
      * @param tabId id of the given call tab
      */
     void showCallTab(size_t tabId);
@@ -149,6 +191,7 @@ public:
 
     /**
      * @brief Show the overview tab (and table) and bring it's window to the front.
+	 * @note The latter is not guaranteed.
      */
     void showOverview();
 
@@ -169,6 +212,7 @@ public:
     /**
      * @brief Remove the window from the internal data structures.
      * @param windowId id of the window
+     * @note Only call this method if you now the implacations of deleting the window.
      */
     void removeWindowFromMaps(size_t windowId);
 
@@ -177,25 +221,73 @@ public:
      */
     void showExitProgramButton();
 
+	/**
+	 * @brief Removes the empty windows.
+	 * @note It's safer to call the removeEmptyWindowsWithDelay method instead.
+	 */
+    void removeEmptyWindows();
+	
+	/**
+	 * @brief Removes the empty windows with a small delay.
+	 */
+	void removeEmptyWindowsWithDelay();
+	
+	/**
+	 * @brief Checks whether or not is useful to call the removeEmptyWindows() method.
+	 * @return Is is useful to call the removeEmptyWindows() method?
+	 * @note Please don't call this method outside a periodcally called method.
+	 */
+	bool shouldRunRemoveEmptyWindows();
+	
+	/**
+	 * @brief Set the mode that this application is running in.
+	 * @param newMode mode to be set
+	 */
+	void setMode(Mode newMode);
+	
+	/**
+	 * @brief Returns the mode this program is running in.
+	 * @return the current mode, NROMAL, HIDE or FAST_FORWARD
+	 */
+	Mode getMode();
+	
+	/**
+	 * @brief Checks whether or not the `cvv::finalCall()` method has been called?
+	 * @return Has the `cvv::finalCall()` method been called?
+	 */
+	bool hasFinalCall();
+	
+	/**
+	 * @brief Hide the close window of the main window.
+	 */
+	void hideCloseWindow();
+	
 private:
 
-    static std::map<QString, TabFactory> callTabType;
-    QSettings settings{"CVVisual", QSettings::IniFormat};
+	static std::map<QString, TabFactory> callTabType;
+	QSettings settings{"CVVisual", QSettings::IniFormat};
 
     std::map<size_t, std::unique_ptr<gui::CallWindow>> windowMap{};
-    //non-owning:
-    gui::MainCallWindow *mainWindow;
+	gui::MainCallWindow *mainWindow;
 
-    std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
-    //non-owning:
-    gui::OverviewPanel* ovPanel;
+	std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
+	gui::OverviewPanel* ovPanel;
 	bool doesShowExitProgramButton = false;
+	/**
+	 * @brief Counter == 0 <=> you should run `removeEmptyWindows()`.
+	 */
+	bool shouldRunRemoveEmptyWindows_ = true;
+	
+	Mode mode = Mode::NORMAL;
 
 	size_t max_window_id = 0;
 
-    void removeEmptyWindows();
-
     bool hasCall(size_t id);
+	
+	void updateMode();
+	
+	void hideAll();
+	
 };
 
 }}

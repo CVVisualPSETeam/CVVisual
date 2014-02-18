@@ -14,6 +14,10 @@ namespace cvv { namespace impl {
 class DataController {
 public:
 	DataController() = default;
+	~DataController()
+	{
+		TRACEPOINT;
+	}
 	
 	/**
 	 * Add a new call to the calls-list.

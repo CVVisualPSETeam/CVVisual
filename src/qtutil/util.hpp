@@ -1,6 +1,11 @@
 #ifndef CVVISUAL_QTUTIL_HPP
 #define CVVISUAL_QTUTIL_HPP
 
+#include <limits>
+#include <vector>
+#include <stdexcept>
+
+
 #include <QImage>
 #include <QPixmap>
 #include <QSet>
@@ -35,7 +40,7 @@ enum class ImageConversionResult
  * @return The status of the conversion and the converted mat.
  */
 std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat,
-						bool skipFloatRangeTest=0, unsigned int threads = 1);
+	bool skipFloatRangeTest=0, unsigned int threads = std::numeric_limits<unsigned int>::max());
 
 /**
  * @brief Converts a cv::Mat to a QPixmap.
@@ -46,7 +51,7 @@ std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat,
  * @return The status of the conversion and the converted mat.
  */
 std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat,
-						bool skipFloatRangeTest=0, unsigned int threads = 1);
+	bool skipFloatRangeTest=0, unsigned int threads = std::numeric_limits<unsigned int>::max());
 
 /**
  * @brief Creates a QSet<QString> with the given string as an inherited value.
@@ -62,6 +67,33 @@ QSet<QString> createStringSet(QString string);
 std::pair<bool, QString> typeToQString(const cv::Mat& mat);
 
 QString conversionResultToString(const ImageConversionResult& result);
+
+/**
+ * @brief Splits a mat in multiple one channel mats.
+ * @param mat The mat.
+ * @return The splitted mats.
+ */
+std::vector<cv::Mat> splitChannels(const cv::Mat& mat);
+
+/**
+ * @brief Merges multiple one channel mats into one.
+ * @param mats The mats to merge.
+ * @return Merged mat
+ * @throw std::invalid_argument If the images have different depths. Or one mat has more than 1
+ * channel.
+ */
+cv::Mat mergeChannels(std::vector<cv::Mat> mats);
+
+/**
+ * @brief Opens the users default browser with the topic help page.
+ * Current URL: cvv.mostlynerdless.de/help.php?topic=[topic]
+ *
+ * Topics can be added via appending the doc/topics.yml file.
+ *
+ * @param topic help topic
+ */
+void openHelpBrowser(const QString &topic);
+
 }}
 
 #endif

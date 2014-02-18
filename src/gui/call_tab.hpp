@@ -21,19 +21,19 @@ Q_OBJECT
 public:
 
 	/**
-	 * @brief get name
-	 * @return name
+	 * @brief Returns the name of this tab.
+	 * @return current name
 	 */
 	const QString getName() const { return name; }
 
 	/**
-	 * @brief set name
-	 * @param name
+	 * @brief Sets the name of this tab.
+	 * @param name new name
 	 */
 	void setName(const QString& newName) { name = newName; }
 
 	/**
-	 * @brief get ID
+	 * @brief Returns the of this CallTab.
 	 * @return the ID of the CallTab
 	 * (ID is equal to the ID of the associated call in derived classes)
 	 */

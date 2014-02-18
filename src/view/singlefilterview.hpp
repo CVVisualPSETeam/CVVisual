@@ -6,8 +6,6 @@
 #include "opencv2/core/core.hpp"
 
 #include "filter_view.hpp"
-#include "../qtutil/zoomableimage.hpp"
-#include "../qtutil/filterselectorwidget.hpp"
 #include "../dbg/dbg.hpp"
 
 
@@ -20,24 +18,16 @@ class SingleFilterView : public cvv::view::FilterView{
 	Q_OBJECT
 public:
 	/*
-	 * @brief Standart constructor for SingleFilterView
-	 * @param images A List of images
-	 * @param parent The parent of this QWidget
+	 * @brief the constructor
+	 * @param lefKeyPoints (queryindx) the keypoint from the left image
+	 * @param rightKeyPoint (trainIdx/imIdx) the keypoints from the right Image
+	 * @param matches the matches between the images
+	 * @param usetrainIdx if true the trainIdx will be taken for rightKeyPoint if false
+	 *	the imIdx will be taken
+	 * @param parent the parent widget
 	 */
-	//SingleFilterView(std::vector<cv::Mat> images,QWidget *parent=nullptr);
-
 	SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
-public slots:
-	void applyFilter();
-
-private: 
-	/*
-	 *@brief the images of this view
-	 */
-	std::vector<cv::Mat> images_;
-	std::vector<cvv::qtutil::ZoomableImage*> zoomImages_;
-	qtutil::FilterSelectorWidget<1,1> *filterSelector_;
-};	
+};
 
 }}//namespaces
 #endif

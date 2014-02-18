@@ -13,7 +13,7 @@ void debugDMatch(
 		const char* description, const char* view)
 {
 	debugMatchCall(img1, std::move(keypoints1), img2, std::move(keypoints2), std::move(matches),
-			data, "DMatch", description, view);
+			data, description, view);
 }
 
 }} //namespaces

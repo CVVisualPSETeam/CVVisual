@@ -13,6 +13,10 @@ Call::Call() : metaData_{}, id{newCallId()}, calltype{} {}
 
 Call::Call(impl::CallMetaData callData, QString type, QString description, QString requestedView):
 		metaData_{std::move(callData)}, id{newCallId()}, calltype{std::move(type)},
-		description_{std::move(description)}, requestedView_{std::move(requestedView)} {}
+		description_{std::move(description)}, requestedView_{std::move(requestedView)}
+{
+	
+	TRACEPOINT;
+}
 
 }} // namespaces cvv::impl

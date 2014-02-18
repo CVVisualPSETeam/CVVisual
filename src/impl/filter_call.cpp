@@ -1,7 +1,5 @@
 #include "filter_call.hpp"
 
-#include <QString>
-
 #include "data_controller.hpp"
 
 #include "../util/util.hpp"

@@ -9,9 +9,17 @@
 #include "match_view.hpp"
 namespace cvv { namespace view{
 
+/*
+ * @brief this view shows the matches as connect Lines between the images.
+ */
+
 class LineMatchView:public MatchView{
 Q_OBJECT
 public:
+	/*
+	 * @brief the constructor
+	 * @param
+	 */
 	LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,std::vector<cv::KeyPoint> rightKeyPoints,std::vector<cv::DMatch> matches,cv::Mat leftIm,cv::Mat rightIm,QWidget *parent=nullptr);
 };
 }}

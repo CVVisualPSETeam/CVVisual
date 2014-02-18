@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QString>
 #include <QComboBox>
+#include <QPushButton>
 
 //OCV
 #include "opencv2/core/core.hpp"
@@ -21,6 +22,10 @@
 
 namespace cvv { namespace qtutil{
 
+//forward
+template<std::size_t In,std::size_t Out, class Filter>
+bool registerFilter(const QString& name);
+
 /**
  * @brief The FilterSelectorWidget class
  */
@@ -32,7 +37,7 @@ class FilterSelectorWidget : public RegisterHelper<FilterFunctionWidget<In,Out>,
 public:
 
 	/**
-	 * The input type.
+	 * @brief The input type.
 	 */
 	using InputArray  = typename FilterFunctionWidget<In,Out>::InputArray;
 
@@ -46,11 +51,11 @@ public:
 	 * @param parent The parent widget.
 	 */
 	FilterSelectorWidget(QWidget *parent = nullptr):
-		QWidget{parent},
 		RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>{},
+		FilterFunctionWidget<In,Out>{parent},
 		currentFilter_{nullptr},
 		layout_{new QVBoxLayout{}},
-		slotFilterSelected_{[this](){this->updatedSelectedFilter();}
+		slotFilterSelected_{[this](){TRACEPOINT;this->updatedSelectedFilter();}
 }
 	{
 		TRACEPOINT;
@@ -59,6 +64,13 @@ public:
 		QObject::connect(&(this->signElementSelected_),SIGNAL(signal(QString)),
 				 &(this->slotFilterSelected_), SLOT(slot()));
 		this->setLayout((this->layout_));
+		//add an apply button
+		auto button=util::make_unique<QPushButton>("apply");
+		//connect it
+		QObject::connect(button.get(),SIGNAL(clicked()),
+					&(this->signFilterSettingsChanged_),SIGNAL(signal()));
+
+		this->layout_->addWidget(button.release());
 		//update for initial selection (if it is valid)
 		if(this->has(this->selection())){updatedSelectedFilter();}
 		TRACEPOINT;
@@ -92,10 +104,23 @@ public:
 	virtual std::pair<bool, QString> checkInput(InputArray in) const override
 	{
 		TRACEPOINT;
-		if(currentFilter_)
+		if(!currentFilter_)
 			{return {false, "No entry selected."};}
 		TRACEPOINT;
 		return currentFilter_->checkInput(in);
+	}
+
+	/**
+	 * @brief Registers a FilterFunctionWidget with a given name.
+	 * @param name The name.
+	 * @return true: If the function was registered. false: If the name was taken
+	 * (the function was not registered!)
+	 */
+	template<class Filter>
+	static bool registerFilter(const QString& name)
+	{
+		TRACEPOINT;
+		return qtutil::registerFilter<In,Out,Filter>(name);
 	}
 
 
@@ -141,6 +166,23 @@ protected:
 	 */
 	Slot slotFilterSelected_;
 }; //FilterSelectorWidget
+
+/**
+ * @brief Registers a FilterFunctionWidget with a given name.
+ * @param name The name.
+ * @return true: If the function was registered. false: If the name was taken
+ * (the function was not registered!)
+ */
+template<std::size_t In,std::size_t Out, class Filter>
+bool registerFilter(const QString& name)
+{
+	TRACEPOINT;
+	return FilterSelectorWidget<In,Out>::registerElement(name,
+			[](QWidget* parent){TRACEPOINT;
+			return std::unique_ptr<FilterFunctionWidget<In,Out>>{new Filter{parent}};}
+	);
+}
+
 
 }} // end namespaces qtutil, cvv
 #endif // CVVISUAL_FILTERSELECTORWIDGET_HPP

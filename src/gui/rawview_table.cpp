@@ -9,28 +9,31 @@
 #include "rawview_table_row.hpp"
 #include "rawview_group_subtable.hpp"
 #include "../qtutil/accordion.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv { namespace gui {
 
-RawviewTable::RawviewTable(util::Reference<controller::ViewController> controller, view::Rawview *parent):
-    controller{controller}, parent{parent}
+RawviewTable::RawviewTable(view::Rawview *parent): parent{parent}
 {
+	TRACEPOINT;
     subtableAccordion = new qtutil::Accordion{};
     auto *layout = new QVBoxLayout{};
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(subtableAccordion);
     setLayout(layout);
+    TRACEPOINT;
 }
 
 void RawviewTable::updateRowGroups(std::vector<stfl::ElementGroup<RawviewTableRow>> newGroups)
 {
+	TRACEPOINT;
     subtableAccordion->clear();
     subTables.clear();
     for (auto &group : newGroups)
     {
         if (group.size() > 0)
         {
-			auto subtable = util::make_unique<RawviewGroupSubtable>(controller, this, std::move(group));
+			auto subtable = util::make_unique<RawviewGroupSubtable>(this, std::move(group));
 			auto subtablePtr = subtable.get();
             auto titles = group.getTitles();
             QString title = "No grouping specified, use #group to do specify";
@@ -42,14 +45,17 @@ void RawviewTable::updateRowGroups(std::vector<stfl::ElementGroup<RawviewTableRo
             subTables.push_back(subtablePtr);
         }
     }
+    TRACEPOINT;
 }
 
 void RawviewTable::updateUI()
 {
+	TRACEPOINT;
     for (auto *subTable : subTables)
     {
         subTable->updateUI();
     }
+    TRACEPOINT;
 }
 
 }}

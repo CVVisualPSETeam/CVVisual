@@ -5,75 +5,54 @@
 
 #include "singlefilterview.hpp"
 #include "../qtutil/accordion.hpp"
-#include "../qtutil/matinfowidget.hpp"
+#include "../qtutil/zoomableimageoptpanel.hpp"
+#include "../qtutil/autofilterwidget.hpp"
+#include "../qtutil/zoomableimage.hpp"
+#include "../util/util.hpp"
 
 
 namespace cvv{ namespace view{
 
-	SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
-		FilterView{parent},images_(images)
+SingleFilterView::SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent):
+	FilterView{parent}
+{
+	TRACEPOINT;
+	auto imwid		= util::make_unique<QWidget>();
+	auto accor 		= util::make_unique<qtutil::Accordion>();
+	auto layout 		= util::make_unique<QHBoxLayout>();
+	auto imageLayout 	= util::make_unique<QHBoxLayout>();
+
+	accor->setMinimumWidth(250);
+	accor->setMaximumWidth(250);
+
+	auto filterSelector = util::make_unique<qtutil::AutoFilterWidget<1,1>>(this);
+	qtutil::AutoFilterWidget<1,1> *filterSel = filterSelector.get();
+
+	accor->insert("Select a Filter",std::move(filterSelector));
+	int count = 0;
+	for(auto& image:images)
 	{
-		TRACEPOINT;
+		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
 
-		QWidget 		*imwid		= new QWidget{};
-		qtutil::Accordion 	*accor 		= new qtutil::Accordion{};
-		QHBoxLayout		*layout 	= new QHBoxLayout{};
-		QHBoxLayout		*imageLayout 	= new QHBoxLayout{};
+		auto filterSignals = filterSel->addEntry(QString("image: ")+QString::number(count),
+			{{util::makeRef<const cv::Mat>(image)}},
+			{{util::makeRef<cv::Mat>(zoomIm->mat())}});
 
-		auto filterSelector	= util::make_unique<qtutil::FilterSelectorWidget<1,1>>();
-		filterSelector_ = filterSelector.get();
+		//connect entry zoomableimage
+		connect(filterSignals.front().getPtr(),SIGNAL(signal(cv::Mat&)),zoomIm.get(),SLOT(setMatR(cv::Mat&)));
 
-		accor->setMinimumWidth(250);
-		accor->setMaximumWidth(250);
-		connect(&(filterSelector->signFilterSettingsChanged_),SIGNAL(signal()),this,SLOT(applyFilter()));
-		accor->insert("Select a Filter",std::move(filterSelector));
-		int count = 0;
-		for(auto& image:images_)
-		{
-			zoomImages_.push_back(new qtutil::ZoomableImage{});
-			auto info = util::make_unique<qtutil::MatInfoWidget>(image);
-
-			connect(zoomImages_[count],SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
-				SLOT(updateConvertStatus(ImageConversionResult)));
-
-			connect(info.get(),SIGNAL(getZoom(qreal)),zoomImages_[count],
-				SLOT(updateZoom(qreal)));
-
-			zoomImages_[count]->updateMat(image);
-
-			imageLayout->addWidget(zoomImages_[count]);
-			accor->insert("ImageInformation",std::move(info));
-			count++;
-		}
-
-		imwid->setLayout(imageLayout);
-
-		layout->addWidget(accor);
-		layout->addWidget(imwid);
-		setLayout(layout);
-
-		TRACEPOINT;
+		accor->insert(QString("ImageInformation: ")+QString::number(count),std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
+		zoomIm->setMat(image);
+		imageLayout->addWidget(zoomIm.release());
+		count++;
 	}
+	imwid->setLayout(imageLayout.release());
 
-	void SingleFilterView::applyFilter()
-	{
-		TRACEPOINT;
+	layout->addWidget(accor.release());
+	layout->addWidget(imwid.release());
+	setLayout(layout.release());
 
-		int count = 0;
-		for(auto& image : images_)
-		{
-			//const std::array<cv::Mat,1> input{image};
-			qtutil::CvvInputArray<1> input = {image};
-			auto result = filterSelector_->checkInput(input);
-			if(result.first){
-				//std::array<cv::Mat,1> out;
-				qtutil::CvvOutputArray<1> out = {zoomImages_[count]->mat()};
-				filterSelector_->applyFilter(input,out);
-				//zoomImages_[count]->updateMat(out[0]);
-			}
-			count++;
-		}
-		TRACEPOINT;
-	}
+	TRACEPOINT;
+}
 
 }}//namespaces

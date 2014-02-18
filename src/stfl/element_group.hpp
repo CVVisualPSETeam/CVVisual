@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include <stdexcept>
 
+#include "../dbg/dbg.hpp"
+
 namespace cvv {
 namespace stfl {
 
@@ -19,68 +21,150 @@ class ElementGroup
 {
 public:
 	
-    ElementGroup(){
-        //titles = QStringList();
-        //elements = QList<Element>();
-    }
+	/**
+	 * @brief Contructs an empty ElementGroup.
+	 */
+    ElementGroup(){}
 	
 	/**
-	 * Constructs a new ElementGroup
+	 * @brief Constructs a new ElementGroup
 	 * @param _titles title of this group, consisting of several sub titles
 	 * @param _elements elements of this group 
 	 */
-    ElementGroup(const QStringList _titles, const QList<Element> &_elements):
+    ElementGroup(QStringList _titles, QList<Element> &_elements):
         titles{_titles}, elements{_elements} {}
 	/**
-	 * Checks whether or not this group contains the element.
+	 * @brief Checks whether or not this group contains the element.
+	 * @param element element to be checked
+	 * @return does this group contain the given element?
 	 */
 	bool contains(const Element &element)
 	{
+		TRACEPOINT;
 		return this->elements.contains(element);
 	}
 
 	/**
-	 * Return the inherited elements.
+	 * @brief Return the inherited elements.
+	 * @return the interited elements
 	 */
 	QList<Element> getElements()
 	{
+		TRACEPOINT;
 		return this->elements;
 	}
 
 	/**
-	 * Returns the number of elements in this group.
+	 * @brief Returns the number of elements in this group.
+	 * @return number of elements in this group
 	 */
     size_t size() const
 	{
+		TRACEPOINT;
 		return this->elements.size();
 	}
 
     /**
-     * Returns the title (consisting of sub titles).
+     * @brief Returns the title (consisting of sub titles).
+     * @return the group title
      */
     QStringList getTitles() const
     {
+		TRACEPOINT;
         return this->titles;
     }
-
+	
 	/**
-	 * Get the element at the given index (in this group).
+	 * @brief Checks whether this an the given element group have the same titles.
+	 * @param other given other element group
+	 * @return Does this element group and the given have the same titles.
+	 */
+	bool hasSameTitles(ElementGroup<Element> &other)
+	{
+		TRACEPOINT;
+		for (auto title : other.getTitles())
+		{
+			if (!titles.contains(title))
+			{
+				return false;
+			}
+		}
+		TRACEPOINT;
+		return true;
+	}
+	
+	/**
+	 * @brief Checks whether this an the given element have the same list of elements.
+	 * @param other given other element group
+	 * @param elementCompFunc element comparison function that gets two elements passed 
+	 * and returns true if both can be considered equal
+	 * @return Does this element group and the given have the same list of elements.
+	 */
+	bool hasSameElementList(ElementGroup<Element> &other,
+							std::function<bool(const Element&, const Element&)> elementCompFunc)
+	{
+		TRACEPOINT;
+		if (other.getElements().size() != elements.size())
+		{
+			return false;
+		}
+		for (int i = 0; i < elements.size(); i++)
+		{
+			if (!elementCompFunc(elements[i], other.get(i)))
+			{
+				return false;
+			}
+		}
+		TRACEPOINT;
+		return true;
+	}
+	
+	/**
+	 * @brief Get the element at the given index (in this group).
 	 * 
 	 * @param index given index
+	 * @return element at the given index
 	 * @throws std::invalid_argument if no such element exists
 	 */
 	Element get(size_t index)
 	{
+		TRACEPOINT;
 		if (index >= size())
 		{
 			throw std::invalid_argument{"there is no call with this id"};
 		}
+		TRACEPOINT;
 		return this->elements[index];
 	}
 
+	/**
+	 * @brief Remove the element at the given index.
+	 * @param index given element index
+	 */
+	void removeElement(size_t index)
+	{
+		TRACEPOINT;
+		if (index < static_cast<size_t>(elements.size()))
+		{
+			elements.removeAt(index);
+		}
+		TRACEPOINT;
+	}
+	
+	/**
+	 * @brief Sets the inhereted elements. 
+	 * @param newElements new elements of this group
+	 */
+	void setElements(QList<Element> newElements)
+	{
+		TRACEPOINT;
+		elements = newElements;
+		TRACEPOINT;
+	}
+	
 private:
-	const QStringList titles;
-	const QList<Element> elements;
+	QStringList titles;
+	QList<Element> elements;
 };
 
 

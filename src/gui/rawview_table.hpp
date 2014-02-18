@@ -11,7 +11,6 @@
 #include "../stfl/element_group.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../util/util.hpp"
-#include "../controller/view_controller.hpp"
 #include "rawview_group_subtable.hpp"
 
 namespace cvv { 
@@ -24,14 +23,25 @@ namespace gui {
 
 class RawviewTableCollumn;
 
+/**
+ * @brief A table (consisting of subtables) displaying raw match data.
+ */
 class RawviewTable : public QWidget
 {
 	Q_OBJECT
 	
 public:
 	
-	RawviewTable(util::Reference<controller::ViewController> controller, view::Rawview *parent);
+	/**
+	 * @brief Constructor of this class.
+	 * @param parent parent view
+	 */
+	RawviewTable(view::Rawview *parent);
 	
+	/**
+	 * @brief Update the inherited groups of rows and rebuild the UI fully.
+	 * @param newGroups new groups for this table
+	 */ 
 	void updateRowGroups(const std::vector<stfl::ElementGroup<RawviewTableRow>> newGroups);
 
 	/**
@@ -40,7 +50,6 @@ public:
 	void updateUI();
 
 private:
-	util::Reference<controller::ViewController> controller;
 	view::Rawview *parent;
 	qtutil::Accordion *subtableAccordion;
 	std::vector<RawviewGroupSubtable*> subTables{};

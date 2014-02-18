@@ -12,9 +12,8 @@
 #include "overview_table.hpp"
 #include "overview_table_row.hpp"
 #include "../util/util.hpp"
+#include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
-
-
 
 namespace cvv {
 
@@ -31,6 +30,9 @@ namespace gui {
 class OverviewTable;
 class OverviewTableRow;
 
+/**
+ * @brief The overview showing a filterable table displaying the different calls.
+ */
 class OverviewPanel : public QWidget
 {
 
@@ -38,20 +40,30 @@ class OverviewPanel : public QWidget
 
 public:
 
+	/**
+	 * @brief Contructs an OverviewPanel.
+	 * @param controller ViewController that inherits this overview
+	 */
     OverviewPanel(util::Reference<controller::ViewController> controller);
 
+	~OverviewPanel() { TRACEPOINT; }
+	
+	/**
+	 * @brief Adds the given calll to the shown overview table.
+	 * @param newCall given call
+	 */
     void addElement(const util::Reference<const impl::Call> newCall);
 
     /**
-     * @brief Changes the "Resume program execution" button label to "Exit Application"
+     * @brief Changes the "Resume program execution" button label to "Exit Application."
      */
     void showExitApplicationButton();
 
     /**
      * @brief Removes and deletes the element with the given id.
-     * @param id element id
+     * @param id given element id
      */
-    void deleteElement(size_t id);
+    void removeElement(size_t id);
 
 private slots:
 
@@ -64,6 +76,8 @@ private slots:
     void imgSizeSliderAction();
 
     void toggleImages();
+	
+	void showHelp(QString topic);
 
 private:
     stfl::STFLEngine<OverviewTableRow> queryEngine;

@@ -5,8 +5,10 @@
 #include <thread>
 #include <functional>
 
-
 #include <opencv/highgui.h>
+
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "types.hpp"
 #include "../../src/dbg/dbg.hpp"
@@ -54,25 +56,32 @@ QString conversionResultToString(const ImageConversionResult& result)
 	switch(result)
 	{
 		case ImageConversionResult::SUCCESS :
-			TRACEPOINT;return "SUCCESS";
+			TRACEPOINT;
+			return "SUCCESS";
 		break;
 		case ImageConversionResult::MAT_EMPTY:
-			TRACEPOINT;return "Empty Mat";
+			TRACEPOINT;
+			return "Empty Mat";
 		break;
 		case ImageConversionResult::MAT_NOT_2D:
-			TRACEPOINT;return "Unsupported Dimension";
+			TRACEPOINT;
+			return "Unsupported Dimension";
 		break;
 		case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:
-			TRACEPOINT;return "Float values out of range [0,1]";
+			TRACEPOINT;
+			return "Float values out of range [0,1]";
 		break;
 		case ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED:
-			TRACEPOINT;return "Unsupported number of channels";
+			TRACEPOINT;
+			return "Unsupported number of channels";
 		break;
 		case ImageConversionResult::MAT_INVALID_SIZE:
-			TRACEPOINT;return "Invalid Size";
+			TRACEPOINT;
+			return "Invalid Size";
 		break;
 		case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:
-			TRACEPOINT;return "Unsupported Depth ";
+			TRACEPOINT;
+			return "Unsupported Depth ";
 		break;
 	}
 	TRACEPOINT;
@@ -83,16 +92,45 @@ QString conversionResultToString(const ImageConversionResult& result)
 //image conversion stuff
 // ////////////////////////////////////////////////
 //convert an image with known depth and channels (the number of chanels is the suffix (convertX)
-//colortable for CV_XXC1
+/**
+ * @brief Colortable for CV_XXC1
+ */
 struct ColorTable
 {
-	ColorTable(): table{}
-		{TRACEPOINT;for(int i=0;i<265;i++){table.push_back(qRgb(i,i,i));}TRACEPOINT;}
+	/**
+	 * @brief Constructor
+	 */
+	ColorTable():
+		table{}
+	{
+		TRACEPOINT;
+		//TODO: I guess this should be 256?
+		for(int i=0;i<265;i++){table.push_back(qRgb(i,i,i));}
+		TRACEPOINT;
+	}
+	
+	/**
+	 * @brief Destructor
+	 */
+	~ColorTable()
+	{
+		TRACEPOINT;
+	}
+	
+	/**
+	 * @brief The colortable
+	 */
 	QVector<QRgb> table;
 };
+/**
+ * @brief Static colortable for CV_XXC1
+ */
 const static ColorTable colorTable{};
 
 //helper
+/**
+ * @brief Provides the parts of the conversion fuction that differ depending on the type.
+ */
 template<int depth, int channels> struct ConvertHelper
 {
 	static_assert(channels>=1&&channels<=4,"Illegal number of channels");
@@ -117,6 +155,9 @@ template<int depth> struct ConvertHelper<depth,1>
 	}
 };
 
+/**
+ * @brief Provides the parts of the conversion fuction that differ depending on the type.
+ */
 template<int depth> struct ConvertHelper<depth,2>
 {
 	static QImage image(const cv::Mat& mat)
@@ -130,6 +171,9 @@ template<int depth> struct ConvertHelper<depth,2>
 	}
 };
 
+/**
+ * @brief Provides the parts of the conversion fuction that differ depending on the type.
+ */
 template<int depth> struct ConvertHelper<depth,3>
 {
 	static QImage image(const cv::Mat& mat)
@@ -143,6 +187,9 @@ template<int depth> struct ConvertHelper<depth,3>
 	}
 };
 
+/**
+ * @brief Provides the parts of the conversion fuction that differ depending on the type.
+ */
 template<int depth> struct ConvertHelper<depth,4>
 {
 	static QImage image(const cv::Mat& mat)
@@ -157,7 +204,13 @@ template<int depth> struct ConvertHelper<depth,4>
 	}
 };
 
-
+/**
+ * @brief Converts parts of a cv Mat. [minRow,maxRow)
+ * @param mat The mat.
+ * @param img The result image.
+ * @param minRow Row to start.
+ * @param maxRow Last row.
+ */
 template<int depth, int channels>
 void convertPart(const cv::Mat& mat, QImage& img, int minRow, int maxRow)
 {
@@ -177,6 +230,12 @@ void convertPart(const cv::Mat& mat, QImage& img, int minRow, int maxRow)
 	TRACEPOINT;
 }
 
+/**
+ * @brief Converts a cv Mat.
+ * @param mat The mat.
+ * @param threads The number of threads to use.
+ * @return The converted QImage.
+ */
 template<int depth, int channels>
 QImage convert(const cv::Mat& mat, unsigned int threads)
 {
@@ -187,7 +246,7 @@ QImage convert(const cv::Mat& mat, unsigned int threads)
 	{
 		TRACEPOINT;
 		//multithreadding
-		int nThreads=std::min(threads,std::thread::hardware_concurrency());
+		auto nThreads=std::min(threads,std::thread::hardware_concurrency());
 		std::vector<std::thread> workerThreads;
 		workerThreads.reserve(nThreads);
 		int nperthread=mat.rows/nThreads;
@@ -219,7 +278,13 @@ QImage convert(const cv::Mat& mat, unsigned int threads)
 
 
 // ////////////////////////////////////////////////
-// checks wheather all pixels are in a given range
+/**
+ * @brief Checks wheather all channels of each pixel are in the given range.
+ * @param mat The Mat.
+ * @param min Minimal value
+ * @param max Maximal value
+ * @return Wheather all channels of each pixel are in the given range.
+ */
 template<int depth>
 bool checkValueRange(const cv::Mat& mat, DepthType<depth> min, DepthType<depth> max)
 {
@@ -237,12 +302,46 @@ bool checkValueRange(const cv::Mat& mat, DepthType<depth> min, DepthType<depth> 
 //error result
 //the error could be printed on an image
 //second parameter: maybe more informations are useful
-std::pair<ImageConversionResult,QImage> errorResult(ImageConversionResult res, const cv::Mat&)
-	{TRACEPOINT;return {res, QImage{0,0,QImage::Format_Invalid}};}
+/**
+ * @brief Creates the error result for a given error.
+ * @param res The error code.
+ * @return The result.
+ */
+std::pair<ImageConversionResult,QImage> errorResult(ImageConversionResult res, const cv::Mat& mat)
+{
+	TRACEPOINT;
+	switch(res)
+	{
+	case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:TRACEPOINT;
+	case ImageConversionResult::MAT_NOT_2D:TRACEPOINT;
+	case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:TRACEPOINT;
+	case ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED:
+		{
+			TRACEPOINT;
+			QImage imgresult{mat.cols,mat.rows,QImage::Format_RGB444};
+			imgresult.fill(Qt::black);
+			return {res, imgresult};
+		}
+	break;
+	case ImageConversionResult::SUCCESS:;
+	case ImageConversionResult::MAT_EMPTY:;
+	case ImageConversionResult::MAT_INVALID_SIZE:;
+	}
+	TRACEPOINT;
+	return {res, QImage{0,0,QImage::Format_Invalid}};
+}
 
 //split depth
-template<int channels> std::pair<ImageConversionResult,QImage> convert(const cv::Mat& mat,
-						bool skipFloatRangeTest, unsigned int threads)
+/**
+ * @brief Converts a given image. (this step splits according to the depth)
+ * @param mat The Mat.
+ * @param skipFloatRangeTest Wheather a rangecheck for float images will be performed.
+ * @param threads The number of threads to use.
+ * @return The converted QImage.
+ */
+template<int channels>
+std::pair<ImageConversionResult,QImage> convert(const cv::Mat& mat,bool skipFloatRangeTest,
+						unsigned int threads)
 {
 	TRACEPOINT;
 	//depth ok?
@@ -314,33 +413,62 @@ template<int channels> std::pair<ImageConversionResult,QImage> convert(const cv:
 
 
 //convert
+/*
+ * @brief Converts a given image. (this step splits according to the channels)
+ * @param mat The Mat.
+ * @param skipFloatRangeTest Wheather a rangecheck for float images will be performed.
+ * @param threads The number of threads to use.
+ * @return The converted QImage.
+ */
 std::pair<ImageConversionResult,QImage> convertMatToQImage(const cv::Mat &mat,
 						bool skipFloatRangeTest, unsigned int threads)
 {
 	TRACEPOINT;
 	//empty?
 	if(mat.empty())
-		{TRACEPOINT;return errorResult(ImageConversionResult::MAT_EMPTY, mat);};
+	{
+		TRACEPOINT;
+		return errorResult(ImageConversionResult::MAT_EMPTY, mat);
+	};
 
 	//2d?
 	if(mat.dims != 2)
-		{TRACEPOINT;return errorResult(ImageConversionResult::MAT_NOT_2D, mat);};
+	{
+		TRACEPOINT;
+		return errorResult(ImageConversionResult::MAT_NOT_2D, mat);
+	};
 
 	//size ok
 	if(mat.rows < 1 || mat.cols < 1)
-		{TRACEPOINT;return errorResult(ImageConversionResult::MAT_INVALID_SIZE, mat);}
+	{
+		TRACEPOINT;
+		return errorResult(ImageConversionResult::MAT_INVALID_SIZE, mat);
+	}
 
 	//check channels 1-4
 	//now convert
 	switch(mat.channels())
 	{
-		case 1: TRACEPOINT;return convert<1>(mat,skipFloatRangeTest,threads); break;
-		case 2: TRACEPOINT;return convert<2>(mat,skipFloatRangeTest,threads); break;
-		case 3: TRACEPOINT;return convert<3>(mat,skipFloatRangeTest,threads); break;
-		case 4: TRACEPOINT;return convert<4>(mat,skipFloatRangeTest,threads); break;
+		case 1:
+			TRACEPOINT;
+			return convert<1>(mat,skipFloatRangeTest,threads);
+		break;
+		case 2:
+			TRACEPOINT;
+			return convert<2>(mat,skipFloatRangeTest,threads);
+		break;
+		case 3:
+			TRACEPOINT;
+			return convert<3>(mat,skipFloatRangeTest,threads);
+		break;
+		case 4:
+			TRACEPOINT;
+			return convert<4>(mat,skipFloatRangeTest,threads);
+		break;
 		default:
-			TRACEPOINT;return errorResult(
-				ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED, mat);
+			TRACEPOINT;
+			return errorResult(ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED,
+						mat);
 	}
 	//floating depth + in range [0,1]  (in function convert<T>)
 	//depth ok?						(in function convert<T>)
@@ -356,4 +484,77 @@ std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat
 	TRACEPOINT;
 	return {converted.first, QPixmap::fromImage(converted.second)};
 }
+
+std::vector<cv::Mat> splitChannels(const cv::Mat& mat)
+{
+	TRACEPOINT;
+	if(mat.channels()<1)
+	{
+		TRACEPOINT;
+		return std::vector<cv::Mat>{};
+	}
+	TRACEPOINT;
+	auto chan=std::unique_ptr<cv::Mat[]>(new cv::Mat[mat.channels()]);
+	TRACEPOINT;
+	cv::split(mat,chan.get());
+	TRACEPOINT;
+	std::vector<cv::Mat> result{};
+	//put in vector
+	for(int i=0;i<mat.channels();i++)
+	{
+		result.emplace_back(chan[i]);
+	}
+	TRACEPOINT;
+	return result;
+}
+
+
+cv::Mat mergeChannels(std::vector<cv::Mat> mats)
+{
+	TRACEPOINT;
+	if(mats.size()<=0)
+	{
+		TRACEPOINT;
+		throw std::invalid_argument{"no input mat"};
+	}
+
+	//check
+	if(mats.at(0).channels()!=1)
+	{
+		TRACEPOINT;
+		throw std::invalid_argument{"mat 0 not 1 channel"};
+	}
+	int type=mats.at(0).type();
+	auto size=mats.at(0).size();
+	for(std::size_t i=1;i<mats.size();i++)
+	{
+		if((type!=mats.at(i).type())||(size!=mats.at(i).size()))
+		{
+			TRACEPOINT;
+			throw std::invalid_argument{"mats have different sizes or depths."
+							"(or not 1 channel)"};
+		}
+	}
+	//merge
+	cv::Mat result{mats.at(0).rows,mats.at(0).cols,mats.at(0).type()};
+
+	std::unique_ptr<cv::Mat[]> mergeinput(new cv::Mat[mats.size()]);
+	for(std::size_t i=0;i<mats.size();i++)
+	{
+		mergeinput[i]=mats.at(i);
+	}
+	merge(mergeinput.get(),mats.size(),result);
+
+	TRACEPOINT;
+	return result;
+}
+
+void openHelpBrowser(const QString &topic)
+{
+	TRACEPOINT;
+    auto topicEncoded = QUrl::toPercentEncoding(topic);
+    QDesktopServices::openUrl(QUrl(QString("http://cvv.mostlynerdless.de/help.php?topic=") + topicEncoded));
+    TRACEPOINT;
+}
+
 }}

@@ -12,17 +12,20 @@ namespace stfl {
 
 /**
  * @brief Calculates the equality of two strings.
- * If both strings are only single words, a combination of the levenshtein edit distance and a phonetic matching algorithm is used.
+ * If both strings are only single words, a combination of the 
+ * levenshtein edit distance and a phonetic matching algorithm is used.
  * If not only the first is used.
  * Attention: using a phonetic algorithm is much slower, than the simple levenshtein.
  * @param str1 first string
  * @param str2 second string
- * @return equality of both strings, 0 means both string are equal, the greater the number, the more unequal are both strings.
+ * @return equality of both strings, 0 means both string are equal,
+ *  the greater the number, the more unequal are both strings.
  */
 int stringEquality(const QString &str1, const QString &str2);
 
 /**
- * @brief Implementation of the levenshtein distance, a metric for the edit distance between to strings.
+ * @brief Implementation of the levenshtein distance.
+ * The levenshtein distance is a metric for the edit distance between to strings.
  * Based on http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Levenshtein_distance#C.2B.2B
  * @param str1 first string
  * @param str2 second string
@@ -39,7 +42,8 @@ size_t editDistance(const QString& str1, const QString& str2);
  * and also consumes much more memory as it uses the cached version the NYSIIS algorithm
  * @param word1 first word
  * @param word2 second word
- * @return equality of both words, 0 means both words are equal, the greater the number, the more unequal are both words.
+ * @return equality of both words, 0 means both words are equal, 
+ * the greater the number, the more unequal are both words.
  */
 int phoneticEquality(const QString &word1, const QString &word2);
 
@@ -119,6 +123,9 @@ void unescapeCommas(QString &str);
 
 /**
  * @brief Shortens the given string to the given length and append "..." if needed.
+ * @param str given string
+ * @param maxLength maximum length of the returned string
+ * @param does this method shorten the given string at the end?
  */
 QString shortenString(QString &str, int maxLength, bool cutEnd = true);
 

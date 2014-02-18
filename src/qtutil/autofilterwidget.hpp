@@ -17,6 +17,7 @@
 #include "signalslot.hpp"
 #include "../util/util.hpp"
 #include "../dbg/dbg.hpp"
+#include "signalslot.hpp"
 
 namespace cvv { namespace qtutil{
 
@@ -60,9 +61,9 @@ public:
 		name_{name},
 		checkBox_{new QCheckBox{name}},
 		message_{new QLabel{}},
-		in_{in},
-		out_{out},
-		signals_{}
+		in_(in),
+		out_(out),
+		signals_()
 	{
 		TRACEPOINT;
 		auto lay=util::make_unique<QVBoxLayout>();
@@ -78,21 +79,29 @@ public:
 	 * @brief Checks wheather the check box is checked.
 	 */
 	operator bool()
-		{TRACEPOINT;return checkBox_->isChecked();}
+	{
+		TRACEPOINT;
+		return checkBox_->isChecked();
+	}
 
 	/**
 	 * @brief Returns the image input.
 	 * @return The image input.
 	 */
 	InputArray input()
-		{TRACEPOINT;return in_;}
+	{
+		TRACEPOINT;return in_;
+	}
 
 	/**
 	 * @brief Returns the image output.
 	 * @return The image output.
 	 */
 	OutputArray output()
-		{TRACEPOINT;return out_;}
+	{
+		TRACEPOINT;
+		return out_;
+	}
 
 	/**
 	 * @brief Returns references to the update signals.
@@ -192,7 +201,7 @@ public:
 template< std::size_t In, std::size_t Out>
 class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 {
-public:
+	public:
 	/**
 	 * The input type for a filter.
 	 */
@@ -208,11 +217,14 @@ public:
 	 */
 	AutoFilterWidget(QWidget* parent = nullptr):
 		FilterSelectorWidget<In,Out>{parent},
+		slotEnableUserSelection_{[this](bool b){TRACEPOINT; this->enableUserSelection(b);}},
+		slotUseFilterIndividually_{[this](bool b){TRACEPOINT;
+						this->useFilterIndividually(b);}},
 		entryLayout_{new QVBoxLayout},
 		applyFilterIndividually_{false},
 		entries_{},
 		earliestActivationTime_{},
-		slotApplyFilter_{[this](){this->autoApplyFilter();}}
+		slotApplyFilter_{[this](){TRACEPOINT; this->autoApplyFilter();}}
 	{
 		TRACEPOINT;
 		//add sublayout
@@ -266,7 +278,6 @@ public:
 		TRACEPOINT;
 	}
 
-public slots:
 	/**
 	 * @brief Enabels / disables the user to select entries to filter per combo boxes.
 	 * @param enabled If true it will be enabled.
@@ -282,25 +293,42 @@ public slots:
 	}
 
 	/**
-	 * @brief Sets wheather the filter will be applied to entries it can be applied to
+	 * @brief Sets whether the filter will be applied to entries it can be applied to
 	 * even when one other entry cant apply the filter.
 	 * @param individually If true each entry that can apply the filter does so.
 	 */
 	void useFilterIndividually(bool individually = true)
-		{TRACEPOINT;applyFilterIndividually_=individually;TRACEPOINT;}
+	{
+		TRACEPOINT;
+		applyFilterIndividually_=individually;
+		TRACEPOINT;
+	}
+	/**
+	* @brief calls enableUserSelection
+	*/
+	SlotBool slotEnableUserSelection_;
+	/**
+	 * @brief calls seFilterIndividually.
+	 */
+	SlotBool slotUseFilterIndividually_;
 private:
 	/**
-	 * @brief Applies the filter wen some settings where changed.
+	 * @brief Applies the filter when some settings where changed.
 	 */
 	void autoApplyFilter()
 	{
 		TRACEPOINT;
 		auto start=std::chrono::high_resolution_clock::now();
 		//activate again?
-		if(start<earliestActivationTime_){return;}
+		if(start<earliestActivationTime_)
+		{
+			TRACEPOINT;
+			return;
+		}
 		//apply filter
 		if(!applyFilterIndividually_)
 		{
+			//only apply all filters at once
 			TRACEPOINT;
 			//check wheather all filters can be applied
 			std::size_t failed = 0;
@@ -313,14 +341,25 @@ private:
 
 					if(!check.first)
 					{
+						//elem cant apply filter
 						failed++;
 						elem.get().setMessage(check.second);
 					}else{
+						//elem can apply filter. delete message
 						elem.get().setMessage("");
 					}
+				}else{
+					//delete message
+					elem.get().setMessage("");
 				}
 			}
-			if(failed){TRACEPOINT; return;}
+			if(failed)
+			{
+				//one filter failed
+				TRACEPOINT;
+				return;
+			}
+			//all can apply filter
 			//apply filters
 			for(auto& elem:entries_)
 			{
@@ -331,18 +370,18 @@ private:
 					elem.get().emitAll();
 				};
 			}
-		} else{
+		} else{ //applyFilterIndividually_==true
 			TRACEPOINT;
 			//filters can be applied individually
 			for(auto& elem:entries_)
 			{
-
 				//activated?
 				if(elem.get())
 				{
 					auto check=this->checkInput(elem.get().input());
 					if(!check.first)
 					{
+						//set message
 						elem.get().setMessage(check.second);
 					}else{
 						//apply filter+set message
@@ -351,6 +390,9 @@ private:
 								  elem.get().output());
 						elem.get().emitAll();
 					}
+				}else{
+					//delete message
+					elem.get().setMessage("");
 				}
 			}
 		}

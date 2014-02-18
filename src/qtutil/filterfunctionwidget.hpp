@@ -33,7 +33,7 @@ template<std::size_t Out> using CvvOutputArray = std::array<util::Reference<cv::
  * @tparam Out The number of output images.
  */
 template< std::size_t In, std::size_t Out>
-class FilterFunctionWidget: public virtual QWidget
+class FilterFunctionWidget: public QWidget
 {
 	static_assert( Out > 0, "Out should be >0.");
 public:
@@ -41,10 +41,16 @@ public:
 	using InputArray  = CvvInputArray<In>;
 	using OutputArray = CvvOutputArray<Out>;
 
+	FilterFunctionWidget(QWidget* parent = nullptr):
+		QWidget{parent}{TRACEPOINT;}
+
 	/**
 	 * @brief virtual destructor.
 	 */
-	virtual ~FilterFunctionWidget(){TRACEPOINT;}
+	virtual ~FilterFunctionWidget()
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Applys the filter to in and saves the result in out.
@@ -60,8 +66,8 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(InputArray in) const
-												= 0;
+	virtual std::pair<bool, QString> checkInput(InputArray in) const = 0;
+
 	/**
 	 * @brief Signal to emit when user input leads to different parameters.
 	 */
