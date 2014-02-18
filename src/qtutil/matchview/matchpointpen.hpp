@@ -16,7 +16,7 @@ public:
 		SingleColorPen{parent},maxDistance_{maxDistance}
 		{TRACEPOINT;}
 
-	virtual QPen getPen(const CVVPointMatch& match)const override;
+	virtual QPen getPen(const CVVPointMatch& match)const;
 
 	virtual qreal getRadius(const CVVPointMatch&)const;
 

@@ -38,7 +38,7 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
 */
 	basicLayout->addWidget(graphicView.release());
 	//basicLayout->setSizeConstraint(QLayout::SetNoConstraint);
-	setLayout(basicLayout);
+	setLayout(basicLayout.release());
 
 	adjustImages();
 
