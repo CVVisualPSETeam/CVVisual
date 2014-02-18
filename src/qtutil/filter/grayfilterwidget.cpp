@@ -49,15 +49,16 @@ void GrayFilterWidget::applyFilter(InputArray in,OutputArray out) const
 	}
 	TRACEPOINT;
 	auto channels=splitChannels(in.at(0).get());
-	out.at(0).get()=cv::Mat::zeros(in.at(0).get().rows, in.at(0).get().cols,
+	cv::Mat tmp=cv::Mat::zeros(in.at(0).get().rows, in.at(0).get().cols,
 				in.at(0).get().depth());
 	TRACEPOINT;
 	for(std::size_t i=0;((i<channels.size()) && (i<chanValues_.size()));i++)
 	{
 		TRACEPOINT;
-		out.at(0).get() += channels.at(i)*(chanValues_.at(i)->value());
+		tmp += channels.at(i)*(chanValues_.at(i)->value());
 		TRACEPOINT;
 	}
+	out.at(0).get()=tmp;
 	TRACEPOINT;
 }
 
@@ -119,14 +120,6 @@ void GrayFilterWidget::setStd()
 	chanValues_.at(0)->setValue(0.114);
 	chanValues_.at(1)->setValue(0.587);
 	chanValues_.at(2)->setValue(0.299);
-	TRACEPOINT;
-}
-
-
-void registerGray()
-{
-	TRACEPOINT;
-	registerFilter<1,1,cvv::qtutil::GrayFilterWidget>("Gray filter");
 	TRACEPOINT;
 }
 }}

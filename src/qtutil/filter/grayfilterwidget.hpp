@@ -95,11 +95,6 @@ private:
 	std::vector<QDoubleSpinBox*> chanValues_;
 };
 
-/**
- * @brief Registers the gray filter. (name=Gray filter)
- */
-void registerGray();
-
 }}
 
 #endif // CVVISUAL_GRAYFILTERWIDGET_HPP

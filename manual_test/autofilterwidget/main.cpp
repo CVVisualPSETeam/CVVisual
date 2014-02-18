@@ -74,7 +74,6 @@ int main(int argc, char *argv[])
 	cvv::impl::initializeFilterAndViews();
 
 	TRACEPOINT;
-	cvv::qtutil::registerSobel();
 
 	QApplication a(argc, argv);
 	QWidget w{};
@@ -119,9 +118,9 @@ int main(int argc, char *argv[])
 	auto u1=afw->addEntry("i1",{{i1->mat()}},{{o1->mat()}});
 	auto u2=afw->addEntry("i2",{{i2->mat()}},{{o2->mat()}});
 	//connect
-	QObject::connect((u1.at(0).getPtr()),SIGNAL(signal(cv::Mat&, unsigned int)),
+	QObject::connect((u1.at(0).getPtr()),SIGNAL(signal(cv::Mat&)),
 			 o1.get(),SLOT(setMatR(cv::Mat&)));
-	QObject::connect((u2.at(0).getPtr()),SIGNAL(signal(cv::Mat&, unsigned int)),
+	QObject::connect((u2.at(0).getPtr()),SIGNAL(signal(cv::Mat&)),
 			 o2.get(),SLOT(setMatR(cv::Mat&)));
 
 	TRACEPOINT;

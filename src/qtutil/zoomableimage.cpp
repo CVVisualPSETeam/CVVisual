@@ -165,8 +165,14 @@ void ZoomableImage::setMat(cv::Mat mat)
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
 	emit updateConversionResult(result.first,mat);
+	//QTReference:
+	//void QGraphicsScene::clear() [slot]
+	//Removes and deletes all items from the scene, but
+	//otherwise leaves the state of the scene unchanged.
+	//=>pixmap+values are deleted
 	scene_->clear();
 	pixmap_ = scene_->addPixmap(result.second);
+	values_.clear();
 
 	drawValues();
 	TRACEPOINT;
