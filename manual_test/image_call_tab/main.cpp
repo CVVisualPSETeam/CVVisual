@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include <QWidget>
+#include <QApplication>
 
 #include "../../src/gui/image_call_tab.hpp"
 #include "../../src/impl/single_image_call.hpp"
@@ -10,7 +11,7 @@
 
 #include <opencv2/core/core.hpp>
 
-int main(/*int argc, char *argv[]*/)
+int main(int argc, char *argv[])
 {
 
 	/* Create some data for the ImageCallTab: */
@@ -18,10 +19,10 @@ int main(/*int argc, char *argv[]*/)
 	cvv::impl::CallMetaData data{};
 	QString type{"test_type"};
 	cvv::impl::SingleImageCall call{mat, data, type, "some description", ""};
-	cvv::controller::ViewController vc{};
+	QApplication vc{argc, argv};
 
-	cvv::gui::ImageCallTab u{call, vc};
-	cvv::gui::ImageCallTab v{"TestITab", call, vc};
+	cvv::gui::ImageCallTab u{call};
+	cvv::gui::ImageCallTab v{"TestITab", call};
 	u.show();
 	v.show();
 	vc.exec();

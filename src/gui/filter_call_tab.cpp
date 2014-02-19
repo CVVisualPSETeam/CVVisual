@@ -124,7 +124,6 @@ void FilterCallTab::createGui()
 
 	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
-	//connect(comboBox_, SIGNAL(currentTextChanged(QString)), this, SLOT(currentIndexChanged(QString)));
 	connect(&signElementSelected_, SIGNAL(signal(QString)), this, SLOT(currentIndexChanged()));
 	TRACEPOINT;
 }
@@ -140,7 +139,6 @@ void FilterCallTab::setView()
 		filterView_->setVisible(true);
 	} else
 	{
-		//auto fct = registeredElements_.at(viewId);
 		std::vector<cv::Mat> images;
 		images.push_back(filterCall_->original());
 		images.push_back(filterCall_->result());

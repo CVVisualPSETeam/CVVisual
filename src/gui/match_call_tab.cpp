@@ -23,7 +23,12 @@ namespace gui {
 MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc): matchCall_{fc}
 {
 	TRACEPOINT;
-	MatchCallTab(matchCall_->description(), fc);
+	setName(matchCall_->description());
+	const QString scope{"default_views"};
+	const QString key{"default_match_view"};
+	qtutil::setDefaultSetting(scope, key, "LineMatchView");
+	matchViewId_ = qtutil::getSetting(scope, key);
+	createGui();
 	TRACEPOINT;
 }
 

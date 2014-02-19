@@ -30,19 +30,17 @@ public:
 	 * @brief Short constructor using name from Call and default view.
 	 * Initializes the ImageCallTab and names it after the associated FilterCall.
 	 * @param fc the SingleImageCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to.
 	 */
-	ImageCallTab(const cvv::impl::SingleImageCall& call, cvv::controller::ViewController& vc);
+	ImageCallTab(const cvv::impl::SingleImageCall& call);
 
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor..
 	 * @param tabName
 	 * @param fc the SingleImageCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to.
 	 * @attention might be deleted
 	 */
-	ImageCallTab(const QString& tabName, const cvv::impl::SingleImageCall& call, cvv::controller::ViewController& vc);
+	ImageCallTab(const QString& tabName, const cvv::impl::SingleImageCall& call);
 
 	/**
 	 * @brief get ID
@@ -76,7 +74,6 @@ private:
 	void setView();
 
 	util::Reference<const cvv::impl::SingleImageCall> imageCall_;
-	util::Reference<cvv::controller::ViewController> viewController_;
 	cvv::view::ImageView* imageView_;
 
 	QPushButton* helpButton_;

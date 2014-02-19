@@ -9,14 +9,15 @@
 #include "../view/image_view.hpp"
 #include "../controller/view_controller.hpp"
 #include "../impl/single_image_call.hpp"
+#include "../qtutil/util.hpp"
 
 #include "../dbg/dbg.hpp"
 
 namespace cvv {
 namespace gui {
 
-ImageCallTab::ImageCallTab(const cvv::impl::SingleImageCall& call, cvv::controller::ViewController& vc):
-	imageCall_{call}, viewController_{vc}
+ImageCallTab::ImageCallTab(const cvv::impl::SingleImageCall& call):
+	imageCall_{call}
 {
 	TRACEPOINT;
 	setName(imageCall_->description());
@@ -25,8 +26,8 @@ ImageCallTab::ImageCallTab(const cvv::impl::SingleImageCall& call, cvv::controll
 	TRACEPOINT;
 }
 
-ImageCallTab::ImageCallTab(const QString& tabName, const cvv::impl::SingleImageCall& call, cvv::controller::ViewController& vc):
-	imageCall_{call}, viewController_{vc}
+ImageCallTab::ImageCallTab(const QString& tabName, const cvv::impl::SingleImageCall& call):
+	imageCall_{call}
 {
 	TRACEPOINT;
 	setName(tabName);
@@ -38,7 +39,7 @@ ImageCallTab::ImageCallTab(const QString& tabName, const cvv::impl::SingleImageC
 void ImageCallTab::helpButtonClicked() const
 {
 	TRACEPOINT;
-	viewController_->openHelpBrowser("SingleImageView");
+	cvv::qtutil::openHelpBrowser("SingleImageView");
 	TRACEPOINT;
 }
 
