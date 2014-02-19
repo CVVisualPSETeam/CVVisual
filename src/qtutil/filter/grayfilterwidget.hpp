@@ -16,6 +16,8 @@
 
 #include "../filterfunctionwidget.hpp"
 #include "../../dbg/dbg.hpp"
+#include "../../util/observer_ptr.hpp"
+
 
 namespace cvv { namespace qtutil {
 
@@ -40,6 +42,14 @@ public:
 	 * @brief Constructor
 	 */
 	GrayFilterWidget(QWidget* parent = nullptr);
+
+	/**
+	 * @brief Destructor
+	 */
+	~GrayFilterWidget()
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Applys the filter to in and saves the result in out.
@@ -84,21 +94,16 @@ private:
 	/**
 	 * @brief The layout.
 	 */
-	QVBoxLayout* layout_;
+	util::ObserverPtr<QVBoxLayout> layout_;
 	/**
 	 * @brief The spinbox to select the number of channels.
 	 */
-	QSpinBox* channel_;
+	util::ObserverPtr<QSpinBox> channel_;
 	/**
 	 * @brief Spin boxes for the channels.
 	 */
-	std::vector<QDoubleSpinBox*> chanValues_;
+	std::vector<util::ObserverPtr<QDoubleSpinBox>> chanValues_;
 };
-
-/**
- * @brief Registers the gray filter. (name=Gray filter)
- */
-void registerGray();
 
 }}
 

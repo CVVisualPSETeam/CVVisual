@@ -27,13 +27,17 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat>& images,QWidget 
 
 		accor->insert("ImageInformation",
 			std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
+
 		zoomIm->setMat(image);
+
 		imageLayout->addWidget(zoomIm.release());
 	}
-	
-	layout->addWidget(accor.release());
+
 	imwid->setLayout(imageLayout.release());
+
+	layout->addWidget(accor.release());
 	layout->addWidget(imwid.release());
+
 	setLayout(layout.release());
 	TRACEPOINT;
 }

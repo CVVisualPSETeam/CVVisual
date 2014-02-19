@@ -53,7 +53,9 @@ public slots:
 
 protected slots:
 	void colorButtonClicked()
-		{colorDialog_->show();}
+		{TRACEPOINT;
+		 colorDialog_->show();
+		TRACEPOINT;}
 protected:
 	QPen pen_;
 	QColorDialog *colorDialog_;

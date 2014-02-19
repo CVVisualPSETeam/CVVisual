@@ -123,8 +123,9 @@ namespace cvv{ namespace qtutil{
 ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	QWidget{parent},
 	mat_{mat},
-	view_{new structures::GraphicsView{}},
-	scene_{new QGraphicsScene{this}},
+	pixmap_{nullptr},
+	view_{nullptr},
+	scene_{nullptr},
 	zoom_{1},
 	threshold_{60},
 	autoShowValues_{true},
@@ -134,7 +135,13 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 {
 	TRACEPOINT;
 	// qt5 doc : "The view does not take ownership of scene."
-	view_->setScene(scene_);
+	auto scene=util::make_unique<QGraphicsScene>(this);
+	scene_=*scene;
+
+	auto view=util::make_unique<structures::GraphicsView>();
+	view_=*view;
+	view_->setScene(scene.release());
+
 	QObject::connect((view_->horizontalScrollBar()),&QScrollBar::valueChanged,this,
 							&ZoomableImage::viewScrolled);
 	QObject::connect((view_->verticalScrollBar()),&QScrollBar::valueChanged,this,
@@ -145,10 +152,10 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	view_->horizontalScrollBar()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 	view_->verticalScrollBar()->setFocusPolicy(Qt::NoFocus);
 	view_->setFocusPolicy(Qt::NoFocus);
-	QHBoxLayout *layout=new QHBoxLayout{};
-	layout->addWidget(view_);
+	auto layout=util::make_unique<QHBoxLayout>();
+	layout->addWidget(view.release());
 	layout->setMargin(0);
-	setLayout(layout) ;
+	setLayout(layout.release()) ;
 	setMat(mat_);
 	//rightklick
 	setContextMenuPolicy(Qt::CustomContextMenu);
@@ -165,8 +172,14 @@ void ZoomableImage::setMat(cv::Mat mat)
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
 	emit updateConversionResult(result.first,mat);
+	//QTReference:
+	//void QGraphicsScene::clear() [slot]
+	//Removes and deletes all items from the scene, but
+	//otherwise leaves the state of the scene unchanged.
+	//=>pixmap+values are deleted
 	scene_->clear();
-	pixmap_ = scene_->addPixmap(result.second);
+	pixmap_ = *(scene_->addPixmap(result.second));
+	values_.clear();
 
 	drawValues();
 	TRACEPOINT;
@@ -180,9 +193,9 @@ void ZoomableImage::setZoom(qreal factor)
 		TRACEPOINT;
 		return;
 	}
-	qreal newscale=factor/zoom_;
+	qreal nscale=factor/zoom_;
 	zoom_=factor;
-	view_->scale(newscale,newscale);
+	view_->scale(nscale,nscale);
 	emit updateArea(visibleArea(),zoom_);
 	TRACEPOINT;
 }
@@ -194,10 +207,11 @@ void ZoomableImage::drawValues()
 	for(auto& elem:values_)
 	{
 		scene_->removeItem(elem);
+		//QGraphicsItem has no delete later
 		delete elem;
 	}
 	values_.clear();
-	//draw new values?
+	//draw values?
 	if(!(autoShowValues_&&(zoom_>=threshold_)))
 	{
 		TRACEPOINT;

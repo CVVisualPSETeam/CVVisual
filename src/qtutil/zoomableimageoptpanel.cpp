@@ -7,39 +7,43 @@
 
 namespace cvv{ namespace qtutil {
 
-ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage& zoomIm,QWidget *parent):QWidget{parent}
+ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage& zoomIm, QWidget *parent):QWidget{parent}
 {
 	TRACEPOINT;
 	auto basicLayout 	= cvv::util::make_unique<QVBoxLayout>();
 
 	auto zoomSpin		= cvv::util::make_unique<QDoubleSpinBox>();
-	auto labelConvert 	= cvv::util::make_unique<QLabel>();
+	auto labelConvert	= cvv::util::make_unique<QLabel>();
 	auto labelDim 		= cvv::util::make_unique<QLabel>();
 	auto labelType 		= cvv::util::make_unique<QLabel>();
-	auto labelChannel 	= cvv::util::make_unique<QLabel>();
+	auto labelChannel	= cvv::util::make_unique<QLabel>();
 	auto labelSize 		= cvv::util::make_unique<QLabel>();
 	auto labelDepth		= cvv::util::make_unique<QLabel>();
-	auto buttonFullImage 	= cvv::util::make_unique<QPushButton>("show full Image");
+	auto buttonFullImage	= cvv::util::make_unique<QPushButton>("show full Image");
 
+	//ConversionResult+ update mat
 	connect(&zoomIm,SIGNAL(updateConversionResult(ImageConversionResult,const cv::Mat&)),
 		this,SLOT(updateConvertStatus(ImageConversionResult,const cv::Mat&)));
 
+	//getzoom from image
 	connect(&zoomIm,SIGNAL(updateArea(QRectF,qreal)),this,SLOT(setZoom(QRectF,qreal)));
-	
+
+	//set zoom to image
 	connect(zoomSpin.get(),SIGNAL(valueChanged(double)),&zoomIm,SLOT(setZoom(qreal)));
 
+	//fullimage
 	connect(buttonFullImage.get(),SIGNAL(clicked()),&zoomIm,SLOT(showFullImage()));
 
 	zoomSpin->setMinimum(0.0);
 	zoomSpin->setMaximum(2000.0);
 
-	zoomSpin_		= zoomSpin.get();
-	labelConvert_ 		= labelConvert.get();
-	labelDim_		= labelDim.get();
-	labelType_		= labelType.get();
-	labelChannel_		= labelChannel.get();
-	labelSize_		= labelSize.get();
-	labelDepth_		= labelDepth.get();	
+	zoomSpin_	= zoomSpin.get();
+	labelConvert_ 	= labelConvert.get();
+	labelDim_	= labelDim.get();
+	labelType_	= labelType.get();
+	labelChannel_	= labelChannel.get();
+	labelSize_	= labelSize.get();
+	labelDepth_	= labelDepth.get();
 
 	basicLayout->addWidget(zoomSpin.release());
 	basicLayout->addWidget(labelConvert.release());
@@ -61,7 +65,7 @@ void ZoomableOptPanel::updateConvertStatus(ImageConversionResult result,const cv
 	QString qs{"Convert Status: "};
 	switch(result)
 	{
-		case ImageConversionResult::SUCCESS : 
+		case ImageConversionResult::SUCCESS :
 			labelConvert_->setText(qs.append("SUCCES"));
 			break;
 		case ImageConversionResult::MAT_EMPTY:
@@ -82,7 +86,7 @@ void ZoomableOptPanel::updateConvertStatus(ImageConversionResult result,const cv
 		case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:
 			labelConvert_->setText(qs.append("Unsupported Depth "));
 			break;
-		default : 
+		default :
 			labelConvert_->setText(qs.append("Unknown result from convert status"));
 			break;
 	}

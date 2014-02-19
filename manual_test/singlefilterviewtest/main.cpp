@@ -5,8 +5,7 @@
 
 #include "../../src/view/singlefilterview.hpp"
 
-#include "../../src/qtutil/filter/sobelfilterwidget.hpp"
-#include "../../src/qtutil/filterselectorwidget.hpp"
+#include "../../src/impl/init.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -14,7 +13,7 @@ int main(int argc, char *argv[])
 
 	QApplication a(argc, argv);
 	//TODO Filter<1,1> einfügen
-	cvv::qtutil::registerSobel();
+	cvv::impl::initializeFilterAndViews();
 
 	std::vector<cv::Mat> imagelist;
 

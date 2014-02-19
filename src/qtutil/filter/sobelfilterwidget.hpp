@@ -4,8 +4,11 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QLabel>
+#include <QCheckBox>
 
+#include "../../util/observer_ptr.hpp"
 #include"../filterfunctionwidget.hpp"
+#include "grayfilterwidget.hpp"
 
 namespace cvv { namespace qtutil{
 /**
@@ -51,40 +54,34 @@ public:
 	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
 	 *		QString = message for the user (e.g. why the filter can't be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(InputArray) const override;
+	virtual std::pair<bool, QString> checkInput(InputArray in) const override;
 private:
 	/**
 	 * @brief Selection for parameter dx.
 	 */
-	QSpinBox* dx_;
+	util::ObserverPtr<QSpinBox> dx_;
 	/**
 	 * @brief Selection for parameter dy.
 	 */
-	QSpinBox* dy_;
+	util::ObserverPtr<QSpinBox> dy_;
 	/**
 	 * @brief Selection for parameter ksize.
 	 */
-	QComboBox* ksize_;
-	/*
-	 * @brief Selection for parameter scale.
-	 */
-	//QDoubleSpinBox* scale_;
-	/*
-	 * @brief Selection for parameter delta.
-	 */
-	//QDoubleSpinBox* delta_;
+	util::ObserverPtr<QComboBox> ksize_;
 	/**
 	 * @brief Selection for parameter borderType.
 	 */
-	QComboBox* borderType_;
+	util::ObserverPtr<QComboBox> borderType_;
 	/**
-	 * @brief Errormessage
+	 * @brief Wheather a gray filter should be applied first.
 	 */
-	QLabel* label_;
+	util::ObserverPtr<QCheckBox> gray_;
+
+	/**
+	 * @brief a gray filter.
+	 */
+	util::ObserverPtr<GrayFilterWidget> grayFilter_;
 };
-
-void registerSobel();
-
 
 }}
 

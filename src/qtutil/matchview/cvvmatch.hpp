@@ -30,7 +30,8 @@ public:
 	* @param matchValue the match distance
 	* @param parent the parent Widget
 	*/
-	CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint *right_key,const float& matchValue,const QPen& pen= QPen{Qt::red},QGraphicsItem *parent=nullptr);
+	CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint *right_key,const float& matchValue,
+		 const QPen& pen= QPen{Qt::red},QGraphicsItem *parent=nullptr);
 
 
 	/**
@@ -42,7 +43,7 @@ public:
 	/**
 	 * @brief the paint function
 	 */
-	virtual void paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget);
+	virtual void paint(QPainter *painter,const QStyleOptionGraphicsItem *,QWidget *);
 
 	/**
 	 * @brief returns the left keypoint.

@@ -6,7 +6,8 @@
 
 namespace cvv{namespace qtutil{
 
-SingleColorKeyPen::SingleColorKeyPen(QWidget * parent):KeyPointPen{parent},colordia_{new QColorDialog{}}
+SingleColorKeyPen::SingleColorKeyPen(QWidget * parent):KeyPointPen{parent},
+	colordia_{new QColorDialog{}}
 {
 	TRACEPOINT;
 	auto layout=util::make_unique<QVBoxLayout>();

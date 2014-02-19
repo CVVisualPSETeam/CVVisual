@@ -4,10 +4,16 @@ namespace cvv{ namespace qtutil{
 
 Collapsable::Collapsable(const QString& title, std::unique_ptr<QWidget> widget, bool isCollapsed,
 	QWidget *parent):
-		QWidget{parent}, widget_{widget.get()}, layout_{new QVBoxLayout{}}
+		QFrame{parent}, widget_{widget.get()}, layout_{nullptr}
 {
 	TRACEPOINT;
+	auto lay=util::make_unique<QVBoxLayout>();
+	layout_=*lay;
+	//set alignment+border
+	setLineWidth(1);
+	setFrameStyle(QFrame::Box);
 	layout_->setAlignment(Qt::AlignTop);
+	layout_->setSpacing (0);
 
 	//build header
 	auto tmpButton = util::make_unique<QPushButton>();
@@ -17,7 +23,7 @@ Collapsable::Collapsable(const QString& title, std::unique_ptr<QWidget> widget, 
 	button_->setCheckable(true);
 
 	//build widget
-	setLayout(layout_);
+	setLayout(lay.release());
 	layout_->addWidget(tmpButton.release());
 	layout_->addWidget(widget.release());
 

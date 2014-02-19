@@ -21,15 +21,18 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		QWidget *parent):
 	MatchView{parent}
 {
+	TRACEPOINT;
+
 	auto layout	= util::make_unique<QHBoxLayout>();
 	auto accor	= util::make_unique< qtutil::Accordion>();
 	auto matchscene	= util::make_unique<qtutil::MatchScene>(leftIm,rightIm);
 	auto matchpen	= util::make_unique<qtutil::SingleColorPen>();
 	auto keypen	= util::make_unique<qtutil::SingleColorKeyPen>();
 
-	qtutil::MatchScene * matchscene_ptr		= matchscene.get();
-	qtutil::SingleColorPen* matchpen_ptr		= matchpen.get();
-	qtutil::SingleColorKeyPen* keypen_ptr		= keypen.get();
+	qtutil::MatchScene * matchscene_ptr	= matchscene.get();
+	qtutil::SingleColorPen* matchpen_ptr	= matchpen.get();
+	qtutil::SingleColorKeyPen* keypen_ptr	= keypen.get();
+
 	accor->setMinimumWidth(250);
 	accor->setMaximumWidth(250);
 
@@ -38,30 +41,45 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 
 	accor->insert("Match Color",std::move(matchpen));
 	accor->insert("KeyPoint Color",std::move(keypen));
+	accor->insert("Left Image ",std::move(matchscene_ptr->getLeftMatInfoWidget()));
+	accor->insert("Right Image ",std::move(matchscene_ptr->getRightMatInfoWidget()));
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
+
 	setLayout(layout.release());
 
 	for(auto& keypoint:leftKeyPoints)
 	{
 		auto key = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
-		connect(keypen_ptr,SIGNAL(settingsChanged(const KeyPointPen&)),key.get(),SLOT(updatePen(const KeyPointPen&)));
+		connect(keypen_ptr,SIGNAL(settingsChanged(const KeyPointPen&)),
+			key.get(),SLOT(updatePen(const KeyPointPen&)));
+
 		leftKeys.push_back(key.get());
 		matchscene_ptr->addLeftKeypoint(key.release());
 	}
+
 	for(auto& keypoint:rightKeyPoints)
 	{
 		auto key = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
-		connect(keypen_ptr,SIGNAL(settingsChanged(const KeyPointPen&)),key.get(),SLOT(updatePen(const KeyPointPen&)));
+		connect(keypen_ptr,SIGNAL(settingsChanged(const KeyPointPen&)),
+			key.get(),SLOT(updatePen(const KeyPointPen&)));
+
 		matchscene_ptr->addRightKeyPoint(key.get());
 		rightKeys.push_back(key.release());
 	}
+
 	for(auto& match:matches)
 	{
-		auto cvmatch = util::make_unique<qtutil::CVVMatch>(leftKeys.at(match.queryIdx),rightKeys.at(match.trainIdx),match.distance);
-		connect(matchpen_ptr,SIGNAL(settingsChanged(const MatchPen&)),cvmatch.get(),SLOT(updatePen(const MatchPen&)));
+		auto cvmatch = util::make_unique<qtutil::CVVMatch>(leftKeys.at(match.queryIdx),
+					rightKeys.at(match.trainIdx),match.distance);
+
+		connect(matchpen_ptr,SIGNAL(settingsChanged(const MatchPen&)),
+			cvmatch.get(),SLOT(updatePen(const MatchPen&)));
+
 		matchscene_ptr->addMatch(cvmatch.release());
 	}
+
+	TRACEPOINT;
 }
 }}

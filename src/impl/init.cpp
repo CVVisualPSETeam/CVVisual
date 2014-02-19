@@ -3,6 +3,7 @@
 #include "../dbg/dbg.hpp"
 
 //filters
+#include "../qtutil/filterselectorwidget.hpp"
 #include "../qtutil/filter/grayfilterwidget.hpp"
 #include "../qtutil/filter/sobelfilterwidget.hpp"
 
@@ -14,9 +15,9 @@ namespace cvv {namespace impl {
 void initializeFilterAndViews()
 {
 	TRACEPOINT;
-	qtutil::registerGray();
+	qtutil::registerFilter<1,1,qtutil::GrayFilterWidget>("Gray filter");
 	TRACEPOINT;
-	qtutil::registerSobel();
+	qtutil::registerFilter<1,1,qtutil::SobelFilterWidget>("Sobel");
 	TRACEPOINT;
 
 //	beispiel für einen filter call tab

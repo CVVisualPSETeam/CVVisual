@@ -35,7 +35,7 @@ QRectF CVVMatch::boundingRect() const
 			std::max(leftImPointInScene().ry(),rightImPointInScene().ry())}};
 }
 
-void CVVMatch::paint(QPainter *painter,const QStyleOptionGraphicsItem*,QWidget *)
+void CVVMatch::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget *)
 {
 	TRACEPOINT;
 	painter->setPen(pen_);

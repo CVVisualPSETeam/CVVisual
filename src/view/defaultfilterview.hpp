@@ -24,6 +24,7 @@ public:
 	 */
 	DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
 
-};	
+	~DefaultFilterView(){TRACEPOINT;}
+};
 }}//namespaces
 #endif

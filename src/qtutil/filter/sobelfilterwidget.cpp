@@ -15,13 +15,26 @@ namespace cvv { namespace qtutil{
 
 SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 	FilterFunctionWidget<1,1>{parent},
-	dx_{new QSpinBox{}},
-	dy_{new QSpinBox{}},
-	ksize_{new QComboBox{}},
-	borderType_{new QComboBox{}},
-	label_{new QLabel{}}
+	dx_{nullptr},
+	dy_{nullptr},
+	ksize_{nullptr},
+	borderType_{nullptr},
+	gray_{nullptr},
+	grayFilter_{nullptr}
 {
 	TRACEPOINT;
+	auto dx = util::make_unique<QSpinBox>();
+	dx_=*dx;
+	auto dy = util::make_unique<QSpinBox>();
+	dy_=*dy;
+	auto ksize = util::make_unique<QComboBox>();
+	ksize_=*ksize;
+	auto borderType = util::make_unique<QComboBox>();
+	borderType_=*borderType;
+	auto gray = util::make_unique<QCheckBox>("Apply gray filter");
+	gray_=*gray;
+	auto grayFilter = util::make_unique<GrayFilterWidget>();
+	grayFilter_=*grayFilter;
 	//set up elements
 	dx_->setRange(0,6);
 	dy_->setRange(0,6);
@@ -40,27 +53,40 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 	TRACEPOINT;
 
 	//connect
-	QObject::connect(dx_,SIGNAL(valueChanged(int)),
+	QObject::connect(dx_.getPtr(),SIGNAL(valueChanged(int)),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(dy_,SIGNAL(valueChanged(int)),
+	QObject::connect(dy_.getPtr(),SIGNAL(valueChanged(int)),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(ksize_,SIGNAL(currentIndexChanged(int)),
+	QObject::connect(ksize_.getPtr(),SIGNAL(currentIndexChanged(int)),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(borderType_,SIGNAL(currentIndexChanged(int)),
+	QObject::connect(borderType_.getPtr(),SIGNAL(currentIndexChanged(int)),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
 	TRACEPOINT;
 
+	//subfilter gray
+	QObject::connect(gray_.getPtr(),SIGNAL(clicked(bool)),grayFilter_.getPtr(),
+								SLOT(setVisible(bool)));
+	gray_->setChecked(false);
+	grayFilter_->setVisible(false);
+	QObject::connect(gray_.getPtr(),SIGNAL(clicked()),
+			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+	QObject::connect(&(grayFilter_.getPtr()->signFilterSettingsChanged_),SIGNAL(signal()),
+			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+	TRACEPOINT;
+
+
 	//build ui
 	auto lay=util::make_unique<QVBoxLayout>();
+	lay->addWidget(gray.release());
+	lay->addWidget(grayFilter.release());
 	lay->addWidget(util::make_unique<QLabel>("dx").release());
-	lay->addWidget(dx_);
+	lay->addWidget(dx.release());
 	lay->addWidget(util::make_unique<QLabel>("dy").release());
-	lay->addWidget(dy_);
+	lay->addWidget(dy.release());
 	lay->addWidget(util::make_unique<QLabel>("ksize").release());
-	lay->addWidget(ksize_);
+	lay->addWidget(ksize.release());
 	lay->addWidget(util::make_unique<QLabel>("borderType").release());
-	lay->addWidget(borderType_);
-	lay->addWidget(label_);
+	lay->addWidget(borderType.release());
 	setLayout(lay.release());
 	TRACEPOINT;
 	//emit first update
@@ -92,29 +118,60 @@ void SobelFilterWidget::applyFilter(InputArray in,OutputArray out) const
 	}
 
 	TRACEPOINT;
-	const cv::Mat& iar=in.at(0).get();
-	cv::Mat& oar=out.at(0).get();
 	int dx=dx_->value();
 	int dy=dy_->value();
 
-	DEBUGF("\n%s    %s    %s    %s\n",dx,dy,ksize,borderType);
-
-	TRACEPOINT;
-	try
+	if(gray_->isChecked())
 	{
-		Sobel(iar,oar,-1,dx,dy,ksize,1,0,borderType);
-		label_->setText("");
 		TRACEPOINT;
-	}catch(...)
-	{
-		label_->setText("The filter had an error.");
+		grayFilter_->applyFilter(in,out);
+		TRACEPOINT;
+		Sobel(out.at(0).get(),out.at(0).get(),-1,dx,dy,ksize,1,0,borderType);
+	}else{
+		TRACEPOINT;
+		const cv::Mat& iar=in.at(0).get();
+		cv::Mat& oar=out.at(0).get();
+		TRACEPOINT;
+		Sobel(iar,oar,-1,dx,dy,ksize,1,0,borderType);
 		TRACEPOINT;
 	}
 	TRACEPOINT;
 }
 
-std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray) const
+std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray in) const
 {
+	TRACEPOINT;
+	//check depth in CV_8U,CV_16U,CV_16S,CV_32F,CV_64F
+	switch(in.at(0).get().depth())
+	{
+	case CV_8U:
+	case CV_16U:
+	case CV_16S:
+	case CV_32F:
+	case CV_64F: break;
+	default:
+		TRACEPOINT;
+		return {false,QString("unsupported depth: ")+
+					QString::number(in.at(0).get().depth())};
+	}
+
+	TRACEPOINT;
+	//check subfilter
+	if(gray_->isChecked()) //gray filter => channels will be 1
+	{
+		TRACEPOINT;
+		auto resultGray=grayFilter_->checkInput(in);
+		if(!resultGray.first)
+		{
+			TRACEPOINT;
+			return resultGray;
+		}
+	}else if((in.at(0).get().channels()>4))//no gray filter
+	{
+		TRACEPOINT;
+		return {false,"channels>4 (use gray filter)"};
+	}
+
 	TRACEPOINT;
 	int dx=dx_->value();
 	int dy=dy_->value();
@@ -155,13 +212,6 @@ std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray) const
 
 	TRACEPOINT;
 	return {true,""};
-}
-
- void registerSobel()
-{
-	TRACEPOINT;
-	FilterSelectorWidget<1,1>::registerFilter<SobelFilterWidget>("sobel");
-	TRACEPOINT;
 }
 
 }}
