@@ -21,28 +21,31 @@
 namespace cvv {
 namespace gui {
 
-FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc): filterCall_{fc}
+FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& filterCall): filterCall_{filterCall}
 {
 	TRACEPOINT;
-	FilterCallTab(filterCall_->description(), fc);
-	TRACEPOINT;
-}
-
-FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc):
-	filterCall_{fc}
-{
-	TRACEPOINT;
-	setName(tabName);
+	setName(filterCall_->description());
 	const QString scope{"default_views"};
 	const QString key{"default_filter_view"};
-	qtutil::setDefaultSetting(scope, key, "DefaultFilterView"); 
 	filterViewId_ = qtutil::getSetting(scope, key);
 	createGui();
 	TRACEPOINT;
 }
 
-FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const QString& viewId):
-	filterCall_{fc}
+FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCall):
+	filterCall_{filterCall}
+{
+	TRACEPOINT;
+	setName(tabName);
+	const QString scope{"default_views"};
+	const QString key{"default_filter_view"};
+	filterViewId_ = qtutil::getSetting(scope, key);
+	createGui();
+	TRACEPOINT;
+}
+
+FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCall, const QString& viewId):
+	filterCall_{filterCall}
 {
 	TRACEPOINT;
 	setName(tabName);
@@ -51,13 +54,12 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	TRACEPOINT;
 }
 
-void FilterCallTab::currentIndexChanged(const QString& text)
+void FilterCallTab::currentIndexChanged()
 {
 	TRACEPOINT;
-	filterViewId_ = text;
 	vlayout_->removeWidget(filterView_);
 	filterView_->setVisible(false);
-	setView(filterViewId_);
+	setView();
 	TRACEPOINT;
 }
 
@@ -92,17 +94,23 @@ void FilterCallTab::addFilterViewToMap(const QString& filterViewId,
 void FilterCallTab::createGui()
 {
 	TRACEPOINT;
-	comboBox_->setCurrentText(filterViewId_);
+	if(!select(filterViewId_))
+	{
+		select("DefaultFilterView");
+		filterViewId_ = selection();
+		setAsDefaultButtonClicked();	// Set DefaultFilterView as default.
+		/* If filterViewId_ does not name a valid View, it will be attempted to set DefaultFilterView.
+		 * If that was not registered either, the current selection of the ComboBox will be used automatically.
+		 * Whichever was chosen will be set as the new default. */
+	}
 	hlayout_ = new QHBoxLayout{this};
 	hlayout_->setAlignment(Qt::AlignTop);
 	hlayout_->addWidget(new QLabel{"View:"});
 	hlayout_->addWidget(comboBox_);
 	setAsDefaultButton_ = new QPushButton{"Set as default", this};
 	hlayout_->addWidget(setAsDefaultButton_);
-	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
 	helpButton_ = new QPushButton{"Help", this};
 	hlayout_->addWidget(helpButton_);
-	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
 
 	upperBar_ = new QWidget{this};
 	upperBar_->setLayout(hlayout_);
@@ -110,36 +118,36 @@ void FilterCallTab::createGui()
 	vlayout_ = new QVBoxLayout{this};
 
 	vlayout_->addWidget(upperBar_);
-	setView(filterViewId_);
+	setView();
 
 	setLayout(vlayout_);
-	connect(comboBox_, SIGNAL(currentTextChanged(QString)), this, SLOT(currentIndexChanged(QString)));
+
+	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
+	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
+	//connect(comboBox_, SIGNAL(currentTextChanged(QString)), this, SLOT(currentIndexChanged(QString)));
+	connect(&signElementSelected_, SIGNAL(signal(QString)), this, SLOT(currentIndexChanged()));
 	TRACEPOINT;
 }
 
-void FilterCallTab::setView(const QString &viewId)
+void FilterCallTab::setView()
 {
 	TRACEPOINT;
-	if (viewHistory_.count(viewId))
+	filterViewId_ = selection();
+	if (viewHistory_.count(selection()))
 	{
-		filterView_ = viewHistory_.at(viewId);
+		filterView_ = viewHistory_.at(selection());
 		vlayout_->addWidget(filterView_);
 		filterView_->setVisible(true);
-		return;
-	} 
-	if (registeredElements_.count(viewId) > 0)
+	} else
 	{
-		auto fct = registeredElements_.at(viewId);
+		//auto fct = registeredElements_.at(viewId);
 		std::vector<cv::Mat> images;
-		images. push_back(filterCall_->original());
+		images.push_back(filterCall_->original());
 		images.push_back(filterCall_->result());
-		viewHistory_.emplace(viewId, (fct(images, this).release()));
-		filterView_ = viewHistory_.at(viewId);
+		viewHistory_.emplace(selection(), ((*this)()(images, this).release()));
+		filterView_ = viewHistory_.at(selection());
 		vlayout_->addWidget(filterView_);
-		return;
 	}
-	
-	vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
 	TRACEPOINT;
 }
 
