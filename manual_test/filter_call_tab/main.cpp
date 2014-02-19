@@ -23,20 +23,20 @@ int main(/*int argc, char *argv[]*/)
 	cv::Mat out{100,100,CV_8U};
 	cvv::impl::CallMetaData data{};
 	QString type{"test_type"};
+	cvv::controller::ViewController controller;
 	cvv::impl::FilterCall fc{in, out, data, type, "some description", ""};
-	cvv::controller::ViewController vc{};
 
 	cvv::gui::FilterCallTab::addFilterViewToMap("DefaultFilterView",
 		[] (const std::vector<cv::Mat>& images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DefaultFilterView>(images, parent); });
 	cvv::gui::FilterCallTab::addFilterViewToMap("DualFilterView",
 		[] (const std::vector<cv::Mat>& images, QWidget* parent) { return cvv::util::make_unique<cvv::view::DualFilterView>(images, parent); });
 
-	cvv::gui::FilterCallTab u{fc, vc};
-	cvv::gui::FilterCallTab v{"TestFTab", fc, vc};
-	cvv::gui::FilterCallTab w{"TestFTab", fc, vc, "DualFilterView"};
+	cvv::gui::FilterCallTab u{fc};
+	cvv::gui::FilterCallTab v{"TestFTab", fc};
+	cvv::gui::FilterCallTab w{"TestFTab", fc, "DualFilterView"};
 	u.show();
 	v.show();
 	w.show();
-	vc.exec();
+	controller.exec();
 	return 0;
 }

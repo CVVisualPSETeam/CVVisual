@@ -14,7 +14,6 @@
 
 #include "call_tab.hpp"
 #include "../view/match_view.hpp"
-#include "../controller/view_controller.hpp"
 #include "../impl/match_call.hpp"
 #include "../util/util.hpp"
 #include "../qtutil/registerhelper.hpp"
@@ -22,7 +21,7 @@
 namespace cvv {
 namespace gui {
 
-/** Match Call Tab
+/**
  * @brief Inner part of a tab, contains a MatchView.
  * The inner part of a tab or window
  * containing a MatchView.
@@ -34,7 +33,7 @@ class MatchCallTab:
 							const cv::Mat&, const std::vector<cv::KeyPoint>&,
 							const std::vector<cv::DMatch>&, QWidget*>
 {
-Q_OBJECT
+	Q_OBJECT
 
 public:
 	
@@ -47,30 +46,25 @@ public:
 	 * @brief Short constructor using name from Call and default view.
 	 * Initializes the MatchCallTab with the default view and names it after the associated MatchCall.
 	 * @param fc the MatchCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to.
 	 */
-	MatchCallTab(const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc);
+	MatchCallTab(const cvv::impl::MatchCall& fc);
 
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor which initialises the Call Tab with default view from settings.
 	 * @param tabName
 	 * @param fc the MatchCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to.
-	 * @attention might be deleted
 	 */
-	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc);
+	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc);
 
 	/**
 	 * @brief Constructor with specific view.
 	 * Constructor initialising the Call Tab.
 	 * @param tabName
 	 * @param fc the MatchCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to
 	 * @param viewId the ID of the view to be shown inside this CallTab.
-	 * @attention might be deleted
 	 */
-	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc, const QString& viewId);
+	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const QString& viewId);
 
 	/**
 	 * @brief get ID
@@ -119,12 +113,10 @@ private:
 	/**
 	 * @brief sets up View referred to by viewId
 	 * @param viewId ID of the view to be set.
-	 * @throw std::out_of_range if no view named viewId was registered.
 	 */
 	void setView(const QString& viewId);
 
 	util::Reference<const cvv::impl::MatchCall> matchCall_;
-	util::Reference<cvv::controller::ViewController> viewController_;
 	QString matchViewId_;
 	cvv::view::MatchView* matchView_;
 	std::map<QString, cvv::view::MatchView*> viewHistory_;

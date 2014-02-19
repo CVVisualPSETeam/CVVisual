@@ -14,56 +14,34 @@
 #include "../view/match_view.hpp"
 #include "../controller/view_controller.hpp"
 #include "../impl/match_call.hpp"
-
 #include "../dbg/dbg.hpp"
+#include "../qtutil/util.hpp"
 
 namespace cvv {
 namespace gui {
 
-MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc):
-	matchCall_{fc}, viewController_{vc}
+MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& fc): matchCall_{fc}
 {
 	TRACEPOINT;
-	setName(matchCall_->description());
-	const QString scope{"default_views"};
-	const QString key{"default_match_view"};
-	QString setting;
-	try
-	{
-		setting = vc.getSetting(scope, key);
-	} catch (std::invalid_argument)
-	{
-		setting = "LineMatchView";
-	}
-	matchViewId_ = setting;
-
-	createGui();
+	MatchCallTab(matchCall_->description(), fc);
 	TRACEPOINT;
 }
 
-MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc):
-	matchCall_{fc}, viewController_{vc}
+MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc):
+	matchCall_{fc}
 {
 	TRACEPOINT;
 	setName(tabName);
 	const QString scope{"default_views"};
 	const QString key{"default_match_view"};
-	QString setting;
-	try
-	{
-		setting = vc.getSetting(scope, key);
-	} catch (std::invalid_argument)
-	{
-		setting = "LineMatchView";
-	}
-	matchViewId_ = setting;
-
+	qtutil::setDefaultSetting(scope, key, "LineMatchView"); 
+	matchViewId_ = qtutil::getSetting(scope, key);
 	createGui();
 	TRACEPOINT;
 }
 
-MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, cvv::controller::ViewController& vc, const QString& viewId):
-	matchCall_{fc}, viewController_{vc}
+MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const QString& viewId):
+	matchCall_{fc}
 {
 	TRACEPOINT;
 	setName(tabName);
@@ -86,17 +64,14 @@ void MatchCallTab::currentIndexChanged(const QString& text)
 void MatchCallTab::helpButtonClicked() const
 {
 	TRACEPOINT;
-	viewController_->openHelpBrowser(matchViewId_);
+	qtutil::openHelpBrowser(matchViewId_);
 	TRACEPOINT;
 }
 
 void MatchCallTab::setAsDefaultButtonClicked()
 {
 	TRACEPOINT;
-	const QString scope{"default_views"};
-	const QString key{"default_match_view"};
-	const QString value{matchViewId_};
-	viewController_->setDefaultSetting(scope, key, value);
+	qtutil::setDefaultSetting("default_views", "default_match_view", matchViewId_);
 	TRACEPOINT;
 }
 
@@ -147,26 +122,23 @@ void MatchCallTab::createGui()
 void MatchCallTab::setView(const QString &viewId)
 {
 	TRACEPOINT;
-	try
+	if (viewHistory_.count(viewId) > 0)
 	{
 		matchView_ = viewHistory_.at(viewId);
 		vlayout_->addWidget(matchView_);
 		matchView_->setVisible(true);
-	} catch (std::out_of_range&)
-	{
-		try
-		{
-			auto fct = registeredElements_.at(viewId);
-			viewHistory_.emplace(viewId, (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(),
-							  matchCall_->keyPoints2(), matchCall_->matches(), this).release()));
-			matchView_ = viewHistory_.at(viewId);
-			vlayout_->addWidget(matchView_);
-		} catch (std::out_of_range&)
-		{
-			vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
-			throw;
-		}
+		return;
 	}
+	if (registeredElements_.count(viewId) > 0)
+	{
+		auto fct = registeredElements_.at(viewId);
+		viewHistory_.emplace(viewId, (fct(matchCall_->img1(), matchCall_->keyPoints1(), matchCall_->img2(),
+						  matchCall_->keyPoints2(), matchCall_->matches(), this).release()));
+		matchView_ = viewHistory_.at(viewId);
+		vlayout_->addWidget(matchView_);
+		return;
+	}
+	vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
 	TRACEPOINT;
 
 }

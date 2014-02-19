@@ -14,61 +14,39 @@
 #include "../view/filter_view.hpp"
 #include "../controller/view_controller.hpp"
 #include "../impl/filter_call.hpp"
+#include "../qtutil/util.hpp"
 
 #include "../dbg/dbg.hpp"
 
 namespace cvv {
 namespace gui {
 
-FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc):
-	filterCall_{fc}, viewController_{vc}
+FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& fc): filterCall_{fc}
 {
 	TRACEPOINT;
-	setName(filterCall_->description());
-	const QString scope{"default_views"};
-	const QString key{"default_filter_view"};
-	QString setting;
-	try
-	{
-		setting = vc.getSetting(scope, key);
-	} catch (std::invalid_argument)
-	{
-		setting = "DefaultFilterView";
-	}
-	filterViewId_ = setting;
-
-	createGui();
+	FilterCallTab(filterCall_->description(), fc);
 	TRACEPOINT;
 }
 
-FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc):
-	filterCall_{fc}, viewController_{vc}
+FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc):
+	filterCall_{fc}
 {
 	TRACEPOINT;
 	setName(tabName);
 	const QString scope{"default_views"};
 	const QString key{"default_filter_view"};
-	QString setting;
-	try
-	{
-		setting = vc.getSetting(scope, key);
-	} catch (std::invalid_argument&)
-	{
-		setting = "DefaultFilterView";
-	}
-	filterViewId_ = setting;
-
+	qtutil::setDefaultSetting(scope, key, "DefaultFilterView"); 
+	filterViewId_ = qtutil::getSetting(scope, key);
 	createGui();
 	TRACEPOINT;
 }
 
-FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc, const QString& viewId):
-	filterCall_{fc}, viewController_{vc}
+FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, const QString& viewId):
+	filterCall_{fc}
 {
 	TRACEPOINT;
 	setName(tabName);
 	filterViewId_ = viewId;
-
 	createGui();
 	TRACEPOINT;
 }
@@ -86,17 +64,14 @@ void FilterCallTab::currentIndexChanged(const QString& text)
 void FilterCallTab::helpButtonClicked() const
 {
 	TRACEPOINT;
-	viewController_->openHelpBrowser(filterViewId_);
+	qtutil::openHelpBrowser(filterViewId_);
 	TRACEPOINT;
 }
 
 void FilterCallTab::setAsDefaultButtonClicked()
 {
 	TRACEPOINT;
-	const QString scope{"default_views"};
-	const QString key{"default_filter_view"};
-	const QString value{filterViewId_};
-	viewController_->setDefaultSetting(scope, key, value);
+	qtutil::setDefaultSetting("default_views", "default_filter_view", filterViewId_);
 	TRACEPOINT;
 }
 
@@ -145,28 +120,26 @@ void FilterCallTab::createGui()
 void FilterCallTab::setView(const QString &viewId)
 {
 	TRACEPOINT;
-	try
+	if (viewHistory_.count(viewId))
 	{
 		filterView_ = viewHistory_.at(viewId);
 		vlayout_->addWidget(filterView_);
 		filterView_->setVisible(true);
-	} catch (std::out_of_range&)
+		return;
+	} 
+	if (registeredElements_.count(viewId) > 0)
 	{
-		try
-		{
-			auto fct = registeredElements_.at(viewId);
-			std::vector<cv::Mat> images;
-			images. push_back(filterCall_->original());
-			images.push_back(filterCall_->result());
-			viewHistory_.emplace(viewId, (fct(images, this).release()));
-			filterView_ = viewHistory_.at(viewId);
-			vlayout_->addWidget(filterView_);
-		} catch (std::out_of_range&)
-		{
-			vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
-			throw;
-		}
+		auto fct = registeredElements_.at(viewId);
+		std::vector<cv::Mat> images;
+		images. push_back(filterCall_->original());
+		images.push_back(filterCall_->result());
+		viewHistory_.emplace(viewId, (fct(images, this).release()));
+		filterView_ = viewHistory_.at(viewId);
+		vlayout_->addWidget(filterView_);
+		return;
 	}
+	
+	vlayout_->addWidget(new QLabel{"Error: View could not be set up."});
 	TRACEPOINT;
 }
 
