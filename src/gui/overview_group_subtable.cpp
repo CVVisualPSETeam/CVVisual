@@ -130,7 +130,6 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	}
 	controller->removeEmptyWindows();
 	QMenu *menu = new QMenu(this);
-	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	TRACEPOINT;
 	auto windows = controller->getTabWindows();
 	menu->addAction(new QAction("Open in new window", this));
@@ -151,6 +150,8 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	int row = index.row();
 	TRACEPOINT;
 	QString idStr = qTable->item(row, 0)->text();
+	TRACEPOINT;
+	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	TRACEPOINT;
 	currentCustomMenuCallTabId = idStr.toInt();  
 	TRACEPOINT;
