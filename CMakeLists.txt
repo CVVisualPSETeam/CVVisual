@@ -107,6 +107,9 @@ if(CVV_BUILD_TESTS)
 		COMMAND UnitTests
 	)
 	
+	add_executable(test_manual_final_show_crash manual_test/final_show_crash/main.cpp)
+	target_link_libraries(test_manual_final_show_crash cvvisual opencv_highgui)
+	
 	add_executable(test_manual_filters manual_test/filters/main.cpp)
 	target_link_libraries(test_manual_filters cvvisual opencv_highgui)
 	
