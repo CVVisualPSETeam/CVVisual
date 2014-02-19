@@ -85,6 +85,11 @@ public:
 	}
 
 	/**
+	 * @brief Destructor
+	 */
+	~AutoFilterWidgetEntry(){TRACEPOINT;}
+
+	/**
 	 * @brief Checks wheather the check box is checked.
 	 */
 	operator bool()

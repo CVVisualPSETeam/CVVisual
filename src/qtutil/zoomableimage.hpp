@@ -32,6 +32,15 @@ public:
 	{
 		TRACEPOINT;
 	}
+
+	/**
+	 * @brief Destructor
+	 */
+	~GraphicsView()
+	{
+		TRACEPOINT;
+	}
+
 protected:
 	/**
 	 * @brief Ignores the wheel event if ctrl is pressed.
@@ -55,6 +64,14 @@ public:
 	 * @param parent The parent widget.
 	 */
 	ZoomableImage(const cv::Mat& mat=cv::Mat{}, QWidget* parent = nullptr);
+
+	/**
+	 * @brief Destructor
+	 */
+	~ZoomableImage()
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Returns the current image.
