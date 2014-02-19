@@ -163,7 +163,9 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
         getCurrentWindowOfTab(tabId)->removeTab(tabId);
         if (deleteIt)
         {
+            auto tab = callTabMap[tabId].release();
             callTabMap.erase(tabId);
+            tab->deleteLater();
         }
     }
     TRACEPOINT;
@@ -285,7 +287,9 @@ void ViewController::removeEmptyWindows()
 	}
 	for (auto windowId : remIds)
 	{
-	  windowMap.erase(windowId);
+		auto window = windowMap[windowId].release();
+		windowMap.erase(windowId);
+		window->deleteLater();
 	}
 	shouldRunRemoveEmptyWindows_ = false;
 	TRACEPOINT;
