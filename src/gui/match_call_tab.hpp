@@ -45,26 +45,26 @@ public:
 	/**
 	 * @brief Short constructor using name from Call and default view.
 	 * Initializes the MatchCallTab with the default view and names it after the associated MatchCall.
-	 * @param fc the MatchCall containing the information to be visualized.
+	 * @param matchCall the MatchCall containing the information to be visualized.
 	 */
-	MatchCallTab(const cvv::impl::MatchCall& fc);
+	MatchCallTab(const cvv::impl::MatchCall& matchCall);
 
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor which initialises the Call Tab with default view from settings.
 	 * @param tabName
-	 * @param fc the MatchCall containing the information to be visualized.
+	 * @param matchCall the MatchCall containing the information to be visualized.
 	 */
-	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc);
+	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& matchCall);
 
 	/**
 	 * @brief Constructor with specific view.
 	 * Constructor initialising the Call Tab.
 	 * @param tabName
-	 * @param fc the MatchCall containing the information to be visualized.
+	 * @param matchCall the MatchCall containing the information to be visualized.
 	 * @param viewId the ID of the view to be shown inside this CallTab.
 	 */
-	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& fc, const QString& viewId);
+	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& matchCall, const QString& viewId);
 
 	/**
 	 * @brief get ID
@@ -88,7 +88,7 @@ private slots:
 	 * Called when the index of the view selection changes.
 	 * @param text of the current selection in the view selection.
 	 */
-	void currentIndexChanged(const QString& text);
+	void currentIndexChanged();
 
 	/**
 	 * @brief Help Button clicked.
@@ -114,7 +114,7 @@ private:
 	 * @brief sets up View referred to by viewId
 	 * @param viewId ID of the view to be set.
 	 */
-	void setView(const QString& viewId);
+	void setView();
 
 	util::Reference<const cvv::impl::MatchCall> matchCall_;
 	QString matchViewId_;
