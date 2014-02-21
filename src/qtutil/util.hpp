@@ -94,6 +94,34 @@ cv::Mat mergeChannels(std::vector<cv::Mat> mats);
  */
 void openHelpBrowser(const QString &topic);
 
+
+/**
+ * @brief Set the default setting for a given stettings key and scope.
+ * It doesn't override existing settings.
+ * @param scope given settings scope
+ * @param key given settings key
+ * @param value default value of the setting
+ */
+void setDefaultSetting(const QString &scope, const QString &key, const QString &value);
+
+/**
+ * @brief Set the setting for a given stettings key and scope.
+ * @param scope given settings scope
+ * @param key given settings key
+ * @param value new value of the setting
+ */
+void setSetting(const QString &scope, const QString &key, const QString &value);
+
+/**
+ * @brief Get the current setting [key] in the given scope.
+ * Please use `setDefaultSetting` to set a default value that's other than
+ * an empty QString.
+ * @param scope given scope (e.g. 'Overview')
+ * @param key settings key (e.g. 'autoOpenTabs')
+ * @return settings string
+ */
+QString getSetting(const QString &scope, const QString &key);
+
 }}
 
 #endif

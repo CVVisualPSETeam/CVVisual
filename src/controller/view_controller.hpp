@@ -10,7 +10,6 @@
 #include <functional>
 #include <utility>
 #include <QString>
-#include <QSettings>
 
 #include "../util/util.hpp"
 #include "../impl/call.hpp"
@@ -53,10 +52,9 @@ enum Mode
 class ViewController;
 
 /**
- * @brief Typedef for a function that creates a CallTab from a impl::Call and a ViewController&.
+ * @brief Typedef for a function that creates a CallTab from a impl::Call.
  */
-using TabFactory = std::function<std::unique_ptr<gui::CallTab>(util::Reference<impl::Call>,
-    ViewController&)>;
+using TabFactory = std::function<std::unique_ptr<gui::CallTab>(util::Reference<impl::Call>)>;
 
 
 /**
@@ -109,7 +107,7 @@ public:
      * @param key settings key (e.g. 'autoOpenTabs')
      * @return settings string
      */
-    QString getSetting(const QString &scope, const QString &key) const;
+    QString getSetting(const QString &scope, const QString &key);
 
     /**
 	 * @brief Get the inherited call windows with tabs.
@@ -265,7 +263,6 @@ public:
 private:
 
 	static std::map<QString, TabFactory> callTabType;
-	QSettings settings{"CVVisual", QSettings::IniFormat};
 
     std::map<size_t, std::unique_ptr<gui::CallWindow>> windowMap{};
 	gui::MainCallWindow *mainWindow;

@@ -9,6 +9,7 @@
 
 #include <QDesktopServices>
 #include <QUrl>
+#include <QSettings>
 
 #include "types.hpp"
 #include "../../src/dbg/dbg.hpp"
@@ -555,6 +556,41 @@ void openHelpBrowser(const QString &topic)
     auto topicEncoded = QUrl::toPercentEncoding(topic);
     QDesktopServices::openUrl(QUrl(QString("http://cvv.mostlynerdless.de/help.php?topic=") + topicEncoded));
     TRACEPOINT;
+}
+
+void setDefaultSetting(const QString &scope, const QString &key, const QString &value)
+{
+	TRACEPOINT;
+	QSettings settings{"CVVisual", QSettings::IniFormat};
+    QString _key = scope + "/" + key;
+    if (!settings.contains(_key))
+    {
+        settings.setValue(_key, value);
+    }
+    TRACEPOINT;
+}
+
+void setSetting(const QString &scope, const QString &key, const QString &value)
+{
+	TRACEPOINT;
+	QSettings settings{"CVVisual", QSettings::IniFormat};
+    QString _key = scope + "/" + key;
+    settings.setValue(_key, value);
+    TRACEPOINT;
+}
+
+QString getSetting(const QString &scope, const QString &key)
+{
+	TRACEPOINT;
+	QSettings settings{"CVVisual", QSettings::IniFormat};
+    QString _key = scope + "/" + key;
+    if (!settings.contains(_key))
+    {
+        throw std::invalid_argument{ "there is no such setting" };
+    }
+    QString set = settings.value(_key).value<QString>();
+	TRACEPOINT;
+    return set;
 }
 
 }}

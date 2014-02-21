@@ -10,7 +10,6 @@
 
 #include "../../src/gui/match_call_tab.hpp"
 #include "../../src/impl/match_call.hpp"
-#include "../../src/controller/view_controller.hpp"
 #include "../../include/opencv2/call_meta_data.hpp"
 #include "../../src/view/linematchview.hpp"
 #include "../../src/view/rawview.hpp"
@@ -29,7 +28,7 @@ std::unique_ptr<cvv::view::MatchView> makeLineMatchView(const cv::Mat& img1,
 	return cvv::util::make_unique<cvv::view::LineMatchView>(key1, key2, match, img1, img2, parent);
 }
 
-int main(/*int argc, char *argv[]*/)
+int main(int argc, char *argv[])
 {
 
 	/* Create some data for the MatchCallTab: */
@@ -38,7 +37,7 @@ int main(/*int argc, char *argv[]*/)
 	cvv::impl::CallMetaData data{};
 	QString type{"test_type"};
 
-	cvv::controller::ViewController vc{};
+	QApplication vc{argc, argv};
 
 	std::vector<cv::KeyPoint> key1;
 
@@ -65,17 +64,14 @@ int main(/*int argc, char *argv[]*/)
 			const std::vector<cv::KeyPoint>&, const std::vector<cv::DMatch>&, QWidget*)> mlmv = makeLineMatchView;
 	cvv::gui::MatchCallTab::addMatchViewToMap("LineMatchView", mlmv);
 
-	//Doesn't work!!
-	/*cvv::gui::MatchCallTab::addMatchViewToMap("RawView",
+	cvv::gui::MatchCallTab::addMatchViewToMap("Rawview",
 						[] (const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
 							const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
 							const std::vector<cv::DMatch>& match, QWidget* parent)
 						{	(void) img1; (void) img2; (void) parent;
-							std::vector<std::vector<cv::DMatch>> vect{};
-							vect.push_back(match);
-							return cvv::util::make_unique<cvv::view::Rawview>(key1, key2, vect); });*/
+							return cvv::util::make_unique<cvv::view::Rawview>(key1, key2, match); });
 
-	cvv::gui::MatchCallTab v{mc, vc};
+	cvv::gui::MatchCallTab v{mc};
 	v.show();
 	vc.exec();
 	return 0;

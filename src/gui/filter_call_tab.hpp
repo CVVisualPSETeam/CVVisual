@@ -11,10 +11,10 @@
 
 #include "call_tab.hpp"
 #include "../view/filter_view.hpp"
-#include "../controller/view_controller.hpp"
 #include "../impl/filter_call.hpp"
 #include "../util/util.hpp"
 #include "../qtutil/registerhelper.hpp"
+#include "../qtutil/signalslot.hpp"
 
 namespace cvv {
 namespace gui {
@@ -35,31 +35,26 @@ public:
 	/**
 	 * @brief Short constructor using name from Call and default view.
 	 * Initializes the FilterCallTab with the default view and names it after the associated FilterCall.
-	 * @param fc the FilterCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to.
+	 * @param filterCall the FilterCall containing the information to be visualized.
 	 */
-	FilterCallTab(const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc);
+	FilterCallTab(const cvv::impl::FilterCall& filterCall);
 
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor which initialises the Call Tab with default view from settings.
 	 * @param tabName
-	 * @param fc the FilterCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to.
-	 * @attention might be deleted
+	 * @param filterCall the FilterCall containing the information to be visualized.
 	 */
-	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc);
+	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCalll);
 
 	/**
 	 * @brief Constructor with specific view.
 	 * Constructor initialising the Call Tab.
 	 * @param tabName
-	 * @param fc the FilterCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to
+	 * @param filterCall the FilterCall containing the information to be visualized.
 	 * @param viewId the ID of the view to be shown inside this CallTab.
-	 * @attention might be deleted
 	 */
-	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& fc, cvv::controller::ViewController& vc, const QString& viewId);
+	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCall, const QString& viewId);
 
 	/**
 	 * @brief get ID
@@ -81,9 +76,8 @@ private slots:
 	/**
 	 * @brief View selection change.
 	 * Called when the index of the view selection changes.
-	 * @param text of the current selection in the view selection.
 	 */
-	void currentIndexChanged(const QString& text);
+	void currentIndexChanged();
 
 	/**
 	 * @brief Help Button clicked.
@@ -106,14 +100,11 @@ private:
 	void createGui();
 
 	/**
-	 * @brief sets up View referred to by viewId.
-	 * @param viewId ID of the view to be set.
-	 * @throw std::out_of_range if no view named viewId was registered.
+	 * @brief sets up the View currently selected in the ComboBox inherited from RegisterHelper.
 	 */
-	void setView(const QString& viewId);
+	void setView();
 
 	util::Reference<const cvv::impl::FilterCall> filterCall_;
-	util::Reference<cvv::controller::ViewController> viewController_;
 	QString filterViewId_;
 	cvv::view::FilterView* filterView_;
 	std::map<QString, cvv::view::FilterView*> viewHistory_;
