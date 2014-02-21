@@ -34,6 +34,29 @@ void CVVKeyPoint::setZoomableImage(ZoomableImage *image)
 		this,SLOT(updateImageSet(const QRectF&,const qreal& )));
 }
 
+void CVVKeyPoint::updateSettings(KeyPointSettings& settings)
+{
+	TRACEPOINT;
+	settings.setSettings(*this);
+	TRACEPOINT;
+}
+
+void CVVKeyPoint::setPen(const QPen &pen)
+{
+	TRACEPOINT;
+	pen_=pen;
+	update();
+	TRACEPOINT;
+}
+
+void CVVKeyPoint::setBrush(const QBrush &brush)
+{
+	TRACEPOINT;
+	brush_=brush;
+	update();
+	TRACEPOINT;
+}
+
 QRectF CVVKeyPoint::boundingRect() const
 {
 	TRACEPOINT;

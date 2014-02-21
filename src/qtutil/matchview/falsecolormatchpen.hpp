@@ -1,15 +1,15 @@
 #ifndef CVVISUAL_FALSE_COLOR_MATCH_PEN
 #define CVVISUAL_FALSE_COLOR_MATCH_PEN
 
-#include "matchpen.hpp"
+#include "matchsettings.hpp"
 
 namespace cvv{namespace qtutil{
 
-class FalseColorMatchPen: public MatchPen{
+class FalseColorMatchPen: public MatchSettings{
 public:
 	FalseColorMatchPen(double max,double min,QWidget * parent=nullptr);
 
-	virtual QPen getPen(const CVVMatch& match) const override;
+	virtual void setSettings(CVVMatch& match) override;
 
 public slots:
 	void updateMin(double newMin)

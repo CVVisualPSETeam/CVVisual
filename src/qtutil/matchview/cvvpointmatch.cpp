@@ -40,16 +40,6 @@ void CVVPointMatch::paint(QPainter *painter,const QStyleOptionGraphicsItem *,QWi
 	TRACEPOINT;
 }
 
-void CVVPointMatch::updatePen(const MatchPointPen &pen)
-{
-	TRACEPOINT;
-	brush_=pen.getBrush(*this);
-	radius_=pen.getRadius(*this);
-	CVVMatch::updatePen(pen);
-	prepareGeometryChange();
-	update();
-	TRACEPOINT;
-}
 
 void CVVPointMatch::updateRightKey(bool visible)
 {

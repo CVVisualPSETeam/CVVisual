@@ -49,12 +49,6 @@ public:
 public slots:
 
 	/**
-	 * @brief this method updates the Pen
-	 * @param pen the new Pen
-	 */
-	virtual void updatePen(const MatchPointPen& pen);
-
-	/**
 	 * @brief this slot will be called if the right keypoint has changed
 	 * @param visible if the rightKey in the visibleArea of its image
 	 */

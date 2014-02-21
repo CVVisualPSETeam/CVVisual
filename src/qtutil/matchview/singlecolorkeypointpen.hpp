@@ -4,7 +4,7 @@
 #include <QColorDialog>
 #include <QPen>
 
-#include "keypointpen.hpp"
+#include "keypointsettings.hpp"
 #include "../../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
@@ -14,7 +14,7 @@ namespace cvv{ namespace qtutil{
  * the Color can be choosen by an QColorDialog
  */
 
-class SingleColorKeyPen:public KeyPointPen{
+class SingleColorKeyPen:public KeyPointSettings{
 Q_OBJECT
 public:
 	/**
@@ -35,8 +35,7 @@ public:
 	 * @brief this method returns the same PEn for all CVVKeyPoints
 	 * @return the same Pen for all CVVKeyPoint
 	 */
-	virtual QPen getPen(const CVVKeyPoint&)const override
-		{TRACEPOINT; return pen_;}
+	virtual void setSettings(CVVKeyPoint& keypoint)override;
 public slots:
 
 	/**

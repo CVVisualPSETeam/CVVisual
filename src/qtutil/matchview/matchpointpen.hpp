@@ -1,27 +1,29 @@
 #ifndef CVVISUAL_MATCH_POINT_PEN
 #define CVVISUAL_MATCH_POINT_PEN
 
-#include "singlecolorpen.hpp"
+#include "singlecolormatchpen.hpp"
 #include "cvvpointmatch.hpp"
 
 namespace cvv{ namespace qtutil{
 
 class CVVPointMatch;
 
-class MatchPointPen: public SingleColorPen{
+class MatchPointPen: public SingleColorMatchPen{
 
 Q_OBJECT
 public:
 	MatchPointPen(float maxDistance,QWidget *parent=nullptr):
-		SingleColorPen{parent},maxDistance_{maxDistance}
+		SingleColorMatchPen{parent},maxDistance_{maxDistance}
 		{TRACEPOINT;}
 
-	virtual QPen getPen(const CVVPointMatch& match)const;
+	virtual void setSettings(CVVMatch& match)override;
 
-	virtual qreal getRadius(const CVVPointMatch&)const;
+	virtual void setSettings(CVVPointMatch&);
 
-	virtual QBrush getBrush(const CVVPointMatch&) const;
-
+public slots:
+	QPen getPen(const CVVPointMatch &match) const;
+	qreal getRadius(const CVVPointMatch &) const;
+	QBrush getBrush(const CVVPointMatch &match) const;
 private:
 	float maxDistance_;
 };

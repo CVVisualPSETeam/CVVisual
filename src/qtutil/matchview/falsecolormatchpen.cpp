@@ -11,8 +11,8 @@
 
 namespace cvv{ namespace qtutil{
 
-cvv::qtutil::FalseColorMatchPen::FalseColorMatchPen(double max, double min, QWidget *parent):
-	MatchPen{parent},max_{max},min_{min}
+FalseColorMatchPen::FalseColorMatchPen(double max, double min, QWidget *parent):
+	MatchSettings{parent},max_{max},min_{min}
 {
 	TRACEPOINT;
 	auto layout	= util::make_unique<QVBoxLayout>();
@@ -38,10 +38,11 @@ cvv::qtutil::FalseColorMatchPen::FalseColorMatchPen(double max, double min, QWid
 	TRACEPOINT;
 }
 
-QPen cvv::qtutil::FalseColorMatchPen::getPen(const cvv::qtutil::CVVMatch &match) const
+void FalseColorMatchPen::setSettings(CVVMatch& match)
 {
 	TRACEPOINT;
-	return QPen{getFalseColor(static_cast<double>(match.matchValue()),max_,min_)};
+	match.setPen(QPen{getFalseColor(static_cast<double>(match.matchValue()),max_,min_)});
+	TRACEPOINT;
 }
 
 

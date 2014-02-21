@@ -2,7 +2,6 @@
 #include <algorithm>
 
 #include "cvvmatch.hpp"
-#include "matchpen.hpp"
 
 namespace cvv{ namespace qtutil{
 
@@ -40,6 +39,14 @@ void CVVMatch::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
 	TRACEPOINT;
 	painter->setPen(pen_);
 	painter->drawLine(leftImPointInScene(),rightImPointInScene());
+	TRACEPOINT;
+}
+
+void CVVMatch::setPen(const QPen& pen)
+{
+	TRACEPOINT;
+	pen_=pen;
+	update();
 	TRACEPOINT;
 }
 
