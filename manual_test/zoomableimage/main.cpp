@@ -18,6 +18,8 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 
+#include "../../src/dbg/dbg.hpp"
+
 // from
 // https://github.com/Itseez/opencv/blob/master/samples/cpp/
 //        tutorial_code/core/Matrix/Drawing_1.cpp
@@ -27,6 +29,8 @@ static const int w=400;
 
 int main(int argc, char *argv[])
 {
+	cvv::dbg::setLoggingState(false);
+
 	QApplication a(argc, argv);
 
 	QWidget wid{};
@@ -44,9 +48,9 @@ int main(int argc, char *argv[])
 
 	QVBoxLayout* layleft= new QVBoxLayout{};
 	QDoubleSpinBox* spb=new QDoubleSpinBox{};
-	QObject::connect(spb,SIGNAL(valueChanged(double)),i,  SLOT(updateZoom(qreal)));
-	QObject::connect(spb,SIGNAL(valueChanged(double)),i2, SLOT(updateZoom(qreal)));
-	QObject::connect(spb,SIGNAL(valueChanged(double)),i3, SLOT(updateZoom(qreal)));
+	QObject::connect(spb,SIGNAL(valueChanged(double)),i,  SLOT(setZoom(qreal)));
+	QObject::connect(spb,SIGNAL(valueChanged(double)),i2, SLOT(setZoom(qreal)));
+	QObject::connect(spb,SIGNAL(valueChanged(double)),i3, SLOT(setZoom(qreal)));
 	layleft->addWidget(spb);
 
 	QPushButton* bautoshow=new QPushButton{"autoshow"};
