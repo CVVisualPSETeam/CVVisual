@@ -27,6 +27,8 @@ FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& filterCall): filterCal
 	setName(filterCall_->description());
 	const QString scope{"default_views"};
 	const QString key{"default_filter_view"};
+	// Sets DefaultFilterView as default in case no other default is set:
+	qtutil::setDefaultSetting(scope, key, "DefaultFilterView");
 	filterViewId_ = qtutil::getSetting(scope, key);
 	createGui();
 	TRACEPOINT;
@@ -39,6 +41,8 @@ FilterCallTab::FilterCallTab(const QString& tabName, const cvv::impl::FilterCall
 	setName(tabName);
 	const QString scope{"default_views"};
 	const QString key{"default_filter_view"};
+	// Sets DefaultFilterView as default in case no other default is set:
+	qtutil::setDefaultSetting(scope, key, "DefaultFilterView");
 	filterViewId_ = qtutil::getSetting(scope, key);
 	createGui();
 	TRACEPOINT;
@@ -73,7 +77,7 @@ void FilterCallTab::helpButtonClicked() const
 void FilterCallTab::setAsDefaultButtonClicked()
 {
 	TRACEPOINT;
-	qtutil::setDefaultSetting("default_views", "default_filter_view", filterViewId_);
+	qtutil::setSetting("default_views", "default_filter_view", filterViewId_);
 	TRACEPOINT;
 }
 
