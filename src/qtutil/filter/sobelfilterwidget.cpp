@@ -155,7 +155,7 @@ void SobelFilterWidget::applyFilter(InputArray in,OutputArray out) const
 	if(reorder_->isChecked())
 	{
 		TRACEPOINT;
-		reorderFilter_->applyFilter({inar},{outar});
+		reorderFilter_->applyFilter({{inar}},{{outar}});
 		//out should be new input
 		inar=outar.get();
 		TRACEPOINT;
@@ -164,7 +164,7 @@ void SobelFilterWidget::applyFilter(InputArray in,OutputArray out) const
 	if(gray_->isChecked())
 	{
 		TRACEPOINT;
-		grayFilter_->applyFilter({inar},{outar});
+		grayFilter_->applyFilter({{inar}},{{outar}});
 		//out should be new input
 		inar=outar.get();
 		TRACEPOINT;

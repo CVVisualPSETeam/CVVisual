@@ -93,40 +93,40 @@ QString conversionResultToString(const ImageConversionResult& result)
 //image conversion stuff
 // ////////////////////////////////////////////////
 //convert an image with known depth and channels (the number of chanels is the suffix (convertX)
+namespace structures {
 /**
- * @brief Colortable for CV_XXC1
+ * @brief Gray color table for CV_XXC1
  */
-struct ColorTable
+struct GrayColorTable
 {
 	/**
 	 * @brief Constructor
 	 */
-	ColorTable():
+	GrayColorTable():
 		table{}
 	{
 		TRACEPOINT;
-		//TODO: I guess this should be 256?
-		for(int i=0;i<265;i++){table.push_back(qRgb(i,i,i));}
+		for(int i=0;i<256;i++){table.push_back(qRgb(i,i,i));}
 		TRACEPOINT;
 	}
 
 	/**
 	 * @brief Destructor
 	 */
-	~ColorTable()
+	~GrayColorTable()
 	{
 		TRACEPOINT;
 	}
 
 	/**
-	 * @brief The colortable
+	 * @brief The color table
 	 */
 	QVector<QRgb> table;
 };
 /**
- * @brief Static colortable for CV_XXC1
+ * @brief Static GrayColorTable for CV_XXC1
  */
-const static ColorTable colorTable{};
+const static GrayColorTable grayColorTable{};
 
 //helper
 /**
@@ -139,13 +139,16 @@ template<int depth, int channels> struct ConvertHelper
 	void pixelOperation(int i,int j, const cv::Mat& mat, uchar* row);
 };
 
+/**
+ * @brief Provides the parts of the conversion fuction that differ depending on the type.
+ */
 template<int depth> struct ConvertHelper<depth,1>
 {
 	static QImage image(const cv::Mat& mat)
 	{
 		TRACEPOINT;
 		QImage img{mat.cols,mat.rows,QImage::Format_Indexed8};
-		img.setColorTable(colorTable.table);
+		img.setColorTable(grayColorTable.table);
 		TRACEPOINT;
 		return img;
 	}
@@ -205,6 +208,8 @@ template<int depth> struct ConvertHelper<depth,4>
 	}
 };
 
+}
+
 /**
  * @brief Converts parts of a cv Mat. [minRow,maxRow)
  * @param mat The mat.
@@ -225,7 +230,7 @@ void convertPart(const cv::Mat& mat, QImage& img, int minRow, int maxRow)
 		row = img.scanLine(i);
 		for(int j=0; j<mat.cols; j++)
 		{
-			ConvertHelper<depth,channels>::pixelOperation(i,j,mat,row);
+			structures::ConvertHelper<depth,channels>::pixelOperation(i,j,mat,row);
 		}
 	}
 	TRACEPOINT;
@@ -241,7 +246,7 @@ template<int depth, int channels>
 QImage convert(const cv::Mat& mat, unsigned int threads)
 {
 	TRACEPOINT;
-	QImage img=ConvertHelper<depth,channels>::image(mat);
+	QImage img=structures::ConvertHelper<depth,channels>::image(mat);
 
 	if(threads>1)
 	{
