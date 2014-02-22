@@ -1,7 +1,7 @@
 #ifndef CVVISUAL_CVVMATCH
 #define CVVISUAL_CVVMATCH
 
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QPainter>
 #include <QPointF>
 #include <QRectF>
@@ -12,9 +12,10 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
-#include "../zoomableimage.hpp"
-#include "matchpen.hpp"
+
+#include "matchsettings.hpp"
 #include "cvvkeypoint.hpp"
+#include "../zoomableimage.hpp"
 #include "../../dbg/dbg.hpp"
 
 namespace cvv{ namespace qtutil{
@@ -80,14 +81,29 @@ public:
 	float matchValue() const
 		{TRACEPOINT;return matchValue_;}
 
+	/**
+	 * @brief returns the show value
+	 * @return the show value
+	 */
+	bool isShown() const
+		{TRACEPOINT;return show_;}
+
 public slots:
+
+	/**
+	 * @brief the match will call setSettings from settings
+	 * @param settings the settings for this match
+	 */
+	void updateSettings(MatchSettings& settings)
+		{TRACEPOINT;
+		settings.setSettings(*this);
+		TRACEPOINT;}
 
 	/**
 	 * @brief this method updates the Pen
 	 * @param pen the new Pen
 	 */
-	void updatePen(const MatchPen& pen)
-		{TRACEPOINT;pen_=pen.getPen(*this);TRACEPOINT;}
+	void setPen(const QPen& pen);
 
 	/**
 	 * @brief if show=true the match will be visible if both keypoints are in the
@@ -95,13 +111,6 @@ public slots:
 	 * @param b new show value
 	 */
 	void setShow(const bool& b);
-
-	/**
-	 * @brief returns the show value
-	 * @return the show value
-	 */
-	bool isShown() const
-		{TRACEPOINT;return show_;}
 
 	/**
 	 * @brief this slot will be called if the right keypoint has changed

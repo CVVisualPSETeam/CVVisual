@@ -6,7 +6,7 @@
 #include <QWidget>
 #include <QColorDialog>
 
-#include "matchpen.hpp"
+#include "matchsettings.hpp"
 #include "cvvmatch.hpp"
 #include "../../dbg/dbg.hpp"
 
@@ -17,20 +17,20 @@ namespace cvv{namespace qtutil{
  * the Color can be choosen by an QColorDialog
  */
 
-class SingleColorPen:public MatchPen{
+class SingleColorMatchPen:public MatchSettings{
 Q_OBJECT
 public:
 	/**
 	 * @brief the constructor
 	 * @param parent the parent Widget
 	 */
-	SingleColorPen(QWidget * parent =nullptr);
+	SingleColorMatchPen(QWidget * parent =nullptr);
 
 	/**
 	 * @brief the destructor
 	 * the QColorDialog has no parent/layout it must be deleted.
 	 */
-	~SingleColorPen()
+	~SingleColorMatchPen()
 	{
 		TRACEPOINT;
 		colorDialog_->deleteLater();
@@ -40,8 +40,7 @@ public:
 	/**
 	 * @brief return a single Color for all CVVMatch
 	 */
-	virtual QPen getPen(const CVVMatch&)const override
-		{TRACEPOINT;return pen_;}
+	virtual void setSettings(CVVMatch& match) override;
 
 public slots:
 

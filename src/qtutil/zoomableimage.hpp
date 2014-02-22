@@ -177,6 +177,27 @@ public:
 		TRACEPOINT;
 		return scrollFactorCTRLShift_;
 	}
+
+	/**
+	 * @brief Returns the image managed by this item.
+	 * @return The image managed by this item.
+	 */
+	QPixmap fullImage() const
+	{
+		TRACEPOINT;
+		return pixmap_->pixmap();
+	}
+
+	/**
+	 * @brief Returns the currently visible area as an pixmap.
+	 * @return The currently visible area as an pixmap.
+	 */
+	QPixmap visibleImage() const
+	{
+		TRACEPOINT;
+		return QPixmap::grabWidget (view_->viewport());
+	}
+
 signals:
 	/**
 	 * @brief Emmited whenever the image is updated. It passes the conversion result

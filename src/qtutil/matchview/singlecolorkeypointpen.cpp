@@ -6,7 +6,7 @@
 
 namespace cvv{namespace qtutil{
 
-SingleColorKeyPen::SingleColorKeyPen(QWidget * parent):KeyPointPen{parent},
+SingleColorKeyPen::SingleColorKeyPen(QWidget * parent):KeyPointSettings{parent},
 	colordia_{new QColorDialog{}}
 {
 	TRACEPOINT;
@@ -22,6 +22,13 @@ SingleColorKeyPen::SingleColorKeyPen(QWidget * parent):KeyPointPen{parent},
 	layout->addWidget(button.release());
 	setLayout(layout.release());
 
+	TRACEPOINT;
+}
+
+void SingleColorKeyPen::setSettings(CVVKeyPoint &keypoint)
+{
+	TRACEPOINT;
+	keypoint.setPen(pen_);
 	TRACEPOINT;
 }
 

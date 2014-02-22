@@ -329,9 +329,9 @@ void ZoomableImage::rightClick(const QPoint & pos)
 		QPixmap pmap;
 		if((item->text())=="Save orginal image")
 		{
-			pmap=convertMatToQPixmap(mat_).second;
+			pmap=fullImage();
 		}else{
-			pmap=QPixmap::grabWidget (view_->viewport());
+			pmap=visibleImage();
 		}
 
 		pmap.save(fileName,0,100);

@@ -2,11 +2,11 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include "singlecolorpen.hpp"
+#include "singlecolormatchpen.hpp"
 
 namespace cvv{ namespace qtutil{
 
-SingleColorPen::SingleColorPen(QWidget * parent):MatchPen{parent}
+SingleColorMatchPen::SingleColorMatchPen(QWidget * parent):MatchSettings{parent}
 {
 	TRACEPOINT;
 	auto layout	= util::make_unique<QVBoxLayout>();
@@ -25,7 +25,14 @@ SingleColorPen::SingleColorPen(QWidget * parent):MatchPen{parent}
 	TRACEPOINT;
 }
 
-void SingleColorPen::updateColor(const QColor& color)
+void SingleColorMatchPen::setSettings(CVVMatch &match)
+{
+	TRACEPOINT;
+	match.setPen(pen_);
+	TRACEPOINT;
+}
+
+void SingleColorMatchPen::updateColor(const QColor& color)
 {
 	TRACEPOINT;
 	pen_=QPen{color};

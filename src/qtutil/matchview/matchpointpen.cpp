@@ -3,6 +3,13 @@
 
 namespace cvv { namespace qtutil {
 
+void MatchPointPen::setSettings(CVVPointMatch &)
+{
+	TRACEPOINT;
+	std::cout<<"\n\nJUHU\n\n";
+	TRACEPOINT;
+}
+
 QPen MatchPointPen::getPen(const CVVPointMatch &match)const
 {
 	TRACEPOINT;
@@ -26,5 +33,12 @@ QBrush MatchPointPen::getBrush(const CVVPointMatch & match)const
 	TRACEPOINT;
 	return QBrush{color};
 }
+
+void MatchPointPen::setSettings(CVVMatch &match)
+{
+	TRACEPOINT;
+	std::cout<<"\n\nJAVA\n\n";
+	SingleColorMatchPen::setSettings(match);
+	TRACEPOINT;}
 
 }}

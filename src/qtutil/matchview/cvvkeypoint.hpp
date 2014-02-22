@@ -1,7 +1,7 @@
 #ifndef CVVISUAL_CVVKEYPOINT
 #define CVVISUAL_CVVKEYPOINT
 
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QPainter>
 #include <QRectF>
 #include <QStyleOptionGraphicsItem>
@@ -11,12 +11,14 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
 
+#include "keypointsettings.hpp"
 #include "../zoomableimage.hpp"
-#include "cvvkeypoint.hpp"
-#include "keypointpen.hpp"
 #include "../../dbg/dbg.hpp"
 
 namespace cvv{namespace qtutil{
+
+class KeyPointSettings;
+
 /**
  * @brief this class represents a Keypoint which is displayed an a Matchscene.
  *
@@ -74,6 +76,14 @@ public:
 	bool imagePointisVisible()
 		{TRACEPOINT;
 		return image_->visibleArea().contains(key_.pt.x,key_.pt.y);}
+
+	/**
+	 * @brief if show is true this keypoint will be visible if it is the visibleArea
+	 * @return the show Value
+	 */
+	bool isShown() const
+		{TRACEPOINT;return show_;}
+
 signals:
 	/**
 	 * @brief this signal will be emited when the imagepoint in the scene has changed
@@ -83,18 +93,19 @@ signals:
 
 public slots:
 	/**
-	 * @brief updates the pen of this KeyPoint
-	 * @param pen a new Pen
+	 * @brief updates the settings of this KeyPoint
+	 * @param settings the object which has new settings for this keypoint
 	 */
-	void updatePen(const KeyPointPen& pen)
-		{TRACEPOINT;pen_=pen.getPen(*this);TRACEPOINT;}
+	void updateSettings(KeyPointSettings& settings);
+
+
+	void setPen(const QPen& pen);
 
 	/**
 	 * @brief updates the brush of this KeyPoint
 	 * @param brush a new brush
 	 */
-	void updateBrush(const QBrush& brush)
-		{TRACEPOINT;brush_=brush;}
+	void setBrush(const QBrush& brush);
 
 	/**
 	 * @brief if show is true this keypoint will be visible if it is the visibleArea
@@ -102,13 +113,6 @@ public slots:
 	 */
 	void setShow(bool b)
 		{TRACEPOINT;show_=b;TRACEPOINT;}
-
-	/**
-	 * @brief if show is true this keypoint will be visible if it is the visibleArea
-	 * @return the show Value
-	 */
-	bool isShown() const
-		{TRACEPOINT;return show_;}
 
 	/**
 	 * @brief updates the coordinates and visibleState of this KeyPoint

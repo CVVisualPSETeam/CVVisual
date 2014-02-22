@@ -12,6 +12,7 @@ int main(int argc, char** argv)
 {
 	QApplication a(argc, argv);
 
+	cvv::dbg::setLoggingState(false);
 	if(argc != 3)
 	{
 		std::cerr << "Only execute this test with filenames of two images as arguments! \n";
@@ -39,7 +40,7 @@ int main(int argc, char** argv)
 	}
 
 	cvv::view::TranslationMatchView view{key1, key2,match,src,train};
-	view.setWindowTitle("LineMatchView Test");
+	view.setWindowTitle("TranslationMatchView Test");
 	view.show();
 	return a.exec();
 

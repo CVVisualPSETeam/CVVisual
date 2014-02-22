@@ -3,10 +3,9 @@
 
 #include "../qtutil/accordion.hpp"
 #include "../qtutil/matchview/matchscene.hpp"
-#include "../qtutil/matchview/singlecolorpen.hpp"
 #include "../qtutil/matchview/cvvkeypoint.hpp"
 #include "../qtutil/matchview/cvvmatch.hpp"
-#include "../qtutil/matchview/singlecolorpen.hpp"
+#include "../qtutil/matchview/singlecolormatchpen.hpp"
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
 #include "../util/util.hpp"
 
@@ -26,11 +25,11 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 	auto layout	= util::make_unique<QHBoxLayout>();
 	auto accor	= util::make_unique< qtutil::Accordion>();
 	auto matchscene	= util::make_unique<qtutil::MatchScene>(leftIm,rightIm);
-	auto matchpen	= util::make_unique<qtutil::SingleColorPen>();
+	auto matchpen	= util::make_unique<qtutil::SingleColorMatchPen>();
 	auto keypen	= util::make_unique<qtutil::SingleColorKeyPen>();
 
 	qtutil::MatchScene *matchscene_ptr	= matchscene.get();
-	qtutil::SingleColorPen *matchpen_ptr	= matchpen.get();
+	qtutil::SingleColorMatchPen *matchpen_ptr	= matchpen.get();
 	qtutil::SingleColorKeyPen *keypen_ptr	= keypen.get();
 
 	accor->setMinimumWidth(250);
@@ -56,8 +55,8 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 	{
 		//Key visible
 		auto key = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
-		connect(keypen_ptr,SIGNAL(settingsChanged(const KeyPointPen&)),
-			key.get(),SLOT(updatePen(const KeyPointPen&)));
+		connect(keypen_ptr,SIGNAL(settingsChanged(KeyPointSettings&)),
+			key.get(),SLOT(updateSettings(KeyPointSettings&)));
 
 		matchscene_ptr->addLeftKeypoint(key.get());
 		leftKeys.push_back(key.release());
@@ -74,8 +73,8 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 	{
 		//Key Visible
 		auto key = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
-		connect(keypen_ptr,SIGNAL(settingsChanged(const KeyPointPen&)),
-			key.get(),SLOT(updatePen(const KeyPointPen&)));
+		connect(keypen_ptr,SIGNAL(settingsChanged(KeyPointSettings&)),
+			key.get(),SLOT(updateSettings(KeyPointSettings&)));
 
 		matchscene_ptr->addRightKeyPoint(key.get());
 		rightKeys.push_back(key.release());
@@ -94,8 +93,8 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 		auto cvmatchleft = util::make_unique<qtutil::CVVMatch>(
 					leftKeys.at(match.queryIdx),
 					leftinvisibleKeys.at(match.trainIdx),match.distance);
-		connect(matchpen_ptr,SIGNAL(settingsChanged(const MatchPen&)),cvmatchleft.get(),
-					SLOT(updatePen(const MatchPen&)));
+		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),cvmatchleft.get(),
+					SLOT(updateSettings(MatchSettings&)));
 		matchscene_ptr->addMatch(cvmatchleft.release());
 
 
@@ -104,8 +103,8 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 					rightinvisibleKeys.at(match.queryIdx),
 					rightKeys.at(match.trainIdx),match.distance);
 
-		connect(matchpen_ptr,SIGNAL(settingsChanged(const MatchPen&))
-			,cvmatchright.get(),SLOT(updatePen(const MatchPen&)));
+		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&))
+			,cvmatchright.get(),SLOT(updateSettings(MatchSettings&)));
 		matchscene_ptr->addMatch(cvmatchright.release());
 	}
 	TRACEPOINT;
