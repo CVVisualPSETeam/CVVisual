@@ -6,6 +6,7 @@
 #include "../qtutil/filterselectorwidget.hpp"
 #include "../qtutil/filter/grayfilterwidget.hpp"
 #include "../qtutil/filter/sobelfilterwidget.hpp"
+#include "../qtutil/filter/channelreorderfilter.hpp"
 
 #include "../gui/match_call_tab.hpp"
 
@@ -18,6 +19,8 @@ void initializeFilterAndViews()
 	qtutil::registerFilter<1,1,qtutil::GrayFilterWidget>("Gray filter");
 	TRACEPOINT;
 	qtutil::registerFilter<1,1,qtutil::SobelFilterWidget>("Sobel");
+	TRACEPOINT;
+	qtutil::registerFilter<1,1,qtutil::ChannelReorderFilter>("Reorder channels");
 	TRACEPOINT;
 
 //	beispiel für einen filter call tab

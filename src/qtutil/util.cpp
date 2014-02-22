@@ -109,7 +109,7 @@ struct ColorTable
 		for(int i=0;i<265;i++){table.push_back(qRgb(i,i,i));}
 		TRACEPOINT;
 	}
-	
+
 	/**
 	 * @brief Destructor
 	 */
@@ -117,7 +117,7 @@ struct ColorTable
 	{
 		TRACEPOINT;
 	}
-	
+
 	/**
 	 * @brief The colortable
 	 */
@@ -198,10 +198,10 @@ template<int depth> struct ConvertHelper<depth,4>
 
 	static void pixelOperation(int i,int j, const cv::Mat& mat, uchar* row)
 	{
-		row[4*j]   = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[3]);//a
-		row[4*j+1] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[2]);//r
-		row[4*j+2] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[1]);//g
-		row[4*j+3] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[0]);//b
+		row[4*j+3] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[3]);//a
+		row[4*j+2] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[2]);//r
+		row[4*j+1] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[1]);//g
+		row[4*j  ] = convertTo8U<depth>(mat.at<PixelType<depth,4>>(i,j)[0]);//b
 	}
 };
 
@@ -565,7 +565,7 @@ void setDefaultSetting(const QString &scope, const QString &key, const QString &
     QString _key = scope + "/" + key;
     if (!settings.contains(_key))
     {
-        settings.setValue(_key, value);
+	settings.setValue(_key, value);
     }
     TRACEPOINT;
 }
@@ -586,7 +586,7 @@ QString getSetting(const QString &scope, const QString &key)
     QString _key = scope + "/" + key;
     if (!settings.contains(_key))
     {
-        throw std::invalid_argument{ "there is no such setting" };
+	throw std::invalid_argument{ "there is no such setting" };
     }
     QString set = settings.value(_key).value<QString>();
 	TRACEPOINT;
