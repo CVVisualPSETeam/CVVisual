@@ -74,7 +74,7 @@ void MatchCallTab::helpButtonClicked() const
 void MatchCallTab::setAsDefaultButtonClicked()
 {
 	TRACEPOINT;
-	qtutil::setDefaultSetting("default_views", "default_match_view", matchViewId_);
+	qtutil::setSetting("default_views", "default_match_view", matchViewId_);
 	TRACEPOINT;
 }
 
