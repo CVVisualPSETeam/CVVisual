@@ -13,6 +13,8 @@ ChannelReorderFilter::ChannelReorderFilter(QWidget* parent):
 	channelAssignment_{}
 {
 	TRACEPOINT;
+	setToolTip("nonexistant channels from source will be seen as a zero mat");
+	TRACEPOINT;
 	auto lay=util::make_unique<QVBoxLayout>();
 	layout_=*lay;
 	auto channel=util::make_unique<QSpinBox>();
@@ -31,7 +33,7 @@ ChannelReorderFilter::ChannelReorderFilter(QWidget* parent):
 	setLayout(lay.release());
 	TRACEPOINT;
 
-	channel_->setValue(4);
+	channel_->setValue(3);
 	TRACEPOINT;
 }
 

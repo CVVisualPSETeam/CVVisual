@@ -9,6 +9,7 @@
 #include "../../util/observer_ptr.hpp"
 #include"../filterfunctionwidget.hpp"
 #include "grayfilterwidget.hpp"
+#include "channelreorderfilter.hpp"
 
 namespace cvv { namespace qtutil{
 /**
@@ -73,14 +74,21 @@ private:
 	 */
 	util::ObserverPtr<QComboBox> borderType_;
 	/**
-	 * @brief Wheather a gray filter should be applied first.
+	 * @brief Wheather a gray filter should be applied first (after reorder).
 	 */
 	util::ObserverPtr<QCheckBox> gray_;
-
 	/**
 	 * @brief a gray filter.
 	 */
 	util::ObserverPtr<GrayFilterWidget> grayFilter_;
+	/**
+	 * @brief Wheather a reorder filter should be applied first.
+	 */
+	util::ObserverPtr<QCheckBox> reorder_;
+	/**
+	 * @brief a reorder filter.
+	 */
+	util::ObserverPtr<ChannelReorderFilter> reorderFilter_;
 };
 
 }}
