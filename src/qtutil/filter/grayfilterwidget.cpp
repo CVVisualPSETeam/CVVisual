@@ -16,6 +16,8 @@ GrayFilterWidget::GrayFilterWidget(QWidget* parent):
 	chanValues_{}
 {
 	TRACEPOINT;
+	setToolTip("nonexistant channels from source will be seen as a zero mat");
+	TRACEPOINT;
 	auto lay=util::make_unique<QVBoxLayout>();
 	layout_=*lay;
 	auto channel=util::make_unique<QSpinBox>();

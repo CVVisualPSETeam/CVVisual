@@ -13,7 +13,7 @@ Collapsable::Collapsable(const QString& title, std::unique_ptr<QWidget> widget, 
 	setLineWidth(1);
 	setFrameStyle(QFrame::Box);
 	layout_->setAlignment(Qt::AlignTop);
-	layout_->setSpacing (0);
+	layout_->setContentsMargins(0,0,0,0);
 
 	//build header
 	auto tmpButton = util::make_unique<QPushButton>();

@@ -20,7 +20,9 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 	ksize_{nullptr},
 	borderType_{nullptr},
 	gray_{nullptr},
-	grayFilter_{nullptr}
+	grayFilter_{nullptr},
+	reorder_{nullptr},
+	reorderFilter_{nullptr}
 {
 	TRACEPOINT;
 	auto dx = util::make_unique<QSpinBox>();
@@ -31,10 +33,6 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 	ksize_=*ksize;
 	auto borderType = util::make_unique<QComboBox>();
 	borderType_=*borderType;
-	auto gray = util::make_unique<QCheckBox>("Apply gray filter");
-	gray_=*gray;
-	auto grayFilter = util::make_unique<GrayFilterWidget>();
-	grayFilter_=*grayFilter;
 	//set up elements
 	dx_->setRange(0,6);
 	dy_->setRange(0,6);
@@ -63,20 +61,47 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
 	TRACEPOINT;
 
-	//subfilter gray
-	QObject::connect(gray_.getPtr(),SIGNAL(clicked(bool)),grayFilter_.getPtr(),
+	//subfilter reorder
+	auto reorder = util::make_unique<QCheckBox>("Reorder channels");
+	reorder_=*reorder;
+	auto reorderFilter = util::make_unique<ChannelReorderFilter>();
+	reorderFilter_=*reorderFilter;
+	reorder_->setChecked(false);
+	reorderFilter_->setVisible(false);
+	TRACEPOINT;
+	//visible
+	QObject::connect(reorder_.getPtr(),SIGNAL(clicked(bool)),reorderFilter_.getPtr(),
 								SLOT(setVisible(bool)));
+	//settings
+	QObject::connect(reorder_.getPtr(),SIGNAL(clicked()),
+			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+	QObject::connect(&(reorderFilter_.getPtr()->signFilterSettingsChanged_),SIGNAL(signal()),
+			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+	TRACEPOINT;
+
+
+	//subfilter gray
+	auto gray = util::make_unique<QCheckBox>("Apply gray filter");
+	gray_=*gray;
+	auto grayFilter = util::make_unique<GrayFilterWidget>();
+	grayFilter_=*grayFilter;
 	gray_->setChecked(false);
 	grayFilter_->setVisible(false);
+	TRACEPOINT;
+	//visible
+	QObject::connect(gray_.getPtr(),SIGNAL(clicked(bool)),grayFilter_.getPtr(),
+								SLOT(setVisible(bool)));
+	//settings
 	QObject::connect(gray_.getPtr(),SIGNAL(clicked()),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
 	QObject::connect(&(grayFilter_.getPtr()->signFilterSettingsChanged_),SIGNAL(signal()),
 			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
 	TRACEPOINT;
 
-
 	//build ui
 	auto lay=util::make_unique<QVBoxLayout>();
+	lay->addWidget(reorder.release());
+	lay->addWidget(reorderFilter.release());
 	lay->addWidget(gray.release());
 	lay->addWidget(grayFilter.release());
 	lay->addWidget(util::make_unique<QLabel>("dx").release());
@@ -99,7 +124,8 @@ void SobelFilterWidget::applyFilter(InputArray in,OutputArray out) const
 {
 	TRACEPOINT;
 	int ksize=3;
-	switch(ksize_->currentIndex()){
+	switch(ksize_->currentIndex())
+	{
 		case 0: ksize=1;break;
 		case 1: ksize=3;break;
 		case 2: ksize=5;break;
@@ -109,7 +135,8 @@ void SobelFilterWidget::applyFilter(InputArray in,OutputArray out) const
 
 	TRACEPOINT;
 	int borderType=cv::BORDER_DEFAULT;
-	switch(borderType_->currentIndex()){
+	switch(borderType_->currentIndex())
+	{
 		case 0: borderType=cv::BORDER_DEFAULT;    break;
 		case 1: borderType=cv::BORDER_CONSTANT;   break;
 		case 2: borderType=cv::BORDER_REPLICATE;  break;
@@ -120,21 +147,30 @@ void SobelFilterWidget::applyFilter(InputArray in,OutputArray out) const
 	TRACEPOINT;
 	int dx=dx_->value();
 	int dy=dy_->value();
-
+	//apply filter
+	cvv::util::Reference<const cv::Mat> inar =in.at(0).get();
+	cvv::util::Reference<cv::Mat>       outar=out.at(0).get();
+	TRACEPOINT;
+	//first reorder
+	if(reorder_->isChecked())
+	{
+		TRACEPOINT;
+		reorderFilter_->applyFilter({inar},{outar});
+		//out should be new input
+		inar=outar.get();
+		TRACEPOINT;
+	}
+	//then gray
 	if(gray_->isChecked())
 	{
 		TRACEPOINT;
-		grayFilter_->applyFilter(in,out);
-		TRACEPOINT;
-		Sobel(out.at(0).get(),out.at(0).get(),-1,dx,dy,ksize,1,0,borderType);
-	}else{
-		TRACEPOINT;
-		const cv::Mat& iar=in.at(0).get();
-		cv::Mat& oar=out.at(0).get();
-		TRACEPOINT;
-		Sobel(iar,oar,-1,dx,dy,ksize,1,0,borderType);
+		grayFilter_->applyFilter({inar},{outar});
+		//out should be new input
+		inar=outar.get();
 		TRACEPOINT;
 	}
+	TRACEPOINT;
+	Sobel(inar.get(),outar.get(),-1,dx,dy,ksize,1,0,borderType);
 	TRACEPOINT;
 }
 
@@ -155,9 +191,9 @@ std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray in) const
 					QString::number(in.at(0).get().depth())};
 	}
 
-	TRACEPOINT;
 	//check subfilter
-	if(gray_->isChecked()) //gray filter => channels will be 1
+	TRACEPOINT;
+	if(gray_->isChecked())
 	{
 		TRACEPOINT;
 		auto resultGray=grayFilter_->checkInput(in);
@@ -166,11 +202,36 @@ std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray in) const
 			TRACEPOINT;
 			return resultGray;
 		}
-	}else if((in.at(0).get().channels()>4))//no gray filter
+	}
+	TRACEPOINT;
+	if(reorder_->isChecked())
 	{
 		TRACEPOINT;
-		return {false,"channels>4 (use gray filter)"};
+		auto resultReorder=reorderFilter_->checkInput(in);
+		if(!resultReorder.first)
+		{
+			TRACEPOINT;
+			return resultReorder;
+		}
 	}
+
+	//check channels
+	TRACEPOINT;
+	if(!(gray_->isChecked()))//gray filter => channels will be 1
+	{
+		if((reorder_->isChecked()) && (reorderFilter_->outputChannels()>4))//no gray
+		{
+			TRACEPOINT;
+			return {false,
+				"channels>4 (use gray filter or reorder with <=4 output channels)"};
+		}else if((in.at(0).get().channels()>4))//no gray filter + reorder
+		{
+			TRACEPOINT;
+			return {false,
+				"channels>4 (use gray filter or reorder with <=4 output channels)"};
+		}
+	}
+
 
 	TRACEPOINT;
 	int dx=dx_->value();
