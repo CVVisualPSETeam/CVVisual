@@ -13,7 +13,7 @@
 namespace cvv {
 namespace gui {
 
-/** Single Image Call Tab
+/** Single Image Call Tab.
  * @brief Inner part of a tab, contains an IageView.
  * The inner part of a tab or window
  * containing an ImageView.
@@ -27,25 +27,25 @@ Q_OBJECT
 public:
 
 	/**
-	 * @brief Short constructor using name from Call and default view.
+	 * @brief Short constructor named after the Call.
 	 * Initializes the ImageCallTab and names it after the associated FilterCall.
-	 * @param fc the SingleImageCall containing the information to be visualized.
+	 * @param call the SingleImageCall containing the information to be visualized.
 	 */
 	ImageCallTab(const cvv::impl::SingleImageCall& call);
 
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor..
-	 * @param tabName
-	 * @param fc the SingleImageCall containing the information to be visualized.
-	 * @attention might be deleted
+	 * @param tabName.
+	 * @param call the SingleImageCall containing the information to be visualized.
+	 * @attention might be deleted.
 	 */
 	ImageCallTab(const QString& tabName, const cvv::impl::SingleImageCall& call);
 
 	/**
-	 * @brief get ID
-	 * @return the ID of the CallTab
-	 * (ID is equal to the ID of the associated call)
+	 * @brief get ID.
+	 * @return the ID of the CallTab.
+	 * (ID is equal to the ID of the associated call).
 	 * Overrides CallTab's getId.
 	 */
 	size_t getId() const override;

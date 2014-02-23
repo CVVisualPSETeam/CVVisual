@@ -19,7 +19,7 @@
 namespace cvv {
 namespace gui {
 
-/** Filter Call Tab
+/** Filter Call Tab.
  * @brief Inner part of a tab, contains a FilterView.
  * The inner part of a tab or window
  * containing a FilterView.
@@ -33,7 +33,7 @@ Q_OBJECT
 public:
 
 	/**
-	 * @brief Short constructor using name from Call and default view.
+	 * @brief Short constructor named after the Call, using the default view.
 	 * Initializes the FilterCallTab with the default view and names it after the associated FilterCall.
 	 * @param filterCall the FilterCall containing the information to be visualized.
 	 */
@@ -42,7 +42,7 @@ public:
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor which initialises the Call Tab with default view from settings.
-	 * @param tabName
+	 * @param tabName.
 	 * @param filterCall the FilterCall containing the information to be visualized.
 	 */
 	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCalll);
@@ -50,24 +50,25 @@ public:
 	/**
 	 * @brief Constructor with specific view.
 	 * Constructor initialising the Call Tab.
-	 * @param tabName
+	 * @param tabName.
 	 * @param filterCall the FilterCall containing the information to be visualized.
 	 * @param viewId the ID of the view to be shown inside this CallTab.
 	 */
 	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCall, const QString& viewId);
 
 	/**
-	 * @brief get ID
-	 * @return the ID of the CallTab
-	 * (ID is equal to the ID of the associated call)
+	 * @brief get ID.
+	 * @return the ID of the CallTab.
+	 * (ID is equal to the ID of the associated call).
 	 * Overrides CallTab's getId.
 	 */
 	size_t getId() const override;
 
 	/**
-	 * @brief adds FilterView to map of all
+	 * @brief adds FilterView to map of all.
 	 * Adds a FilterView with a name to the thread local map of all FilterViews.
-	 * @param filterViewId the Id or name of the FilterView.
+	 * @param filterViewId the ID or name of the FilterView.
+	 * @param fView: function returning a unique_ptr on a FilterView.
 	 */
 	static void addFilterViewToMap(const QString& filterViewId, std::function<std::unique_ptr<cvv::view::FilterView>(const std::vector<cv::Mat>&, QWidget*)>);
 

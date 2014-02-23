@@ -21,7 +21,7 @@
 namespace cvv {
 namespace gui {
 
-/**
+/** Match Call Tab.
  * @brief Inner part of a tab, contains a MatchView.
  * The inner part of a tab or window
  * containing a MatchView.
@@ -43,7 +43,7 @@ public:
 			const std::vector<cv::DMatch>&, QWidget*)>;
 
 	/**
-	 * @brief Short constructor using name from Call and default view.
+	 * @brief Short constructor named after Call and using the default view.
 	 * Initializes the MatchCallTab with the default view and names it after the associated MatchCall.
 	 * @param matchCall the MatchCall containing the information to be visualized.
 	 */
@@ -52,7 +52,7 @@ public:
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor which initialises the Call Tab with default view from settings.
-	 * @param tabName
+	 * @param tabName.
 	 * @param matchCall the MatchCall containing the information to be visualized.
 	 */
 	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& matchCall);
@@ -60,24 +60,25 @@ public:
 	/**
 	 * @brief Constructor with specific view.
 	 * Constructor initialising the Call Tab.
-	 * @param tabName
+	 * @param tabName.
 	 * @param matchCall the MatchCall containing the information to be visualized.
 	 * @param viewId the ID of the view to be shown inside this CallTab.
 	 */
 	MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& matchCall, const QString& viewId);
 
 	/**
-	 * @brief get ID
-	 * @return the ID of the CallTab
-	 * (ID is equal to the ID of the associated call)
+	 * @brief get ID.
+	 * @return the ID of the CallTab.
+	 * (ID is equal to the ID of the associated call).
 	 * Overrides CallTab's getId.
 	 */
 	size_t getId() const override;
 
 	/**
-	 * @brief adds MatchView to map of all
+	 * @brief adds MatchView to map of all.
 	 * Adds a MatchView with a name to the thread local map of all MatchViews.
-	 * @param matchViewId the Id or name of the MatchView.
+	 * @param matchViewId the ID or name of the MatchView.
+	 * @param mView: function returning a unique_ptr to a MatchView.
 	 */
 	static void addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView);
 
@@ -86,7 +87,6 @@ private slots:
 	/**
 	 * @brief View selection change.
 	 * Called when the index of the view selection changes.
-	 * @param text of the current selection in the view selection.
 	 */
 	void currentIndexChanged();
 
@@ -111,7 +111,7 @@ private:
 	void createGui();
 
 	/**
-	 * @brief sets up View referred to by viewId
+	 * @brief sets up View referred to by viewId.
 	 * @param viewId ID of the view to be set.
 	 */
 	void setView();
