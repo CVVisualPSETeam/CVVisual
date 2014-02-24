@@ -12,6 +12,9 @@
 namespace cvv {
 namespace view {
 
+/**
+ * @brief Interface over visualizations of filter operations.
+ */
 class FilterView: public QWidget
 {
 Q_OBJECT
@@ -19,30 +22,33 @@ Q_OBJECT
 signals:
 
 	/**
-	 * @brief update left Ffooter
+	 * @brief update left Footer.
 	 * Signal to update the left side of the footer with newText.
-	 * @param newText
+	 * @param newText to show in the footer.
 	 */
 	void updateLeftFooter(const QString &newText);
 
 	/**
-	 * @brief update right foooter
+	 * @brief update right Footer.
 	 * Signal to update the right side of the footer with newText.
-	 * @param newText
+	 * @param newText to show in the footer.
 	 */
 	void updateRightFoooter(const QString& newText);
 
 public:
 	/**
-	 * @brief default constructor
+	 * @brief default constructor.
 	 **/
 	FilterView():FilterView{0}{};
 	
+	/**
+	 * @brief default destructor.
+	 */
 	virtual ~FilterView() = default;
 	
 protected:
 	/**
-	 * @brief constructor of QWidget(parent)
+	 * @brief constructor of QWidget(parent).
 	 * @param parent the parent of this view
 	 **/
 	FilterView(QWidget *parent):QWidget{parent}{};

@@ -13,6 +13,9 @@
 namespace cvv {
 namespace view {
 
+/**
+ * @brief interface over visualizations of match operations.
+ */
 class MatchView: public QWidget
 {
 Q_OBJECT
@@ -20,16 +23,16 @@ Q_OBJECT
 signals:
 
 	/**
-	 * @brief update left footer
+	 * @brief update left Footer.
 	 * Signal to update the left side of the footer with newText.
-	 * @param newText
+	 * @param newText to update the footer with.
 	 */
 	void updateLeftFooter(QString newText);
 
 	/**
-	 * @brief update right footer
+	 * @brief update right Footer.
 	 * Signal to update the right side of the footer with newText.
-	 * @param newText
+	 * @param newText to update the footer with.
 	 */
 	void updateRightFoooter(QString newText);
 
@@ -39,12 +42,15 @@ public:
 	 **/
 	MatchView():MatchView{0}{};
 
+	/**
+	 * @brief default destructor.
+	 */
 	virtual ~MatchView() = default;
 
 protected:
 	/**
-	 * @brief constructor of QWidget(parent)
-	 * @param parent the parent of this view
+	 * @brief constructor of QWidget(parent).
+	 * @param parent the parent of this view.
 	 **/
 	MatchView(QWidget *parent):QWidget{parent}{};
 };

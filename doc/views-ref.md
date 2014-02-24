@@ -3,7 +3,7 @@
 Most views offer an `ImageInformation` collapsable in their accordion menus.  
 The zoom can be found here.  
 `Ctrl`+`Mouse wheel` is also zoom; `Ctrl`+`Shift`+`Mouse wheel` is a slower zoom.  
-If the zoom is deeper than 60%, the image's pixels will be overlaid with their channel values; usually, the order is BGR[+alpha] from the top (more than 4 channels are not supported).    
+If the zoom is deeper than 60%, the image's pixels will be overlaid with their channel values; usually, the order is BGR[+alpha] from the top.    
   
 ##Single Image View:
 Associated with the `debugSingleImage` function.  
