@@ -97,12 +97,22 @@ void DataController::lastCall()
 	TRACEPOINT;
 }
 
+static std::unique_ptr<DataController>& realSingleton() {
+	TRACEPOINT;
+	static auto var = util::make_unique<DataController>();
+	TRACEPOINT;
+	return var;
+}
+
+void deleteDataController() {
+	realSingleton().reset();
+}
 
 DataController& dataController()
 {
 	TRACEPOINT;
-	static DataController controller{};
+	//static DataController controller{};
 	TRACEPOINT;
-	return controller;
+	return *realSingleton();
 }
 }} // namespaces cvv::impl

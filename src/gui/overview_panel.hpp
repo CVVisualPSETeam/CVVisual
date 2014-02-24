@@ -75,8 +75,6 @@ private slots:
 
     void imgSizeSliderAction();
 
-    void toggleImages();
-	
 	void showHelp(QString topic);
 
 private:
@@ -86,7 +84,6 @@ private:
     util::Reference<controller::ViewController> controller;
     QLabel *imgSizeSliderLabel;
     QSlider *imgSizeSlider;
-    QPushButton *showImgsButton;
 
     void initEngine();
 

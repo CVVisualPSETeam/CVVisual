@@ -105,8 +105,7 @@ struct ColorTable
 		table{}
 	{
 		TRACEPOINT;
-		//TODO: I guess this should be 256?
-		for(int i=0;i<265;i++){table.push_back(qRgb(i,i,i));}
+		for(int i=0;i<256;i++){table.push_back(qRgb(i,i,i));}
 		TRACEPOINT;
 	}
 
@@ -123,6 +122,7 @@ struct ColorTable
 	 */
 	QVector<QRgb> table;
 };
+
 /**
  * @brief Static colortable for CV_XXC1
  */

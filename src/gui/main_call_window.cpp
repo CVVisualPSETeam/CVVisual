@@ -1,5 +1,6 @@
 #include "main_call_window.hpp"
 
+#include <QApplication>
 #include <QTimer>
 #include <QPoint>
 
@@ -9,19 +10,20 @@
 namespace cvv { namespace gui {
 
 MainCallWindow::MainCallWindow(util::Reference<controller::ViewController> controller,
-							   size_t id, OverviewPanel *ovPanel)
-								: CallWindow(controller, id), ovPanel{ovPanel},
-								  closeWindow{util::make_unique<CloseWindow>(controller)}
+		size_t id, OverviewPanel *ovPanel):
+	CallWindow(controller, id), ovPanel{ovPanel},
+	closeWindow{util::make_unique<CloseWindow>(controller)}
 {
 	TRACEPOINT;
 	tabOffset = 1;
 	tabWidget->insertTab(0, ovPanel, "Overview");
-    auto *tabBar = tabWidget->getTabBar();
-    tabBar->tabButton(0,  QTabBar::RightSide)->hide();
-    setWindowTitle(QString("CVVisual | main window"));
-	QTimer *timer = new QTimer(this);
-	connect(timer, SIGNAL(timeout()), this, SLOT(removeEmptyWindowsDelayed()));	
-	timer->start(125);
+	auto *tabBar = tabWidget->getTabBar();
+	tabBar->tabButton(0,  QTabBar::RightSide)->hide();
+	setWindowTitle(QString("CVVisual | main window"));
+	connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
+	//QTimer *timer = new QTimer(this);
+	//connect(timer, SIGNAL(timeout()), this, SLOT(removeEmptyWindowsDelayed()));	
+	//timer->start(125);
     TRACEPOINT;
 }
 	
@@ -66,6 +68,11 @@ void MainCallWindow::removeEmptyWindowsDelayed()
 	{
 		removeEmptyWindowsDelayedCounter = 8;
 	}
+}
+
+void MainCallWindow::aboutToQuit()
+{
+	controller->cleanupQt();
 }
 
 void MainCallWindow::hideCloseWindow()

@@ -33,7 +33,8 @@ OverviewTableRow::OverviewTableRow(util::Reference<const impl::Call> call): call
 	TRACEPOINT;
 }
 
-void OverviewTableRow::addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages, int imgHeight, int imgWidth)
+void OverviewTableRow::addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages,
+		int imgHeight, int imgWidth)
 {
 	TRACEPOINT;
 	auto *idItem = new QTableWidgetItem(idStr);
@@ -44,8 +45,9 @@ void OverviewTableRow::addToTable(QTableWidget *table, size_t row, bool showImag
 		for (size_t i = 0; i < imgs.size() && i < maxImages; i++)
 		{
 			QTableWidgetItem *imgWidget = new QTableWidgetItem{};
-            imgWidget->setData(Qt::DecorationRole, imgs.at(i).scaled(imgHeight, imgWidth, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            imgWidget->setTextAlignment(Qt::AlignHCenter);
+			imgWidget->setData(Qt::DecorationRole, imgs.at(i).scaled(imgHeight, imgWidth,
+					Qt::KeepAspectRatio, Qt::SmoothTransformation));
+			imgWidget->setTextAlignment(Qt::AlignHCenter);
 			items.push_back(imgWidget);
 		}
 	}

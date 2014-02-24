@@ -7,6 +7,7 @@ namespace cvv {
 
 namespace impl {
 	void finalShow();
+	void deleteDataController();
 }
 
 inline void finalShow() {

@@ -21,7 +21,7 @@ CallWindow::CallWindow(util::Reference<controller::ViewController> controller, s
 	TRACEPOINT;
 	initTabs();
 	initFooter();
-    setWindowTitle(QString("CVVisual | window no. %1").arg(id));
+	setWindowTitle(QString("CVVisual | window no. %1").arg(id));
 	setMinimumWidth(600);
 	setMinimumHeight(600);
 	TRACEPOINT;
@@ -31,7 +31,7 @@ void CallWindow::initTabs()
 {
 	TRACEPOINT;
 	tabWidget = new TabWidget(this);
-    tabWidget->setTabsClosable(true);
+	tabWidget->setTabsClosable(true);
 	setCentralWidget(tabWidget);
 	progButton = new QPushButton("Resume program execution", this);
 	progButton->setStyleSheet("QPushButton {background-color: green; color: white;}");

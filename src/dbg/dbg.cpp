@@ -38,7 +38,7 @@ void log(const Location& loc, const std::string msg) {
 	stream << msg;
 	stream.put('\n');
 	
-	std::cout << stream.str();
+	std::cout << stream.str() << std::flush;
 }
 
 } // namespace impl

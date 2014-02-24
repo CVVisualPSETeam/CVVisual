@@ -63,10 +63,11 @@ public:
 	 */
 	void lastCall();
 private:
-	controller::ViewController viewController;
 	std::vector<std::unique_ptr<Call>> calls;
+	controller::ViewController viewController;
 };
 
+void deleteDataController();
 DataController& dataController();
 
 }} // namespaces cvv::impl

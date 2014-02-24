@@ -39,7 +39,7 @@ int main(int argc, char** argv) {
 	TRACEPOINT;
 	if(argc != 2)
 	{
-		std::cerr << argv[0] << " must be called with two files as arguments\n";
+		std::cerr << argv[0] << " must be called with exactly one file as argument\n";
 		return 1;
 	}
 	//cvv::dbg::setLoggingState(true);

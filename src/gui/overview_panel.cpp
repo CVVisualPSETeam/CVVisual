@@ -21,12 +21,13 @@ OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> control
     controller{controller}
 {
 	TRACEPOINT;
-    controller->setDefaultSetting("overview", "imgzoom", "20");
-    queryWidget = new qtutil::STFLQueryWidget();
-    table = new OverviewTable(util::makeRef(*controller), this);
-    QVBoxLayout *layout = new QVBoxLayout;
+	qtutil::setDefaultSetting("overview", "imgzoom", "20");
+    QVBoxLayout *layout = new QVBoxLayout{};
+    setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
+    queryWidget = new qtutil::STFLQueryWidget();
     layout->addWidget(queryWidget);
+    table = new OverviewTable(controller);
     layout->addWidget(table);
 
     auto bottomArea = new QWidget{this};
@@ -40,17 +41,12 @@ OverviewPanel::OverviewPanel(util::Reference<controller::ViewController> control
     imgSizeSlider->setMaximumWidth(200);
     imgSizeSlider->setMinimum(0);
     imgSizeSlider->setMaximum(100);
-    imgSizeSlider->setSliderPosition(controller->getSetting("overview", "imgzoom").toInt());
+    imgSizeSlider->setSliderPosition(qtutil::getSetting("overview", "imgzoom").toInt());
     connect(imgSizeSlider, SIGNAL(valueChanged(int)), this, SLOT(imgSizeSliderAction()));
     bottomLayout->addWidget(imgSizeSlider);
-    showImgsButton = new QPushButton{};
-    showImgsButton->setText("Hide images");
-    //connect(showImgsButton, SIGNAL(released()), this, SLOT(toggleImages()));
-    //bottomLayout->addWidget(showImgsButton);
     bottomArea->setLayout(bottomLayout);
     layout->addWidget(bottomArea);
 
-    setLayout(layout);
     initEngine();
 	connect(queryWidget, SIGNAL(showHelp(QString)), this, SLOT(showHelp(QString)));
     //connect(queryWidget, SIGNAL(userInputUpdate(QString)), this, SLOT(updateQuery(QString)));
@@ -151,22 +147,6 @@ void OverviewPanel::imgSizeSliderAction()
 	TRACEPOINT;
     controller->setSetting("overview", "imgzoom", QString::number(imgSizeSlider->value()));
     table->updateUI();
-    TRACEPOINT;
-}
-
-void OverviewPanel::toggleImages()
-{
-	TRACEPOINT;
-    if (showImgsButton->text() == "Show images")
-    {
-        table->showImages();
-        showImgsButton->setText("Hide images");
-    }
-    else
-    {
-        table->hideImages();
-        showImgsButton->setText("Show images");
-    }
     TRACEPOINT;
 }
 

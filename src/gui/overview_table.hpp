@@ -33,9 +33,8 @@ public:
 	/**
 	 * @brief Constructs a new OverviewTable.
 	 * @param controller it's ViewController
-	 * @param parent it's parent overview
 	 */
-	OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent);
+	OverviewTable(util::Reference<controller::ViewController> controller);
 	
 	~OverviewTable() { TRACEPOINT; }
 	
@@ -74,7 +73,6 @@ public:
 
 private:
 	util::Reference<controller::ViewController> controller;
-	OverviewPanel *parent;
 	bool doesShowImages = true;
 	qtutil::Accordion *subtableAccordion;
 	std::vector<OverviewGroupSubtable*> subTables{};

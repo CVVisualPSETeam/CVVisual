@@ -71,7 +71,7 @@ public:
 	 */
 	ViewController();
 	
-	~ViewController() {TRACEPOINT;}
+	~ViewController();// {TRACEPOINT;}
 
     /**
      * @brief Adds the new call tab type.
@@ -259,6 +259,8 @@ public:
 	 * @brief Hide the close window of the main window.
 	 */
 	void hideCloseWindow();
+	
+	void cleanupQt();
 	
 private:
 

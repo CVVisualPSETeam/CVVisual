@@ -22,23 +22,68 @@ namespace cvv {
 namespace controller {
 
 //It's only used for instatiating a QApplication.
-char *emptyArray[] = {nullptr};
+//static char *emptyArray[] = {""};
+static char* parameterSystemV[] = {new char[1]{0}, nullptr};
+static int parameterSystemC = 1;
 
 ViewController::ViewController()
 {
 	TRACEPOINT;
-    if(!QApplication::instance()) 
+	if(!QApplication::instance())
 	{
-        int zero = 0;
-        auto tmp = new QApplication{zero, emptyArray};
+        	auto tmp = new QApplication{parameterSystemC, parameterSystemV};
 		(void) tmp;
 		DEBUGF("QApplication is at %s", tmp);
-    }
-    ovPanel = new gui::OverviewPanel{util::makeRef<ViewController>(*this)};
-    mainWindow = new gui::MainCallWindow(util::makeRef<ViewController>(*this), 0, ovPanel);
+	}
+    ovPanel = new gui::OverviewPanel{util::makeRef(*this)};
+    mainWindow = new gui::MainCallWindow(util::makeRef(*this), 0, ovPanel);
     windowMap[0] = std::unique_ptr<gui::CallWindow>(mainWindow);
-    mainWindow->show();
     max_window_id = 0;
+    mainWindow->show();
+	TRACEPOINT;
+}
+
+ViewController::~ViewController()
+{
+	TRACEPOINT;
+}
+
+void ViewController::cleanupQt()
+{
+	TRACEPOINT;
+	if(hasFinalCall())
+	{
+		TRACEPOINT;
+		for(auto& window: windowMap)
+		{
+			auto tmp = window.second->parentWidget();
+			if(tmp)
+			{
+				DEBUGF("Window %s has parent at %s", window.first, tmp);
+				window.second.release();
+			}
+			else
+			{
+				DEBUGF("Window %s has no parent", window.first);
+				window.second.release()->deleteLater();
+			}
+		}
+		TRACEPOINT;
+		for(auto& tab: callTabMap)
+		{
+			auto tmp = tab.second->parentWidget();
+			if(tmp)
+			{
+				DEBUGF("Tab %s has parent at %s", tab.first, tmp);
+				tab.second.release();
+			}
+			else
+			{
+				DEBUGF("Tab %s has no parent", tab.first);
+				tab.second.release()->deleteLater();
+			}
+		}
+	}
 	TRACEPOINT;
 }
 
@@ -304,7 +349,7 @@ bool ViewController::shouldRunRemoveEmptyWindows()
 {
 	return shouldRunRemoveEmptyWindows_;
 }
-										  
+
 void ViewController::showExitProgramButton()
 {
 	TRACEPOINT;
@@ -321,7 +366,7 @@ bool ViewController::hasCall(size_t id)
 	TRACEPOINT;
 	return impl::dataController().hasCall(id);
 }
-											  
+
 void ViewController::setMode(Mode newMode)
 {
 	TRACEPOINT;

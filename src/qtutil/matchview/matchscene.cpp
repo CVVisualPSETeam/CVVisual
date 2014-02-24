@@ -3,6 +3,7 @@
 #include <QPoint>
 #include <QScrollBar>
 
+
 #include "matchscene.hpp"
 #include "../../dbg/dbg.hpp"
 
@@ -20,14 +21,29 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
 	graphicView_		=graphicView.get();
 
 	auto leftImage		= util::make_unique<ZoomableImage>(imageLeft);
-	leftImage_		= leftImage.get();
 	auto rightImage		= util::make_unique<ZoomableImage>(imageRight);
+	leftImage_		= leftImage.get();
 	rightImage_		= rightImage.get();
 
 	TRACEPOINT;
-	leftImWidget_		= graphicScene_->addWidget(leftImage.release());
-	rightImWidget_		= graphicScene_->addWidget(rightImage.release());
+	//leftImWidget_		= graphicScene_->addWidget(leftImage.release());
+	//rightImWidget_		= graphicScene_->addWidget(rightImage.release());
+	leftImWidget_ = new QGraphicsProxyWidget{};
+	TRACEPOINT;
+	DEBUGF("leftImWidget_: %s, leftImage: %s", leftImWidget_, leftImage.get());
+	leftImWidget_->setWidget(new QWidget{});
+	TRACEPOINT;
+	rightImWidget_= new QGraphicsProxyWidget{};
+	TRACEPOINT;
+	rightImWidget_->setWidget(new QWidget{});
+	TRACEPOINT;
+	leftImage.release();
+	rightImage.release();
 
+	graphicScene_->addItem(leftImWidget_);
+	TRACEPOINT;
+	graphicScene_->addItem(rightImWidget_);
+	
 	TRACEPOINT;
 	leftImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
 	rightImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);

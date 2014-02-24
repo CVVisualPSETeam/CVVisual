@@ -14,8 +14,8 @@
 
 namespace cvv { namespace gui {
 
-OverviewTable::OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent):
-	controller{controller}, parent{parent}
+OverviewTable::OverviewTable(util::Reference<controller::ViewController> controller):
+	controller{controller}
 {
 	TRACEPOINT;
 	subtableAccordion = new qtutil::Accordion{};
