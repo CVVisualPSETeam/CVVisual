@@ -265,10 +265,10 @@ public:
 private:
 
 	static std::map<QString, TabFactory> callTabType;
-
-    std::map<size_t, std::unique_ptr<gui::CallWindow>> windowMap{};
+	
+	std::map<size_t, std::unique_ptr<gui::CallWindow>> windowMap{};
 	gui::MainCallWindow *mainWindow;
-
+	
 	std::map<size_t, std::unique_ptr<gui::CallTab>> callTabMap{};
 	gui::OverviewPanel* ovPanel;
 	bool doesShowExitProgramButton = false;
@@ -278,10 +278,12 @@ private:
 	bool shouldRunRemoveEmptyWindows_ = true;
 	
 	Mode mode = Mode::NORMAL;
-
+	
+	bool ownsQApplication = false;
+	
 	size_t max_window_id = 0;
-
-    bool hasCall(size_t id);
+	
+	bool hasCall(size_t id);
 	
 	void updateMode();
 	

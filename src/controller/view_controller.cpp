@@ -31,7 +31,8 @@ ViewController::ViewController()
 	TRACEPOINT;
 	if(!QApplication::instance())
 	{
-        	auto tmp = new QApplication{parameterSystemC, parameterSystemV};
+		auto tmp = new QApplication{parameterSystemC, parameterSystemV};
+		ownsQApplication = true;
 		(void) tmp;
 		DEBUGF("QApplication is at %s", tmp);
 	}
@@ -45,6 +46,10 @@ ViewController::ViewController()
 
 ViewController::~ViewController()
 {
+	TRACEPOINT;
+	if(ownsQApplication) {
+		delete QApplication::instance();
+	}
 	TRACEPOINT;
 }
 
