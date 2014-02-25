@@ -291,7 +291,6 @@ public slots:
 		TRACEPOINT;
 	}
 
-protected:
 	/**
 	 * @brief The overridden wheel event (from QWidget).
 	 * @param event The event.

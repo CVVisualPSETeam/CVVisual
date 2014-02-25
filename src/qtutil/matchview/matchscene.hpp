@@ -12,6 +12,7 @@
 #include "opencv2/features2d/features2d.hpp"
 #include "cvvmatch.hpp"
 #include "cvvkeypoint.hpp"
+#include "zoomableproxyobject.hpp"
 #include "../zoomableimage.hpp"
 #include "../zoomableimageoptpanel.hpp"
 #include "../../dbg/dbg.hpp"
@@ -65,8 +66,8 @@ private:
 	qtutil::ZoomableImage 	*leftImage_;
 	qtutil::ZoomableImage 	*rightImage_;
 
-	QGraphicsProxyWidget	*leftImWidget_;
-	QGraphicsProxyWidget	*rightImWidget_;
+	ZoomableProxyObject	*leftImWidget_;
+	ZoomableProxyObject	*rightImWidget_;
 
 };
 }}

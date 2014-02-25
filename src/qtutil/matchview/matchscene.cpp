@@ -28,22 +28,16 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
 	TRACEPOINT;
 	//leftImWidget_		= graphicScene_->addWidget(leftImage.release());
 	//rightImWidget_		= graphicScene_->addWidget(rightImage.release());
-	leftImWidget_ = new QGraphicsProxyWidget{};
+	leftImWidget_ = new ZoomableProxyObject{leftImage.release()};
 	TRACEPOINT;
-	DEBUGF("leftImWidget_: %s, leftImage: %s", leftImWidget_, leftImage.get());
-	leftImWidget_->setWidget(new QWidget{});
+
+	rightImWidget_= new ZoomableProxyObject{rightImage.release()};
 	TRACEPOINT;
-	rightImWidget_= new QGraphicsProxyWidget{};
-	TRACEPOINT;
-	rightImWidget_->setWidget(new QWidget{});
-	TRACEPOINT;
-	leftImage.release();
-	rightImage.release();
 
 	graphicScene_->addItem(leftImWidget_);
 	TRACEPOINT;
 	graphicScene_->addItem(rightImWidget_);
-	
+
 	TRACEPOINT;
 	leftImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
 	rightImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
