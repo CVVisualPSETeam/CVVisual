@@ -20,7 +20,6 @@ MainCallWindow::MainCallWindow(util::Reference<controller::ViewController> contr
 	auto *tabBar = tabWidget->getTabBar();
 	tabBar->tabButton(0,  QTabBar::RightSide)->hide();
 	setWindowTitle(QString("CVVisual | main window"));
-	connect(QApplication::instance(), SIGNAL(aboutToQuit()), this, SLOT(aboutToQuit()));
 	//QTimer *timer = new QTimer(this);
 	//connect(timer, SIGNAL(timeout()), this, SLOT(removeEmptyWindowsDelayed()));	
 	//timer->start(125);
@@ -68,11 +67,6 @@ void MainCallWindow::removeEmptyWindowsDelayed()
 	{
 		removeEmptyWindowsDelayedCounter = 8;
 	}
-}
-
-void MainCallWindow::aboutToQuit()
-{
-	controller->cleanupQt();
 }
 
 void MainCallWindow::hideCloseWindow()

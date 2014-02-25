@@ -57,7 +57,6 @@ protected:
 
 private slots:
 	void removeEmptyWindowsDelayed();
-	void aboutToQuit();
 	
 private:
 	OverviewPanel *ovPanel;

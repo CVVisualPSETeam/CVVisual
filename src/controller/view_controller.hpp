@@ -21,10 +21,10 @@
 namespace cvv {
 
 namespace gui {
-    class CallTab;
-    class CallWindow;
-    class MainCallWindow;
-    class OverviewPanel;
+	class CallTab;
+	class CallWindow;
+	class MainCallWindow;
+	class OverviewPanel;
 }
 
 namespace controller {
@@ -32,7 +32,7 @@ namespace controller {
 /**
  * @brief Modes that this cvv application can be running in.
  */
-enum Mode
+enum class Mode
 {
 	/**
 	 * @brief The normal mode.
@@ -73,157 +73,157 @@ public:
 	
 	~ViewController();// {TRACEPOINT;}
 
-    /**
-     * @brief Adds the new call tab type.
-     * @param typeName name of the new type
-     * @param constr function constructing an instance of this  call tab type
-     * @return an instance of the new call tab type
-     */
-    static void addCallType(const QString typeName, TabFactory constr);
+	/**
+	 * @brief Adds the new call tab type.
+	 * @param typeName name of the new type
+	 * @param constr function constructing an instance of this  call tab type
+	 * @return an instance of the new call tab type
+	 */
+	static void addCallType(const QString typeName, TabFactory constr);
 
-    /**
-     * @brief Adds a new call and shows it in the overview table.
-     * @param data new call (data)
-     */
-    void addCall(util::Reference<impl::Call> data);
+	/**
+	 * @brief Adds a new call and shows it in the overview table.
+	 * @param data new call (data)
+	 */
+	void addCall(util::Reference<impl::Call> data);
 
-    /**
-     * @brief Execute the Qt event loop.
-     */
-    void exec();
+	/**
+	 * @brief Execute the Qt event loop.
+	 */
+	void exec();
 
-    /**
-     * @brief Get the call with the given id.
-     * @param id given id
-     * @return call with the given id
-     */
-    impl::Call& getCall(size_t id);
+	/**
+	 * @brief Get the call with the given id.
+	 * @param id given id
+	 * @return call with the given id
+	 */
+	impl::Call& getCall(size_t id);
 
-    /**
-     * @brief Get the current setting [key] in the given scope.
+	/**
+	 * @brief Get the current setting [key] in the given scope.
 	 * Please use `setDefaultSetting` to set a default value that's other than
 	 * an empty QString.
-     * @param scope given scope (e.g. 'Overview')
-     * @param key settings key (e.g. 'autoOpenTabs')
-     * @return settings string
-     */
-    QString getSetting(const QString &scope, const QString &key);
+	 * @param scope given scope (e.g. 'Overview')
+	 * @param key settings key (e.g. 'autoOpenTabs')
+	 * @return settings string
+	 */
+	QString getSetting(const QString &scope, const QString &key);
 
-    /**
+	/**
 	 * @brief Get the inherited call windows with tabs.
 	 * @return the inherited CallWindows
-     */
-    std::vector<util::Reference<gui::CallWindow>> getTabWindows();
+	 */
+	std::vector<util::Reference<gui::CallWindow>> getTabWindows();
 	
 	/**
 	 * @brief Get the inherited main window.
 	 * @return the inherited main window
-     */
-    util::Reference<gui::MainCallWindow> getMainWindow();
+	 */
+	util::Reference<gui::MainCallWindow> getMainWindow();
 
-    /**
-     * @brief Move the call tab with the given id to a new window.
-     * @param tabId given call tab id
-     */
-    void moveCallTabToNewWindow(size_t tabId);
+	/**
+	 * @brief Move the call tab with the given id to a new window.
+	 * @param tabId given call tab id
+	 */
+	void moveCallTabToNewWindow(size_t tabId);
 
-    /**
-     * @brief Move the given call tab to the given window.
-     * @param tabId id of the given call tab
-     * @param windowId id of the given window (0 is the main window)
-     */
-    void moveCallTabToWindow(size_t tabId, size_t windowId);
+	/**
+	 * @brief Move the given call tab to the given window.
+	 * @param tabId id of the given call tab
+	 * @param windowId id of the given window (0 is the main window)
+	 */
+	void moveCallTabToWindow(size_t tabId, size_t windowId);
 
-    /**
-     * @brief Removes the call tab with the given id.
-     * @param tabId given id
-     * @param deleteCall if deleteCall and deleteIt are true, it also deletes the proper Call
-     */
-    void removeCallTab(size_t tabId, bool deleteIt = true, bool deleteCall = false);
+	/**
+	 * @brief Removes the call tab with the given id.
+	 * @param tabId given id
+	 * @param deleteCall if deleteCall and deleteIt are true, it also deletes the proper Call
+	 */
+	void removeCallTab(size_t tabId, bool deleteIt = true, bool deleteCall = false);
 
-    /**
-     * @brief Opens the users default browser with the topic help page.
-     * Current URL: cvv.mostlynerdless.de/help.php?topic=[topic]
-     *
+	/**
+	 * @brief Opens the users default browser with the topic help page.
+	 * Current URL: cvv.mostlynerdless.de/help.php?topic=[topic]
+	 *
 	 * Topics can be added via appending the doc/topics.yml file.
 	 *
-     * @param topic help topic
-     */
-    void openHelpBrowser(const QString &topic);
+	 * @param topic help topic
+	 */
+	void openHelpBrowser(const QString &topic);
 
-    /**
-     * @brief Resume the execution of the calling program.
-     */
-    void resumeProgramExecution();
+	/**
+	 * @brief Resume the execution of the calling program.
+	 */
+	void resumeProgramExecution();
 
-    /**
-     * @brief Set the default setting for a given stettings key and scope.
-     * It doesn't override existing settings.
-     * @param scope given settings scope
-     * @param key given settings key
-     * @param value default value of the setting
-     */
-    void setDefaultSetting(const QString &scope, const QString &key, const QString &value);
+	/**
+	 * @brief Set the default setting for a given stettings key and scope.
+	 * It doesn't override existing settings.
+	 * @param scope given settings scope
+	 * @param key given settings key
+	 * @param value default value of the setting
+	 */
+	void setDefaultSetting(const QString &scope, const QString &key, const QString &value);
 
-    /**
-     * @brief Set the setting for a given stettings key and scope.
-     * @param scope given settings scope
-     * @param key given settings key
-     * @param value new value of the setting
-     */
-    void setSetting(const QString &scope, const QString &key, const QString &value);
+	/**
+	 * @brief Set the setting for a given stettings key and scope.
+	 * @param scope given settings scope
+	 * @param key given settings key
+	 * @param value new value of the setting
+	 */
+	void setSetting(const QString &scope, const QString &key, const QString &value);
 
-    /**
-     * @brief Show the given call tab and bring it's window to the front.
+	/**
+	 * @brief Show the given call tab and bring it's window to the front.
 	 * @note Its not guaranteed that it really brings the tabs' window to the
 	 * front.
-     * @param tabId id of the given call tab
-     */
-    void showCallTab(size_t tabId);
+	 * @param tabId id of the given call tab
+	 */
+	void showCallTab(size_t tabId);
 
-    /**
-     * @brief Shows the tab and opens it if neccessary.
-     * @param tabId id of the tab
-     */
-    void showAndOpenCallTab(size_t tabId);
+	/**
+	 * @brief Shows the tab and opens it if neccessary.
+	 * @param tabId id of the tab
+	 */
+	void showAndOpenCallTab(size_t tabId);
 
-    /**
-     * @brief Show the overview tab (and table) and bring it's window to the front.
+	/**
+	 * @brief Show the overview tab (and table) and bring it's window to the front.
 	 * @note The latter is not guaranteed.
-     */
-    void showOverview();
+	 */
+	void showOverview();
 
-    /**
-     * @brief Get the window in which the given tab lays currently.
-     * @param tabId id of the given call tab
-     * @return current window
-     */
-    gui::CallWindow* getCurrentWindowOfTab(size_t tabId);
+	/**
+	 * @brief Get the window in which the given tab lays currently.
+	 * @param tabId id of the given call tab
+	 * @return current window
+	 */
+	gui::CallWindow* getCurrentWindowOfTab(size_t tabId);
 
-    /**
-     * @brief Returns the call tab with the given id and constructs it if doesn't exit.
-     * @param tabId given id
-     * @return call tab with given id
-     */
-    gui::CallTab* getCallTab(size_t tabId);
+	/**
+	 * @brief Returns the call tab with the given id and constructs it if doesn't exit.
+	 * @param tabId given id
+	 * @return call tab with given id
+	 */
+	gui::CallTab* getCallTab(size_t tabId);
 
-    /**
-     * @brief Remove the window from the internal data structures.
-     * @param windowId id of the window
-     * @note Only call this method if you now the implacations of deleting the window.
-     */
-    void removeWindowFromMaps(size_t windowId);
+	/**
+	 * @brief Remove the window from the internal data structures.
+	 * @param windowId id of the window
+	 * @note Only call this method if you now the implacations of deleting the window.
+	 */
+	void removeWindowFromMaps(size_t windowId);
 
-    /**
-     * @brief Shows an "Exit program" button on each window.
-     */
-    void showExitProgramButton();
+	/**
+	 * @brief Shows an "Exit program" button on each window.
+	 */
+	void showExitProgramButton();
 
 	/**
 	 * @brief Removes the empty windows.
 	 * @note It's safer to call the removeEmptyWindowsWithDelay method instead.
 	 */
-    void removeEmptyWindows();
+	void removeEmptyWindows();
 	
 	/**
 	 * @brief Removes the empty windows with a small delay.
@@ -259,8 +259,6 @@ public:
 	 * @brief Hide the close window of the main window.
 	 */
 	void hideCloseWindow();
-	
-	void cleanupQt();
 	
 private:
 

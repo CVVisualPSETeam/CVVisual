@@ -36,67 +36,35 @@ ViewController::ViewController()
 		(void) tmp;
 		DEBUGF("QApplication is at %s", tmp);
 	}
-    ovPanel = new gui::OverviewPanel{util::makeRef(*this)};
-    mainWindow = new gui::MainCallWindow(util::makeRef(*this), 0, ovPanel);
-    windowMap[0] = std::unique_ptr<gui::CallWindow>(mainWindow);
-    max_window_id = 0;
-    mainWindow->show();
+	ovPanel = new gui::OverviewPanel{util::makeRef(*this)};
+	mainWindow = new gui::MainCallWindow(util::makeRef(*this), 0, ovPanel);
+	windowMap[0] = std::unique_ptr<gui::CallWindow>(mainWindow);
+	max_window_id = 0;
+	mainWindow->show();
 	TRACEPOINT;
 }
 
 ViewController::~ViewController()
 {
 	TRACEPOINT;
+	callTabMap.clear();
+	TRACEPOINT;
+	windowMap.clear();
+	TRACEPOINT;
+	windowMap.clear();
+	TRACEPOINT;
 	if(ownsQApplication) {
+		TRACEPOINT;
 		delete QApplication::instance();
 	}
 	TRACEPOINT;
 }
 
-void ViewController::cleanupQt()
-{
-	TRACEPOINT;
-	if(hasFinalCall())
-	{
-		TRACEPOINT;
-		for(auto& window: windowMap)
-		{
-			auto tmp = window.second->parentWidget();
-			if(tmp)
-			{
-				DEBUGF("Window %s has parent at %s", window.first, tmp);
-				window.second.release();
-			}
-			else
-			{
-				DEBUGF("Window %s has no parent", window.first);
-				window.second.release()->deleteLater();
-			}
-		}
-		TRACEPOINT;
-		for(auto& tab: callTabMap)
-		{
-			auto tmp = tab.second->parentWidget();
-			if(tmp)
-			{
-				DEBUGF("Tab %s has parent at %s", tab.first, tmp);
-				tab.second.release();
-			}
-			else
-			{
-				DEBUGF("Tab %s has no parent", tab.first);
-				tab.second.release()->deleteLater();
-			}
-		}
-	}
-	TRACEPOINT;
-}
-
 void ViewController::addCallType(const QString typeName,
-        TabFactory constr)
+		TabFactory constr)
 {
 	TRACEPOINT;
-    ViewController::callTabType[typeName] = constr;
+	ViewController::callTabType[typeName] = constr;
 	TRACEPOINT;
 }
 
@@ -148,7 +116,7 @@ void ViewController::exec()
 impl::Call& ViewController::getCall(size_t id)
 {
 	TRACEPOINT;
-    return impl::dataController().getCall(id);
+	return impl::dataController().getCall(id);
 }
 
 QString ViewController::getSetting(const QString &scope, const QString &key)
@@ -159,73 +127,73 @@ QString ViewController::getSetting(const QString &scope, const QString &key)
 std::vector<util::Reference<gui::CallWindow>> ViewController::getTabWindows()
 {
 	TRACEPOINT;
-    std::vector<util::Reference<gui::CallWindow>>  windows{};
-    for (auto &it : windowMap)
-    {
-        windows.push_back(util::makeRef(*(it.second)));
-    }
-    TRACEPOINT;
-    return windows;
+	std::vector<util::Reference<gui::CallWindow>>  windows{};
+	for (auto &it : windowMap)
+	{
+		windows.push_back(util::makeRef(*(it.second)));
+	}
+	TRACEPOINT;
+	return windows;
 }
 
 util::Reference<gui::MainCallWindow> ViewController::getMainWindow()
 {
-    TRACEPOINT;
-    return util::makeRef(*mainWindow);
+	TRACEPOINT;
+	return util::makeRef(*mainWindow);
 }
 
 void ViewController::moveCallTabToNewWindow(size_t tabId)
 {
 	TRACEPOINT;
-    if (!hasCall(tabId))
-        return;
-    auto newWindow = util::make_unique<gui::CallWindow>(util::makeRef<ViewController>(*this), ++max_window_id);
-    removeCallTab(tabId);
-    newWindow->addTab(getCallTab(tabId));
-    newWindow->show();
-   	if (doesShowExitProgramButton)
+	if (!hasCall(tabId))
+		return;
+	auto newWindow = util::make_unique<gui::CallWindow>(util::makeRef<ViewController>(*this), ++max_window_id);
+	removeCallTab(tabId);
+	newWindow->addTab(getCallTab(tabId));
+	newWindow->show();
+	if (doesShowExitProgramButton)
 	{
 		newWindow->showExitProgramButton();
 	}
-   	windowMap[max_window_id] = std::move(newWindow);
-   	removeEmptyWindowsWithDelay();
-    TRACEPOINT;
+	windowMap[max_window_id] = std::move(newWindow);
+	removeEmptyWindowsWithDelay();
+	TRACEPOINT;
 }
 
 void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 {
 	TRACEPOINT;
-    if (!hasCall(tabId))
-        return;
-    removeCallTab(tabId);
-    auto tab = getCallTab(tabId);
-    windowMap[windowId]->addTab(tab);
-    removeEmptyWindowsWithDelay();
-    TRACEPOINT;
+	if (!hasCall(tabId))
+		return;
+	removeCallTab(tabId);
+	auto tab = getCallTab(tabId);
+	windowMap[windowId]->addTab(tab);
+	removeEmptyWindowsWithDelay();
+	TRACEPOINT;
 }
 
 void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
 {
 	TRACEPOINT;
-    auto *curWindow = getCurrentWindowOfTab(tabId);
-    if (curWindow->hasTab(tabId))
-    {
-        getCurrentWindowOfTab(tabId)->removeTab(tabId);
-        if (deleteIt)
-        {
-            auto tab = callTabMap[tabId].release();
-            callTabMap.erase(tabId);
-            tab->deleteLater();
-        }
-    }
-    TRACEPOINT;
+	auto *curWindow = getCurrentWindowOfTab(tabId);
+	if (curWindow->hasTab(tabId))
+	{
+		getCurrentWindowOfTab(tabId)->removeTab(tabId);
+		if (deleteIt)
+		{
+			auto tab = callTabMap[tabId].get();
+			callTabMap.erase(tabId);
+			tab->deleteLater();
+		}
+	}
+	TRACEPOINT;
 	if (deleteCall && hasCall(tabId))
-    {
-        ovPanel->removeElement(tabId);
-        impl::dataController().removeCall(tabId);
-    }
-    removeEmptyWindowsWithDelay();
-    TRACEPOINT;
+	{
+		ovPanel->removeElement(tabId);
+		impl::dataController().removeCall(tabId);
+	}
+	removeEmptyWindowsWithDelay();
+	TRACEPOINT;
 }
 
 void ViewController::openHelpBrowser(const QString &topic)
@@ -238,8 +206,8 @@ void ViewController::openHelpBrowser(const QString &topic)
 void ViewController::resumeProgramExecution()
 {
 	TRACEPOINT;
-    QApplication::instance()->exit();
-    TRACEPOINT;
+	QApplication::instance()->exit();
+	TRACEPOINT;
 }
 
 void ViewController::setDefaultSetting(const QString &scope, const QString &key, const QString &value)
@@ -255,85 +223,85 @@ void ViewController::setSetting(const QString &scope, const QString &key, const 
 void ViewController::showCallTab(size_t tabId)
 {
 	TRACEPOINT;
-    auto *window = getCurrentWindowOfTab(tabId);
-    window->showTab(tabId);
-    window->setWindowState( (window->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
-    window->raise();
-    TRACEPOINT;
+	auto *window = getCurrentWindowOfTab(tabId);
+	window->showTab(tabId);
+	window->setWindowState( (window->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+	window->raise();
+	TRACEPOINT;
 }
 
 void ViewController::showAndOpenCallTab(size_t tabId)
 {
 	TRACEPOINT;
-    auto curWindow = getCurrentWindowOfTab(tabId);
-    if (!curWindow->hasTab(tabId))
-    {
-        moveCallTabToWindow(tabId, 0);
-        curWindow = mainWindow;
-    }
-    curWindow->showTab(tabId);
-    TRACEPOINT;
+	auto curWindow = getCurrentWindowOfTab(tabId);
+	if (!curWindow->hasTab(tabId))
+	{
+		moveCallTabToWindow(tabId, 0);
+		curWindow = mainWindow;
+	}
+	curWindow->showTab(tabId);
+	TRACEPOINT;
 }
 
 void ViewController::showOverview()
 {
 	TRACEPOINT;
 	mainWindow->setWindowState( (mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
-    mainWindow->raise();
-    mainWindow->showOverviewTab();
-    TRACEPOINT;
+	mainWindow->raise();
+	mainWindow->showOverviewTab();
+	TRACEPOINT;
 }
 
 gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
 {
 	TRACEPOINT;
-    for (auto &elem  : windowMap)
-    {
-        if (elem.second->hasTab(tabId))
-        {
-            return elem.second.get();
-        }
-    }
-    TRACEPOINT;
-    return mainWindow;
+	for (auto &elem  : windowMap)
+	{
+		if (elem.second->hasTab(tabId))
+		{
+			return elem.second.get();
+		}
+	}
+	TRACEPOINT;
+	return mainWindow;
 }
 
 gui::CallTab* ViewController::getCallTab(size_t tabId)
 {
 	TRACEPOINT;
-    if (callTabMap.count(tabId) == 0)
-    {
-        auto *call = &(getCall(tabId));
-        if (callTabType.count(call->type()) == 0)
-        {
-            throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
-        }
-        callTabMap[tabId] = callTabType[call->type()](util::makeRef(*call));
-    }
-    TRACEPOINT;
-    return callTabMap[tabId].get();
+	if (callTabMap.count(tabId) == 0)
+	{
+		auto *call = &(getCall(tabId));
+		if (callTabType.count(call->type()) == 0)
+		{
+			throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
+		}
+		callTabMap[tabId] = callTabType[call->type()](util::makeRef(*call));
+	}
+	TRACEPOINT;
+	return callTabMap[tabId].get();
 }
 
 void ViewController::removeWindowFromMaps(size_t windowId)
 {
 	TRACEPOINT;
-    if (windowMap.count(windowId) > 0)
-    {
-        windowMap.erase(windowId);
-    }
-   	TRACEPOINT;
+	if (windowMap.count(windowId) > 0)
+	{
+		windowMap.erase(windowId);
+	}
+	TRACEPOINT;
 }
 
 void ViewController::removeEmptyWindows()
 {
 	TRACEPOINT;
-    std::vector<size_t> remIds{};
+	std::vector<size_t> remIds{};
 	for (auto &elem : windowMap)
 	{
-	  if (elem.second->tabCount() == 0 && elem.second->getId() != 0)
-	  {
-		  remIds.push_back(elem.first);
-	  }
+		if (elem.second->tabCount() == 0 && elem.second->getId() != 0)
+		{
+			remIds.push_back(elem.first);
+		}
 	}
 	for (auto windowId : remIds)
 	{
@@ -358,10 +326,10 @@ bool ViewController::shouldRunRemoveEmptyWindows()
 void ViewController::showExitProgramButton()
 {
 	TRACEPOINT;
-    for (auto &elem : windowMap)
-    {
-        elem.second->showExitProgramButton();
-    }
+	for (auto &elem : windowMap)
+	{
+		elem.second->showExitProgramButton();
+	}
 	doesShowExitProgramButton = true;
 	TRACEPOINT;
 }
@@ -375,7 +343,7 @@ bool ViewController::hasCall(size_t id)
 void ViewController::setMode(Mode newMode)
 {
 	TRACEPOINT;
-	DEBUG(newMode);
+	DEBUG(static_cast<int>(newMode));
 	mode = newMode;
 	switch (newMode)
 	{
@@ -418,10 +386,10 @@ void ViewController::hideAll()
 {
 	TRACEPOINT;
 	for (auto &window : windowMap)
-    {
-        window.second->hide();
-    }
-    TRACEPOINT;
+	{
+		window.second->hide();
+	}
+	TRACEPOINT;
 }
 
 bool ViewController::hasFinalCall()
