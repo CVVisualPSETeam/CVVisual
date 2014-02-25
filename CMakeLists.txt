@@ -116,6 +116,9 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_match manual_test/match/main.cpp)
 	target_link_libraries(test_manual_match cvvisual opencv_core opencv_highgui)
 
+	add_executable(test_manual_single_image manual_test/single_image/main.cpp)
+	target_link_libraries(test_manual_single_image cvvisual opencv_core opencv_highgui)
+
 	add_executable(test_manual_signslot manual_test/signalslot/main.cpp)
 	target_link_libraries(test_manual_signslot cvvisual Qt5Core Qt5Widgets)
 

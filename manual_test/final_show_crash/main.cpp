@@ -7,6 +7,4 @@ int main() {
 	TRACEPOINT;
 	cvv::finalShow();
 	TRACEPOINT;
-	cvv::impl::deleteDataController();
-	TRACEPOINT;
 }

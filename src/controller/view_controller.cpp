@@ -13,7 +13,10 @@
 #include "../gui/main_call_window.hpp"
 #include "../gui/filter_call_tab.hpp"
 #include "../gui/match_call_tab.hpp"
+#include "../gui/image_call_tab.hpp"
 #include "../impl/filter_call.hpp"
+#include "../impl/match_call.hpp"
+#include "../impl/single_image_call.hpp"
 #include "../impl/data_controller.hpp"
 #include "../dbg/dbg.hpp"
 #include "../qtutil/util.hpp"
@@ -82,9 +85,17 @@ std::unique_ptr<cvv::gui::MatchCallTab> makeMatchCallTab(
 	return cvv::util::make_unique<cvv::gui::MatchCallTab>(*call.castTo<cvv::impl::MatchCall>());
 }
 
+std::unique_ptr<cvv::gui::ImageCallTab> makeImageCallTab(
+		cvv::util::Reference<cvv::impl::Call> call)
+{
+	TRACEPOINT;
+	return cvv::util::make_unique<cvv::gui::ImageCallTab>(*call.castTo<cvv::impl::SingleImageCall>());
+}
+
 std::map<QString, TabFactory> ViewController::callTabType {
 	{"filter", makeFilterCallTab},
-	{"match", makeMatchCallTab}
+	{"match", makeMatchCallTab},
+	{"singleImage", makeImageCallTab}
 };
 
 void ViewController::addCall(util::Reference<impl::Call> data)

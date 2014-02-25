@@ -6,6 +6,7 @@ namespace cvv { namespace impl {
 
 void finalShow() {
 	impl::dataController().lastCall();
+	impl::deleteDataController();
 }
 
 }} // namespaces cvv::impl
