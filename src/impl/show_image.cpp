@@ -9,7 +9,7 @@ namespace impl {
 void showImage(cv::InputArray img, const CallMetaData& data,
 		const char* description, const char* view)
 {
-	debugSingleImageCall(img, data, description, view, "showImage");
+	debugSingleImageCall(img, data, description, view, "singleImage");
 }
 
 }} //namespaces
