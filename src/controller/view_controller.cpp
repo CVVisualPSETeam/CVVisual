@@ -194,7 +194,6 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
 		{
 			auto tab = callTabMap[tabId].get();
 			callTabMap.erase(tabId);
-			tab->deleteLater();
 		}
 	}
 	TRACEPOINT;
