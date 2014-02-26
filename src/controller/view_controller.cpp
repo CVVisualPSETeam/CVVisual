@@ -296,6 +296,7 @@ void ViewController::removeWindowFromMaps(size_t windowId)
 	TRACEPOINT;
 	if (windowMap.count(windowId) > 0)
 	{
+		windowMap[windowId].release();
 		windowMap.erase(windowId);
 	}
 	TRACEPOINT;

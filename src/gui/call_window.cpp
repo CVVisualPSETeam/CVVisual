@@ -231,7 +231,7 @@ void CallWindow::closeEvent(QCloseEvent *event)
 	controller->removeWindowFromMaps(id);
 	TRACEPOINT;
 	// FIXME: tabWidget is already freed sometimes: Use-after-free Bug
-	//tabWidget->clear();
+	tabWidget->clear();
 	TRACEPOINT;
 	for (auto &elem : tabMap)
 	{
@@ -247,11 +247,13 @@ void CallWindow::closeEvent(QCloseEvent *event)
 void CallWindow::tabCloseRequested(int index)
 {
 	TRACEPOINT;
-    if (tabAtTabIndex.count(index) >= 1)
-    {
-        controller->removeCallTab(tabAtTabIndex[index]->getId());
-    }
-    TRACEPOINT;
+	if (tabAtTabIndex.count(index) >= 1)
+	{
+		controller->removeCallTab(tabAtTabIndex[index]->getId());
+	}
+	TRACEPOINT;
+	controller->removeEmptyWindows();
+	TRACEPOINT;
 }
 
 }}
