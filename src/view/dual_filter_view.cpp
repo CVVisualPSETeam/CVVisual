@@ -72,7 +72,8 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 		SLOT(updateFilterImg(const QString&)));
 
 	accor->insert("Filter selection", std::move(comboBox));
-	accor->setMinimumSize(150,0);
+	accor->setMinimumWidth(250);
+	accor->setMaximumWidth(250);
 	layout->addWidget(accor);
 
 	auto lambda = [this, imageLayout, accor](cv::Mat image, size_t count)
