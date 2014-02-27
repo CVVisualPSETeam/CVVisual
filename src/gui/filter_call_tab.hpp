@@ -15,6 +15,7 @@
 #include "../util/util.hpp"
 #include "../qtutil/registerhelper.hpp"
 #include "../qtutil/signalslot.hpp"
+#include "../dbg/dbg.hpp"
 
 namespace cvv {
 namespace gui {
@@ -55,7 +56,9 @@ public:
 	 * @param viewId the ID of the view to be shown inside this CallTab.
 	 */
 	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCall, const QString& viewId);
-
+	
+	~FilterCallTab(){TRACEPOINT;}
+	
 	/**
 	 * @brief get ID.
 	 * @return the ID of the CallTab.
