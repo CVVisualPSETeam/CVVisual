@@ -15,9 +15,9 @@ You should override following functions:
 	
 	virtual std::pair<bool, QString> checkInput(InputArray in) const;
 
-appyFilter has to apply your filter and checkInput should check wheather the filter can be applyed (the first member of the returned pair).
-In case the filter can not be applyed the second member of the returned pair should contain a message for the user.
+_applyFilter_ has to apply your filter and _checkInput_ should check weather the filter can be applied (the first member of the returned pair).
+In case the filter can not be applied the second member of the returned pair should contain a message for the user.
 
-If user input changes the setting of the filter the function _emitSignal()_ of the member signFilterSettingsChanged\_ should be called.
+If user input changes the setting of the filter the function _emitSignal()_ of the member _signFilterSettingsChanged\__ should be called.
 
-For a detailed example look at CVVisual/src/qtutil/filter/grayfilterwidget.{hpp, cpp}
+For a detailed example look at _CVVisual/src/qtutil/filter/grayfilterwidget.{[hpp]{https://github.com/CVVisualPSETeam/CVVisual/blob/master/src/qtutil/filter/grayfilterwidget.hpp}, [cpp]{https://github.com/CVVisualPSETeam/CVVisual/blob/master/src/qtutil/filter/grayfilterwidget.cpp}}_
