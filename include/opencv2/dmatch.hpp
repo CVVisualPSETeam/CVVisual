@@ -32,20 +32,35 @@ static inline void debugDMatch(
 				std::move(matches), data, description, view);
 	}
 }
+static inline void debugDMatch(
+		cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
+		cv::InputArray img2, std::vector<cv::KeyPoint> keypoints2,
+		std::vector<cv::DMatch> matches, const impl::CallMetaData& data,
+		const std::string& description, const std::string& view)
+{
+	if(debugMode()) {
+		impl::debugDMatch(img1, std::move(keypoints1), img2, std::move(keypoints2),
+				std::move(matches), data, description.c_str(), view.c_str());
+	}
+}
 #else
+/**
+ * @brief Debug a set of matches between two images.
+ */
 static inline void debugDMatch(
 		cv::InputArray, std::vector<cv::KeyPoint>, cv::InputArray, std::vector<cv::KeyPoint>,
 		std::vector<cv::DMatch>, const impl::CallMetaData&, const char* = nullptr,
-		const char*w = nullptr);
+		const char* = nullptr)
+{}
+/**
+ * Dito.
+ */
+static inline void debugDMatch(
+		cv::InputArray, std::vector<cv::KeyPoint>, cv::InputArray, std::vector<cv::KeyPoint>,
+		std::vector<cv::DMatch>, const impl::CallMetaData&,const std::string&,
+		const std::string&)
+{}
 #endif
-
-/*
-static inline void debugDMatch(cv::InputArray original, cv::InputArray result,
-		impl::CallMetaData metaData, ::std::string description,
-		::std::string view = "") {
-	debugDMatch(original, result, metaData, description.c_str(), view.c_str());
-}
-*/
 
 } // namespace cvv
 
