@@ -4,10 +4,10 @@ If you want to enable the user to provide input to a filter you can inherit the 
 It provides an interface for a filter accepting In images as an input and Out images as output.
 The input images are passed using
 
-	InputArray  = std::array\<util::Reference\<const cv::Mat\>,In\>
+	InputArray  = std::array<util::Reference<const cv::Mat>,In>
 and the output is provided with an output parameter of the type:
 
-	OutputArray = std::array\<util::Reference\<cv::Mat\>,Out\>
+	OutputArray = std::array<util::Reference<cv::Mat>,Out>
 
 You should override following functions:
 	virtual void applyFilter(InputArray in,OutputArray out) const;
