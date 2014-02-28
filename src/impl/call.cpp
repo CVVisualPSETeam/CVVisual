@@ -5,8 +5,8 @@ namespace impl {
 
 size_t newCallId()
 {
-	thread_local size_t nextId = 1;
-	return nextId++;
+	thread_local std::mt19937 gen{std::random_device{}()};
+	return gen();
 }
 
 Call::Call() : metaData_{}, id{newCallId()}, calltype{} {}
