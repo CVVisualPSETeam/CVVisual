@@ -23,6 +23,8 @@ namespace cvv { namespace qtutil {
 
 /**
  * @brief Represents a gray filter.
+ *
+ * The user can select the factors used for every channel.
  */
 class GrayFilterWidget: public FilterFunctionWidget<1,1>
 {
@@ -86,7 +88,7 @@ private slots:
 	void setChannel(std::size_t n);
 
 	/**
-	 * @brief Sets the standard gray filter.
+	 * @brief Sets the standard gray filter. (0.299*R + 0.587*G + 0.114*B)
 	 */
 	void setStd();
 
@@ -100,7 +102,7 @@ private:
 	 */
 	util::ObserverPtr<QSpinBox> channel_;
 	/**
-	 * @brief Spin boxes for the channels.
+	 * @brief Spin boxes for the factor for each channel.
 	 */
 	std::vector<util::ObserverPtr<QDoubleSpinBox>> chanValues_;
 };
