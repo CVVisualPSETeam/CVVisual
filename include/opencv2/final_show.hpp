@@ -14,7 +14,9 @@ namespace impl {
  * 
  * This function must be called EXACTLY once if there was any prior debug-call.
  * 
- * If there was no prior call it may be called once in which case it does no harm.
+ * If there was no prior call it may be called once in which case it returns without opening a window.
+ * 
+ * In either case no further debug-calls must be made (undefined behaviour!!).
  */
 inline void finalShow() {
 #ifdef CVVISUAL_DEBUGMODE
