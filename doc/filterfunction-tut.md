@@ -10,7 +10,9 @@ and the output is provided with an output parameter of the type:
 	OutputArray = std::array<util::Reference<cv::Mat>,Out>
 
 You should override following functions:
+
 	virtual void applyFilter(InputArray in,OutputArray out) const;
+	
 	virtual std::pair<bool, QString> checkInput(InputArray in) const;
 
 appyFilter has to apply your filter and checkInput should check wheather the filter can be applyed (the first member of the returned pair).
