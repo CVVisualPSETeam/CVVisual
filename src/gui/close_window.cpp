@@ -1,5 +1,7 @@
 #include "close_window.hpp"
 
+#include <cstdlib>
+
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -64,7 +66,7 @@ void CloseWindow::helpRequested()
 void CloseWindow::exitRequested()
 {
 	TRACEPOINT;
-	exit(0);
+	std::quick_exit(0);
 }
 
 void CloseWindow::fastForwardRequested()
