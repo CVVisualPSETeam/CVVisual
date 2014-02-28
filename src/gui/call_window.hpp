@@ -138,8 +138,7 @@ protected:
 	TabWidget *tabWidget;
 	QMainWindow *window;
 	QPushButton *progButton;
-	std::map<size_t, CallTab*> tabMap; 
-	std::map<int, CallTab*> tabAtTabIndex;
+	std::map<size_t, CallTab*> tabMap;
 	QLabel *leftFooter;
 	QLabel *rightFooter;
 	int currentContextMenuTabId = -1;
@@ -152,6 +151,10 @@ protected:
 	void initFooter();
 
 	void closeEvent(QCloseEvent *event);
+	
+	size_t getCallTabIdByTabIndex(int index);
+	
+	bool hasTabAtIndex(int index);
 	
 };
 
