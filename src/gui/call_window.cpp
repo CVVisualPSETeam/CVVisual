@@ -3,6 +3,7 @@
 #include <QMenu>
 #include <QStatusBar>
 #include <QPushButton>
+#include <QVariant>
 
 #include "../dbg/dbg.hpp"
 #include "../stfl/stringutils.hpp"
@@ -32,12 +33,14 @@ void CallWindow::initTabs()
 	TRACEPOINT;
 	tabWidget = new TabWidget(this);
 	tabWidget->setTabsClosable(true);
+	tabWidget->setMovable(true);
 	setCentralWidget(tabWidget);
 	progButton = new QPushButton("Resume program execution", this);
 	progButton->setStyleSheet("QPushButton {background-color: green; color: white;}");
 	connect(progButton, SIGNAL(clicked()), this, SLOT(resumeProgramExecution()));
 	tabWidget->setCornerWidget(progButton, Qt::TopLeftCorner);
 	auto *tabBar = tabWidget->getTabBar();
+	tabBar->setElideMode(Qt::ElideRight);
 	tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(tabBar, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequested(QPoint)));
     connect(tabBar, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequested(int)));
@@ -68,8 +71,8 @@ void CallWindow::addTab(CallTab *tab)
 	TRACEPOINT;
 	tabMap[tab->getId()] = tab;
 	QString name = tab->getName() + "";
-	int index = tabWidget->addTab(tab, QString("[%1] ").arg(tab->getId()) + stfl::shortenString(name , 20));
-	tabAtTabIndex[index] = tab;
+	int index = tabWidget->addTab(tab, QString("[%1] ").arg(tab->getId()) + name);
+	tabWidget->getTabBar()->setTabData(index, QVariant((int)tab->getId()));
 	TRACEPOINT;
 }
 	
@@ -84,7 +87,6 @@ void CallWindow::removeTab(CallTab *tab)
 	tabMap.erase(tabMap.find(tab->getId()));
 	int index = tabWidget->indexOf(tab);
 	tabWidget->removeTab(index);
-	tabAtTabIndex.erase(index);
 	TRACEPOINT;
 }
 
@@ -160,7 +162,7 @@ void CallWindow::contextMenuRequested(const QPoint &location)
 						window->windowTitle()), this));
 		}
 	}
-	currentContextMenuTabId = tabAtTabIndex[tabIndex]->getId();  
+	currentContextMenuTabId = getCallTabIdByTabIndex(tabIndex);  
 	menu->popup(tabBar->mapToGlobal(location));
 	TRACEPOINT;
 }
@@ -247,13 +249,37 @@ void CallWindow::closeEvent(QCloseEvent *event)
 void CallWindow::tabCloseRequested(int index)
 {
 	TRACEPOINT;
-	if (tabAtTabIndex.count(index) >= 1)
+	if (hasTabAtIndex(index))
 	{
-		controller->removeCallTab(tabAtTabIndex[index]->getId());
+		controller->removeCallTab(getCallTabIdByTabIndex(index));
 	}
 	TRACEPOINT;
 	controller->removeEmptyWindows();
 	TRACEPOINT;
+}
+
+size_t CallWindow::getCallTabIdByTabIndex(int index)
+{
+	DEBUG(index);
+	if (hasTabAtIndex(index))
+	{
+		auto tabData = tabWidget->getTabBar()->tabData(index);
+		bool ok = true;
+		size_t callTabId = tabData.toInt(&ok);
+		if (ok && tabMap.count(callTabId) > 0)
+		{
+			DEBUG(callTabId);
+			return callTabId;
+		}
+	}
+	TRACEPOINT;
+	return 0;
+}
+
+bool CallWindow::hasTabAtIndex(int index)
+{
+	auto tabData = tabWidget->getTabBar()->tabData(index);
+	return tabData != 0 && !tabData.isNull() && tabData.isValid();
 }
 
 }}
