@@ -20,4 +20,8 @@ In case the filter can not be applied the second member of the returned pair sho
 
 If user input changes the setting of the filter the function _emitSignal()_ of the member _signFilterSettingsChanged\__ should be called.
 
-For a detailed example look at _CVVisual/src/qtutil/filter/grayfilterwidget.{[hpp]{https://github.com/CVVisualPSETeam/CVVisual/blob/master/src/qtutil/filter/grayfilterwidget.hpp}, [cpp]{https://github.com/CVVisualPSETeam/CVVisual/blob/master/src/qtutil/filter/grayfilterwidget.cpp}}_
+For a detailed example look at _CVVisual/src/qtutil/filter/grayfilterwidget.{hpp, cpp}_
+
+https://github.com/CVVisualPSETeam/CVVisual/blob/master/src/qtutil/filter/grayfilterwidget.hpp
+
+https://github.com/CVVisualPSETeam/CVVisual/blob/master/src/qtutil/filter/grayfilterwidget.cpp
