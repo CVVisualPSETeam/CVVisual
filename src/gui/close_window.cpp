@@ -13,11 +13,9 @@ CloseWindow::CloseWindow(util::Reference<controller::ViewController> controller)
 	controller{controller}
 {
 	TRACEPOINT;
-	auto mainWidget = new QWidget{};
-	setCentralWidget(mainWidget);
 
 	auto layout = new QVBoxLayout{};	
-	mainWidget->setLayout(layout);
+	setLayout(layout);
 	
 	auto helpButton = new QPushButton{"Help"};
 	layout->addWidget(helpButton);

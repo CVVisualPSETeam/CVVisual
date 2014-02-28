@@ -1,7 +1,7 @@
 #ifndef CVVISUAL_CLOSE_WINDOW_HPP
 #define CVVISUAL_CLOSE_WINDOW_HPP
 
-#include <QMainWindow>
+#include <QDialog>
 
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
@@ -13,7 +13,7 @@ namespace gui {
 /**
  * @brief The window that popsup if you try to close the main window.
  */
-class CloseWindow : public QMainWindow
+class CloseWindow : public QDialog
 {
 	Q_OBJECT
 	
