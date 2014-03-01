@@ -15,6 +15,9 @@ namespace cvv { namespace impl {
  */
 class SingleImageCall: public Call {
 public:
+	/**
+	 * @brief Constructs a SingleImageCall.
+	 */
 	SingleImageCall(cv::InputArray img, impl::CallMetaData data, QString type,
 			QString description, QString requestedView);
 	
@@ -29,6 +32,9 @@ private:
 	cv::Mat img;
 };
 
+/**
+ * Constructs a SingleImageCall and adds it to the global data-controller.
+ */
 void debugSingleImageCall(cv::InputArray img, const CallMetaData& data,
 		const char* description, const char* view, const char* filter);
 

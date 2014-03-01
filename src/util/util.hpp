@@ -17,7 +17,7 @@ namespace cvv { namespace util {
 /**
  * @brief Creates a new Object of type T on the heap, managed by a std::unique_ptr.
  * 
- * @Note This function uses the naming-conventions of the STL instead of cvv because it actually
+ * This function uses the naming-conventions of the STL instead of cvv because it actually
  * is a backported function from C++14 that is intended to be in harmony with std::make_shared.
  */
 template<typename T, typename... Args>

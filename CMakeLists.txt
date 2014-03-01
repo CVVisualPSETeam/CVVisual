@@ -110,6 +110,9 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_final_show_crash manual_test/final_show_crash/main.cpp)
 	target_link_libraries(test_manual_final_show_crash cvvisual opencv_highgui)
 	
+	add_executable(test_manual_all manual_test/test_all/main.cpp)
+	target_link_libraries(test_manual_all cvvisual opencv_highgui)
+	
 	add_executable(test_manual_filters manual_test/filters/main.cpp)
 	target_link_libraries(test_manual_filters cvvisual opencv_highgui)
 	

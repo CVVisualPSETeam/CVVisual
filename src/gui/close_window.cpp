@@ -1,5 +1,7 @@
 #include "close_window.hpp"
 
+#include <cstdlib>
+
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -11,11 +13,9 @@ CloseWindow::CloseWindow(util::Reference<controller::ViewController> controller)
 	controller{controller}
 {
 	TRACEPOINT;
-	auto mainWidget = new QWidget{};
-	setCentralWidget(mainWidget);
 
 	auto layout = new QVBoxLayout{};	
-	mainWidget->setLayout(layout);
+	setLayout(layout);
 	
 	auto helpButton = new QPushButton{"Help"};
 	layout->addWidget(helpButton);
@@ -64,7 +64,7 @@ void CloseWindow::helpRequested()
 void CloseWindow::exitRequested()
 {
 	TRACEPOINT;
-	exit(0);
+	std::quick_exit(0);
 }
 
 void CloseWindow::fastForwardRequested()

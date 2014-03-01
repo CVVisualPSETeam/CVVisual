@@ -5,7 +5,7 @@ namespace impl {
 
 size_t newCallId()
 {
-	thread_local size_t nextId = 0;
+	thread_local size_t nextId = 1;
 	return nextId++;
 }
 

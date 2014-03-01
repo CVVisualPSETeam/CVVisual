@@ -1,5 +1,7 @@
 #include "overview_table_row.hpp"
 
+#include <algorithm>
+
 #include <QTableWidgetItem>
 #include <QImage>
 
@@ -51,6 +53,14 @@ void OverviewTableRow::addToTable(QTableWidget *table, size_t row, bool showImag
 			items.push_back(imgWidget);
 		}
 	}
+	
+	size_t emptyImagesToAdd = showImages ? maxImages - std::min(maxImages, imgs.size()) : maxImages;	
+	
+	for (size_t i = 0; i < emptyImagesToAdd; i++)
+	{
+		items.push_back(new QTableWidgetItem(""));
+	}
+	
 	items.push_back(new QTableWidgetItem(description_));
 	items.push_back(new QTableWidgetItem(functionStr, 30));
 	items.push_back(new QTableWidgetItem(fileStr));

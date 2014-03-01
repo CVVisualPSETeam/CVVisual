@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <algorithm>
+#include <sstream>
 
 #include <QVBoxLayout>
 #include <QStringList>
@@ -153,9 +154,9 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	TRACEPOINT;
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	TRACEPOINT;
-	currentCustomMenuCallTabId = idStr.toInt();  
+	std::stringstream{idStr.toStdString()} >> currentCustomMenuCallTabId;
+	currentCustomMenuCallTabIdValid = true;
 	TRACEPOINT;
-	// FIXME: for some reasons this sometimes results in HUGE allocations followed by bad_alloc
 	menu->popup(mapToGlobal(location));
 	TRACEPOINT;
 }
@@ -163,7 +164,7 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 void OverviewGroupSubtable::customMenuAction(QAction *action)
 {
 	TRACEPOINT;
-	if (currentCustomMenuCallTabId == -1)
+	if (!currentCustomMenuCallTabIdValid)
 	{
 		return;
 	}
