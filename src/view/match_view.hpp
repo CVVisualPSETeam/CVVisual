@@ -47,6 +47,15 @@ public:
 	 */
 	virtual ~MatchView() = default;
 
+	/**
+	 * @brief this method should be called after this view is in a layout.
+	 */
+	void isInLayout()
+		{emit signalIsInLayout();}
+
+signals:
+
+	void signalIsInLayout();
 protected:
 	/**
 	 * @brief constructor of QWidget(parent).

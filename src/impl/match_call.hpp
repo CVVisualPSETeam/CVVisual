@@ -23,7 +23,7 @@ public:
 	MatchCall(cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1, cv::InputArray img2,
 			std::vector<cv::KeyPoint> keypoints2, std::vector<cv::DMatch> matches,
 			impl::CallMetaData data, QString type, QString description,
-			QString requestedView);
+			QString requestedView, bool useTrainDescriptor);
 	
 	size_t matrixCount() const override { return 2; }
 	const cv::Mat& matrixAt(size_t index) const override;
@@ -53,12 +53,14 @@ public:
 	 */
 	const std::vector<cv::DMatch>& matches() const {return matches_;}
 	
+	bool usesTrainDescriptor() const {return usesTrainDescriptor_;}
 private:
 	cv::Mat img1_;
 	std::vector<cv::KeyPoint> keypoints1_;
 	cv::Mat img2_;
 	std::vector<cv::KeyPoint> keypoints2_;
 	std::vector<cv::DMatch> matches_;
+	bool usesTrainDescriptor_;
 };
 
 /**
@@ -68,7 +70,7 @@ void debugMatchCall(
 		cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
 		cv::InputArray img2, std::vector<cv::KeyPoint> keypoints2,
 		std::vector<cv::DMatch> matches, const CallMetaData& data,
-		const char* description, const char* view);
+		const char* description, const char* view, bool useTrainDescriptor);
 
 }} //namespaces cvv::impl
 

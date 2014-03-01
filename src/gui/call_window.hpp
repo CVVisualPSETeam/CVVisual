@@ -117,13 +117,6 @@ public:
 	 */
 	std::vector<size_t> getCallTabIds();
 
-public slots:
-	/**
-	 * @brief Resume the execution of the original program.
-	 * @note Should only be used by 'Resume Execution' like buttons (or menu items)
-	 */
-	void resumeProgramExecution(); 
-
 private slots:
 	void contextMenuRequested(const QPoint &location);
 
@@ -131,13 +124,21 @@ private slots:
 
     void tabCloseRequested(int index);
 
+	void step();
+
+	void fastForward();
+
+	void closeApp();
+
 protected:
 	
 	size_t id;
 	util::Reference<controller::ViewController> controller;
 	TabWidget *tabWidget;
 	QMainWindow *window;
-	QPushButton *progButton;
+	QPushButton *closeButton;
+	QPushButton *stepButton;
+	QPushButton *fastForwardButton;
 	std::map<size_t, CallTab*> tabMap;
 	QLabel *leftFooter;
 	QLabel *rightFooter;

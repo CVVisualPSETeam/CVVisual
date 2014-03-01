@@ -3,6 +3,7 @@
 #include <QMenu>
 #include <QStatusBar>
 #include <QPushButton>
+#include <QHBoxLayout>
 #include <QVariant>
 
 #include "../dbg/dbg.hpp"
@@ -35,10 +36,29 @@ void CallWindow::initTabs()
 	tabWidget->setTabsClosable(true);
 	tabWidget->setMovable(true);
 	setCentralWidget(tabWidget);
-	progButton = new QPushButton("Resume program execution", this);
-	progButton->setStyleSheet("QPushButton {background-color: green; color: white;}");
-	connect(progButton, SIGNAL(clicked()), this, SLOT(resumeProgramExecution()));
-	tabWidget->setCornerWidget(progButton, Qt::TopLeftCorner);
+	
+	auto *flowButtons = new QHBoxLayout();
+	auto *flowButtonsWidget = new QWidget(this); 
+	tabWidget->setCornerWidget(flowButtonsWidget, Qt::TopLeftCorner);
+	flowButtonsWidget->setLayout(flowButtons);
+	flowButtons->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+	closeButton = new QPushButton("Close", this);
+	flowButtons->addWidget(closeButton);
+	closeButton->setStyleSheet("QPushButton {background-color: red;" 
+			"color: white;}");	
+	connect(closeButton, SIGNAL(clicked()), this, SLOT(closeApp()));
+	stepButton = new QPushButton("Step", this);
+	flowButtons->addWidget(stepButton);
+	stepButton->setStyleSheet("QPushButton {background-color: green;"
+			"color: white;}");
+	connect(stepButton, SIGNAL(clicked()), this, SLOT(step()));
+	fastForwardButton = new QPushButton(">>", this);
+	flowButtons->addWidget(fastForwardButton);
+	fastForwardButton->setStyleSheet("QPushButton {background-color: yellow;"
+			"color: blue;}");
+	connect(fastForwardButton, SIGNAL(clicked()), this, SLOT(fastForward()));
+	flowButtons->setContentsMargins(0, 0, 0, 0);
+
 	auto *tabBar = tabWidget->getTabBar();
 	tabBar->setElideMode(Qt::ElideRight);
 	tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
@@ -61,8 +81,8 @@ void CallWindow::initFooter()
 void CallWindow::showExitProgramButton()
 {
 	TRACEPOINT;
-	progButton->setText("Exit program");
-	progButton->setStyleSheet("QPushButton {background-color: red; color: white;}");
+	stepButton->setVisible(false);
+	fastForwardButton->setVisible(false);
 	TRACEPOINT;
 }
 
@@ -70,8 +90,8 @@ void CallWindow::addTab(CallTab *tab)
 {
 	TRACEPOINT;
 	tabMap[tab->getId()] = tab;
-	QString name = tab->getName() + "";
-	int index = tabWidget->addTab(tab, QString("[%1] ").arg(tab->getId()) + name);
+	QString name = QString("[%1] %2").arg(tab->getId()).arg(tab->getName());
+	int index = tabWidget->addTab(tab, stfl::shortenString(name, 20, true, true));
 	tabWidget->getTabBar()->setTabData(index, QVariant((int)tab->getId()));
 	TRACEPOINT;
 }
@@ -129,11 +149,23 @@ void CallWindow::updateRightFooter(QString newText)
 	rightFooter->setText(newText);
 }
 
-void CallWindow::resumeProgramExecution()
+void CallWindow::step()
 {
 	TRACEPOINT;
 	controller->resumeProgramExecution();
 	TRACEPOINT;
+}
+
+void CallWindow::fastForward()
+{
+	TRACEPOINT;
+	controller->setMode(controller::Mode::FAST_FORWARD);
+}
+
+void CallWindow::closeApp()
+{
+	TRACEPOINT;
+	controller->setMode(controller::Mode::HIDE);
 }
 
 bool CallWindow::hasTab(size_t tabId){

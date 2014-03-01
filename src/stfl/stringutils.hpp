@@ -125,9 +125,11 @@ void unescapeCommas(QString &str);
  * @brief Shortens the given string to the given length and append "..." if needed.
  * @param str given string
  * @param maxLength maximum length of the returned string
- * @param does this method shorten the given string at the end?
+ * @param cutEnd does this method shorten the given string at the end?
+ * @param fill should the resulting string be filled up with whitespace to
+ * ensure all strings have length maxLength?
  */
-QString shortenString(QString &str, int maxLength, bool cutEnd = true);
+QString shortenString(QString &str, int maxLength, bool cutEnd = true, bool fill = false);
 
 }}
 

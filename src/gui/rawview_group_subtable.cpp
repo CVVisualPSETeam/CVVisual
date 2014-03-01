@@ -26,7 +26,7 @@ RawviewGroupSubtable::RawviewGroupSubtable(RawviewTable *parent,
 	TRACEPOINT;
 	qTable = new QTableWidget(this);
     qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    qTable->setSelectionMode(QAbstractItemView::MultiSelection);
+    qTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
 	auto horizontalHeader = qTable->horizontalHeader();
     horizontalHeader->setSectionResizeMode(QHeaderView::Stretch);
 	horizontalHeader->setStretchLastSection(false);

@@ -17,7 +17,7 @@ namespace impl {
 		cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
 		cv::InputArray img2, std::vector<cv::KeyPoint> keypoints2,
 		std::vector<cv::DMatch> matches, const CallMetaData& data,
-		const char* description, const char* view);
+		const char* description, const char* view, bool useTrainDescriptor);
 } // namespace impl
 
 #ifdef CVVISUAL_DEBUGMODE
@@ -25,22 +25,25 @@ static inline void debugDMatch(
 		cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
 		cv::InputArray img2, std::vector<cv::KeyPoint> keypoints2,
 		std::vector<cv::DMatch> matches, const impl::CallMetaData& data,
-		const char* description = nullptr, const char* view = nullptr)
+		const char* description = nullptr, const char* view = nullptr,
+		bool useTrainDescriptor = true)
 {
 	if(debugMode()) {
 		impl::debugDMatch(img1, std::move(keypoints1), img2, std::move(keypoints2),
-				std::move(matches), data, description, view);
+				std::move(matches), data, description, view, useTrainDescriptor);
 	}
 }
 static inline void debugDMatch(
 		cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
 		cv::InputArray img2, std::vector<cv::KeyPoint> keypoints2,
 		std::vector<cv::DMatch> matches, const impl::CallMetaData& data,
-		const std::string& description, const std::string& view)
+		const std::string& description, const std::string& view,
+		bool useTrainDescriptor = true)
 {
 	if(debugMode()) {
 		impl::debugDMatch(img1, std::move(keypoints1), img2, std::move(keypoints2),
-				std::move(matches), data, description.c_str(), view.c_str());
+				std::move(matches), data, description.c_str(), view.c_str(),
+				useTrainDescriptor);
 	}
 }
 #else
@@ -50,7 +53,7 @@ static inline void debugDMatch(
 static inline void debugDMatch(
 		cv::InputArray, std::vector<cv::KeyPoint>, cv::InputArray, std::vector<cv::KeyPoint>,
 		std::vector<cv::DMatch>, const impl::CallMetaData&, const char* = nullptr,
-		const char* = nullptr)
+		const char* = nullptr, bool = true)
 {}
 /**
  * Dito.
@@ -58,7 +61,7 @@ static inline void debugDMatch(
 static inline void debugDMatch(
 		cv::InputArray, std::vector<cv::KeyPoint>, cv::InputArray, std::vector<cv::KeyPoint>,
 		std::vector<cv::DMatch>, const impl::CallMetaData&,const std::string&,
-		const std::string&)
+		const std::string&, bool = true)
 {}
 #endif
 
