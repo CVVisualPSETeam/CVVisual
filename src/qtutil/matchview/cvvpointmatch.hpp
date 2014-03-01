@@ -4,12 +4,9 @@
 #include <QBrush>
 
 #include "cvvmatch.hpp"
-#include "matchpointpen.hpp"
 
 
 namespace cvv{namespace qtutil{
-
-class MatchPointPen;
 
 /**
  * @brief This CVVMatch will be shown as circles with a given Color and radius
