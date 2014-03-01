@@ -90,7 +90,7 @@ public:
 			}
 		}
 		TRACEPOINT;
-		return true;
+		return other.getTitles().size() == titles.size();
 	}
 	
 	/**
