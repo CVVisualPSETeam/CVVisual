@@ -74,8 +74,9 @@ public:
 		message_=*msg;
 
 		auto lay=util::make_unique<QVBoxLayout>();
-		lay->setAlignment(Qt::AlignTop);;
+		lay->setAlignment(Qt::AlignTop);
 		lay->setSpacing(0);
+		lay->setContentsMargins(0,0,0,0);
 		lay->addWidget(box.release());
 		lay->addWidget(msg.release());
 		message_->setVisible(false);
@@ -238,12 +239,14 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 		applyFilterIndividually_{false},
 		entries_{},
 		earliestActivationTime_{},
-		slotApplyFilter_{[this](){TRACEPOINT; this->autoApplyFilter();}}
+		slotApplyFilter_{[this](){TRACEPOINT; this->autoApplyFilter();}},
+		userSelection_{true}
 	{
 		TRACEPOINT;
 		//add sublayout
 		auto lay=util::make_unique<QVBoxLayout>();
 		entryLayout_=*lay;
+		lay->setContentsMargins(0,0,0,0);
 		this->layout_->insertLayout(0,lay.release());
 		//connect auto filter slot
 		QObject::connect(&(this->signFilterSettingsChanged_),
@@ -267,6 +270,7 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 		TRACEPOINT;
 		auto elem=util::make_unique<structures::AutoFilterWidgetEntry<In,Out>>(name,in,out);
 		auto result = elem->signalsRef();
+		elem->enableUserSelection(userSelection_);
 		//store element
 		entries_.emplace_back(*elem);
 		//add it to the widget
@@ -301,9 +305,10 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	void enableUserSelection(bool enabled = true)
 	{
 		TRACEPOINT;
+		userSelection_=enabled;
 		for(auto& elem:entries_)
 		{
-			elem.get().enableUserSelection(enabled);
+			elem.get().enableUserSelection(userSelection_);
 		}
 		TRACEPOINT;
 	}
@@ -438,6 +443,10 @@ private:
 	 * @brief Slot called when filter settings change.
 	 */
 	Slot slotApplyFilter_;
+	/**
+	 * @brief Whether user selection is enabled
+	 */
+	bool userSelection_;
 };
 }}
 #endif // CVVISUAL_AUTOFILTERWIDGET_HPP
