@@ -49,12 +49,11 @@ public:
 		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*rightImage_);}
 
 
-	void adjustImages();
-
 public slots:
 	void addLeftKeypoint(CVVKeyPoint*);
 	void addRightKeyPoint(CVVKeyPoint*);
 	void addMatch(CVVMatch*);
+	void adjustImages();
 
 protected:
 	 void resizeEvent(QResizeEvent * event);
