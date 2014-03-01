@@ -12,25 +12,9 @@
 #include "final_show.hpp"
 #include "filter.hpp"
 
-#include "../../src/gui/filter_call_tab.hpp"
-#include "../../src/view/filter_view.hpp"
-#include "../../src/view/defaultfilterview.hpp"
-#include "../../src/view/dual_filter_view.hpp"
-
-
-std::unique_ptr<cvv::view::FilterView> makeDefaultFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
-{
-	return cvv::util::make_unique<cvv::view::DefaultFilterView>(images, parent);
-}
-std::unique_ptr<cvv::view::FilterView> makeDualFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
-{
-	return cvv::util::make_unique<cvv::view::DualFilterView>(images, parent);
-}
 
 int main(int argc, char** argv)
 {
-	cvv::gui::FilterCallTab::addFilterViewToMap("DefaultFilterView", makeDefaultFilterView);
-	cvv::gui::FilterCallTab::addFilterViewToMap("DualFilterView", makeDualFilterView);
 	std::vector<cv::Mat> images;
 	for(int i=1; i < argc; ++i)
 	{

@@ -11,6 +11,9 @@
 
 namespace cvv { namespace impl {
 
+/**
+ * @brief The central controller of the debug-framework that owns all the calldata.
+ */
 class DataController {
 public:
 	DataController() = default;
@@ -67,7 +70,14 @@ private:
 	controller::ViewController viewController;
 };
 
+/**
+ * @brief Destructs the global Singleton.
+ */
 void deleteDataController();
+
+/**
+ * Provides access to a global DataController that is created upon the first call.
+ */
 DataController& dataController();
 
 }} // namespaces cvv::impl

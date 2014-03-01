@@ -153,6 +153,7 @@ void CallWindow::contextMenuRequested(const QPoint &location)
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(contextMenuAction(QAction*)));
     auto windows = controller->getTabWindows();
     menu->addAction(new QAction("Remove call", this));
+    menu->addAction(new QAction("Close tab", this));
 	menu->addAction(new QAction("Open in new window", this));
 	for (auto window : windows)
 	{
@@ -180,14 +181,17 @@ void CallWindow::contextMenuAction(QAction *action)
 		TRACEPOINT;
 		controller->moveCallTabToNewWindow(currentContextMenuTabId);
 		TRACEPOINT;
-	
 	} 
-	if (text == "Remove call") 
+	else if (text == "Remove call") 
 	{
 		TRACEPOINT;
     	controller->removeCallTab(currentContextMenuTabId, true, true);
     	TRACEPOINT;
-	} 
+	}
+	else if (text == "Close tab")
+	{
+		controller->removeCallTab(currentContextMenuTabId);
+	}
 	else 
 	{
 		TRACEPOINT;

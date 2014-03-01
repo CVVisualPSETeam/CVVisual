@@ -33,9 +33,15 @@ static inline void showImage(cv::InputArray img, impl::CallMetaData metaData,
 	}
 }
 #else
+/**
+ * Use the debug-framework to show a single image.
+ */
 static inline void showImage(cv::InputArray, impl::CallMetaData = impl::CallMetaData(),
 		const char* = nullptr, const char* = nullptr)
 {}
+/**
+ * Dito.
+ */
 static inline void showImage(cv::InputArray, impl::CallMetaData, const ::std::string&, 
 		const ::std::string&)
 {}

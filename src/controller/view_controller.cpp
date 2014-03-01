@@ -14,6 +14,7 @@
 #include "../gui/filter_call_tab.hpp"
 #include "../gui/match_call_tab.hpp"
 #include "../gui/image_call_tab.hpp"
+#include "../impl/init.hpp"
 #include "../impl/filter_call.hpp"
 #include "../impl/match_call.hpp"
 #include "../impl/single_image_call.hpp"
@@ -31,6 +32,7 @@ static int parameterSystemC = 1;
 
 ViewController::ViewController()
 {
+	impl::initializeFilterAndViews();
 	TRACEPOINT;
 	if(!QApplication::instance())
 	{

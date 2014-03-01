@@ -97,6 +97,11 @@ void DataController::lastCall()
 	TRACEPOINT;
 }
 
+/**
+ * @brief Actual implementation of the global DataController.
+ * 
+ * This is required to be able to delete it.
+ */
 static std::unique_ptr<DataController>& realSingleton() {
 	TRACEPOINT;
 	static auto var = util::make_unique<DataController>();

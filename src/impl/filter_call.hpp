@@ -14,6 +14,9 @@ namespace cvv { namespace impl {
  */
 class FilterCall: public Call {
 public:
+	/**
+	 * @brief Constructs a FilterCall.
+	 */
 	FilterCall(cv::InputArray in, cv::InputArray out, impl::CallMetaData data, QString type,
 			QString description, QString requestedView);
 	
@@ -35,6 +38,9 @@ private:
 	cv::Mat output_;
 };
 
+/**
+ * Constructs a FilterCall and adds it to the global data-controller.
+ */
 void debugFilterCall(cv::InputArray original, cv::InputArray result, const CallMetaData& data,
 		const char* description, const char* view, const char* filter);
 

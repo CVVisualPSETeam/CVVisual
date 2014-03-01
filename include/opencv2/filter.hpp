@@ -35,10 +35,18 @@ static inline void debugFilter(cv::InputArray original, cv::InputArray result,
 	}
 }
 #else
+/**
+ * @brief Use the debug-framework to compare two images (from which the second is intended to be the result of
+ * a filter applied to the first).
+ */
 static inline void debugFilter(cv::InputArray, cv::InputArray,
 		impl::CallMetaData = impl::CallMetaData(), const char* = nullptr,
 		const char* = nullptr)
 {}
+
+/**
+ * Dito.
+ */
 static inline void debugFilter(cv::InputArray, cv::InputArray, impl::CallMetaData, const ::std::string&,
 		const ::std::string&)
 {}
