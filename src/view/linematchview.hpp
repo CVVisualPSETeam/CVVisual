@@ -29,10 +29,13 @@ public:
 	LineMatchView(	std::vector<cv::KeyPoint> leftKeyPoints,
 			std::vector<cv::KeyPoint> rightKeyPoints,
 			std::vector<cv::DMatch> matches,
-			cv::Mat leftIm,cv::Mat rightIm,
+			cv::Mat leftIm,
+			cv::Mat rightIm,
+			bool usetrainIdx=true,
 			QWidget *parent=nullptr);
 
 	~LineMatchView(){TRACEPOINT;}
+
 };
 }}
 #endif

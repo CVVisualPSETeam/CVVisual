@@ -31,6 +31,7 @@ public:
 			std::vector<cv::DMatch> matches,
 			cv::Mat leftIm,
 			cv::Mat rightIm,
+			bool usetrainIdx=true,
 			QWidget *parent=nullptr);
 };
 }}
