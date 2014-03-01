@@ -7,7 +7,6 @@
 #include "../qtutil/matchview/singlecolormatchpen.hpp"
 #include "../qtutil/matchview/cvvkeypoint.hpp"
 #include "../qtutil/matchview/cvvpointmatch.hpp"
-#include "../qtutil/matchview/matchpointpen.hpp"
 #include "../util/util.hpp"
 
 #include "depthview.hpp"
@@ -26,13 +25,7 @@ DepthMatchView::DepthMatchView(	std::vector<cv::KeyPoint> leftKeyPoints,
 	auto layout	= util::make_unique<QHBoxLayout>();
 	auto accor	= util::make_unique<qtutil::Accordion>();
 	auto matchscene	= util::make_unique<qtutil::MatchScene>(leftIm,rightIm);
-
-	float max=0;
-	for(auto& match:matches)
-	{
-		max=std::max(max,match.distance);
-	}
-	auto matchpen	= util::make_unique<qtutil::MatchPointPen>(max);
+	auto matchpen	= util::make_unique<qtutil::SingleColorMatchPen>();
 
 	qtutil::MatchScene *matchscene_ptr		= matchscene.get();
 	qtutil::SingleColorMatchPen *matchpen_ptr	= matchpen.get();
