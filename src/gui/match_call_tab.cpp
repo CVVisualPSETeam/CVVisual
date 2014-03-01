@@ -101,13 +101,13 @@ void MatchCallTab::createGui()
 	{
 		select("LineMatchView");
 		matchViewId_ = selection();
-		setAsDefaultButtonClicked();	// Set LineMatchView as default.
+		setAsDefaultButtonClicked();	// Set as default.
 		/* If matchViewId_ does not name a valid View, it will be attempted to set LineMatchView.
 		 * If that was not registered either, the current selection of the ComboBox will be used automatically.
 		 * Whichever was chosen will be set as the new default. */
 	}
 	comboBox_->setCurrentText(matchViewId_);
-	hlayout_ = new QHBoxLayout{this};
+	hlayout_ = new QHBoxLayout{};
 	hlayout_->setAlignment(Qt::AlignTop);
 	hlayout_->addWidget(new QLabel{"View:"});
 	hlayout_->addWidget(comboBox_);
@@ -118,7 +118,7 @@ void MatchCallTab::createGui()
 	upperBar_ = new QWidget{this};
 	upperBar_->setLayout(hlayout_);
 
-	vlayout_ = new QVBoxLayout{this};
+	vlayout_ = new QVBoxLayout{};
 
 	vlayout_->addWidget(upperBar_);
 	setView();

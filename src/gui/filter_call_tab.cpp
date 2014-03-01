@@ -102,12 +102,12 @@ void FilterCallTab::createGui()
 	{
 		select("DefaultFilterView");
 		filterViewId_ = selection();
-		setAsDefaultButtonClicked();	// Set DefaultFilterView as default.
+		setAsDefaultButtonClicked();	// Set as default.
 		/* If filterViewId_ does not name a valid View, it will be attempted to set DefaultFilterView.
 		 * If that was not registered either, the current selection of the ComboBox will be used automatically.
 		 * Whichever was chosen will be set as the new default. */
 	}
-	hlayout_ = new QHBoxLayout{this};
+	hlayout_ = new QHBoxLayout{};
 	hlayout_->setAlignment(Qt::AlignTop);
 	hlayout_->addWidget(new QLabel{"View:"});
 	hlayout_->addWidget(comboBox_);
@@ -119,7 +119,7 @@ void FilterCallTab::createGui()
 	upperBar_ = new QWidget{this};
 	upperBar_->setLayout(hlayout_);
 
-	vlayout_ = new QVBoxLayout{this};
+	vlayout_ = new QVBoxLayout{};
 
 	vlayout_->addWidget(upperBar_);
 	setView();
