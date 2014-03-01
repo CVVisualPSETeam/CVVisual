@@ -18,6 +18,7 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 		std::vector<cv::DMatch> matches,
 		cv::Mat leftIm,
 		cv::Mat rightIm,
+		bool usetrainIdx,
 		QWidget *parent):
 	MatchView{parent}
 {
@@ -94,7 +95,7 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 		//Match left
 		auto cvmatchleft = util::make_unique<qtutil::CVVMatch>(
 					leftKeys.at(match.queryIdx),
-					leftinvisibleKeys.at(match.trainIdx),match.distance);
+					leftinvisibleKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),match.distance);
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),cvmatchleft.get(),
 					SLOT(updateSettings(MatchSettings&)));
 		matchscene_ptr->addMatch(cvmatchleft.release());
@@ -103,7 +104,7 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 		//Match right
 		auto cvmatchright = util::make_unique<qtutil::CVVMatch>(
 					rightinvisibleKeys.at(match.queryIdx),
-					rightKeys.at(match.trainIdx),match.distance);
+					rightKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),match.distance);
 
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&))
 			,cvmatchright.get(),SLOT(updateSettings(MatchSettings&)));

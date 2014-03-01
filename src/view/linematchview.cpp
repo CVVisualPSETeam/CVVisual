@@ -18,6 +18,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		std::vector<cv::DMatch> matches,
 		cv::Mat leftIm,
 		cv::Mat rightIm,
+		bool usetrainIdx,
 		QWidget *parent):
 	MatchView{parent}
 {
@@ -74,7 +75,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	for(auto& match:matches)
 	{
 		auto cvmatch = util::make_unique<qtutil::CVVMatch>(leftKeys.at(match.queryIdx),
-					rightKeys.at(match.trainIdx),match.distance);
+					rightKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),match.distance);
 
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),
 			cvmatch.get(),SLOT(updateSettings(MatchSettings&)));
