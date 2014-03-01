@@ -5,11 +5,13 @@ Define the CVV\_DEBUG_MODE macro somewhere in the translation unit.
 Open the debug window by putting one of the functions from the [CVVisual API](/api) into your code.    
 In this example, we want to debug a call to 'dilate' (line.1) so we use debug_dilate.  
 ###Example: Code  
-src, dest and the structuring element elem are of type cv::Mat (see the OpenCV doc on [dilate()](http://docs.opencv.org/modules/imgproc/doc/filtering.html#dilate)); CVVISUAL_LOCATION and filename are char arrays.  
+src, dest and the structuring element elem are of type cv::Mat (see the OpenCV doc on [dilate()](http://docs.opencv.org/modules/imgproc/doc/filtering.html#dilate));
+CVVISUAL\_LOCATION is a special macro that inserts the location of the code and description and view can be either string-literals or std::strings. The later three are all optional.
 
 	0 #include <filter.hpp>
 	1 cv::dilate(src, dest, elem);  
-	2 cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);    
+	2 cvv::debugFilter(src, dest, CVVISUAL_LOCATION, description, view);
+
 When executing the code, the debug_dilate function will open the window and halt the execution.  
 ##The Overview Tab 
 ![](../images_tut/dilate_overview.png)
