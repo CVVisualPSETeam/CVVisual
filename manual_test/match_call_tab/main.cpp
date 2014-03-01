@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 		match.emplace_back(i,i,1.0f);
 	}
 
-	cvv::impl::MatchCall mc{src, key1, train, key2, match, data, type, "some description", ""};
+	cvv::impl::MatchCall mc{src, key1, train, key2, match, data, type, "some description", "", true};
 
 	std::function<std::unique_ptr<cvv::view::MatchView>(const cv::Mat&, const std::vector<cv::KeyPoint>&, const cv::Mat&,
 			const std::vector<cv::KeyPoint>&, const std::vector<cv::DMatch>&, QWidget*)> mlmv = makeLineMatchView;
