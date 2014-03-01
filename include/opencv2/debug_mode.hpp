@@ -11,6 +11,9 @@ namespace cvv{
 
 namespace impl {
 
+/**
+ * The debug-flag-singleton
+ */
 static inline bool& getDebugFlag()
 {
 	CVV_THREAD_LOCAL static bool flag = true;

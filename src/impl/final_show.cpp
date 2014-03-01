@@ -5,7 +5,11 @@
 namespace cvv { namespace impl {
 
 void finalShow() {
-	impl::dataController().lastCall();
+	auto& controller = impl::dataController();
+	if(controller.numCalls() != 0)
+	{
+		controller.lastCall();
+	}
 	impl::deleteDataController();
 }
 
