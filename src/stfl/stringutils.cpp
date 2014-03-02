@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <numeric>
-#include <map>
+#include <string>
 
 #include "../dbg/dbg.hpp"
 
@@ -280,6 +280,11 @@ QString shortenString(QString &str, int maxLength, bool cutEnd, bool fill)
 	}
     TRACEPOINT;
     return str;
+}
+
+QString asciiCharVectorToQString(std::vector<char> chars)
+{
+	return QString::fromStdString(std::string(chars.begin(), chars.end()));
 }
 
 }

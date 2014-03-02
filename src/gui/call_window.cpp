@@ -44,20 +44,21 @@ void CallWindow::initTabs()
 	flowButtons->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 	closeButton = new QPushButton("Close", this);
 	flowButtons->addWidget(closeButton);
-	closeButton->setStyleSheet("QPushButton {background-color: red;" 
-			"color: white;}");	
+	closeButton->setStyleSheet("QPushButton {background-color: red; color: white;}");
+	closeButton->setToolTip("Close this debugging application.");
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(closeApp()));
 	stepButton = new QPushButton("Step", this);
 	flowButtons->addWidget(stepButton);
-	stepButton->setStyleSheet("QPushButton {background-color: green;"
-			"color: white;}");
+	stepButton->setStyleSheet("QPushButton {background-color: green; color: white;}");
+	stepButton->setToolTip("Resume program execution for a next debugging step.");
 	connect(stepButton, SIGNAL(clicked()), this, SLOT(step()));
 	fastForwardButton = new QPushButton(">>", this);
 	flowButtons->addWidget(fastForwardButton);
-	fastForwardButton->setStyleSheet("QPushButton {background-color: yellow;"
-			"color: blue;}");
+	fastForwardButton->setStyleSheet("QPushButton {background-color: yellow; color: blue;}");
+	fastForwardButton->setToolTip("Fast forward until cvv::finalCall() gets called.");
 	connect(fastForwardButton, SIGNAL(clicked()), this, SLOT(fastForward()));
 	flowButtons->setContentsMargins(0, 0, 0, 0);
+	flowButtons->setSpacing(0);
 
 	auto *tabBar = tabWidget->getTabBar();
 	tabBar->setElideMode(Qt::ElideRight);
