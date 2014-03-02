@@ -23,6 +23,7 @@ void CVVKeyPoint::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWi
 {
 	TRACEPOINT;
 	painter->setPen(pen_);
+	painter->setBrush(brush_);
 	painter->drawEllipse(boundingRect());
 	TRACEPOINT;
 }
@@ -34,6 +35,16 @@ void CVVKeyPoint::setZoomableImage(ZoomableImage *image)
 	updateImageSet(image->visibleArea(),image->zoom());
 	connect(image,SIGNAL(updateArea(QRectF,qreal)),
 		this,SLOT(updateImageSet(const QRectF&,const qreal& )));
+}
+
+bool CVVKeyPoint::operator ==(const cv::KeyPoint &o)
+{
+	return o.pt==key_.pt &&
+		o.size==key_.size &&
+		o.angle==key_.angle &&
+		o.response==key_.response &&
+		o.octave==key_.octave &&
+		o.class_id==key_.class_id;
 }
 
 void CVVKeyPoint::updateSettings(KeyPointSettings& settings)

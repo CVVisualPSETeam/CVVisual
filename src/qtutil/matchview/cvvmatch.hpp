@@ -88,8 +88,7 @@ public:
 	bool isShown() const
 		{TRACEPOINT;return show_;}
 
-	/*operator ==(const cv::DMatch& o)
-		{return o==match_;}*/
+	bool operator ==(const cv::DMatch& o);
 
 
 public slots:

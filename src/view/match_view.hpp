@@ -38,6 +38,8 @@ signals:
 
 	void setSelection(std::vector<cv::DMatch>);
 
+	void setSelection(std::vector<cv::KeyPoint>);
+
 public:
 	/**
 	 * @brief default constructor
@@ -52,6 +54,8 @@ public:
 public slots:
 
 	virtual void getSelection(std::vector<cv::DMatch>) {}
+
+	virtual void getSelection(std::vector<cv::KeyPoint>) {}
 
 protected:
 	/**

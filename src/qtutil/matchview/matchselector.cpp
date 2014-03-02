@@ -5,14 +5,17 @@
 
 namespace cvv{ namespace qtutil{
 
-void cvv::qtutil::MatchSelector::setSettings(CVVMatch &match)
+MatchSelector::MatchSelector(QWidget *parent):
+	MatchSettings{parent}
 {
 
+}
+
+void cvv::qtutil::MatchSelector::setSettings(CVVMatch &match)
+{
 	if(std::find_if(selection_.begin(), selection_.end(),
 			[&](const cv::DMatch& ma1){
-			return (ma1.queryIdx==match.match().queryIdx)
-			&&(ma1.imgIdx==match.match().imgIdx)
-			&&(ma1.trainIdx==match.match().trainIdx);})
+			return match==ma1;})
 	!= selection_.end())
 	{
 		match.setSelected(true);

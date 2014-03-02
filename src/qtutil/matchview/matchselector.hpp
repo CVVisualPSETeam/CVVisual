@@ -6,10 +6,12 @@
 #include "matchsettings.hpp"
 #include "cvvmatch.hpp"
 
-
 namespace cvv{ namespace qtutil{
 
 class MatchSelector:public MatchSettings{
+
+	Q_OBJECT
+
 public:
 	MatchSelector(QWidget * parent=nullptr);
 
@@ -17,15 +19,15 @@ public:
 
 public slots:
 
-	void addToSelection(const cv::DMatch&);
+	void addToSelection(const cv::DMatch& match);
 
-	void singleSelection(const cv::DMatch&);
+	void singleSelection(const cv::DMatch& match);
 
-	void setSelection(const std::vector<cv::DMatch>&);
+	void setSelection(const std::vector<cv::DMatch>& selection);
 
 signals:
 
-	void updateSelection(const std::vector<cv::DMatch>&);
+	void updateSelection(const std::vector<cv::DMatch>& selection);
 
 private:
 	std::vector<cv::DMatch> selection_;

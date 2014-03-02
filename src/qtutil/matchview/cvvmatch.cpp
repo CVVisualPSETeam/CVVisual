@@ -45,6 +45,13 @@ void CVVMatch::paint(QPainter *painter, const QStyleOptionGraphicsItem*, QWidget
 	TRACEPOINT;
 }
 
+bool CVVMatch::operator ==(const cv::DMatch &o)
+{
+	return  o.queryIdx==match_.queryIdx &&
+		o.trainIdx==match_.trainIdx&&
+		o.imgIdx==match_.imgIdx;
+}
+
 void CVVMatch::setPen(const QPen& pen)
 {
 	TRACEPOINT;
