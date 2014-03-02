@@ -77,7 +77,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	for(auto& match:matches)
 	{
 		auto cvmatch = util::make_unique<qtutil::CVVMatch>(leftKeys.at(match.queryIdx),
-					rightKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),match.distance);
+					rightKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),match);
 
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),
 			cvmatch.get(),SLOT(updateSettings(MatchSettings&)));

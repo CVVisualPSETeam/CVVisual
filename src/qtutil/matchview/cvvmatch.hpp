@@ -31,7 +31,7 @@ public:
 	* @param matchValue the match distance
 	* @param parent the parent Widget
 	*/
-	CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint *right_key,const float& matchValue,
+	CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint *right_key,const cv::DMatch& match,
 		 const QPen& pen= QPen{Qt::red},QGraphicsItem *parent=nullptr);
 
 
@@ -78,8 +78,8 @@ public:
 	 * @brief returns the match value
 	 * @return the match value
 	 */
-	float matchValue() const
-		{TRACEPOINT;return matchValue_;}
+	cv::DMatch match() const
+		{TRACEPOINT;return match_;}
 
 	/**
 	 * @brief returns the show value
@@ -128,7 +128,7 @@ protected:
 
 	CVVKeyPoint *left_key_;
 	CVVKeyPoint *right_key_;
-	float matchValue_;
+	cv::DMatch match_;
 
 	QPen pen_;
 	bool show_;

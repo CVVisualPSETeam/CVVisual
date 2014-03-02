@@ -8,6 +8,8 @@ CVVKeyPoint::CVVKeyPoint(const cv::KeyPoint& key,qtutil::ZoomableImage *image,
 		pen_{pen},brush_{brush},show_{true}
 {
 	TRACEPOINT;
+	setSelected(true);
+	setToolTip(QString{"KeyPoint size: %1 \n angle %2 \n response %3 "}.arg(key_.size).arg(key_.angle).arg(key_.response));
 	if(image!=nullptr)
 	{
 		updateImageSet(image->visibleArea(),image->zoom());

@@ -41,7 +41,7 @@ FalseColorMatchPen::FalseColorMatchPen(double max, double min, QWidget *parent):
 void FalseColorMatchPen::setSettings(CVVMatch& match)
 {
 	TRACEPOINT;
-	match.setPen(QPen{getFalseColor(static_cast<double>(match.matchValue()),max_,min_)});
+	match.setPen(QPen{getFalseColor(static_cast<double>(match.match().distance),max_,min_)});
 	TRACEPOINT;
 }
 

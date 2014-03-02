@@ -66,7 +66,6 @@ public slots:
 	void addLeftKeypoint(CVVKeyPoint*);
 	void addRightKeyPoint(CVVKeyPoint*);
 	void addMatch(CVVMatch*);
-	void adjustImages();
 
 private slots:
 	 void viewReized();

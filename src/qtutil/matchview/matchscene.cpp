@@ -71,18 +71,9 @@ void MatchScene::addMatch(CVVMatch *cvmatch)
 	TRACEPOINT;
 }
 
-void MatchScene::adjustImages()
-{
-	TRACEPOINT;
-	QResizeEvent event{size(),size()};
-	resizeEvent(&event);
-	TRACEPOINT;
-}
-
 void MatchScene::viewReized()
 {
 	TRACEPOINT;
-	std::cout<<"matchscene resize"<<std::endl;
 	int width	= graphicView_->viewport()->width();
 	int heigth	= graphicView_->viewport()->height();
 

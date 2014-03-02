@@ -27,9 +27,9 @@ public:
 	* @param brush the brush
 	* @param parent the parent Widget
 	*/
-	CVVPointMatch(CVVKeyPoint *left_key,CVVKeyPoint *right_key,const float& matchValue,
-		bool isLeftKey=true,qreal radius=1,const QPen& pen= QPen{Qt::red},
-		const QBrush& brush=QBrush{Qt::red},QGraphicsItem *parent=nullptr);
+	CVVPointMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key, const cv::DMatch& match,
+		bool isLeftKey=true, qreal radius=1, const QPen& pen= QPen{Qt::red},
+		const QBrush& brush=QBrush{Qt::red}, QGraphicsItem *parent=nullptr);
 
 
 	/**

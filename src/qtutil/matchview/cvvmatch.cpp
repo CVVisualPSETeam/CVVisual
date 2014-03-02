@@ -5,12 +5,12 @@
 
 namespace cvv{ namespace qtutil{
 
-CVVMatch::CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint* right_key,const float& matchValue,
-		const QPen& pen,QGraphicsItem *parent):
+CVVMatch::CVVMatch(CVVKeyPoint *left_key, CVVKeyPoint* right_key, const cv::DMatch &match,
+		const QPen& pen, QGraphicsItem *parent):
 	QGraphicsObject{parent},
 	left_key_{left_key},
 	right_key_{right_key},
-	matchValue_{matchValue},
+	match_{match},
 	pen_{pen},
 	show_{true},
 	left_key_visible_{left_key->imagePointisVisible()},
@@ -18,6 +18,9 @@ CVVMatch::CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint* right_key,const float& mat
 {
 	TRACEPOINT;
 	setVisible(show_&&left_key_visible_&&right_key_visible_);
+	setSelected(true);
+
+	setToolTip(QString{"Match distance: %1 \n queryIdx %2 \n trainIdx %3 \n imIdx %4 " }.arg(match_.distance).arg(match_.queryIdx).arg(match_.trainIdx).arg(match_.imgIdx));
 	connect(left_key_,SIGNAL(updatePoint(bool)),this,SLOT(updateLeftKey(bool)));
 	connect(right_key_,SIGNAL(updatePoint(bool)),this,SLOT(updateRightKey(bool)));
 	TRACEPOINT;

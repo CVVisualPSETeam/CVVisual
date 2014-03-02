@@ -75,7 +75,7 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		auto cvmatchleft = util::make_unique<qtutil::CVVPointMatch>(
 				leftKeys.at(match.queryIdx),
 				leftinvisibleKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),
-				match.distance);
+				match);
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),
 			cvmatchleft.get(),SLOT(updateSettings(MatchSettings&)));
 		matchscene_ptr->addMatch(cvmatchleft.release());
@@ -83,7 +83,7 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		auto cvmatchright = util::make_unique<qtutil::CVVPointMatch>(
 					rightinvisibleKeys.at(match.queryIdx),
 					rightKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),
-					match.distance,false);
+					match,false);
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),
 			cvmatchright.get(),SLOT(updateSettings(MatchSettings&)));
 		matchscene_ptr->addMatch(cvmatchright.release());
