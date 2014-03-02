@@ -64,9 +64,9 @@ int main(int argc, char *argv[])
 	bindiv->setChecked(true);
 
 	QObject::connect(busele.get(),SIGNAL(clicked( bool)),
-			 &(afw->slotEnableUserSelection_),SLOT(slot(bool)));
+			 &(afw->slotEnableUserSelection()),SLOT(slot(bool)));
 	QObject::connect(bindiv.get(),SIGNAL(clicked( bool)),
-			 &(afw->slotUseFilterIndividually_),SLOT(slot(bool)));
+			 &(afw->slotUseFilterIndividually()),SLOT(slot(bool)));
 
 	TRACEPOINT;
 	//add images

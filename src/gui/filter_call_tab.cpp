@@ -128,7 +128,7 @@ void FilterCallTab::createGui()
 
 	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
-	connect(&signElementSelected_, SIGNAL(signal(QString)), this, SLOT(currentIndexChanged()));
+	connect(&signalElementSelected(), SIGNAL(signal(QString)), this, SLOT(currentIndexChanged()));
 	TRACEPOINT;
 }
 

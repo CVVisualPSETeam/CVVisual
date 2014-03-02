@@ -22,10 +22,10 @@ public:
 		lay->addWidget(comboBox_);
 		lay->addWidget(lab);
 		setLayout(lay);
-		connect(&signElementSelected_,&cvv::qtutil::SignalQString::signal
+		connect(&signalElementSelected(),&cvv::qtutil::SignalQString::signal
 			,&s, &cvv::qtutil::Slot::slot);
 		std::cout<<__LINE__<<"\tlabel register constr connected text changed\n";
-		connect( &signElementRegistered_, SIGNAL(signal(QString)),
+		connect( &signalElementRegistered(), SIGNAL(signal(QString)),
 			 &reg, SLOT(slot(QString)));
 		std::cout<<__LINE__<<"\tlabel register constr connected elem registered\n";
 		std::cout<<__LINE__<<"\tlabel register constr end\n";

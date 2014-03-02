@@ -39,7 +39,7 @@ MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& m
 	setName(tabName);
 	const QString scope{"default_views"};
 	const QString key{"default_match_view"};
-	qtutil::setDefaultSetting(scope, key, "LineMatchView"); 
+	qtutil::setDefaultSetting(scope, key, "LineMatchView");
 	matchViewId_ = qtutil::getSetting(scope, key);
 	createGui();
 	TRACEPOINT;
@@ -127,7 +127,7 @@ void MatchCallTab::createGui()
 
 	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
-	connect(&signElementSelected_, SIGNAL(signal(QString)), this, SLOT(currentIndexChanged()));
+	connect(&signalElementSelected(), SIGNAL(signal(QString)), this, SLOT(currentIndexChanged()));
 	TRACEPOINT;
 }
 

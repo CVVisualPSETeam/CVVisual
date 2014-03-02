@@ -80,7 +80,7 @@ void ChannelReorderFilter::setChannel(std::size_t n){
 	{
 		//stop rec + update
 		TRACEPOINT;
-		signFilterSettingsChanged_.emitSignal();
+		signalFilterSettingsChanged().emitSignal();
 		TRACEPOINT;
 		return;
 	}else if(n<channelAssignment_.size())
@@ -103,7 +103,7 @@ void ChannelReorderFilter::setChannel(std::size_t n){
 		channelAssignment_.emplace_back(*box);
 		//connect
 		QObject::connect(box.get(),SIGNAL(valueChanged(int)),
-				 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+				 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 		layout_->addWidget(box.release());
 		TRACEPOINT;
 	}
