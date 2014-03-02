@@ -2,20 +2,19 @@
 #define CVVISUAL_STFLENGINE_HPP
 
 #include <math.h>
-#include <map>
 #include <vector>
+#include <QString>
+#include <QMap>
+#include <QHash>
+#include <QSet>
+#include <QRegExp>
+#include <map>
 #include <set>
 #include <iostream>
 #include <functional>
 #include <algorithm>
 #include <utility>
 #include <iterator>
-
-#include <QString>
-#include <QMap>
-#include <QHash>
-#include <QSet>
-#include <QRegExp>
 
 #include "stringutils.hpp"
 #include "element_group.hpp"
@@ -562,8 +561,7 @@ private:
 			if (sortCmd.second)
 			{
 				auto sortFunc = sortFuncs[sortCmd.first];
-				qStableSort(resList.begin(), resList.end(), [&](const Element &elem1,
-							const Element & elem2)
+				qStableSort(resList.begin(), resList.end(), [&](const Element &elem1, const Element & elem2)
 				{
 					return sortFunc(elem1, elem2);
 				});
@@ -571,8 +569,7 @@ private:
 			else
 			{
 				auto sortFunc = sortFuncs[sortCmd.first];
-				qStableSort(resList.begin(), resList.end(), [&](const Element &elem1,
-							const Element & elem2)
+				qStableSort(resList.begin(), resList.end(), [&](const Element &elem1, const Element & elem2)
 				{
 					return sortFunc(elem2, elem1);
 				});
@@ -585,8 +582,7 @@ private:
 	/**
 	 * @note I use std::vector here, as QList does strange things...
 	 */
-	std::vector<ElementGroup<Element> > executeGroupCmds(const QList<Element> &elements,
-														 const QStringList &cmdStrings)
+	std::vector<ElementGroup<Element> > executeGroupCmds(const QList<Element> &elements, const QStringList &cmdStrings)
 	{
 		TRACEPOINT;
 		QStringList groupCmds;
@@ -633,302 +629,15 @@ private:
 			}
 			groups[name].push_back(element);
 		}
-		if (containsGroupTitleAlteringQuery(cmdStrings))
+		for (auto it = groups.begin(); it != groups.end(); ++it)
 		{
-			auto alterCode = alteringCodeFromQueryList(cmdStrings);
-			for (auto it = groups.begin(); it != groups.end(); ++it)
-			{
-				auto titles = it->first.split("\\|" , QString::SkipEmptyParts);
-				ElementGroup<Element> elementGroup(execGroupTitleAltering(titles, alterCode),
-												   it->second);
-				groupList.push_back(elementGroup);
-			}
-		}
-		else
-		{
-			for (auto it = groups.begin(); it != groups.end(); ++it)
-			{
-				ElementGroup<Element> elementGroup(it->first.split("\\|" , QString::SkipEmptyParts),
-												   it->second);
-				groupList.push_back(elementGroup);
-			}
+			ElementGroup<Element> elementGroup(it->first.split("\\|" , QString::SkipEmptyParts), it->second);
+			groupList.push_back(elementGroup);
 		}
 		TRACEPOINT;
 		return groupList;
 	}
 
-	using GroupTitleAlteringCode = std::pair<std::vector<char>, std::vector<char>>;
-	
-	QStringList execGroupTitleAltering(QStringList titles, GroupTitleAlteringCode alteringCode)
-	{
-		for (auto &title : titles)
-		{
-			title = execGroupTitleAltering(title, alteringCode);
-		}
-		return titles;
-	}
-	
-	QString execGroupTitleAltering(QString title, GroupTitleAlteringCode alteringCode)
-	{
-		//Inspired by @see https://github.com/parttimenerd/tiny-bf/blob/master/tinybf.rb
-		//The implemented language is based on the bf dialect pbrain.
-		//To use this language, append "#alter_group_titles [input]|[code]" to your filter
-		//query ("[input]|" is optional and don't use this command with non ASCII characters
-		//and in this code appends an zero byte to the input).
-		//The data registers vector is initialized with the title (a group title).
-		//If this program doesn't output anything, the final registers vector (without all zeros) 
-		//will be treated as its output. The output (its first 200 characters at maximum)
-		//then replaces the given group title (somewhere above in the code).
-		//The code is only aloud to run 1.000.000 commands to prevent endless loops.
-		//Also important is, that the registers vector is only 40.000 registers big
-		//and if the register pointer gets greater than that, it's set to zero.
-		//Example: "[some group command] #alter_group_titles ++++++++[>++++[>++>+++>
-		//+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------
-		//.>>+." (of course without the line breaks) replace all titles with 
-		//"Hello World!".
-		//Attention: This is an undocumented and not really tested feature,
-		//that was implemented in a sleepless night, therefore use it with care and
-		//expect weird things to happen...
-		//(My fedora linux system logged me out if I provide optional input via "[input]|[code]")
-		//
-		//A short syntax reference of the used bf dialect, based on pbrain:
-		//Valid bf (and pbrain) code is also valid altering code, 
-		//except that you should not use the following characters in your bf
-		//comments: `|`, `(`, `)`, `:`.
-		// `:`: calls the procedure with name [value of current register],
-		// `(` code `)`: creates a procedure with name [value of current register],
-
-		if (!checkAlteringCodeSyntax(alteringCode))
-		{
-			return "Syntax error.";
-		}
-		if (title.size() > 40000)
-		{
-			return QString("Title \"%1\"to long.").arg(title);
-		}
-		
-		std::vector<char> output;
-		std::vector<char> registers(40000, 0);
-		std::vector<char> input = alteringCode.first;
-		std::vector<char> code = alteringCode.second;
-		std::vector<std::vector<char>> procedures(128, std::vector<char>());
-		
-		input.push_back(0);
-		std::reverse(input.begin(), input.end());
-		auto str = title.toStdString();
-		auto titleChars = std::vector<char>(str.begin(), str.end());
-		std::copy(titleChars.begin(), titleChars.end(), registers.begin());		
-
-		size_t pointer = 0;      //current position in the registers vector
-		size_t commandCount = 0;
-		
-		execGroupTitleAlteringCode(code, registers, input, output,
-								   procedures, pointer, commandCount);
-		
-		if (output.size() > 0)
-		{
-			return asciiCharVectorToQString(output);
-		}
-		std::vector<char> newVec;
-		std::copy_if(registers.begin(), registers.end(), std::back_inserter(newVec), 
-					 [](char c) { return c > 0; });
-		if (newVec.size() > 200)
-		{
-			newVec = std::vector<char>(newVec.begin(), newVec.begin() + 200);
-		}
-		return asciiCharVectorToQString(newVec);
-	}
-	
-	void execGroupTitleAlteringCode(std::vector<char> &code,
-									std::vector<char> &registers,
-									std::vector<char> &input,
-									std::vector<char> &output,
-									std::vector<std::vector<char>> &procedures,
-									size_t &pointer,
-									size_t &commandCount
-									)
-	{
-		std::vector<int> bracketStack;
-		int codePointer = -1;
-		DEBUG("");
-		//some temporary variables used inside the following switch statement
-		int procedureId = 0;
-		int br = 0;
-		int matchingBracket = -1;
-		
-		char currentCommand;
-		DEBUG("");
-		while (++codePointer < code.size() && commandCount++ < 1000000)
-		{
-			currentCommand = code.at(codePointer);
-			switch (currentCommand)
-			{
-			case '+':
-				if (++registers.at(pointer) > 127)
-				{
-					registers[pointer] = 0;
-				}
-				break;
-			case '-':
-				if (--registers.at(pointer) < 0)
-				{
-					registers[pointer] = 127;
-				}
-				break;
-			case '.':
-				output.push_back(registers.at(pointer));
-				break;
-			case ',':
-				if (input.size() > 0)
-				{
-					registers[pointer] = input.back();
-					input.pop_back();
-				}
-				break;
-			case '<':
-				if (--pointer < 0)
-				{
-					pointer = 0;
-				}
-				break;
-			case '>':
-				if (registers.size() <= ++pointer)
-				{
-					pointer = 0;
-				}
-				break;
-			case '[':
-				bracketStack.push_back(codePointer);
-				break;
-			case ']':
-				if (registers.at(pointer) > 0)
-				{
-					codePointer = bracketStack.back();
-				}
-				else
-				{
-					bracketStack.pop_back();
-				}
-				break;
-			case '(':
-				DEBUG("");
-				procedureId = registers.at(pointer);
-				br = 0;
-				matchingBracket = -1;
-				for (int i = codePointer; i < code.size() && matchingBracket == -1; i++)
-				{
-					if (code.at(i) == '(')
-					{
-						br++;
-					}
-					else if (code.at(i) == ')')
-					{
-						br--;
-						if (br == 0 && matchingBracket == -1)
-						{
-							matchingBracket = i;
-						}
-					}
-				}
-				if (matchingBracket - codePointer > 0)
-				{
-					procedures[procedureId] = std::vector<char>(code.begin() + codePointer + 1,
-														   code.begin() + matchingBracket - 1);
-				}
-				codePointer = matchingBracket + 1;
-				DEBUG("");
-				break;
-			case ':':
-				execGroupTitleAlteringCode(procedures.at(registers.at(pointer)),
-										   registers, input, output, procedures,
-										   pointer, commandCount);
-				DEBUG("");
-				break;
-			}
-		}
-	}
-	
-	GroupTitleAlteringCode alteringCodeFromQueryList(const QStringList &cmdStrings)
-	{
-		std::vector<char> input;
-		std::vector<char> code;
-		for (const auto& cmdString : cmdStrings)
-		{
-			auto arr = cmdString.split(" ");
-			if (arr.size() > 1 && arr.takeFirst() == "alter_group_titles")
-			{
-				arr = arr.join(" ").trimmed().split("|");
-				if (arr.size() >= 2)
-				{
-					auto str = arr.at(0).toStdString();
-					input = std::vector<char>(str.begin(), str.end());
-				}
-				if (arr.size() >= 1)
-				{
-					auto str = arr.at(arr.size() - 1).toStdString();
-					code = std::vector<char>(str.begin(), str.end());
-				}
-				break;
-			}
-		}
-		return std::make_pair(input, code);
-	}
-	
-	bool checkAlteringCodeSyntax(const GroupTitleAlteringCode &code)
-	{
-		DEBUG("");
-		auto codeArr = code.second;
-		int leftSquareBrackets = std::count(codeArr.begin(), codeArr.end(), '[');
-		int rightSquareBrackets = std::count(codeArr.begin(), codeArr.end(), ']');
-		int leftBrackets = std::count(codeArr.begin(), codeArr.end(), '(');
-		int rightBrackets = std::count(codeArr.begin(), codeArr.end(), ')');
-		if (leftBrackets == rightBrackets && leftSquareBrackets == rightSquareBrackets)
-		{
-			int squareBr = 0;
-			int br = 0;
-			for (auto cmd : codeArr)
-			{
-				switch (cmd)
-				{
-				case '[':
-					squareBr++;
-					break;
-				case ']':
-					if (br > 0)
-					{
-						return false;
-					}
-					squareBr--;
-					break;
-				case '(':
-					br++;
-					break;
-				case ')':
-					if (squareBr > 0)
-					{
-						return false;
-					}
-					br--;
-				}
-			}
-			return true;
-		}
-		DEBUG("");
-		return false;
-	}
-	
-	bool containsGroupTitleAlteringQuery(const QStringList &cmdStrings)
-	{
-		for (auto cmdString : cmdStrings)
-		{
-			if (cmdString.startsWith("alter_group_titles"))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-	
 	QStringList getSuggestionsForCmdQuery(const QString &cmdQuery, size_t number)
 	{
 		TRACEPOINT;
@@ -983,10 +692,6 @@ private:
 				QStringList args = rejoined.split(",", QString::SkipEmptyParts);
 				suggs = getSuggestionsForFilterCSCmd(cmd, args);
 			}
-		}
-		else if (cmd == "alter_group_titles")
-		{
-			suggs.push_back(cmdQuery);
 		}
 		else
 		{
@@ -1101,7 +806,7 @@ private:
 		TRACEPOINT;
 		return sortStringsByStringEquality(supportedCmds, cmd);
 	}
-	
+
 	/**
 	 * @brief Init the inherited list of supported commands.
 	 * E.g. "#sort by", "#group by", "#[filter name]"
