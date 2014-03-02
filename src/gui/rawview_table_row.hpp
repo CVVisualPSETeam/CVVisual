@@ -2,6 +2,7 @@
 #define	CVVISUAL_RAWVIEWTABLEROW_HPP
 
 #include <vector>
+#include <utility>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
@@ -24,10 +25,18 @@ public:
 	 * @brief Constructor of this class.
 	 * @param match match that this row inherits.
 	 * @param keyPoint1 "left" key point of the match
-	 * @param keyPoint1 "right" key point of the match
+	 * @param keyPoint2 "right" key point of the match
 	 */
     RawviewTableRow(cv::DMatch match, cv::KeyPoint keyPoint1, cv::KeyPoint keyPoint2);
 
+	/**
+	 * @brief Constructor of this class for a single key point.
+	 * The keypoint is stored as the first key point.
+	 * @param keyPoint only key point of this object,
+	 * @param left is the given key point is a left one?
+	 */
+    RawviewTableRow(cv::KeyPoint keyPoint, bool left = true);
+	
 	/**
 	 * @brief Add this row to the given table.
 	 * @note It does only fills the row in the table with the given index with its data.
@@ -35,7 +44,6 @@ public:
 	 * @param row given row index
 	 */ 
     void addToTable(QTableWidget *table, size_t row);
-	
 	
 	float matchDistance() const { return match.distance; }
 	
@@ -79,6 +87,16 @@ public:
 	
 	int keyPoint2ClassId() const { return keyPoint2.class_id; }
 	
+	cv::DMatch getMatch() const { return match; }
+	
+	cv::KeyPoint getKeyPoint1() const { return keyPoint1; }
+
+	cv::KeyPoint getKeyPoint2() const { return keyPoint2; }
+	
+	bool hasSingleKeyPoint() const { return hasLonelyKeyPoint_; }
+	
+	bool isLeftSingleKeyPoint() const { return left; }
+	
 	/**
 	 * @brief Serealizes the given rows into a single block of text.
 	 * The currently supported formats are:
@@ -89,33 +107,50 @@ public:
 	 *  - `RUBY`  : Valid ruby code (see JSON).
 	 *  @param rows given rows
 	 *  @param format the format of the resulting representation (see above)
+	 *  @param singleKeyPointRows do the given rows consist of single key point rows? 
 	 *  @return block representation of the given rows. 
 	 */
-	static QString rowsToText(const std::vector<RawviewTableRow> &rows, const QString format);
+	static QString rowsToText(const std::vector<RawviewTableRow> &rows, const QString format,
+							  bool singleKeyPointRows = false);
 	
 	/**
 	 * @brief Returns the currently available text formats for the rowsToText method.
 	 * @return {"CSV", "JSON", "PYTHON", "RUBY"}
 	 */
 	static std::vector<QString> getAvailableTextFormats();
-
+	
 private:
 	cv::DMatch match;
 	cv::KeyPoint keyPoint1;
 	cv::KeyPoint keyPoint2;
+	bool hasLonelyKeyPoint_;
+	bool left = false;
 };
 
 /**
  * @brief Create a list of rows from the given key points and matches.
+ * And one for the single key points.
+ * 
  * It creates a row for each match and uses the key points to get the two 
- * locations of each one.  
+ * locations of each one..
  * @param keyPoints1 given "left" key points
  * @param keyPoints2 given "right" key points
  * @param matches given matches
+ * @return first element is the match row list, second is the single key point row list
  */
-QList<RawviewTableRow> createRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints1,
+std::pair<QList<RawviewTableRow>, QList<RawviewTableRow>> createRawviewTableRows(
+                                        const std::vector<cv::KeyPoint>& keyPoints1,
 										const std::vector<cv::KeyPoint>& keyPoints2,
 										const std::vector<cv::DMatch>& matches);
+
+/**
+ * @brief Create a list of rows from the given key points.
+ * It creates a row for each key point, that does only contain this key point.
+ * @param keyPoints given key points
+ * @param left are the given key points are "left" ones?
+ * @return resulting list
+ */
+QList<RawviewTableRow> createSingleKeyPointRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints, bool left = true);
 
 }}
 

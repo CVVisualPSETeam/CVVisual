@@ -49,6 +49,12 @@ public:
 	 */
 	void updateUI();
 
+	/**
+	 * @brief Returns the parent view.
+	 * @return parent view
+	 */
+	view::Rawview* getParent() { return parent; }
+	
 private:
 	view::Rawview *parent;
 	qtutil::Accordion *subtableAccordion;
