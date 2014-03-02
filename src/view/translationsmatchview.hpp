@@ -34,6 +34,7 @@ public:
 				bool usetrainIdx=true,
 				QWidget *parent=nullptr);
 
+	TranslationMatchView(impl::MatchCall call,QWidget* parent=nullptr):TranslationMatchView{call.keyPoints1(),call.keyPoints2(),call.matches(),call.img1(),call.img2(),call.usesTrainDescriptor(),parent}{TRACEPOINT;}
 	~TranslationMatchView(){TRACEPOINT;}
 };
 }}

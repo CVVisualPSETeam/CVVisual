@@ -78,7 +78,7 @@ public:
 	 * @brief returns the match value
 	 * @return the match value
 	 */
-	cv::DMatch match() const
+	const cv::DMatch match() const
 		{TRACEPOINT;return match_;}
 
 	/**
@@ -87,6 +87,10 @@ public:
 	 */
 	bool isShown() const
 		{TRACEPOINT;return show_;}
+
+	/*operator ==(const cv::DMatch& o)
+		{return o==match_;}*/
+
 
 public slots:
 

@@ -33,6 +33,8 @@ public:
 			cv::Mat rightIm,
 			bool usetrainIdx=true,
 			QWidget *parent=nullptr);
+
+	DepthMatchView(impl::MatchCall call,QWidget* parent=nullptr): DepthMatchView{call.keyPoints1(),call.keyPoints2(),call.matches(),call.img1(),call.img2(),call.usesTrainDescriptor(),parent}{TRACEPOINT;}
 };
 }}
 #endif
