@@ -30,6 +30,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	auto matchpen	= util::make_unique<qtutil::SingleColorMatchPen>();
 	auto keypen	= util::make_unique<qtutil::SingleColorKeyPen>();
 
+
 	qtutil::MatchScene * matchscene_ptr	= matchscene.get();
 	qtutil::SingleColorMatchPen* matchpen_ptr= matchpen.get();
 	qtutil::SingleColorKeyPen* keypen_ptr	= keypen.get();
@@ -40,12 +41,13 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	std::vector<qtutil::CVVKeyPoint*> leftKeys;
 	std::vector<qtutil::CVVKeyPoint*> rightKeys;
 
+
 	accor->insert("Match Color",std::move(matchpen));
 	accor->insert("KeyPoint Color",std::move(keypen));
 	accor->insert("Left Image ",std::move(matchscene_ptr->getLeftMatInfoWidget()));
 	accor->insert("Right Image ",std::move(matchscene_ptr->getRightMatInfoWidget()));
 
-	connect(this,SIGNAL(signalIsInLayout()),matchscene_ptr,SLOT(adjustImages()));
+
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());

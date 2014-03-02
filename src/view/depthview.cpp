@@ -33,11 +33,7 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	accor->setMinimumWidth(250);
 	accor->setMaximumWidth(250);
 
-
 	accor->insert("Match Color",std::move(matchpen));
-
-	connect(this,SIGNAL(signalIsInLayout()),matchscene_ptr,SLOT(adjustImages()));
-
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());

@@ -42,7 +42,6 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 	accor->insert("Left Image ",std::move(matchscene_ptr->getLeftMatInfoWidget()));
 	accor->insert("Right Image ",std::move(matchscene_ptr->getRightMatInfoWidget()));
 
-	connect(this,SIGNAL(signalIsInLayout()),matchscene_ptr,SLOT(adjustImages()));
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
