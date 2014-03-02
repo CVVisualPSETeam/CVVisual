@@ -53,9 +53,18 @@ public:
 	 * @param keypoints2 right keypoints
 	 * @param matches matches between the left and the right keypoints.
 	 */
-    Rawview(const std::vector<cv::KeyPoint>& keypoints1,
+	Rawview(const std::vector<cv::KeyPoint>& keypoints1,
 			const std::vector<cv::KeyPoint>& keypoints2,
 			const std::vector<cv::DMatch>& matches);
+
+	/**
+	 * @brief Short constructor.
+	 * @param call from which the data for the view is taken.
+	 * @param parent of this QWidget.
+	 */
+	Rawview(const impl::MatchCall& call, QWidget* parent = nullptr):
+			Rawview(call.keyPoints1(), call.keyPoints2(),
+			call.matches()) { TRACEPOINT; setParent(parent); }
 
 signals:
 	/**

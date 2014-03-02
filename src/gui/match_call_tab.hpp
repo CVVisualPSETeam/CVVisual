@@ -28,19 +28,15 @@ namespace gui {
  * Allows to switch views and to access the help.
  */
 class MatchCallTab:
-		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::Mat&,
-							const std::vector<cv::KeyPoint>&,
-							const cv::Mat&, const std::vector<cv::KeyPoint>&,
-							const std::vector<cv::DMatch>&, QWidget*>
+		public CallTab, public cvv::qtutil::RegisterHelper<
+			cvv::view::MatchView, const cvv::impl::MatchCall&, QWidget*>
 {
 	Q_OBJECT
 
 public:
 	
 	using MatchViewBuilder = std::function<std::unique_ptr<cvv::view::MatchView>(
-			const cv::Mat&, const std::vector<cv::KeyPoint>&,
-			const cv::Mat&, const std::vector<cv::KeyPoint>&,
-			const std::vector<cv::DMatch>&, QWidget*)>;
+			const cvv::impl::MatchCall&, QWidget*)>;
 
 	/**
 	 * @brief Short constructor named after Call and using the default view.
@@ -75,10 +71,30 @@ public:
 	size_t getId() const override;
 
 	/**
+	 * @brief Register the template class to the map of MatchViews.
+	 * View needs to offer a constructor of the form View(const cvv::impl::MatchCall&, QWidget*).
+	 * @param name to register the class under.
+	 * @tparam View - Class to register.
+	 * @return true when the view was registered and false when the name was already taken.
+	 */
+	template<class View>
+	static bool registerMatchView(const QString& name)
+	{
+		TRACEPOINT;
+		return gui::MatchCallTab::registerElement(name,
+			[](const cvv::impl::MatchCall& call, QWidget* parent){
+				TRACEPOINT;
+				return cvv::util::make_unique<View>(call,parent);
+			}
+		);
+	}
+
+	/**
 	 * @brief adds MatchView to map of all.
 	 * Adds a MatchView with a name to the thread local map of all MatchViews.
 	 * @param matchViewId the ID or name of the MatchView.
 	 * @param mView: function returning a unique_ptr to a MatchView.
+	 * @attention: Use of registerMatchView recommended.
 	 */
 	static void addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView);
 

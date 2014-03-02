@@ -73,6 +73,7 @@ public:
 	 * @param name to register the class under.
 	 * @tparam View - Class to register.
 	 * @return true when the view was registered and false when the name was already taken.
+	 * @attention Use of registerFilterView recommended.
 	 */
 	template<class View>
 	static bool registerFilterView(const QString& name)

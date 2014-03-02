@@ -24,34 +24,6 @@
 
 namespace cvv {namespace impl {
 
-std::unique_ptr<cvv::view::FilterView> makeDefaultFilterView(
-		const std::vector<cv::Mat>& images, QWidget* parent);
-
-std::unique_ptr<cvv::view::FilterView> makeDualFilterView(
-		const std::vector<cv::Mat>& images, QWidget* parent);
-
-
-std::unique_ptr<cvv::view::MatchView> makeLineMatchView(
-		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-		const std::vector<cv::DMatch>& matches, QWidget* parent);
-
-std::unique_ptr<cvv::view::MatchView> makeTranslationMatchView(
-		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-		const std::vector<cv::DMatch>& matches, QWidget* parent);
-
-std::unique_ptr<cvv::view::MatchView> makeDepthMatchView(
-		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-		const std::vector<cv::DMatch>& matches, QWidget* parent);
-
-std::unique_ptr<cvv::view::Rawview> makeRawview(
-		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-		const std::vector<cv::DMatch>& matches, QWidget* parent);
-
-
 void initializeFilterAndViews()
 {
 	static bool alreadyCalled = false;
@@ -67,57 +39,14 @@ void initializeFilterAndViews()
 	qtutil::registerFilter<1,1,qtutil::ChannelReorderFilter>("Reorder channels");
 	
 	//filter-views:
-	cvv::gui::FilterCallTab::addFilterViewToMap("DefaultFilterView", makeDefaultFilterView);
-	cvv::gui::FilterCallTab::addFilterViewToMap("DualFilterView", makeDualFilterView);
+	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DefaultFilterView>("DefaultFilterView");
+	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DualFilterView>("DualFilterView");
 	
 	//match-views:
-	cvv::gui::MatchCallTab::addMatchViewToMap("LineMatchView", makeLineMatchView);
-	cvv::gui::MatchCallTab::addMatchViewToMap("TranslationMatchView", makeTranslationMatchView);
-	cvv::gui::MatchCallTab::addMatchViewToMap("DepthMatchView", makeDepthMatchView);
-	cvv::gui::MatchCallTab::addMatchViewToMap("RawView", makeRawview);
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::LineMatchView>("LineMatchView");
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::TranslationMatchView>("TranslationMatchView");
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::DepthMatchView>("DepthMatchView");
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::Rawview>("RawView");
 }
 
-std::unique_ptr<cvv::view::FilterView> makeDefaultFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
-{
-	return cvv::util::make_unique<cvv::view::DefaultFilterView>(images, parent);
-}
-std::unique_ptr<cvv::view::FilterView> makeDualFilterView(const std::vector<cv::Mat>& images, QWidget* parent)
-{
-	return cvv::util::make_unique<cvv::view::DualFilterView>(images, parent);
-}
-
-std::unique_ptr<cvv::view::MatchView> makeLineMatchView(
-		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-		const std::vector<cv::DMatch>& matches, QWidget* parent)
-{
-	return cvv::util::make_unique<cvv::view::LineMatchView>(key1, key2, matches, img1, img2, parent);
-}
-
-std::unique_ptr<cvv::view::MatchView> makeTranslationMatchView(
-		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-		const std::vector<cv::DMatch>& matches, QWidget* parent)
-{
-	return cvv::util::make_unique<cvv::view::TranslationMatchView>(key1, key2, matches, img1, img2, parent);
-}
-
-std::unique_ptr<cvv::view::MatchView> makeDepthMatchView(
-		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-		const std::vector<cv::DMatch>& matches, QWidget* parent)
-{
-	return cvv::util::make_unique<cvv::view::DepthMatchView>(key1, key2, matches, img1, img2, parent);
-}
-
-std::unique_ptr<cvv::view::Rawview> makeRawview(
-		const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-		const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-		const std::vector<cv::DMatch>& matches, QWidget* parent)
-{
-	(void)img1;
-	(void)img2;
-	(void)parent;
-	return cvv::util::make_unique<cvv::view::Rawview>(key1, key2, matches);
-}
 }}

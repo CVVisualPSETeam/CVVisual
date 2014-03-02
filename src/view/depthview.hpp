@@ -34,7 +34,12 @@ public:
 			bool usetrainIdx=true,
 			QWidget *parent=nullptr);
 
-	DepthMatchView(impl::MatchCall call,QWidget* parent=nullptr): DepthMatchView{call.keyPoints1(),call.keyPoints2(),call.matches(),call.img1(),call.img2(),call.usesTrainDescriptor(),parent}{TRACEPOINT;}
+	/**
+	 * @brief Short constructor.
+	 * @param call from which the data for the view is taken.
+	 * @param parent of this QWidget.
+	 */
+	DepthMatchView(const impl::MatchCall& call,QWidget* parent=nullptr): DepthMatchView{call.keyPoints1(),call.keyPoints2(),call.matches(),call.img1(),call.img2(),call.usesTrainDescriptor(),parent}{TRACEPOINT;}
 };
 }}
 #endif

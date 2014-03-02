@@ -20,15 +20,16 @@
 namespace cvv {
 namespace gui {
 
-MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& matchCall): matchCall_{matchCall}
+MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& matchCall): //matchCall_{matchCall}
+	MatchCallTab{matchCall.description(), matchCall}
 {
 	TRACEPOINT;
-	setName(matchCall_->description());
+	/*setName(matchCall_->description());
 	const QString scope{"default_views"};
 	const QString key{"default_match_view"};
 	qtutil::setDefaultSetting(scope, key, "LineMatchView");
 	matchViewId_ = qtutil::getSetting(scope, key);
-	createGui();
+	createGui();*/
 	TRACEPOINT;
 }
 
@@ -87,10 +88,7 @@ size_t MatchCallTab::getId() const
 void MatchCallTab::addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView)
 {
 	TRACEPOINT;
-	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::Mat&,
-			const std::vector<cv::KeyPoint>&,
-			const cv::Mat&, const std::vector<cv::KeyPoint>&,
-			const std::vector<cv::DMatch>&, QWidget*>::registerElement(matchViewId, mView);
+	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cvv::impl::MatchCall&, QWidget*>::registerElement(matchViewId, mView);
 	TRACEPOINT;
 }
 
@@ -142,9 +140,7 @@ void MatchCallTab::setView()
 		matchView_->setVisible(true);
 	} else
 	{
-		viewHistory_.emplace(selection(), ((*this)()(matchCall_->img1(), matchCall_->keyPoints1(),
-							     matchCall_->img2(), matchCall_->keyPoints2(),
-							     matchCall_->matches(), this).release()));
+		viewHistory_.emplace(selection(), ((*this)()(*matchCall_, this).release()));
 		matchView_ = viewHistory_.at(selection());
 		vlayout_->addWidget(matchView_);
 	}
