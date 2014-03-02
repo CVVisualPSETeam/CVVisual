@@ -71,7 +71,7 @@ public:
 	/**
 	 * @brief Signal to emit when user input leads to different parameters.
 	 */
-	Signal signFilterSettingsChanged_;
+	const Signal signFilterSettingsChanged_;
 };
 
 }} // end namespaces qtutil, cvv

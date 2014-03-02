@@ -163,9 +163,9 @@ public:
 	 *@todo SYNCHRONIZE
 	 */
 	//thread_local
-	static SignalQString signElementRegistered_;
+	static const SignalQString signElementRegistered_;
 
-	SignalQString signElementSelected_;
+	const SignalQString signElementSelected_;
 
 protected:
 	/**
@@ -193,7 +193,7 @@ template<class Value, class...Args>
 
 
 template<class Value, class...Args>
-	SignalQString RegisterHelper<Value,Args...>::signElementRegistered_{};
+	const  SignalQString RegisterHelper<Value,Args...>::signElementRegistered_{};
 }} // end namespaces qtutil, cvv
 
 #endif //CVVISUAL_REGISTERHELPER_HPP

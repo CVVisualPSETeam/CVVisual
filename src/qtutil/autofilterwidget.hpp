@@ -93,7 +93,7 @@ public:
 	/**
 	 * @brief Checks wheather the check box is checked.
 	 */
-	operator bool()
+	operator bool() const
 	{
 		TRACEPOINT;
 		return checkBox_->isChecked();
@@ -103,7 +103,7 @@ public:
 	 * @brief Returns the image input.
 	 * @return The image input.
 	 */
-	InputArray input()
+	InputArray input() const
 	{
 		TRACEPOINT;return in_;
 	}
@@ -122,10 +122,10 @@ public:
 	 * @brief Returns references to the update signals.
 	 * @return References to the update signals.
 	 */
-	std::vector<util::Reference<SignalMatRef>> signalsRef()
+	std::vector<util::Reference<const SignalMatRef>> signalsRef() const
 	{
 		TRACEPOINT;
-		std::vector<util::Reference<SignalMatRef>> result{};
+		std::vector<util::Reference<const SignalMatRef>> result{};
 		for(auto& elem:signals_)
 		{
 			result.emplace_back(elem);
@@ -137,7 +137,7 @@ public:
 	/**
 	 * @brief Emits all update signals.
 	*/
-	void emitAll()
+	void emitAll() const
 	{
 		TRACEPOINT;
 		for(std::size_t i=0;i<Out;i++)
@@ -205,7 +205,7 @@ public:
 	/**
 	 * @brief The update signals for the output.
 	 */
-	std::array<SignalMatRef, Out> signals_;
+	std::array<const SignalMatRef, Out> signals_;
 };
 
 }//structures
@@ -264,7 +264,7 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	 * @param out The image output.
 	 * @return The update signals for all output images.
 	 */
-	std::vector<util::Reference<SignalMatRef>>
+	std::vector<util::Reference<const SignalMatRef>>
 		addEntry(const QString& name, InputArray in, OutputArray out)
 	{
 		TRACEPOINT;
@@ -327,11 +327,11 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	/**
 	* @brief calls enableUserSelection
 	*/
-	SlotBool slotEnableUserSelection_;
+	const SlotBool slotEnableUserSelection_;
 	/**
 	 * @brief calls seFilterIndividually.
 	 */
-	SlotBool slotUseFilterIndividually_;
+	const SlotBool slotUseFilterIndividually_;
 private:
 	/**
 	 * @brief Applies the filter when some settings where changed.

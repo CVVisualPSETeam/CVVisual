@@ -138,7 +138,7 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	auto scene=util::make_unique<QGraphicsScene>(this);
 	scene_=*scene;
 
-	auto view=util::make_unique<structures::GraphicsView>();
+	auto view=util::make_unique<structures::ZoomableImageGraphicsView>();
 	view_=*view;
 	view_->setScene(scene.release());
 
@@ -219,11 +219,12 @@ void ZoomableImage::drawValues()
 	}
 	TRACEPOINT;
 	auto r=visibleArea();
-	for(int i=std::max(0,static_cast<int>(r.left())-1);
-		i<std::min(mat_.cols,static_cast<int>(r.right())+1);i++)
+
+	for(int j=std::max(0,static_cast<int>(r.top())-1);
+		j<std::min(mat_.rows,static_cast<int>(r.bottom())+1); j++)
 	{
-		for(int j=std::max(0,static_cast<int>(r.top())-1);
-			j<std::min(mat_.rows,static_cast<int>(r.bottom())+1); j++)
+		for(int i=std::max(0,static_cast<int>(r.left())-1);
+			i<std::min(mat_.cols,static_cast<int>(r.right())+1);i++)
 		{
 			QString s(printPixel(mat_,i,j).c_str());
 
@@ -317,7 +318,7 @@ void ZoomableImage::rightClick(const QPoint & pos)
 	{
 		TRACEPOINT;
 		QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"),
-			"/home/jana/untitled.png",
+			".",
 			tr("BMP (*.bmp);;GIF (*.gif);;JPG (*.jpg);;PNG (*.png);;"
 				"PBM (*.pbm);;PGM (*.pgm);;PPM (*.ppm);;XBM (*.xbm);;"
 				"XPM (*.xpm)"));
@@ -347,7 +348,7 @@ QPointF ZoomableImage::mapImagePointToParent(QPointF point) const
 
 namespace structures {
 
-void GraphicsView::wheelEvent(QWheelEvent * event){
+void ZoomableImageGraphicsView::wheelEvent(QWheelEvent * event){
 	TRACEPOINT;
 	if(QApplication::keyboardModifiers() & Qt::ControlModifier)
 	{

@@ -22,13 +22,13 @@ namespace structures {
 /**
  * @brief A graphics view with overwritten event handlers.
  */
-class GraphicsView:public QGraphicsView
+class ZoomableImageGraphicsView:public QGraphicsView
 {
 public:
 	/**
 	 * @brief Constructor
 	 */
-	GraphicsView():QGraphicsView{}
+	ZoomableImageGraphicsView():QGraphicsView{}
 	{
 		TRACEPOINT;
 	}
@@ -36,7 +36,7 @@ public:
 	/**
 	 * @brief Destructor
 	 */
-	~GraphicsView()
+	~ZoomableImageGraphicsView()
 	{
 		TRACEPOINT;
 	}
@@ -116,7 +116,10 @@ public:
 	 * @return
 	 */
 	qreal threshold() const
-		{TRACEPOINT;return threshold_;}
+	{
+		TRACEPOINT;
+		return threshold_;
+	}
 
 	/**
 	 * @brief The overridden resize event (from QWidget).
@@ -203,12 +206,12 @@ signals:
 	 * @brief Emmited whenever the image is updated. It passes the conversion result
 	 * and the image.
 	 */
-	void updateConversionResult(ImageConversionResult,const cv::Mat&);
+	void updateConversionResult(ImageConversionResult,const cv::Mat&) const;
 
 	/**
 	 *@brief Emitted whenever the visible area changes. Passes the visible area and zoom factor.
 	 */
-	void updateArea(QRectF,qreal);
+	void updateArea(QRectF,qreal) const;
 
 public slots:
 	/**
@@ -327,7 +330,7 @@ private:
 	/**
 	 * @brief The graphics view showing the scene.
 	 */
-	util::ObserverPtr<structures::GraphicsView> view_;
+	util::ObserverPtr<structures::ZoomableImageGraphicsView> view_;
 	/**
 	 * @brief The scene containing the pixmap.
 	 */

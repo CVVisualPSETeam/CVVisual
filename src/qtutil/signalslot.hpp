@@ -38,7 +38,7 @@ public:
 	 * @brief Emits the signal.
 	 * @param args The arguments
 	 */
-	void emitSignal()
+	void emitSignal() const
 	{
 		TRACEPOINT;
 		emit signal();
@@ -48,7 +48,7 @@ signals:
 	/**
 	 * @brief The signal emited by emitSignal.
 	 */
-	void signal();
+	void signal() const;
 };
 
 /**
@@ -79,7 +79,7 @@ public slots:
 	/**
 	 * @brief The slot calling function()
 	 */
-	void slot()
+	void slot() const
 	{
 		TRACEPOINT;
 		function_();
@@ -112,14 +112,14 @@ public:
 
 	~SignalQString(){DEBUGF("this=%s", reinterpret_cast<size_t>(this));}
 
-	void emitSignal(const QString& t)
+	void emitSignal(const QString& t) const
 	{
 		TRACEPOINT;
 		emit signal(t);
 		TRACEPOINT;
 	}
 signals:
-	void signal( QString t);
+	void signal( QString t) const;
 };
 
 /**
@@ -140,7 +140,7 @@ public:
 	~SlotQString(){TRACEPOINT;}
 
 public slots:
-	void slot(QString t)
+	void slot(QString t) const
 	{
 		TRACEPOINT;
 		function_(t);
@@ -166,7 +166,7 @@ public:
 
 	~SignalMatRef(){TRACEPOINT;}
 
-	void emitSignal(cv::Mat& mat)
+	void emitSignal(cv::Mat& mat) const
 	{
 		TRACEPOINT;
 		emit signal(mat);TRACEPOINT;
@@ -175,7 +175,7 @@ signals:
 	/**
 	 * @brief The signal emited by emitSignal.
 	 */
-	void signal(cv::Mat& mat);
+	void signal(cv::Mat& mat) const;
 };
 
 /**
@@ -196,7 +196,7 @@ public:
 	~SlotBool(){TRACEPOINT;}
 
 public slots:
-	void slot(bool t)
+	void slot(bool t) const
 	{
 		TRACEPOINT;
 		function_(t);

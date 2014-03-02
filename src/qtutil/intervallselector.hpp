@@ -92,7 +92,7 @@ public:
 	 */
 	template<class Type, class DoubleExtractor>
 	std::vector<Type> select(std::vector<Type> universe, std::vector<Type> selection,
-		DoubleExtractor extr)
+		DoubleExtractor extr) const
 	{
 		auto in=util::makeRef(universe);
 		if(useSelection_->isChecked())
@@ -117,10 +117,19 @@ public:
 	}
 
 	/**
+	 * @brief Returns the signal emitted when settings are changed.
+	 * @return The signal emitted when settings are changed.
+	 */
+	const Signal& signalSettingsChanged() const
+	{
+		return sigSettingsChanged_;
+	}
+
+private:
+	/**
 	 * @brief Emitted when settings are changed.
 	 */
 	const Signal sigSettingsChanged_;
-private:
 	/**
 	 * @brief Spinbox to select the lower bound
 	 */

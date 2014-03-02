@@ -172,7 +172,7 @@ protected:
 	/**
 	 * @brief Slot called when user changes selection
 	 */
-	Slot slotFilterSelected_;
+	const Slot slotFilterSelected_;
 }; //FilterSelectorWidget
 
 /**

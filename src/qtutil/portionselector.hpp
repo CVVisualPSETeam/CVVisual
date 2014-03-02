@@ -138,7 +138,7 @@ public:
 	 */
 	template<class Type, class Compare >
 	std::vector<Type> select(std::vector<Type> universe, std::vector<Type> selection,
-		Compare comp)
+		Compare comp) const
 	{
 		//universe or selection
 		auto in=util::makeRef(universe);
@@ -177,10 +177,19 @@ public:
 	}
 
 	/**
+	 * @brief Returns the signal emitted when settings are changed.
+	 * @return The signal emitted when settings are changed.
+	 */
+	const Signal& signalSettingsChanged() const
+	{
+		return sigSettingsChanged_;
+	}
+
+private:
+	/**
 	 * @brief Emitted when settings are changed.
 	 */
 	const Signal sigSettingsChanged_;
-private:
 	/**
 	 * @brief Whether the highest elements should be selected
 	 */
