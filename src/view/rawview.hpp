@@ -54,7 +54,7 @@ public:
 	 * @param matches matches between the left and the right keypoints.
 	 * @param showShowInViewMenu Does this view show a "Show in view" item in its context menus?
 	 */
-    Rawview(const std::vector<cv::KeyPoint>& keypoints1,
+	Rawview(const std::vector<cv::KeyPoint>& keypoints1,
 			const std::vector<cv::KeyPoint>& keypoints2,
 			const std::vector<cv::DMatch>& matches,
 			bool showShowInViewMenu = false);
@@ -65,6 +65,15 @@ public:
 	 */
 	bool doesShowShowInViewMenu();
 	
+	/**
+	 * @brief Short constructor.
+	 * @param call from which the data for the view is taken.
+	 * @param parent of this QWidget.
+	 */
+	Rawview(const impl::MatchCall& call, QWidget* parent = nullptr):
+			Rawview(call.keyPoints1(), call.keyPoints2(),
+			call.matches()) { TRACEPOINT; setParent(parent); }
+
 signals:
 	/**
 	 * @brief Requests to update the left footer of the window that displays this view.

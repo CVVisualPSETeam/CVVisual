@@ -249,11 +249,11 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 		lay->setContentsMargins(0,0,0,0);
 		this->layout_->insertLayout(0,lay.release());
 		//connect auto filter slot
-		QObject::connect(&(this->signFilterSettingsChanged_),
-				 SIGNAL(signal()),//&AutoFilterWidget<In,Out>::signFilterSettingsChanged_::signal,
-				 &(this->slotApplyFilter_),
-				 SLOT(slot())//&AutoFilterWidget<In,Out>::slotApplyFilter_::slot
-				 );
+		QObject::connect(&(this->signalFilterSettingsChanged()),
+				SIGNAL(signal()),
+				&(this->slotApplyFilter_),
+				SLOT(slot())
+		);
 		TRACEPOINT;
 	}
 
@@ -324,6 +324,26 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 		applyFilterIndividually_=individually;
 		TRACEPOINT;
 	}
+
+	/**
+	 * @brief Returns a slot object that calls enableUserSelection.
+	 * @return A slot object that calls enableUserSelection.
+	 */
+	const SlotBool& slotEnableUserSelection() const
+	{
+		return slotEnableUserSelection_;
+	}
+
+	/**
+	 * @brief Returns a slot object that calls seFilterIndividually.
+	 * @return A slot object that calls seFilterIndividually.
+	 */
+	const SlotBool& slotUseFilterIndividually() const
+	{
+		return slotUseFilterIndividually_;
+	}
+
+private:
 	/**
 	* @brief calls enableUserSelection
 	*/
@@ -332,7 +352,6 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	 * @brief calls seFilterIndividually.
 	 */
 	const SlotBool slotUseFilterIndividually_;
-private:
 	/**
 	 * @brief Applies the filter when some settings where changed.
 	 */
@@ -408,7 +427,7 @@ private:
 						//apply filter+set message
 						elem.get().setMessage("");
 						this->applyFilter(elem.get().input(),
-								  elem.get().output());
+								elem.get().output());
 						elem.get().emitAll();
 					}
 				}else{

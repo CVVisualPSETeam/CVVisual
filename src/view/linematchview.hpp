@@ -31,8 +31,15 @@ public:
 			std::vector<cv::DMatch> matches,
 			cv::Mat leftIm,
 			cv::Mat rightIm,
-			bool usetrainIdx=true,
-			QWidget *parent=nullptr);
+			bool usetrainIdx = true,
+			QWidget *parent = nullptr);
+
+	/**
+	 * @brief Short constructor.
+	 * @param call from which the data for the view is taken.
+	 * @param parent of this QWidget.
+	 */
+	LineMatchView(const impl::MatchCall& call,QWidget* parent = nullptr) : LineMatchView{ call.keyPoints1() , call.keyPoints2() , call.matches() , call.img1() , call.img2() , call.usesTrainDescriptor() ,parent}{TRACEPOINT;}
 
 	~LineMatchView(){TRACEPOINT;}
 

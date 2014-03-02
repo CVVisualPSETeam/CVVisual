@@ -52,13 +52,13 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 
 	//connect
 	QObject::connect(dx_.getPtr(),SIGNAL(valueChanged(int)),
-			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+			 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 	QObject::connect(dy_.getPtr(),SIGNAL(valueChanged(int)),
-			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+			 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 	QObject::connect(ksize_.getPtr(),SIGNAL(currentIndexChanged(int)),
-			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+			 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 	QObject::connect(borderType_.getPtr(),SIGNAL(currentIndexChanged(int)),
-			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+			 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 	TRACEPOINT;
 
 	//subfilter reorder
@@ -74,9 +74,9 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 								SLOT(setVisible(bool)));
 	//settings
 	QObject::connect(reorder_.getPtr(),SIGNAL(clicked()),
-			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(&(reorderFilter_.getPtr()->signFilterSettingsChanged_),SIGNAL(signal()),
-			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+			 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
+	QObject::connect(&(reorderFilter_.getPtr()->signalFilterSettingsChanged()),SIGNAL(signal()),
+			 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 	TRACEPOINT;
 
 
@@ -93,9 +93,9 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 								SLOT(setVisible(bool)));
 	//settings
 	QObject::connect(gray_.getPtr(),SIGNAL(clicked()),
-			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
-	QObject::connect(&(grayFilter_.getPtr()->signFilterSettingsChanged_),SIGNAL(signal()),
-			 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+			 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
+	QObject::connect(&(grayFilter_.getPtr()->signalFilterSettingsChanged()),SIGNAL(signal()),
+			 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 	TRACEPOINT;
 
 	//build ui
@@ -115,7 +115,7 @@ SobelFilterWidget::SobelFilterWidget(QWidget* parent):
 	setLayout(lay.release());
 	TRACEPOINT;
 	//emit first update
-	this->signFilterSettingsChanged_.emitSignal();
+	signalFilterSettingsChanged().emitSignal();
 	TRACEPOINT;
 }
 

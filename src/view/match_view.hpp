@@ -36,23 +36,29 @@ signals:
 	 */
 	void updateRightFoooter(QString newText);
 
+	void setSelection(std::vector<cv::DMatch>);
+
 public:
 	/**
 	 * @brief default constructor
-	 **/
-	MatchView():MatchView{0}{};
+	 */
+	MatchView():MatchView{0}{}
 
 	/**
 	 * @brief default destructor.
 	 */
 	virtual ~MatchView() = default;
 
+public slots:
+
+	virtual void getSelection(std::vector<cv::DMatch>) {}
+
 protected:
 	/**
 	 * @brief constructor of QWidget(parent).
 	 * @param parent the parent of this view.
 	 **/
-	MatchView(QWidget *parent):QWidget{parent}{};
+	MatchView(QWidget *parent):QWidget{parent}{}
 };
 
 }} //namespaces

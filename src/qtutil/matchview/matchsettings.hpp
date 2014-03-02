@@ -35,9 +35,7 @@ public:
 	 * @brief this method emits the signal settingsChanged();
 	 */
 	void updateAll()
-		{TRACEPOINT;
-		emit settingsChanged(*this);
-		TRACEPOINT;}
+		{emit settingsChanged(*this);}
 
 signals:
 	/**

@@ -21,13 +21,6 @@
 #include <opencv2/features2d/features2d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-std::unique_ptr<cvv::view::MatchView> makeLineMatchView(const cv::Mat& img1,
-		const std::vector<cv::KeyPoint>& key1, const cv::Mat& img2,
-		const std::vector<cv::KeyPoint>& key2, const std::vector<cv::DMatch>& match, QWidget* parent)
-{
-	return cvv::util::make_unique<cvv::view::LineMatchView>(key1, key2, match, img1, img2, parent);
-}
-
 int main(int argc, char *argv[])
 {
 	cvv::dbg::setLoggingState(false);	// Disable tracepoints.
@@ -61,16 +54,8 @@ int main(int argc, char *argv[])
 
 	cvv::impl::MatchCall mc{src, key1, train, key2, match, data, type, "some description", "", true};
 
-	std::function<std::unique_ptr<cvv::view::MatchView>(const cv::Mat&, const std::vector<cv::KeyPoint>&, const cv::Mat&,
-			const std::vector<cv::KeyPoint>&, const std::vector<cv::DMatch>&, QWidget*)> mlmv = makeLineMatchView;
-	cvv::gui::MatchCallTab::addMatchViewToMap("LineMatchView", mlmv);
-
-	cvv::gui::MatchCallTab::addMatchViewToMap("Rawview",
-						[] (const cv::Mat& img1, const std::vector<cv::KeyPoint>& key1,
-							const cv::Mat& img2, const std::vector<cv::KeyPoint>& key2,
-							const std::vector<cv::DMatch>& match, QWidget* parent)
-						{	(void) img1; (void) img2; (void) parent;
-							return cvv::util::make_unique<cvv::view::Rawview>(key1, key2, match); });
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::LineMatchView>("LineMatchView");
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::Rawview>("RawView");
 
 	cvv::gui::MatchCallTab v{mc};
 	v.show();
