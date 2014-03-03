@@ -21,6 +21,7 @@ cvv::qtutil::SyncZoomWidget::SyncZoomWidget(std::vector<cvv::qtutil::ZoomableIma
 		auto none = util::make_unique<QCheckBox>("no sync");
 
 		buttonGroup_->setExclusive(true);
+		none->setCheckState(Qt::Checked);
 		buttonGroup_->addButton(none.get(),images.size());
 
 		layout->addWidget(label.release());
@@ -40,8 +41,6 @@ cvv::qtutil::SyncZoomWidget::SyncZoomWidget(std::vector<cvv::qtutil::ZoomableIma
 		connect(buttonGroup_,SIGNAL(buttonClicked(int)),this,SLOT(selectMaster(int)));
 
 		setLayout(layout.release());
-
-		selectMaster(0);
 	}
 }
 

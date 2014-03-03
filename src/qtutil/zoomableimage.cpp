@@ -133,7 +133,6 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	scrollFactorCTRL_{1.025},
 	scrollFactorCTRLShift_{1.01}
 {
-	TRACEPOINT;
 	// qt5 doc : "The view does not take ownership of scene."
 	auto scene=util::make_unique<QGraphicsScene>(this);
 	scene_=*scene;
@@ -161,9 +160,8 @@ ZoomableImage::ZoomableImage(const cv::Mat& mat,QWidget* parent):
 	setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(this,SIGNAL(customContextMenuRequested(const QPoint&)),
 			 this,SLOT(rightClick(QPoint)));
-	TRACEPOINT;
+
 	showFullImage();
-	TRACEPOINT;
 }
 
 void ZoomableImage::setMat(cv::Mat mat)
@@ -187,7 +185,6 @@ void ZoomableImage::setMat(cv::Mat mat)
 
 void ZoomableImage::setZoom(qreal factor)
 {
-	TRACEPOINT;
 	if(factor <= 0)
 	{
 		TRACEPOINT;
@@ -197,7 +194,6 @@ void ZoomableImage::setZoom(qreal factor)
 	zoom_=factor;
 	view_->scale(nscale,nscale);
 	emit updateArea(visibleArea(),zoom_);
-	TRACEPOINT;
 }
 
 void ZoomableImage::drawValues()
@@ -244,7 +240,6 @@ void ZoomableImage::drawValues()
 
 void ZoomableImage::wheelEvent(QWheelEvent * event)
 {
-	TRACEPOINT;
 
 	if(QApplication::keyboardModifiers() & Qt::ControlModifier)
 	{
@@ -264,7 +259,6 @@ void ZoomableImage::wheelEvent(QWheelEvent * event)
 	}else{
 		QWidget::wheelEvent(event);
 	}
-	TRACEPOINT;
 }
 
 void ZoomableImage::setArea(QRectF rect,qreal zoom)
@@ -275,12 +269,10 @@ void ZoomableImage::setArea(QRectF rect,qreal zoom)
 
 void ZoomableImage::showFullImage()
 {
-	TRACEPOINT;
 	qreal iw=static_cast<qreal>(imageWidth());
 	qreal ih=static_cast<qreal>(imageHeight());
 	if(!((iw!=0)&&(ih!=0)))
 	{
-		TRACEPOINT;
 		return;
 	}
 	setZoom(
@@ -289,17 +281,14 @@ void ZoomableImage::showFullImage()
 		static_cast<qreal>(view_->viewport()->height())/ih
 		)
 	);
-	TRACEPOINT;
 }
 
 QRectF ZoomableImage::visibleArea() const
 {
-	TRACEPOINT;
 	QRectF result{};
 	result.setTopLeft(view_->mapToScene(QPoint{0,0}));
 	result.setBottomRight(view_->mapToScene(QPoint{view_->viewport()->width(),
 							view_->viewport()->height()}));
-	TRACEPOINT;
 	return result;
 }
 
@@ -342,7 +331,6 @@ void ZoomableImage::rightClick(const QPoint & pos)
 
 QPointF ZoomableImage::mapImagePointToParent(QPointF point) const
 {
-	TRACEPOINT;
 	return mapToParent(view_->mapToParent(view_->mapFromScene(pixmap_->mapToScene(point))));
 }
 
