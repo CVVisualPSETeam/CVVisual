@@ -8,6 +8,7 @@
 #include "../qtutil/filter/sobelfilterwidget.hpp"
 #include "../qtutil/filter/channelreorderfilter.hpp"
 #include "../qtutil/filter/diffFilterWidget.hpp"
+#include "../qtutil/filter/overlayfilterwidget.hpp"
 
 
 #include "../gui/filter_call_tab.hpp"
@@ -68,6 +69,7 @@ void initializeFilterAndViews()
 	qtutil::registerFilter<1,1,qtutil::ChannelReorderFilter>("Reorder channels");
 	
 	qtutil::registerFilter<2,1,qtutil::DiffFilterFunction>("Difference");
+	qtutil::registerFilter<2,1,qtutil::OverlayFilterWidget>("Overlay");
 	
 	//filter-views:
 	cvv::gui::FilterCallTab::addFilterViewToMap("DefaultFilterView", makeDefaultFilterView);
