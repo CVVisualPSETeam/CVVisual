@@ -75,8 +75,8 @@ public slots:
 	void selectKeyPoints(const std::vector<cv::KeyPoint>& keyPoints);	
 	
 private:
-	const std::vector<cv::KeyPoint>& keypoints1;
-	const std::vector<cv::KeyPoint>& keypoints2;
+	std::vector<cv::KeyPoint> keypoints1;
+	std::vector<cv::KeyPoint> keypoints2;
 	Rawview *view = nullptr;
 };
 
