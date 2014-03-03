@@ -27,7 +27,7 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	auto accor	= util::make_unique<qtutil::Accordion>();
 	auto matchscene	= util::make_unique<qtutil::MatchScene>(leftIm,rightIm);
 	auto matchpen	= util::make_unique<qtutil::SingleColorMatchPen>();
-	accor->insert("Sync Zoom ",std::move(matchscene_ptr->getSyncZoomWidget()));
+
 
 	qtutil::MatchScene *matchscene_ptr		= matchscene.get();
 	qtutil::SingleColorMatchPen *matchpen_ptr	= matchpen.get();
@@ -35,6 +35,7 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	accor->setMaximumWidth(250);
 
 	accor->insert("Match Color",std::move(matchpen));
+	accor->insert("Sync Zoom ", std::move(matchscene_ptr->getSyncZoomWidget()));
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
