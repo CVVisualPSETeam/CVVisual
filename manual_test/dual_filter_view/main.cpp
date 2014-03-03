@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QWidget>
 
+#include "../../src/impl/init.hpp"
 #include "../../src/view/dual_filter_view.hpp"
 #include "../../src/view/singlefilterview.hpp"
 
@@ -27,6 +28,7 @@ int main(int argc, char *argv[])
 
 	cv::dilate(src, dest, elem);
 
+	cvv::impl::initializeFilterAndViews();
 	std::array<cv::Mat, 2> inArray {src, dest};
 	cvv::view::DualFilterView view{inArray};
 	view.setWindowTitle("Dual Filter View Test");

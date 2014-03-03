@@ -44,44 +44,10 @@ Q_OBJECT
 		std::array<cvv::qtutil::ZoomableImage, 3> zoomImages_;
 			//< Original, filtered and resulting image
 		
-		std::unordered_map<std::string, std::function<cv::Mat(void)>> filterMap_;
-			//< Map of all available filters with their names
-		
-		qtutil::MatInfoWidget* filterImgInfo_;
-		
 		/**
 		* @brief Converts vector of size two to array
 		*/
 		std::array<cv::Mat, 2> convertToArray(const std::vector<cv::Mat>&) const;
-		
-		/**
-		* @brief Applys given difference filter
-		* @return the filtered Image
-		*/
-		cv::Mat applyDiffFilter(DiffFilterType filterType);
-		
-		/**
-		* @brief Overlays the rawImages
-		* @return the overlay image
-		*/
-		cv::Mat applyOverlayFilter();
-		
-		/**
-		* @brief Checks whether rawImages_ can be processed by this DiffFilter
-		*/
-		std::pair<bool, QString> checkDiffInput(DiffFilterType filterType) const;
-		
-		/**
-		* @brief Extracts the names of all available filters from filterMap_
-		*/
-		QStringList extractStringListfromMap() const;
-	
-	private slots:
-		/**
-		* @brief Slot invoked when selected Filter changes. Applies newly selected
-		*		filter. Updates middle zoomImage and its MatInfoWidget.
-		*/
-		void updateFilterImg(const QString&);
 
 	public:
 		/**
@@ -92,6 +58,7 @@ Q_OBJECT
 		* @param parent The Widget that is to be the parent of the view
 		*/
 		DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent = nullptr);
+		
 		/**
 		* Default view is DiffFilter grayscale.
 		* @brief Constructs View showing original image, default filtered image and
