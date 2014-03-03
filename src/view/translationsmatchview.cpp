@@ -41,6 +41,7 @@ TranslationMatchView::TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoin
 	accor->insert("KeyPoint Color",std::move(keypen));
 	accor->insert("Left Image ",std::move(matchscene_ptr->getLeftMatInfoWidget()));
 	accor->insert("Right Image ",std::move(matchscene_ptr->getRightMatInfoWidget()));
+	accor->insert("Sync Zoom ",std::move(matchscene_ptr->getSyncZoomWidget()));
 
 
 	layout->addWidget(accor.release());

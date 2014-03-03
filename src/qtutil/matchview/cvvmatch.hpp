@@ -34,7 +34,7 @@ public:
 	CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint *right_key,const cv::DMatch& match,
 		 const QPen& pen= QPen{Qt::red},QGraphicsItem *parent=nullptr);
 
-
+	~CVVMatch(){std::cout<<"delete cvmatch"<<std::endl;}
 	/**
 	 * @brief returns the boundingrect of this Mathc
 	 * @return the boundingrect of this Mathc
@@ -51,45 +51,44 @@ public:
 	 * @return the left keypoint.
 	 */
 	cv::KeyPoint leftKeyPoint() const
-		{TRACEPOINT;return left_key_->keyPoint();}
+		{return left_key_->keyPoint();}
 
 	/**
 	 * @brief returns the right keypoint.
 	 * @return the right keypoint.
 	 */
 	cv::KeyPoint rightKeyPoint() const
-		{TRACEPOINT;return right_key_->keyPoint();}
+		{return right_key_->keyPoint();}
 
 	/**
 	 * @brief maps the leftImagePoint to scene
 	 * @return the scene point of the leftkeypoint
 	 */
 	QPointF leftImPointInScene() const
-		{TRACEPOINT;return left_key_->imPointInScene();}
+		{return left_key_->imPointInScene();}
 
 	/**
 	 * @brief maps the leftImagePoint to scene
 	 * @return the scene point of the rightkeypoint
 	 */
 	QPointF rightImPointInScene() const
-		{TRACEPOINT;return right_key_->imPointInScene();}
+		{return right_key_->imPointInScene();}
 
 	/**
 	 * @brief returns the match value
 	 * @return the match value
 	 */
 	const cv::DMatch match() const
-		{TRACEPOINT;return match_;}
+		{return match_;}
 
 	/**
 	 * @brief returns the show value
 	 * @return the show value
 	 */
 	bool isShown() const
-		{TRACEPOINT;return show_;}
+		{return show_;}
 
 	bool operator ==(const cv::DMatch& o);
-
 
 public slots:
 
@@ -98,9 +97,7 @@ public slots:
 	 * @param settings the settings for this match
 	 */
 	void updateSettings(MatchSettings& settings)
-		{TRACEPOINT;
-		settings.setSettings(*this);
-		TRACEPOINT;}
+		{settings.setSettings(*this);}
 
 	/**
 	 * @brief this method updates the Pen

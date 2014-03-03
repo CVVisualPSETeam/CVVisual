@@ -36,10 +36,6 @@ signals:
 	 */
 	void updateRightFoooter(QString newText);
 
-	void setSelection(std::vector<cv::DMatch>);
-
-	void setSelection(std::vector<cv::KeyPoint>);
-
 public:
 	/**
 	 * @brief default constructor
@@ -51,11 +47,20 @@ public:
 	 */
 	virtual ~MatchView() = default;
 
+
+	virtual std::vector<cv::DMatch> getMatchSelection()
+		{return std::vector<cv::DMatch>{};}
+
+	virtual std::vector<cv::KeyPoint> getKeyPointSelection()
+		{return std::vector<cv::KeyPoint>{};}
+
 public slots:
 
-	virtual void getSelection(std::vector<cv::DMatch>) {}
+	virtual void setMatchSelection(std::vector<cv::DMatch>)
+		{}
 
-	virtual void getSelection(std::vector<cv::KeyPoint>) {}
+	virtual void setKeyPointSelection(std::vector<cv::KeyPoint>)
+		{}
 
 protected:
 	/**
@@ -63,6 +68,8 @@ protected:
 	 * @param parent the parent of this view.
 	 **/
 	MatchView(QWidget *parent):QWidget{parent}{}
+
+
 };
 
 }} //namespaces

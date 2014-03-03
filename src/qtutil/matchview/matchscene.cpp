@@ -2,6 +2,8 @@
 #include <QHBoxLayout>
 #include <QPoint>
 #include <QScrollBar>
+#include <QPainterPath>
+#include <QTransform>
 
 
 #include "matchscene.hpp"
@@ -50,6 +52,14 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
 	TRACEPOINT;
 }
 
+std::unique_ptr<SyncZoomWidget> MatchScene::getSyncZoomWidget()
+{
+	std::vector<ZoomableImage*> images;
+	images.push_back(leftImage_);
+	images.push_back(rightImage_);
+	return util::make_unique<SyncZoomWidget>(images);
+}
+
 void MatchScene::addLeftKeypoint(CVVKeyPoint *keypoint)
 {
 	TRACEPOINT;
@@ -69,6 +79,13 @@ void MatchScene::addMatch(CVVMatch *cvmatch)
 	TRACEPOINT;
 	graphicScene_->addItem(cvmatch);
 	TRACEPOINT;
+}
+
+void MatchScene::selectAll()
+{
+	QPainterPath selectionPath{};
+	selectionPath.addRect(graphicScene_->itemsBoundingRect());
+	graphicScene_->setSelectionArea(selectionPath,QTransform{});
 }
 
 void MatchScene::viewReized()

@@ -22,6 +22,7 @@ void cvv::qtutil::MatchSelector::setSettings(CVVMatch &match)
 	} else {
 		match.setSelected(false);
 	}
+	std::cout<<"match select";
 }
 
 void cvv::qtutil::MatchSelector::addToSelection(const cv::DMatch & match)

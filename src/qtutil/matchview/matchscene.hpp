@@ -13,6 +13,7 @@
 #include "cvvmatch.hpp"
 #include "cvvkeypoint.hpp"
 #include "zoomableproxyobject.hpp"
+#include "../synczoomwidget.hpp"
 #include "../zoomableimage.hpp"
 #include "../zoomableimageoptpanel.hpp"
 #include "../../dbg/dbg.hpp"
@@ -52,20 +53,23 @@ public:
 	 * @return a ZoomableOptPanel of the left Image
 	 */
 	std::unique_ptr<ZoomableOptPanel> getLeftMatInfoWidget()
-		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*leftImage_);}
+		{return util::make_unique<ZoomableOptPanel>(*leftImage_);}
 
 	/**
 	 * @brief returns a ZoomableOptPanel of the right Image
 	 * @return a ZoomableOptPanel of the right Image
 	 */
 	std::unique_ptr<ZoomableOptPanel> getRightMatInfoWidget()
-		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*rightImage_);}
+		{return util::make_unique<ZoomableOptPanel>(*rightImage_);}
+
+	std::unique_ptr<SyncZoomWidget> getSyncZoomWidget();
 
 
 public slots:
 	void addLeftKeypoint(CVVKeyPoint*);
 	void addRightKeyPoint(CVVKeyPoint*);
 	void addMatch(CVVMatch*);
+	void selectAll();
 
 private slots:
 	 void viewReized();

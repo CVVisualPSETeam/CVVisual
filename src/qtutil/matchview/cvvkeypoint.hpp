@@ -42,7 +42,7 @@ public:
 	 * @return maps the imagepoint to the scene
 	 */
 	QPointF imPointInScene() const
-		{TRACEPOINT; return image_->mapImagePointToParent(QPointF{key_.pt.x,key_.pt.y});}
+		{return image_->mapImagePointToParent(QPointF{key_.pt.x,key_.pt.y});}
 
 	/**
 	 * @brief boundingRect
@@ -55,7 +55,7 @@ public:
 	 * @return the keypoint
 	 */
 	cv::KeyPoint keyPoint() const
-		{TRACEPOINT;return key_;}
+		{return key_;}
 
 	/**
 	 * @brief the paint function.
@@ -68,15 +68,14 @@ public:
 	 * @return true if this keypoint is in the visble area of its image
 	 */
 	bool imagePointisVisible()
-		{TRACEPOINT;
-		return image_->visibleArea().contains(key_.pt.x,key_.pt.y);}
+		{return image_->visibleArea().contains(key_.pt.x,key_.pt.y);}
 
 	/**
 	 * @brief if show is true this keypoint will be visible if it is the visibleArea
 	 * @return the show Value
 	 */
 	bool isShown() const
-		{TRACEPOINT;return show_;}
+		{return show_;}
 
 	bool operator ==(const cv::KeyPoint& o);
 
@@ -108,7 +107,7 @@ public slots:
 	 * @param b the new show Value
 	 */
 	void setShow(bool b)
-		{TRACEPOINT;show_=b;TRACEPOINT;}
+		{show_=b;}
 
 	/**
 	 * @brief updates the coordinates and visibleState of this KeyPoint

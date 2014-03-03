@@ -7,6 +7,7 @@
 #include "../qtutil/matchview/cvvmatch.hpp"
 #include "../qtutil/matchview/singlecolormatchpen.hpp"
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
+#include "../qtutil/matchview/matchselector.hpp"
 #include "../util/util.hpp"
 
 #include "linematchview.hpp"
@@ -22,18 +23,17 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		QWidget *parent):
 	MatchView{parent}
 {
-	TRACEPOINT;
-
 	auto layout	= util::make_unique<QHBoxLayout>();
-	auto accor	= util::make_unique< qtutil::Accordion>();
+	auto accor	= util::make_unique<qtutil::Accordion>();
 	auto matchscene	= util::make_unique<qtutil::MatchScene>(leftIm,rightIm);
 	auto matchpen	= util::make_unique<qtutil::SingleColorMatchPen>();
 	auto keypen	= util::make_unique<qtutil::SingleColorKeyPen>();
-
+	auto matchSelector=util::make_unique<qtutil::MatchSelector>();
 
 	qtutil::MatchScene * matchscene_ptr	= matchscene.get();
 	qtutil::SingleColorMatchPen* matchpen_ptr= matchpen.get();
 	qtutil::SingleColorKeyPen* keypen_ptr	= keypen.get();
+	qtutil::MatchSelector *matchSelector_ptr=matchSelector.get();
 
 	accor->setMinimumWidth(250);
 	accor->setMaximumWidth(250);
@@ -46,6 +46,8 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	accor->insert("KeyPoint Color",std::move(keypen));
 	accor->insert("Left Image ",std::move(matchscene_ptr->getLeftMatInfoWidget()));
 	accor->insert("Right Image ",std::move(matchscene_ptr->getRightMatInfoWidget()));
+	accor->insert("Sync Zoom ",std::move(matchscene_ptr->getSyncZoomWidget()));
+	accor->insert("MatchSelector",std::move(matchSelector));
 
 
 
@@ -82,9 +84,10 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),
 			cvmatch.get(),SLOT(updateSettings(MatchSettings&)));
 
+		connect(matchSelector_ptr,SIGNAL(settingsChanged(MatchSettings&)),
+			cvmatch.get(),SLOT(updateSettings(MatchSettings&)));
 		matchscene_ptr->addMatch(cvmatch.release());
 	}
-
-	TRACEPOINT;
+	matchscene_ptr->selectAll();
 }
 }}
