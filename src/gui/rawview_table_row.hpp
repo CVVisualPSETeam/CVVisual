@@ -150,7 +150,7 @@ std::pair<QList<RawviewTableRow>, QList<RawviewTableRow>> createRawviewTableRows
  * @param left are the given key points are "left" ones?
  * @return resulting list
  */
-QList<RawviewTableRow> createSingleKeyPointRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints /*, bool left = true*/);
+QList<RawviewTableRow> createSingleKeyPointRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints, bool left = true);
 
 }}
 
