@@ -423,7 +423,7 @@ private:
 	 */
 	util::ObserverPtr<QVBoxLayout> entryLayout_;
 	/**
-	 * @brief Wheater each entry that can apply the filter does so.
+	 * @brief Each entry that can apply the filter does so.
 	 */
 	bool applyFilterIndividually_;
 	/**
