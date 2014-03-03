@@ -62,12 +62,6 @@ public:
 	 */
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
-	/**
-	 * @brief this method sets and connects this keypoint which the given ZoomableImage.
-	 * the ZoomableImage should be in a QGraphicScene and should have same parent
-	 * @param image the image
-	 */
-	void setZoomableImage(ZoomableImage *image);
 
 	/**
 	 * @brief returns true if this keypoint is in the visble area of its image
@@ -83,6 +77,8 @@ public:
 	 */
 	bool isShown() const
 		{TRACEPOINT;return show_;}
+
+	bool operator ==(const cv::KeyPoint& o);
 
 signals:
 	/**
@@ -120,6 +116,13 @@ public slots:
 	 * @param zoom the zoomfactor
 	 */
 	void updateImageSet(const QRectF& visibleArea,const qreal& zoom);
+
+	/**
+	 * @brief this method sets and connects this keypoint which the given ZoomableImage.
+	 * the ZoomableImage should be in a QGraphicScene and should have same parent
+	 * @param image the image
+	 */
+	void setZoomableImage(ZoomableImage *image);
 
 private:
 

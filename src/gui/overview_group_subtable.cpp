@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <algorithm>
+#include <sstream>
 
 #include <QVBoxLayout>
 #include <QStringList>
@@ -45,7 +46,6 @@ void OverviewGroupSubtable::initUI()
 	auto horizontalHeader = qTable->horizontalHeader();
 	horizontalHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	horizontalHeader->setStretchLastSection(false);
-	qTable->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
 	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
 	qTable->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), 
@@ -89,7 +89,16 @@ void OverviewGroupSubtable::updateUI(){
 	qTable->setRowCount(group.size());
 	qTable->setColumnCount(list.size());
 	qTable->setHorizontalHeaderLabels(list);
-	rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
+	int textRowHeight = qTable->fontMetrics().height() + 5;
+	if (textRowHeight >= imgSize)
+	{
+		qTable->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
+	}
+	else
+	{
+		qTable->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+	}
+	rowHeight = std::max(imgSize, textRowHeight);
 	for (size_t i = 0; i < group.size(); i++)
 	{
 		group.get(i).addToTable(qTable, i, parent->isShowingImages(),
@@ -153,9 +162,9 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	TRACEPOINT;
 	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	TRACEPOINT;
-	currentCustomMenuCallTabId = idStr.toInt();  
+	std::stringstream{idStr.toStdString()} >> currentCustomMenuCallTabId;
+	currentCustomMenuCallTabIdValid = true;
 	TRACEPOINT;
-	// FIXME: for some reasons this sometimes results in HUGE allocations followed by bad_alloc
 	menu->popup(mapToGlobal(location));
 	TRACEPOINT;
 }
@@ -163,7 +172,7 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 void OverviewGroupSubtable::customMenuAction(QAction *action)
 {
 	TRACEPOINT;
-	if (currentCustomMenuCallTabId == -1)
+	if (!currentCustomMenuCallTabIdValid)
 	{
 		return;
 	}

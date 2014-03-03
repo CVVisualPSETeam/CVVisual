@@ -68,6 +68,26 @@ public:
 	size_t getId() const override;
 
 	/**
+	 * @brief Register the template class to the map of FilterViews.
+	 * View needs to offer a constructor of the form View(const std::vector<cv::Mat>&, QWidget*).
+	 * @param name to register the class under.
+	 * @tparam View - Class to register.
+	 * @return true when the view was registered and false when the name was already taken.
+	 * @attention Use of registerFilterView recommended.
+	 */
+	template<class View>
+	static bool registerFilterView(const QString& name)
+	{
+		TRACEPOINT;
+		return gui::FilterCallTab::registerElement(name,
+			[](const std::vector<cv::Mat>& mat, QWidget* parent){
+				TRACEPOINT;
+				return cvv::util::make_unique<View>(mat,parent);
+			}
+		);
+	}
+
+	/**
 	 * @brief adds FilterView to map of all.
 	 * Adds a FilterView with a name to the thread local map of all FilterViews.
 	 * @param filterViewId the ID or name of the FilterView.

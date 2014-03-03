@@ -2,7 +2,7 @@
 #define	CVVISUAL_RAWVIEW_GROUP_SUBTABLE_HPP
 
 #include <memory>
-#include <vector>
+#include <set>
 
 #include <QWidget>
 #include <QTableWidget>
@@ -54,7 +54,7 @@ private:
 	RawviewTable *parent;
 	stfl::ElementGroup<RawviewTableRow> group;
 	QTableWidget *qTable;
-	std::vector<int> currentRowIndexes;
+	std::set<int> currentRowIndexes;
 };
 
 }}

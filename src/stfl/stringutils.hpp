@@ -2,6 +2,7 @@
 #define CVVISUAL_STRINGUTILS_HPP
 
 #include <map>
+#include <vector>
 
 #include <QString>
 #include <QHash>
@@ -125,9 +126,18 @@ void unescapeCommas(QString &str);
  * @brief Shortens the given string to the given length and append "..." if needed.
  * @param str given string
  * @param maxLength maximum length of the returned string
- * @param does this method shorten the given string at the end?
+ * @param cutEnd does this method shorten the given string at the end?
+ * @param fill should the resulting string be filled up with whitespace to
+ * ensure all strings have length maxLength?
  */
-QString shortenString(QString &str, int maxLength, bool cutEnd = true);
+QString shortenString(QString &str, int maxLength, bool cutEnd = true, bool fill = false);
+
+/**
+ * @brief Converts a given vector of chars into a valid QString.
+ * @param chars given vector of chars
+ * @return resulting QString
+ */
+QString asciiCharVectorToQString(std::vector<char> chars);
 
 }}
 

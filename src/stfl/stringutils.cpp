@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <numeric>
-#include <map>
+#include <string>
 
 #include "../dbg/dbg.hpp"
 
@@ -260,22 +260,31 @@ void unescapeCommas(QString &str)
 	str.replace("\\,", ",");
 }
 
-QString shortenString(QString &str, int maxLength, bool cutEnd)
+QString shortenString(QString &str, int maxLength, bool cutEnd, bool fill)
 {
 	TRACEPOINT;
 	if (str.size() > maxLength)
 	{
         if (cutEnd)
         {
-            str = str.mid(0, maxLength - 3) + u8"…";
+            str = str.mid(0, maxLength - 1) + u8"…";
         }
         else
         {
-            str = u8"…" + str.mid(str.size() + 3 - maxLength, str.size());
+            str = u8"…" + str.mid(str.size() + 1 - maxLength, str.size());
         }
     }
+	else if (fill)
+	{
+		str = str + QString(maxLength - str.size(), ' ');
+	}
     TRACEPOINT;
     return str;
+}
+
+QString asciiCharVectorToQString(std::vector<char> chars)
+{
+	return QString::fromStdString(std::string(chars.begin(), chars.end()));
 }
 
 }

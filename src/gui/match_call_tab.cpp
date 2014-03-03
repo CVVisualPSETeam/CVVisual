@@ -20,15 +20,16 @@
 namespace cvv {
 namespace gui {
 
-MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& matchCall): matchCall_{matchCall}
+MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& matchCall): //matchCall_{matchCall}
+	MatchCallTab{matchCall.description(), matchCall}
 {
 	TRACEPOINT;
-	setName(matchCall_->description());
+	/*setName(matchCall_->description());
 	const QString scope{"default_views"};
 	const QString key{"default_match_view"};
 	qtutil::setDefaultSetting(scope, key, "LineMatchView");
 	matchViewId_ = qtutil::getSetting(scope, key);
-	createGui();
+	createGui();*/
 	TRACEPOINT;
 }
 
@@ -39,7 +40,7 @@ MatchCallTab::MatchCallTab(const QString& tabName, const cvv::impl::MatchCall& m
 	setName(tabName);
 	const QString scope{"default_views"};
 	const QString key{"default_match_view"};
-	qtutil::setDefaultSetting(scope, key, "LineMatchView"); 
+	qtutil::setDefaultSetting(scope, key, "LineMatchView");
 	matchViewId_ = qtutil::getSetting(scope, key);
 	createGui();
 	TRACEPOINT;
@@ -87,10 +88,7 @@ size_t MatchCallTab::getId() const
 void MatchCallTab::addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView)
 {
 	TRACEPOINT;
-	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cv::Mat&,
-			const std::vector<cv::KeyPoint>&,
-			const cv::Mat&, const std::vector<cv::KeyPoint>&,
-			const std::vector<cv::DMatch>&, QWidget*>::registerElement(matchViewId, mView);
+	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cvv::impl::MatchCall&, QWidget*>::registerElement(matchViewId, mView);
 	TRACEPOINT;
 }
 
@@ -101,13 +99,13 @@ void MatchCallTab::createGui()
 	{
 		select("LineMatchView");
 		matchViewId_ = selection();
-		setAsDefaultButtonClicked();	// Set LineMatchView as default.
+		setAsDefaultButtonClicked();	// Set as default.
 		/* If matchViewId_ does not name a valid View, it will be attempted to set LineMatchView.
 		 * If that was not registered either, the current selection of the ComboBox will be used automatically.
 		 * Whichever was chosen will be set as the new default. */
 	}
 	comboBox_->setCurrentText(matchViewId_);
-	hlayout_ = new QHBoxLayout{this};
+	hlayout_ = new QHBoxLayout{};
 	hlayout_->setAlignment(Qt::AlignTop);
 	hlayout_->addWidget(new QLabel{"View:"});
 	hlayout_->addWidget(comboBox_);
@@ -118,7 +116,7 @@ void MatchCallTab::createGui()
 	upperBar_ = new QWidget{this};
 	upperBar_->setLayout(hlayout_);
 
-	vlayout_ = new QVBoxLayout{this};
+	vlayout_ = new QVBoxLayout{};
 
 	vlayout_->addWidget(upperBar_);
 	setView();
@@ -127,7 +125,7 @@ void MatchCallTab::createGui()
 
 	connect(setAsDefaultButton_, SIGNAL(clicked()), this, SLOT(setAsDefaultButtonClicked()));
 	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
-	connect(&signElementSelected_, SIGNAL(signal(QString)), this, SLOT(currentIndexChanged()));
+	connect(&signalElementSelected(), SIGNAL(signal(QString)), this, SLOT(currentIndexChanged()));
 	TRACEPOINT;
 }
 
@@ -142,9 +140,7 @@ void MatchCallTab::setView()
 		matchView_->setVisible(true);
 	} else
 	{
-		viewHistory_.emplace(selection(), ((*this)()(matchCall_->img1(), matchCall_->keyPoints1(),
-							     matchCall_->img2(), matchCall_->keyPoints2(),
-							     matchCall_->matches(), this).release()));
+		viewHistory_.emplace(selection(), ((*this)()(*matchCall_, this).release()));
 		matchView_ = viewHistory_.at(selection());
 		vlayout_->addWidget(matchView_);
 	}

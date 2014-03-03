@@ -18,7 +18,14 @@
 
 namespace cvv { namespace qtutil{
 
+/**
+ * @brief The input type for FilterFunctionWidgets.
+ */
 template<std::size_t In > using CvvInputArray  = std::array<util::Reference<const cv::Mat>,In>;
+
+/**
+ * @brief The output type for FilterFunctionWidgets.
+ */
 template<std::size_t Out> using CvvOutputArray = std::array<util::Reference<cv::Mat>,Out>;
 
 
@@ -37,12 +44,26 @@ class FilterFunctionWidget: public QWidget
 {
 	static_assert( Out > 0, "Out should be >0.");
 public:
-
+	/**
+	 * @brief The input type.
+	 */
 	using InputArray  = CvvInputArray<In>;
+
+	/**
+	 * @brief The output type.
+	 */
 	using OutputArray = CvvOutputArray<Out>;
 
+	/**
+	 * @brief Constructor
+	 * @param parent Parent widget.
+	 */
 	FilterFunctionWidget(QWidget* parent = nullptr):
-		QWidget{parent}{TRACEPOINT;}
+		QWidget{parent},
+		signFilterSettingsChanged_{}
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief virtual destructor.
@@ -68,10 +89,15 @@ public:
 	 */
 	virtual std::pair<bool, QString> checkInput(InputArray in) const = 0;
 
+	const Signal& signalFilterSettingsChanged() const
+	{
+		return signFilterSettingsChanged_;
+	}
+private:
 	/**
 	 * @brief Signal to emit when user input leads to different parameters.
 	 */
-	Signal signFilterSettingsChanged_;
+	const Signal signFilterSettingsChanged_;
 };
 
 }} // end namespaces qtutil, cvv

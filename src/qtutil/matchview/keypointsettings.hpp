@@ -31,6 +31,11 @@ public:
 	 */
 	virtual void setSettings(CVVKeyPoint& key) =0;
 
+	/**
+	 * @brief this method emits the signal settingsChanged();
+	 */
+	void updateAll()
+		{emit settingsChanged(*this);}
 signals:
 	/**
 	 * @brief this signal will be emitted if the settings changed

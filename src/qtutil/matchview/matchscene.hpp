@@ -19,10 +19,23 @@
 
 namespace cvv{ namespace qtutil{
 
+namespace structures{
+class MatchSceneGraphicsView:public QGraphicsView{
+Q_OBJECT
+public:
+	MatchSceneGraphicsView(QGraphicsScene* scene,QWidget* parent=nullptr):QGraphicsView{scene,parent}{}
+protected:
+	virtual void resizeEvent(QResizeEvent * event) override
+		{QGraphicsView::resizeEvent(event);emit signalResized();}
+signals:
+	void signalResized();
+};
+}
+
 /**
  * @brief this scene shows two (zoomable)images with keypoints and matches.
  */
-class MatchScene:public QWidget{
+class MatchScene:public QGraphicsView{
 Q_OBJECT
 public:
 
@@ -49,18 +62,16 @@ public:
 		{TRACEPOINT;return util::make_unique<ZoomableOptPanel>(*rightImage_);}
 
 
-	void adjustImages();
-
 public slots:
 	void addLeftKeypoint(CVVKeyPoint*);
 	void addRightKeyPoint(CVVKeyPoint*);
 	void addMatch(CVVMatch*);
 
-protected:
-	 void resizeEvent(QResizeEvent * event);
+private slots:
+	 void viewReized();
 
 private:
-	QGraphicsView 		*graphicView_;
+	structures::MatchSceneGraphicsView *graphicView_;
 	QGraphicsScene 		*graphicScene_;
 
 	qtutil::ZoomableImage 	*leftImage_;
@@ -68,7 +79,6 @@ private:
 
 	ZoomableProxyObject	*leftImWidget_;
 	ZoomableProxyObject	*rightImWidget_;
-
 };
 }}
 #endif

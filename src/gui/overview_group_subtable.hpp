@@ -82,7 +82,8 @@ private:
 	OverviewTable *parent;
 	stfl::ElementGroup<OverviewTableRow> group;
 	QTableWidget *qTable;
-	int currentCustomMenuCallTabId = -1;
+	size_t currentCustomMenuCallTabId = 0;
+	bool currentCustomMenuCallTabIdValid = false;
 	size_t maxImages = 0;
 	int imgSize = 0;
 	int rowHeight = 0;

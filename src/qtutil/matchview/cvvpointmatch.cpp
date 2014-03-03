@@ -4,11 +4,11 @@
 
 namespace cvv{ namespace qtutil{
 
-CVVPointMatch::CVVPointMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key, const float& matchValue,
+CVVPointMatch::CVVPointMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key, const cv::DMatch &match,
 			     bool isLeftKey, qreal radius, const QPen& pen, const QBrush &brush,
 			     QGraphicsItem *parent):
-	CVVMatch{left_key,right_key,matchValue,pen,parent},
-	isLeftKey_{isLeftKey},radius_{std::min(radius*matchValue,10.0)},brush_{brush}
+	CVVMatch{left_key,right_key,match,pen,parent},
+	isLeftKey_{isLeftKey},radius_{std::min(radius*match.distance,10.0)},brush_{brush}
 	{
 		TRACEPOINT;
 		if(isLeftKey_)

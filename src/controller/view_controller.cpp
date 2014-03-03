@@ -409,9 +409,4 @@ bool ViewController::hasFinalCall()
 	return doesShowExitProgramButton;
 }
 
-void ViewController::hideCloseWindow()
-{
-	mainWindow->hideCloseWindow();
-}
-
 }}

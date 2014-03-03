@@ -13,8 +13,8 @@
 
 #include "../util/util.hpp"
 #include "../impl/call.hpp"
-#include "../gui/call_tab.hpp"
 #include "../gui/call_window.hpp"
+#include "../gui/call_tab.hpp"
 
 #include "../dbg/dbg.hpp"
 
@@ -70,8 +70,11 @@ public:
 	 * @brief The default contructor for this class.
 	 */
 	ViewController();
-	
-	~ViewController();// {TRACEPOINT;}
+
+	/**
+	 * @brief Clean up.
+	 */
+	~ViewController();
 
 	/**
 	 * @brief Adds the new call tab type.
@@ -254,11 +257,6 @@ public:
 	 * @return Has the `cvv::finalCall()` method been called?
 	 */
 	bool hasFinalCall();
-	
-	/**
-	 * @brief Hide the close window of the main window.
-	 */
-	void hideCloseWindow();
 	
 private:
 

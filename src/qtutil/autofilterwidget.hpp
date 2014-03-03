@@ -74,8 +74,9 @@ public:
 		message_=*msg;
 
 		auto lay=util::make_unique<QVBoxLayout>();
-		lay->setAlignment(Qt::AlignTop);;
+		lay->setAlignment(Qt::AlignTop);
 		lay->setSpacing(0);
+		lay->setContentsMargins(0,0,0,0);
 		lay->addWidget(box.release());
 		lay->addWidget(msg.release());
 		message_->setVisible(false);
@@ -92,7 +93,7 @@ public:
 	/**
 	 * @brief Checks wheather the check box is checked.
 	 */
-	operator bool()
+	operator bool() const
 	{
 		TRACEPOINT;
 		return checkBox_->isChecked();
@@ -102,7 +103,7 @@ public:
 	 * @brief Returns the image input.
 	 * @return The image input.
 	 */
-	InputArray input()
+	InputArray input() const
 	{
 		TRACEPOINT;return in_;
 	}
@@ -121,10 +122,10 @@ public:
 	 * @brief Returns references to the update signals.
 	 * @return References to the update signals.
 	 */
-	std::vector<util::Reference<SignalMatRef>> signalsRef()
+	std::vector<util::Reference<const SignalMatRef>> signalsRef() const
 	{
 		TRACEPOINT;
-		std::vector<util::Reference<SignalMatRef>> result{};
+		std::vector<util::Reference<const SignalMatRef>> result{};
 		for(auto& elem:signals_)
 		{
 			result.emplace_back(elem);
@@ -136,7 +137,7 @@ public:
 	/**
 	 * @brief Emits all update signals.
 	*/
-	void emitAll()
+	void emitAll() const
 	{
 		TRACEPOINT;
 		for(std::size_t i=0;i<Out;i++)
@@ -204,7 +205,7 @@ public:
 	/**
 	 * @brief The update signals for the output.
 	 */
-	std::array<SignalMatRef, Out> signals_;
+	std::array<const SignalMatRef, Out> signals_;
 };
 
 }//structures
@@ -238,19 +239,21 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 		applyFilterIndividually_{false},
 		entries_{},
 		earliestActivationTime_{},
-		slotApplyFilter_{[this](){TRACEPOINT; this->autoApplyFilter();}}
+		slotApplyFilter_{[this](){TRACEPOINT; this->autoApplyFilter();}},
+		userSelection_{true}
 	{
 		TRACEPOINT;
 		//add sublayout
 		auto lay=util::make_unique<QVBoxLayout>();
 		entryLayout_=*lay;
+		lay->setContentsMargins(0,0,0,0);
 		this->layout_->insertLayout(0,lay.release());
 		//connect auto filter slot
-		QObject::connect(&(this->signFilterSettingsChanged_),
-				 SIGNAL(signal()),//&AutoFilterWidget<In,Out>::signFilterSettingsChanged_::signal,
-				 &(this->slotApplyFilter_),
-				 SLOT(slot())//&AutoFilterWidget<In,Out>::slotApplyFilter_::slot
-				 );
+		QObject::connect(&(this->signalFilterSettingsChanged()),
+				SIGNAL(signal()),
+				&(this->slotApplyFilter_),
+				SLOT(slot())
+		);
 		TRACEPOINT;
 	}
 
@@ -261,12 +264,13 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	 * @param out The image output.
 	 * @return The update signals for all output images.
 	 */
-	std::vector<util::Reference<SignalMatRef>>
+	std::vector<util::Reference<const SignalMatRef>>
 		addEntry(const QString& name, InputArray in, OutputArray out)
 	{
 		TRACEPOINT;
 		auto elem=util::make_unique<structures::AutoFilterWidgetEntry<In,Out>>(name,in,out);
 		auto result = elem->signalsRef();
+		elem->enableUserSelection(userSelection_);
 		//store element
 		entries_.emplace_back(*elem);
 		//add it to the widget
@@ -301,9 +305,10 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	void enableUserSelection(bool enabled = true)
 	{
 		TRACEPOINT;
+		userSelection_=enabled;
 		for(auto& elem:entries_)
 		{
-			elem.get().enableUserSelection(enabled);
+			elem.get().enableUserSelection(userSelection_);
 		}
 		TRACEPOINT;
 	}
@@ -319,15 +324,34 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 		applyFilterIndividually_=individually;
 		TRACEPOINT;
 	}
+
+	/**
+	 * @brief Returns a slot object that calls enableUserSelection.
+	 * @return A slot object that calls enableUserSelection.
+	 */
+	const SlotBool& slotEnableUserSelection() const
+	{
+		return slotEnableUserSelection_;
+	}
+
+	/**
+	 * @brief Returns a slot object that calls seFilterIndividually.
+	 * @return A slot object that calls seFilterIndividually.
+	 */
+	const SlotBool& slotUseFilterIndividually() const
+	{
+		return slotUseFilterIndividually_;
+	}
+
+private:
 	/**
 	* @brief calls enableUserSelection
 	*/
-	SlotBool slotEnableUserSelection_;
+	const SlotBool slotEnableUserSelection_;
 	/**
 	 * @brief calls seFilterIndividually.
 	 */
-	SlotBool slotUseFilterIndividually_;
-private:
+	const SlotBool slotUseFilterIndividually_;
 	/**
 	 * @brief Applies the filter when some settings where changed.
 	 */
@@ -403,7 +427,7 @@ private:
 						//apply filter+set message
 						elem.get().setMessage("");
 						this->applyFilter(elem.get().input(),
-								  elem.get().output());
+								elem.get().output());
 						elem.get().emitAll();
 					}
 				}else{
@@ -438,6 +462,10 @@ private:
 	 * @brief Slot called when filter settings change.
 	 */
 	Slot slotApplyFilter_;
+	/**
+	 * @brief Whether user selection is enabled
+	 */
+	bool userSelection_;
 };
 }}
 #endif // CVVISUAL_AUTOFILTERWIDGET_HPP

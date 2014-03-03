@@ -34,8 +34,9 @@ public:
 	/**
 	 * @brief Constructor
 	 */
-	RegisterHelper()
-		:comboBox_{new QComboBox{}},
+	RegisterHelper():
+		comboBox_{new QComboBox{}},
+		signElementSelected_{},
 		slotElementRegistered_{[&](const QString& name){
 			TRACEPOINT;
 			comboBox_->addItem(name);
@@ -44,13 +45,13 @@ public:
 	{
 		TRACEPOINT;
 		//elem registered
-		QObject::connect(&signElementRegistered_,&SignalQString::signal,
+		QObject::connect(&signalElementRegistered(),&SignalQString::signal,
 				 &slotElementRegistered_,&SlotQString::slot);
 		//connect
 		QObject::connect(comboBox_, &QComboBox::currentTextChanged,
-				 &signElementSelected_, &SignalQString::signal);
+				 &signalElementSelected(), &SignalQString::signal);
 		//add current list of elements
-		for(auto& elem: RegisterHelper<Value,Args...>::registeredElements_)
+		for(auto& elem: registeredElementsMap())
 			{comboBox_->addItem(elem.first);}
 
 		TRACEPOINT;
@@ -76,7 +77,7 @@ public:
 	static bool has(const QString& name)
 	{
 		TRACEPOINT;
-		return registeredElements_.find(name) != registeredElements_.end();
+		return registeredElementsMap().find(name) != registeredElementsMap().end();
 	}
 
 	/**
@@ -87,7 +88,7 @@ public:
 	{
 		TRACEPOINT;
 		std::vector<QString> result{};
-		for(auto& elem:registeredElements_)
+		for(auto& elem:registeredElementsMap())
 		{
 			result.push_back(elem.first);
 		};
@@ -112,9 +113,9 @@ public:
 			return false;
 		};
 
-		registeredElements_.emplace(name, fabric);
+		registeredElementsMap().emplace(name, fabric);
 
-		signElementRegistered_.emitSignal(name);
+		signalElementRegistered().emitSignal(name);
 
 		TRACEPOINT;
 		return true;
@@ -155,45 +156,59 @@ public:
 	std::function<std::unique_ptr<Value>(Args...)> operator()(const QString& name)
 	{
 		TRACEPOINT;
-		return registeredElements_.at(name);
+		return registeredElementsMap().at(name);
 	}
 
 	/**
-	 *@brief Signal emitted whenever a function is registered.
-	 *@todo SYNCHRONIZE
+	 * @brief Returns a signal emitted whenever a function is registered.
+	 * @return A signal emitted whenever a function is registered.
 	 */
-	//thread_local
-	static SignalQString signElementRegistered_;
+	static const SignalQString& signalElementRegistered()
+	{
+		static const SignalQString signElementRegistered_{};
+		return signElementRegistered_;
+	}
 
-	SignalQString signElementSelected_;
-
-protected:
 	/**
-	 * @brief Map of registered functions and their names.
-	 *@todo SYNCHRONIZE
+	 * @brief Returns the signal emitted whenever a new element in the combobox is selected.
+	 * (passes the selected string)
+	 * @return The signal emitted whenever a new element in the combobox is selected.
+	 * (passes the selected string)
 	 */
-	//thread_local
-	static std::map<QString,std::function<std::unique_ptr<Value>(Args...)>>
-									registeredElements_;
+	const SignalQString& signalElementSelected() const
+	{
+		return signElementSelected_;
+	}
+protected:
 
 	/**
 	 * @brief QComboBox containing all names of registered functions
 	 */
 	QComboBox* comboBox_;
 
+private:
+	/**
+	 * @brief Signal emitted whenever a new element in the combobox is selected.
+	 * (passes the selected string)
+	 */
+	const SignalQString signElementSelected_;
+
 	/**
 	 * @brief Slot called whenever a function is registered
 	 */
-	SlotQString slotElementRegistered_;
+	const SlotQString slotElementRegistered_;
+
+	/**
+	 * @brief Returns the map of registered functions and their names.
+	 * @return The map of registered functions and their names.
+	 */
+	static std::map<QString,std::function<std::unique_ptr<Value>(Args...)>>&
+		registeredElementsMap()
+	{
+		static std::map<QString,std::function<std::unique_ptr<Value>(Args...)>> map{};
+		return map;
+	}
 };
-
-template<class Value, class...Args>
-	std::map<QString,std::function<std::unique_ptr<Value>(Args...)>>
-		RegisterHelper<Value,Args...>::registeredElements_{};
-
-
-template<class Value, class...Args>
-	SignalQString RegisterHelper<Value,Args...>::signElementRegistered_{};
 }} // end namespaces qtutil, cvv
 
 #endif //CVVISUAL_REGISTERHELPER_HPP

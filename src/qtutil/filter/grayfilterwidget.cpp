@@ -140,7 +140,7 @@ void GrayFilterWidget::setChannel(std::size_t n)
 		chanValues_.emplace_back(*box);
 		//connect it to signFilterSettingsChanged_.
 		QObject::connect(box.get(),SIGNAL(valueChanged(double)),
-				 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+				 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 		//and add it to the layout
 		layout_->addWidget(box.release());
 	}

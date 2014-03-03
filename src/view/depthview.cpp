@@ -13,11 +13,12 @@
 
 namespace cvv{ namespace view{
 
-DepthMatchView::DepthMatchView(	std::vector<cv::KeyPoint> leftKeyPoints,
+DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 				std::vector<cv::KeyPoint> rightKeyPoints,
 				std::vector<cv::DMatch> matches,
 				cv::Mat leftIm,
 				cv::Mat rightIm,
+				bool usetrainIdx,
 				QWidget *parent):
 			MatchView{parent}
 {
@@ -31,7 +32,6 @@ DepthMatchView::DepthMatchView(	std::vector<cv::KeyPoint> leftKeyPoints,
 	qtutil::SingleColorMatchPen *matchpen_ptr	= matchpen.get();
 	accor->setMinimumWidth(250);
 	accor->setMaximumWidth(250);
-
 
 	accor->insert("Match Color",std::move(matchpen));
 
@@ -74,16 +74,16 @@ DepthMatchView::DepthMatchView(	std::vector<cv::KeyPoint> leftKeyPoints,
 	{
 		auto cvmatchleft = util::make_unique<qtutil::CVVPointMatch>(
 				leftKeys.at(match.queryIdx),
-				leftinvisibleKeys.at(match.trainIdx),
-				match.distance);
+				leftinvisibleKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),
+				match);
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),
 			cvmatchleft.get(),SLOT(updateSettings(MatchSettings&)));
 		matchscene_ptr->addMatch(cvmatchleft.release());
 
 		auto cvmatchright = util::make_unique<qtutil::CVVPointMatch>(
 					rightinvisibleKeys.at(match.queryIdx),
-					rightKeys.at(match.trainIdx),
-					match.distance,false);
+					rightKeys.at((usetrainIdx?match.trainIdx:match.imgIdx)),
+					match,false);
 		connect(matchpen_ptr,SIGNAL(settingsChanged(MatchSettings&)),
 			cvmatchright.get(),SLOT(updateSettings(MatchSettings&)));
 		matchscene_ptr->addMatch(cvmatchright.release());

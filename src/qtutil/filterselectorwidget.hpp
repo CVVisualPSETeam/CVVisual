@@ -55,8 +55,8 @@ public:
 	FilterSelectorWidget(QWidget *parent = nullptr):
 		RegisterHelper<FilterFunctionWidget<In,Out>, QWidget*>{},
 		FilterFunctionWidget<In,Out>{parent},
-		currentFilter_{nullptr},
 		layout_{nullptr},
+		currentFilter_{nullptr},
 		slotFilterSelected_{[this](){TRACEPOINT;this->updatedSelectedFilter();}
 }
 	{
@@ -67,7 +67,7 @@ public:
 		this->layout_->setSpacing(0);
 		this->layout_->addWidget((this->comboBox_));
 		//connect elem selected with update for it
-		QObject::connect(&(this->signElementSelected_),SIGNAL(signal(QString)),
+		QObject::connect(&(this->signalElementSelected()),SIGNAL(signal(QString)),
 				 &(this->slotFilterSelected_), SLOT(slot()));
 		this->setLayout(lay.release());
 		TRACEPOINT;
@@ -78,7 +78,7 @@ public:
 		auto button=util::make_unique<QPushButton>("apply");
 		//connect it
 		QObject::connect(button.get(),SIGNAL(clicked()),
-					&(this->signFilterSettingsChanged_),SIGNAL(signal()));
+					&(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 		this->layout_->addWidget(button.release());
 		TRACEPOINT;
 	}
@@ -130,8 +130,13 @@ public:
 		return qtutil::registerFilter<In,Out,Filter>(name);
 	}
 
-
 protected:
+	/**
+	 * @brief The layout
+	 */
+	util::ObserverPtr<QVBoxLayout> layout_;
+
+private:
 	/**
 	 * @brief Performs the update after a selection occurred.
 	 */
@@ -143,19 +148,19 @@ protected:
 			TRACEPOINT;
 			layout_->removeWidget((this->currentFilter_.getPtr()));
 			//disconnect
-			QObject::disconnect(&(this->currentFilter_->signFilterSettingsChanged_),0,
-						&(this->signFilterSettingsChanged_),0);
+			QObject::disconnect(&(this->currentFilter_->signalFilterSettingsChanged()),0,
+						&(this->signalFilterSettingsChanged()),0);
 			currentFilter_->deleteLater();
 		}
 		auto filt=(*this)()(nullptr);
 		this->currentFilter_= *filt;
 		this->layout_->insertWidget(2,filt.release());
 		//pass signal
-		QObject::connect(&(this->currentFilter_->signFilterSettingsChanged_),
+		QObject::connect(&(this->currentFilter_->signalFilterSettingsChanged()),
 				 SIGNAL(signal()),
-				 &(this->signFilterSettingsChanged_),SIGNAL(signal()));
+				 &(this->signalFilterSettingsChanged()),SIGNAL(signal()));
 		//settings changed
-		this->signFilterSettingsChanged_.emitSignal();
+		this->signalFilterSettingsChanged().emitSignal();
 		TRACEPOINT;
 	}
 
@@ -163,16 +168,10 @@ protected:
 	 * @brief the current filter
 	 */
 	util::ObserverPtr<FilterFunctionWidget<In, Out>> currentFilter_;
-
-	/**
-	 * @brief The layout
-	 */
-	util::ObserverPtr<QVBoxLayout> layout_;
-
 	/**
 	 * @brief Slot called when user changes selection
 	 */
-	Slot slotFilterSelected_;
+	const Slot slotFilterSelected_;
 }; //FilterSelectorWidget
 
 /**

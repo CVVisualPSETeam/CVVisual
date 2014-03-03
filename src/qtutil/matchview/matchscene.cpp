@@ -10,15 +10,18 @@
 namespace cvv{ namespace qtutil{
 
 MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
-		QWidget{parent}
+		QGraphicsView{parent}
 {
 	TRACEPOINT;
 
 	auto basicLayout	= util::make_unique<QHBoxLayout>();
+
 	auto graphicScene	= util::make_unique<QGraphicsScene>();
 	graphicScene_		= graphicScene.get();
-	auto graphicView	= util::make_unique<QGraphicsView>(graphicScene.release());
-	graphicView_		=graphicView.get();
+	auto graphicView	= util::make_unique<structures::MatchSceneGraphicsView>(graphicScene.release());
+	graphicView_		= graphicView.get();
+
+
 
 	auto leftImage		= util::make_unique<ZoomableImage>(imageLeft);
 	auto rightImage		= util::make_unique<ZoomableImage>(imageRight);
@@ -26,8 +29,6 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
 	rightImage_		= rightImage.get();
 
 	TRACEPOINT;
-	//leftImWidget_		= graphicScene_->addWidget(leftImage.release());
-	//rightImWidget_		= graphicScene_->addWidget(rightImage.release());
 	leftImWidget_ = new ZoomableProxyObject{leftImage.release()};
 	TRACEPOINT;
 
@@ -41,17 +42,11 @@ MatchScene::MatchScene(cv::Mat imageLeft,cv::Mat imageRight, QWidget* parent):
 	TRACEPOINT;
 	leftImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
 	rightImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
-/*
-	graphicView_->horizontalScrollBar()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
-	graphicView_->verticalScrollBar()->setFocusPolicy(Qt::NoFocus);
-	graphicView_->setFocusPolicy(Qt::NoFocus);
-*/
+
 	basicLayout->addWidget(graphicView.release());
-	//basicLayout->setSizeConstraint(QLayout::SetNoConstraint);
 	setLayout(basicLayout.release());
 
-	adjustImages();
-
+	connect(graphicView_,SIGNAL(signalResized()),this,SLOT(viewReized()));
 	TRACEPOINT;
 }
 
@@ -76,15 +71,7 @@ void MatchScene::addMatch(CVVMatch *cvmatch)
 	TRACEPOINT;
 }
 
-void MatchScene::adjustImages()
-{
-	TRACEPOINT;
-	QResizeEvent event{size(),size()};
-	resizeEvent(&event);
-	TRACEPOINT;
-}
-
-void MatchScene::resizeEvent(QResizeEvent*)
+void MatchScene::viewReized()
 {
 	TRACEPOINT;
 	int width	= graphicView_->viewport()->width();
@@ -99,6 +86,8 @@ void MatchScene::resizeEvent(QResizeEvent*)
 	rightImWidget_->setPos(width/2,0);
 	rightImWidget_->setMinimumSize(width/2,heigth);
 	rightImWidget_->setMaximumSize(width/2,heigth);
+	rightImWidget_->update();
+	leftImWidget_->update();
 	graphicView_->setSceneRect(0,0,width,heigth);
 
 	TRACEPOINT;

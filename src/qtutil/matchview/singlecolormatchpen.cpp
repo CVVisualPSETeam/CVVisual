@@ -28,7 +28,9 @@ SingleColorMatchPen::SingleColorMatchPen(QWidget * parent):MatchSettings{parent}
 void SingleColorMatchPen::setSettings(CVVMatch &match)
 {
 	TRACEPOINT;
-	match.setPen(pen_);
+	if(match.isSelected()){
+		match.setPen(pen_);
+	}
 	TRACEPOINT;
 }
 

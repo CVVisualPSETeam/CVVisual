@@ -185,9 +185,10 @@ public:
 	 *
 	 * @param newElements new elements, now inherited by this engine
 	 */
-	void setElements(std::vector<Element> &newElements)
+	void setElements(QList<Element> newElements)
 	{
 		TRACEPOINT;
+		elements.clear();
 		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
@@ -195,6 +196,27 @@ public:
 		reinitFilterPools();
 		TRACEPOINT;
 	}
+										
+	/**
+	 * @brief Sets the elements inherited by this engine.
+	 *
+	 * @param newElements new elements, now inherited by this engine
+	 */
+	void setElements(std::pair<QList<Element>, QList<Element>> newElements)
+	{
+		TRACEPOINT;
+		elements.clear();
+		for (Element &elem : newElements.first)
+		{
+			addNewElement(elem);
+		}
+		for (Element &elem : newElements.second)
+		{
+			addNewElement(elem);
+		}
+		reinitFilterPools();
+		TRACEPOINT;
+	}									
 
 	/**
 	 * @brief Sets the filter function for the given filter command.

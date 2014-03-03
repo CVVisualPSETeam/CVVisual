@@ -9,7 +9,6 @@
 #include "overview_panel.hpp"
 #include "../controller/view_controller.hpp"
 #include "../util/util.hpp"
-#include "close_window.hpp"
 #include "../dbg/dbg.hpp"
 
 namespace cvv { 
@@ -55,14 +54,8 @@ public:
 protected:
     void closeEvent(QCloseEvent *event);
 
-private slots:
-	void removeEmptyWindowsDelayed();
-	
 private:
 	OverviewPanel *ovPanel;
-	std::unique_ptr<CloseWindow> closeWindow;
-	int removeEmptyWindowsDelayedCounter = 4;
-	bool isCloseWindowHidden = true;
 };
 
 }}
