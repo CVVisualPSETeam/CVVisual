@@ -74,7 +74,7 @@ void OverlayFilterWidget::updateOpacity(int newOpacity)
 {
 	TRACEPOINT;
 	opacityOfOriginalImg_ = newOpacity / 100.0;
-	signFilterSettingsChanged_.emitSignal();
+	signalFilterSettingsChanged().emitSignal();
 	TRACEPOINT;
 }
 

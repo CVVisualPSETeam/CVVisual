@@ -122,7 +122,7 @@ QStringList DiffFilterFunction::extractStringListfromMap() const
 void DiffFilterFunction::updateFilterType(const QString& name)
 {
 	filterMap_.find(name.toStdString()) -> second();
-	signFilterSettingsChanged_.emitSignal();
+	signalFilterSettingsChanged().emitSignal();
 }
 
 }}
