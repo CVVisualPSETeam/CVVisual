@@ -39,6 +39,7 @@ enum class DiffFilterType
 class DualFilterView: public FilterView
 {
 Q_OBJECT
+
 	private:
 		std::array<cv::Mat, 2> rawImages_; //< Original and resulting image
 		

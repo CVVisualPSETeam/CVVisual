@@ -40,39 +40,40 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget* parent)
 	accor->setMaximumWidth(250);
 	
 	auto filterSelector = util::make_unique<qtutil::AutoFilterWidget<2,1>>(this);
-	filterSelector->useFilterIndividually(false);
+	filterSelector->enableUserSelection(false);
 	qtutil::AutoFilterWidget<2,1>* filterSel = filterSelector.get();
 	accor->insert("Select a Filter",std::move(filterSelector));
 
-	auto lambda = [this, &imageLayout, &accor](cv::Mat& image, size_t count)
+	auto lambda = [this, &imageLayout, &accor, filterSel](const cv::Mat& image, size_t count)
 	{
 		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
-
+		
+		if(count == 1)
+		{
+			auto filterSignals = filterSel->addEntry(QString("middle image"),
+				{{util::makeRef<const cv::Mat>(rawImages_.at(0)),
+					util::makeRef<const cv::Mat>(rawImages_.at(1))}},
+				{{util::makeRef<cv::Mat>(zoomIm->mat())}});
+			
+			//connect entry=> zoomableimage
+			connect(filterSignals.front().getPtr(),SIGNAL(signal(cv::Mat&)),
+				zoomIm.get(),SLOT(setMatR(cv::Mat&)));
+		}
+		
 		accor->insert(QString("ImageInformation: ")+QString::number(count),
 			std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
 
-		zoomIm->setMat(image);
-		imageLayout.get()->addWidget(zoomIm.get());
-		
-		return zoomIm.release();
+		if(count!=1){
+			zoomIm->setMat(image);
+		}else{
+			zoomIm->setMat(image.clone());
+		}
+		imageLayout.get()->addWidget(zoomIm.release());
 	};
-	TRACEPOINT;
+	
 	lambda(rawImages_.at(0), 0);
-	TRACEPOINT;
-	auto zoomIm = lambda(rawImages_.at(0), 1);
-	TRACEPOINT;
-	auto filterSignals = filterSel->addEntry(QString("middle image"),
-		{{util::makeRef<const cv::Mat>(rawImages_.at(0)),
-			util::makeRef<const cv::Mat>(rawImages_.at(1))}},
-		{{util::makeRef<cv::Mat>(zoomIm->mat())}});
-	TRACEPOINT;
-	//connect entry=> zoomableimage
-	connect(filterSignals.front().getPtr(),SIGNAL(signal(cv::Mat&)),
-		zoomIm,SLOT(setMatR(cv::Mat&)));
-	TRACEPOINT;
-
+	lambda(rawImages_.at(0), 1);
 	lambda(rawImages_.at(1), 2);
-	TRACEPOINT;
 
 	imwid->setLayout(imageLayout.release());
 	

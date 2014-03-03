@@ -21,11 +21,11 @@ OverlayFilterWidget::OverlayFilterWidget(QWidget* parent)
 	auto layout = util::make_unique<QVBoxLayout>();
 	auto slider = util::make_unique<QSlider>(Qt::Horizontal);
 	
-	slider -> setMinimum(0);
-	slider -> setMaximum(100);
+	slider -> setRange(0, 100);
+	slider->setTickPosition(QSlider::TicksAbove);
+	slider->setTickInterval(10);
 	
-	connect(slider.get(), SIGNAL(valueChanged(int)),
-		this, SLOT(updateOpacity(int)));
+	connect(slider.get(), SIGNAL(valueChanged(int)), this, SLOT(updateOpacity(int)));
 	
 	//Add title of slider and slider to the layout
 	layout -> addWidget(util::make_unique<QLabel>("Select opacity of original image").release());
