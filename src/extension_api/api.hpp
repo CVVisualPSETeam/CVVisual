@@ -18,7 +18,7 @@ namespace cvv { namespace extend {
 /**
  * @brief Introduces a new filter-view.
  * @param name of the new FilterView.
- * @tparam FView A FilterView. Needs to have a constructor of the form FView(const std::vector<cv::Mat>&, QWidget*).
+ * @tparam FView A FilterView. Needs to have a constructor of the form FView(const cvv::impl::FilterCall&, QWidget*).
  */
 template<class FView>
 void addFilterView(const QString name)

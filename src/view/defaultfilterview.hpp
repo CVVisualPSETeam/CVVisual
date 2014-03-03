@@ -8,6 +8,8 @@
 #include "filter_view.hpp"
 #include "../dbg/dbg.hpp"
 
+#include "../impl/filter_call.hpp"
+
 
 namespace cvv{ namespace view{
 
@@ -17,14 +19,26 @@ namespace cvv{ namespace view{
 class DefaultFilterView : public cvv::view::FilterView{
 	Q_OBJECT
 public:
-	/*
-	 * @brief Standart constructor for FilterView
+	/**
+	 * @brief Standard constructor for FilterView
 	 * @param images A List of images
 	 * @param parent The parent of this QWidget
 	 */
 	DefaultFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
 
+	/**
+	 * @brief Constructor using a filter call to get its data from.
+	 * @param call to get the data from.
+	 * @param parent of this QWidget.
+	 */
+	DefaultFilterView(const cvv::impl::FilterCall& call, QWidget* parent = nullptr):
+		DefaultFilterView{{call.original(), call.result()}, parent}
+	{
+		TRACEPOINT;
+	}
+
 	~DefaultFilterView(){TRACEPOINT;}
+
 };
 }}//namespaces
 #endif

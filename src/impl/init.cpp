@@ -15,6 +15,7 @@
 #include "../view/filter_view.hpp"
 #include "../view/defaultfilterview.hpp"
 #include "../view/dual_filter_view.hpp"
+#include "../view/singlefilterview.hpp"
 
 #include "../view/match_view.hpp"
 #include "../view/linematchview.hpp"
@@ -46,7 +47,8 @@ void initializeFilterAndViews()
 	//filter-views:
 	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DefaultFilterView>("DefaultFilterView");
 	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DualFilterView>("DualFilterView");
-	
+	cvv::gui::FilterCallTab::registerFilterView<cvv::view::SingleFilterView>("SingleFilterView");
+
 	//match-views:
 	cvv::gui::MatchCallTab::registerMatchView<cvv::view::LineMatchView>("LineMatchView");
 	cvv::gui::MatchCallTab::registerMatchView<cvv::view::TranslationMatchView>("TranslationMatchView");

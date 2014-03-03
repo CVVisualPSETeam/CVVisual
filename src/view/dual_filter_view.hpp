@@ -12,6 +12,7 @@
 #include "../qtutil/matinfowidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
 #include "filter_view.hpp"
+#include "../impl/filter_call.hpp"
 
 namespace cvv {namespace view {
 
@@ -68,6 +69,17 @@ Q_OBJECT
 		* @param parent The Widget that is to be the parent of the view
 		*/
 		DualFilterView(const std::vector<cv::Mat>& images, QWidget* parent = nullptr);
+
+		/**
+		 * @brief Constructor using a filter call to get its data from.
+		 * @param call to get the data from.
+		 * @param parent of this QWidget.
+		 */
+		DualFilterView(const cvv::impl::FilterCall& call, QWidget* parent = nullptr):
+			DualFilterView{convertToArray({call.original(), call.result()}), parent}
+		{
+			TRACEPOINT;
+		}
 };
 
 
