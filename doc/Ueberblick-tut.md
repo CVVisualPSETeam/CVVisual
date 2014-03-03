@@ -30,7 +30,7 @@ werden.
 
 ![](../images_ueberblick/RawviewTab.jpg)
 
-Wird `Resume program execution` geklickt wird die Ausführung des zu debuggenden Programmes, das beim Aufruf des Hauptfensters angehalten wurde, fortgesetzt bis es auf eine weitere CVVisual-Funktion
+Wird `Step` geklickt wird die Ausführung des zu debuggenden Programmes, das beim Aufruf des Hauptfensters angehalten wurde, fortgesetzt, bis es auf eine weitere CVVisual-Funktion
 stößt:
 
 	//...
@@ -49,7 +49,7 @@ Der *Dual Filter View* erlaubt zum Beispiel zusätzlich, ein Differenzbild der b
 
 ![](../images_ueberblick/DualfilterViewDiffImg.jpg)
 
-Nach einigen weiteren Schritten durch das Programm
+Nach einem *fast-forward* (`>>`) über die weiteren Schritte des Programms
 
 	//...
 	cvv::debugDMatch(src, keypoints1, src, keypoints2, match, CVVISUAL\_LOCATION)
@@ -61,14 +61,15 @@ Nach einigen weiteren Schritten durch das Programm
 	cvv::debugDMatch(src, keypoints1, src, keypoints2, match, CVVISUAL\_LOCATION);
 	//...
 	cvv::showImage(img, CVVISUAL\_LOCATION);
-
+	//...
+	cvv::finalShow();
 ergibt sich im Overview folgendes Bild:
 
 ![](../images_ueberblick/MainWindowFull.jpg)
 
 Dabei wird durch den letzten Aufruf nur ein einziges Bild zur Anzeige übergeben:
 
-![](../images_ueberblick/SingleImageTab)
+![](../images_ueberblick/SingleImageTab.jpg)
 
 Mithilfe der Textzeile lassen sich durch Kommandos der *Filter Query Language* von CVVisual die Datensätze ordnen, filtern und gruppieren. Hier wurde nach ID gruppiert:
 
@@ -76,14 +77,13 @@ Mithilfe der Textzeile lassen sich durch Kommandos der *Filter Query Language* v
 
 Dies funktioniert auch im *Raw View*.
 
-Hinter dem letzten Aufruf einer regulären CVVisual-Funktion muss `finalShow` aufgerufen werden:
+Hinter dem letzten Aufruf einer regulären CVVisual-Funktion muss, wie oben gesehen, `finalShow` aufgerufen werden:
 
 	//...
 	cvv::finalShow();
 	//...
 
-Es wird ein weiteres Mal das Hauptfenster angezeigt; wird jedoch der nun `Exit program` benannte Knopf
-betätigt, wird das Hauptfenster endgültig geschlossen.
+Es wird ein weiteres Mal das Hauptfenster angezeigt; wird jedoch der nun der einzige verbleibende, der `Close`-Knopf betätigt, wird das Hauptfenster endgültig geschlossen.
 
 ![](../images_ueberblick/OverviewExitProgram.jpg)
   

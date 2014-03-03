@@ -242,7 +242,7 @@ std::pair<QList<RawviewTableRow>, QList<RawviewTableRow>> createRawviewTableRows
 	return std::make_pair(matchRowList, singleRowList);
 }
 
-QList<RawviewTableRow> createSingleKeyPointRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints, bool left)
+QList<RawviewTableRow> createSingleKeyPointRawviewTableRows(const std::vector<cv::KeyPoint>& keyPoints /*, bool left*/)
 {
 	TRACEPOINT;
 	auto retList = QList<RawviewTableRow>();
