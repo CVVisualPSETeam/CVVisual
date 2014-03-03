@@ -7,6 +7,7 @@
 
 #include "filter_view.hpp"
 #include "../dbg/dbg.hpp"
+#include "../impl/filter_call.hpp"
 
 
 namespace cvv{ namespace view{
@@ -24,6 +25,17 @@ public:
 	 * @param parent the parent Widget
 	 */
 	SingleFilterView(const std::vector<cv::Mat>& images,QWidget *parent=nullptr);
+
+	/**
+	 * @brief Constructor using a filter call to get its data from.
+	 * @param call to get the data from.
+	 * @param parent of this QWidget.
+	 */
+	SingleFilterView(const cvv::impl::FilterCall& call, QWidget* parent = nullptr):
+		SingleFilterView{{call.original(), call.result()}, parent}
+	{
+		TRACEPOINT;
+	}
 
 	~SingleFilterView(){TRACEPOINT;}
 };

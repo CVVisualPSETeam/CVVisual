@@ -27,7 +27,7 @@ namespace gui {
  * Allows to switch views and to access the help.
  */
 class FilterCallTab:
-		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::FilterView, const std::vector<cv::Mat>&, QWidget*>
+		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::FilterView, const cvv::impl::FilterCall&, QWidget*>
 {
 Q_OBJECT
 
@@ -69,7 +69,7 @@ public:
 
 	/**
 	 * @brief Register the template class to the map of FilterViews.
-	 * View needs to offer a constructor of the form View(const std::vector<cv::Mat>&, QWidget*).
+	 * View needs to offer a constructor of the form View(const cvv::::::impl::FilterCall&, QWidget*).
 	 * @param name to register the class under.
 	 * @tparam View - Class to register.
 	 * @return true when the view was registered and false when the name was already taken.
@@ -79,7 +79,7 @@ public:
 	{
 		TRACEPOINT;
 		return gui::FilterCallTab::registerElement(name,
-			[](const std::vector<cv::Mat>& mat, QWidget* parent){
+			[](const cvv::impl::FilterCall& mat, QWidget* parent){
 				TRACEPOINT;
 				return cvv::util::make_unique<View>(mat,parent);
 			}

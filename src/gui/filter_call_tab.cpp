@@ -128,10 +128,7 @@ void FilterCallTab::setView()
 		filterView_->setVisible(true);
 	} else
 	{
-		std::vector<cv::Mat> images;
-		images.push_back(filterCall_->original());
-		images.push_back(filterCall_->result());
-		viewHistory_.emplace(selection(), ((*this)()(images, this).release()));
+		viewHistory_.emplace(selection(), ((*this)()(*filterCall_, this).release()));
 		filterView_ = viewHistory_.at(selection());
 		vlayout_->addWidget(filterView_);
 	}

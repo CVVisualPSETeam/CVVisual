@@ -10,6 +10,7 @@
 #include "../../include/opencv2/call_meta_data.hpp"
 #include "../../src/view/defaultfilterview.hpp"
 #include "../../src/view/dual_filter_view.hpp"
+#include "../../src/view/singlefilterview.hpp"
 #include "../../src/util/util.hpp"
 
 #include <opencv2/core/core.hpp>
@@ -27,10 +28,12 @@ int main(int argc, char *argv[])
 
 	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DefaultFilterView>("DefaultFilterView");
 	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DualFilterView>("DualFilterView");
+	cvv::gui::FilterCallTab::registerFilterView<cvv::view::SingleFilterView>("SingleFilterView");
 
 	cvv::gui::FilterCallTab u{fc};
 	cvv::gui::FilterCallTab v{"TestFTab", fc};
 	cvv::gui::FilterCallTab w{"TestFTab", fc, "DualFilterView"};
+
 	u.show();
 	v.show();
 	w.show();
