@@ -20,16 +20,9 @@
 namespace cvv {
 namespace gui {
 
-MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& matchCall): //matchCall_{matchCall}
+MatchCallTab::MatchCallTab(const cvv::impl::MatchCall& matchCall):
 	MatchCallTab{matchCall.description(), matchCall}
 {
-	TRACEPOINT;
-	/*setName(matchCall_->description());
-	const QString scope{"default_views"};
-	const QString key{"default_match_view"};
-	qtutil::setDefaultSetting(scope, key, "LineMatchView");
-	matchViewId_ = qtutil::getSetting(scope, key);
-	createGui();*/
 	TRACEPOINT;
 }
 
@@ -83,13 +76,6 @@ size_t MatchCallTab::getId() const
 {
 	TRACEPOINT;
 	return matchCall_->getId();
-}
-
-void MatchCallTab::addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView)
-{
-	TRACEPOINT;
-	cvv::qtutil::RegisterHelper<cvv::view::MatchView, const cvv::impl::MatchCall&, QWidget*>::registerElement(matchViewId, mView);
-	TRACEPOINT;
 }
 
 void MatchCallTab::createGui()

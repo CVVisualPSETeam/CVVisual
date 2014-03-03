@@ -73,7 +73,6 @@ public:
 	 * @param name to register the class under.
 	 * @tparam View - Class to register.
 	 * @return true when the view was registered and false when the name was already taken.
-	 * @attention Use of registerFilterView recommended.
 	 */
 	template<class View>
 	static bool registerFilterView(const QString& name)
@@ -86,14 +85,6 @@ public:
 			}
 		);
 	}
-
-	/**
-	 * @brief adds FilterView to map of all.
-	 * Adds a FilterView with a name to the thread local map of all FilterViews.
-	 * @param filterViewId the ID or name of the FilterView.
-	 * @param fView: function returning a unique_ptr on a FilterView.
-	 */
-	static void addFilterViewToMap(const QString& filterViewId, std::function<std::unique_ptr<cvv::view::FilterView>(const std::vector<cv::Mat>&, QWidget*)>);
 
 private slots:
 

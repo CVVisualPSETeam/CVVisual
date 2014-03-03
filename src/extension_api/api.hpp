@@ -10,21 +10,32 @@
 #include "../controller/view_controller.hpp"
 #include "../view/filter_view.hpp"
 #include "../gui/match_call_tab.hpp"
+#include "../gui/filter_call_tab.hpp"
 #include "../qtutil/filterselectorwidget.hpp"
 
 namespace cvv { namespace extend {
-using FilterViewFactory =
-	std::function<std::unique_ptr<cvv::view::FilterView>(const std::vector<cv::Mat>&, QWidget*)>;
+
 /**
  * @brief Introduces a new filter-view.
+ * @param name of the new FilterView.
+ * @tparam FView A FilterView. Needs to have a constructor of the form FView(const std::vector<cv::Mat>&, QWidget*).
  */
-void addFilterView(const QString name, FilterViewFactory factory);
+template<class FView>
+void addFilterView(const QString name)
+{
+	cvv::gui::FilterCallTab::registerFilterView<FView>(name);
+}
 
-using MatchViewFactory = gui::MatchCallTab::MatchViewBuilder;
 /**
  * @brief Introduces a new match-view.
+ * @param name of the new MatchView.
+ * @tparam MView A MatchView. Needs to have a constructor of the form MView(const cvv::impl::MatchCall&, QWidget*).
  */
-void addMatchView(const QString name, MatchViewFactory factory);
+template<class MView>
+void addMatchView(const QString name)
+{
+	cvv::gui::MatchCallTab::registerMatchView<MView>(name);
+}
 
 using TabFactory = controller::TabFactory;
 /**

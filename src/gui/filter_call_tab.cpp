@@ -21,16 +21,9 @@
 namespace cvv {
 namespace gui {
 
-FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& filterCall): filterCall_{filterCall}
+FilterCallTab::FilterCallTab(const cvv::impl::FilterCall& filterCall):
+	FilterCallTab{filterCall.description(), filterCall}
 {
-	TRACEPOINT;
-	setName(filterCall_->description());
-	const QString scope{"default_views"};
-	const QString key{"default_filter_view"};
-	// Sets DefaultFilterView as default in case no other default is set:
-	qtutil::setDefaultSetting(scope, key, "DefaultFilterView");
-	filterViewId_ = qtutil::getSetting(scope, key);
-	createGui();
 	TRACEPOINT;
 }
 
@@ -85,14 +78,6 @@ size_t FilterCallTab::getId() const
 {
 	TRACEPOINT;
 	return filterCall_->getId();
-}
-
-void FilterCallTab::addFilterViewToMap(const QString& filterViewId,
-				       std::function<std::unique_ptr<cvv::view::FilterView>(const std::vector<cv::Mat>&, QWidget*)> fView)
-{
-	TRACEPOINT;
-	cvv::qtutil::RegisterHelper<cvv::view::FilterView, const std::vector<cv::Mat>&, QWidget*>::registerElement(filterViewId, fView);
-	TRACEPOINT;
 }
 
 void FilterCallTab::createGui()
