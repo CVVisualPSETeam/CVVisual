@@ -89,15 +89,6 @@ public:
 		);
 	}
 
-	/**
-	 * @brief adds MatchView to map of all.
-	 * Adds a MatchView with a name to the thread local map of all MatchViews.
-	 * @param matchViewId the ID or name of the MatchView.
-	 * @param mView: function returning a unique_ptr to a MatchView.
-	 * @attention: Use of registerMatchView recommended.
-	 */
-	static void addMatchViewToMap(const QString& matchViewId, MatchViewBuilder mView);
-
 private slots:
 
 	/**
