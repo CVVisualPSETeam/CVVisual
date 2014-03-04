@@ -38,13 +38,13 @@ class MultiViewCallTab
       public cvv::qtutil::RegisterHelper<ViewType, const CallType &, QWidget *>
 {
       public:
-	MultiViewCallTab(const CallType &call)
-	    : MultiViewCallTab{ call.description(), call }
+	MultiViewCallTab(const CallType &call, const QString& default_key, const QString& standard_default)
+	    : MultiViewCallTab{ call.description(), call, default_key, standard_default }
 	{
 		TRACEPOINT;
 	}
 
-	MultiViewCallTab(const QString &tabName, const CallType &call)
+	MultiViewCallTab(const QString &tabName, const CallType &call, const QString& default_key, const QString& standard_default)
 	    : call_{ call }, currentIndexChanged{ [&]()
 	{
 		vlayout_->removeWidget(view_);
@@ -58,6 +58,15 @@ class MultiViewCallTab
 	{
 		TRACEPOINT;
 		setName(tabName);
+		default_scope_ = QString{ "default_views" };
+		default_key_ = default_key;
+		standard_default_ = standard_default;
+		// Sets standard_default_ as default in case no other default is
+		// set:
+		qtutil::setDefaultSetting(default_scope_, default_key_,
+					  standard_default_);
+		viewId_ = qtutil::getSetting(default_scope_, default_key_);
+		createGui();
 		TRACEPOINT;
 	}
 
@@ -119,12 +128,6 @@ class MultiViewCallTab
 	void createGui()
 	{
 		TRACEPOINT;
-		// Sets standard_default_ as default in case no other default is
-		// set:
-		qtutil::setDefaultSetting(default_scope_, default_key_,
-		                          standard_default_);
-		viewId_ = qtutil::getSetting(default_scope_, default_key_);
-
 		if (!this->select(viewId_))
 		{
 			this->select(standard_default_);
@@ -166,7 +169,6 @@ class MultiViewCallTab
 		TRACEPOINT;
 	}
 
-      private:
 	/**
 	 * @brief sets up the View currently selected in the ComboBox inherited
 	 * from RegisterHelper.
@@ -189,6 +191,7 @@ class MultiViewCallTab
 			view_ = viewHistory_.at(this->selection());
 			vlayout_->addWidget(view_);
 		}
+		viewSet.emitSignal();
 		TRACEPOINT;
 	}
 
@@ -202,6 +205,12 @@ class MultiViewCallTab
 	QHBoxLayout *hlayout_;
 	QVBoxLayout *vlayout_;
 	QWidget *upperBar_;
+
+	//signals:
+	/**
+	 * @brief signal emitted whem view is completely set up.
+	 */
+	qtutil::Signal viewSet;
 
 	// slots:
 	/**

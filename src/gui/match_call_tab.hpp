@@ -10,6 +10,7 @@
 #include "../view/match_view.hpp"
 #include "../impl/match_call.hpp"
 #include "../util/util.hpp"
+#include "../qtutil/signalslot.hpp"
 
 namespace cvv
 {
@@ -37,15 +38,12 @@ class MatchCallTab
 	 */
 	MatchCallTab(const cvv::impl::MatchCall &matchCall)
 	    : MultiViewCallTab<cvv::view::MatchView, cvv::impl::MatchCall>{
-		      matchCall
+		      matchCall, QString{ "default_match_view" }, QString{ "LineMatchView" }
 	      }
 	{
 		TRACEPOINT;
-		default_scope_ = QString{ "default_views" };
-		default_key_ = QString{ "default_match_view" };
-		standard_default_ = QString{ "LineMatchView" };
-		createGui();
-		TRACEPOINT;
+		oldView_ = nullptr;
+		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
 	}
 
 	~MatchCallTab()
@@ -67,6 +65,30 @@ class MatchCallTab
 		TRACEPOINT;
 		return registerView<View>(name);
 	}
+
+private slots:
+
+	/**
+	 * @brief Slot called when the view has completely changed.
+	 */
+	void viewChanged()
+	{
+		TRACEPOINT;
+		if(oldView_ != nullptr)
+		{
+			view_->setKeyPointSelection(oldView_->getKeyPointSelection());
+			view_->setMatchSelection(oldView_->getMatchSelection());
+		}
+		oldView_ = view_;
+	}
+
+private:
+
+	/**
+	 * @brief usually equal to view_, but not immediately changed when view_ is changed.
+	 */
+	cvv::view::MatchView* oldView_;
+
 };
 }
 } // namespaces

@@ -37,9 +37,9 @@ int main(int argc, char *argv[])
 	    registerView<cvv::view::SingleFilterView>("SingleFilterView");
 
 	cvv::gui::MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>
-	u{ fc };
+	u{ fc, QString{ "default_filter_view"}, QString{ "DefaultFilterView"} };
 	cvv::gui::MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>
-	v{ "TestFTab", fc };
+	v{ "TestFTab", fc, QString{ "default_filter_view"}, QString{ "DefaultFilterView"} };
 
 	u.show();
 	v.show();

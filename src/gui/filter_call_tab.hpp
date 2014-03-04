@@ -35,14 +35,15 @@ class FilterCallTab
 	 * visualized.
 	 */
 	FilterCallTab(const cvv::impl::FilterCall &filterCall)
-	    : MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>(
-	          filterCall)
+	    : MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>{
+		      filterCall, QString{ "default_filter_view" }, QString{ "DefaultFilterView" }
+	      }
 	{
 		TRACEPOINT;
-		default_scope_ = QString{ "default_views" };
+		/*default_scope_ = QString{ "default_views" };
 		default_key_ = QString{ "default_filter_view" };
 		standard_default_ = QString{ "DefaultFilterView" };
-		createGui();
+		createGui();*/
 		TRACEPOINT;
 	}
 
