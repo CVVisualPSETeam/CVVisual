@@ -7,29 +7,35 @@
 #include "filter.hpp"
 #include "final_show.hpp"
 
-void dilateFile(char* filename) {
+void dilateFile(char *filename)
+{
 	auto src = cv::imread(filename);
-	auto elem = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9), cv::Point(4, 4));
+	auto elem = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9),
+	                                      cv::Point(4, 4));
 	cv::Mat dest;
-	
+
 	cv::dilate(src, dest, elem);
 	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
 	cv::erode(src, dest, elem);
 	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
 	cv::Sobel(src, dest, -1, 1, 1);
 	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
-	cv::morphologyEx(src, dest,cv::MORPH_GRADIENT, elem );
+	cv::morphologyEx(src, dest, cv::MORPH_GRADIENT, elem);
 	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
 }
 
-int main(int argc, char** argv) {
-	if(argc == 1)
+int main(int argc, char **argv)
+{
+	if (argc == 1)
 	{
-		std::cerr << argv[0] << " must be callled with one or more files as arguments\n";
+		std::cerr
+		    << argv[0]
+		    << " must be callled with one or more files as arguments\n";
 		return 1;
 	}
-	
-	for(int i=1; i < argc; ++i) {
+
+	for (int i = 1; i < argc; ++i)
+	{
 		dilateFile(argv[i]);
 	}
 	std::cout << "All calculation done" << std::endl;

@@ -22,26 +22,29 @@
 #include "../dbg/dbg.hpp"
 #include "../qtutil/util.hpp"
 
-namespace cvv {
-namespace controller {
+namespace cvv
+{
+namespace controller
+{
 
-//It's only used for instatiating a QApplication.
-//static char *emptyArray[] = {""};
-static char* parameterSystemV[] = {new char[1]{0}, nullptr};
+// It's only used for instatiating a QApplication.
+// static char *emptyArray[] = {""};
+static char *parameterSystemV[] = { new char[1]{ 0 }, nullptr };
 static int parameterSystemC = 1;
 
 ViewController::ViewController()
 {
 	impl::initializeFilterAndViews();
 	TRACEPOINT;
-	if(!QApplication::instance())
+	if (!QApplication::instance())
 	{
-		auto tmp = new QApplication{parameterSystemC, parameterSystemV};
+		auto tmp =
+		    new QApplication{ parameterSystemC, parameterSystemV };
 		ownsQApplication = true;
-		(void) tmp;
+		(void)tmp;
 		DEBUGF("QApplication is at %s", tmp);
 	}
-	ovPanel = new gui::OverviewPanel{util::makeRef(*this)};
+	ovPanel = new gui::OverviewPanel{ util::makeRef(*this) };
 	mainWindow = new gui::MainCallWindow(util::makeRef(*this), 0, ovPanel);
 	windowMap[0] = std::unique_ptr<gui::CallWindow>(mainWindow);
 	max_window_id = 0;
@@ -58,46 +61,48 @@ ViewController::~ViewController()
 	TRACEPOINT;
 	windowMap.clear();
 	TRACEPOINT;
-	if(ownsQApplication) {
+	if (ownsQApplication)
+	{
 		TRACEPOINT;
 		delete QApplication::instance();
 	}
 	TRACEPOINT;
 }
 
-void ViewController::addCallType(const QString typeName,
-		TabFactory constr)
+void ViewController::addCallType(const QString typeName, TabFactory constr)
 {
 	TRACEPOINT;
 	ViewController::callTabType[typeName] = constr;
 	TRACEPOINT;
 }
 
-std::unique_ptr<cvv::gui::FilterCallTab> makeFilterCallTab(
-		cvv::util::Reference<cvv::impl::Call> call)
+std::unique_ptr<cvv::gui::FilterCallTab>
+makeFilterCallTab(cvv::util::Reference<cvv::impl::Call> call)
 {
 	TRACEPOINT;
-	return cvv::util::make_unique<cvv::gui::FilterCallTab>(*call.castTo<cvv::impl::FilterCall>());
+	return cvv::util::make_unique<cvv::gui::FilterCallTab>(
+	    *call.castTo<cvv::impl::FilterCall>());
 }
 
-std::unique_ptr<cvv::gui::MatchCallTab> makeMatchCallTab(
-		cvv::util::Reference<cvv::impl::Call> call)
+std::unique_ptr<cvv::gui::MatchCallTab>
+makeMatchCallTab(cvv::util::Reference<cvv::impl::Call> call)
 {
 	TRACEPOINT;
-	return cvv::util::make_unique<cvv::gui::MatchCallTab>(*call.castTo<cvv::impl::MatchCall>());
+	return cvv::util::make_unique<cvv::gui::MatchCallTab>(
+	    *call.castTo<cvv::impl::MatchCall>());
 }
 
-std::unique_ptr<cvv::gui::ImageCallTab> makeImageCallTab(
-		cvv::util::Reference<cvv::impl::Call> call)
+std::unique_ptr<cvv::gui::ImageCallTab>
+makeImageCallTab(cvv::util::Reference<cvv::impl::Call> call)
 {
 	TRACEPOINT;
-	return cvv::util::make_unique<cvv::gui::ImageCallTab>(*call.castTo<cvv::impl::SingleImageCall>());
+	return cvv::util::make_unique<cvv::gui::ImageCallTab>(
+	    *call.castTo<cvv::impl::SingleImageCall>());
 }
 
-std::map<QString, TabFactory> ViewController::callTabType {
-	{"filter", makeFilterCallTab},
-	{"match", makeMatchCallTab},
-	{"singleImage", makeImageCallTab}
+std::map<QString, TabFactory> ViewController::callTabType{
+	{ "filter", makeFilterCallTab }, { "match", makeMatchCallTab },
+	{ "singleImage", makeImageCallTab }
 };
 
 void ViewController::addCall(util::Reference<impl::Call> data)
@@ -126,7 +131,7 @@ void ViewController::exec()
 	TRACEPOINT;
 }
 
-impl::Call& ViewController::getCall(size_t id)
+impl::Call &ViewController::getCall(size_t id)
 {
 	TRACEPOINT;
 	return impl::dataController().getCall(id);
@@ -140,7 +145,7 @@ QString ViewController::getSetting(const QString &scope, const QString &key)
 std::vector<util::Reference<gui::CallWindow>> ViewController::getTabWindows()
 {
 	TRACEPOINT;
-	std::vector<util::Reference<gui::CallWindow>>  windows{};
+	std::vector<util::Reference<gui::CallWindow>> windows{};
 	for (auto &it : windowMap)
 	{
 		windows.push_back(util::makeRef(*(it.second)));
@@ -160,7 +165,8 @@ void ViewController::moveCallTabToNewWindow(size_t tabId)
 	TRACEPOINT;
 	if (!hasCall(tabId))
 		return;
-	auto newWindow = util::make_unique<gui::CallWindow>(util::makeRef<ViewController>(*this), ++max_window_id);
+	auto newWindow = util::make_unique<gui::CallWindow>(
+	    util::makeRef<ViewController>(*this), ++max_window_id);
 	removeCallTab(tabId);
 	newWindow->addTab(getCallTab(tabId));
 	newWindow->show();
@@ -221,12 +227,14 @@ void ViewController::resumeProgramExecution()
 	TRACEPOINT;
 }
 
-void ViewController::setDefaultSetting(const QString &scope, const QString &key, const QString &value)
+void ViewController::setDefaultSetting(const QString &scope, const QString &key,
+                                       const QString &value)
 {
 	qtutil::setDefaultSetting(scope, key, value);
 }
 
-void ViewController::setSetting(const QString &scope, const QString &key, const QString &value)
+void ViewController::setSetting(const QString &scope, const QString &key,
+                                const QString &value)
 {
 	qtutil::setSetting(scope, key, value);
 }
@@ -236,7 +244,8 @@ void ViewController::showCallTab(size_t tabId)
 	TRACEPOINT;
 	auto *window = getCurrentWindowOfTab(tabId);
 	window->showTab(tabId);
-	window->setWindowState( (window->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+	window->setWindowState((window->windowState() & ~Qt::WindowMinimized) |
+	                       Qt::WindowActive);
 	window->raise();
 	TRACEPOINT;
 }
@@ -257,16 +266,18 @@ void ViewController::showAndOpenCallTab(size_t tabId)
 void ViewController::showOverview()
 {
 	TRACEPOINT;
-	mainWindow->setWindowState( (mainWindow->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+	mainWindow->setWindowState(
+	    (mainWindow->windowState() & ~Qt::WindowMinimized) |
+	    Qt::WindowActive);
 	mainWindow->raise();
 	mainWindow->showOverviewTab();
 	TRACEPOINT;
 }
 
-gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
+gui::CallWindow *ViewController::getCurrentWindowOfTab(size_t tabId)
 {
 	TRACEPOINT;
-	for (auto &elem  : windowMap)
+	for (auto &elem : windowMap)
 	{
 		if (elem.second->hasTab(tabId))
 		{
@@ -277,7 +288,7 @@ gui::CallWindow* ViewController::getCurrentWindowOfTab(size_t tabId)
 	return mainWindow;
 }
 
-gui::CallTab* ViewController::getCallTab(size_t tabId)
+gui::CallTab *ViewController::getCallTab(size_t tabId)
 {
 	TRACEPOINT;
 	if (callTabMap.count(tabId) == 0)
@@ -285,9 +296,13 @@ gui::CallTab* ViewController::getCallTab(size_t tabId)
 		auto *call = &(getCall(tabId));
 		if (callTabType.count(call->type()) == 0)
 		{
-			throw std::invalid_argument{ "no such type '" + call->type().toStdString() + "'" };
+			throw std::invalid_argument{
+				"no such type '" + call->type().toStdString() +
+				"'"
+			};
 		}
-		callTabMap[tabId] = callTabType[call->type()](util::makeRef(*call));
+		callTabMap[tabId] =
+		    callTabType[call->type()](util::makeRef(*call));
 	}
 	TRACEPOINT;
 	return callTabMap[tabId].get();
@@ -329,7 +344,7 @@ void ViewController::removeEmptyWindowsWithDelay()
 {
 	shouldRunRemoveEmptyWindows_ = true;
 }
-	
+
 bool ViewController::shouldRunRemoveEmptyWindows()
 {
 	return shouldRunRemoveEmptyWindows_;
@@ -359,22 +374,22 @@ void ViewController::setMode(Mode newMode)
 	mode = newMode;
 	switch (newMode)
 	{
-		case Mode::NORMAL:
-			break;
-		case Mode::HIDE:
-			hideAll();
+	case Mode::NORMAL:
+		break;
+	case Mode::HIDE:
+		hideAll();
+		QApplication::instance()->exit();
+		break;
+	case Mode::FAST_FORWARD:
+		if (!doesShowExitProgramButton)
+		{
 			QApplication::instance()->exit();
-			break;
-		case Mode::FAST_FORWARD:
-			if (!doesShowExitProgramButton)
-			{
-				QApplication::instance()->exit();
-			}
-			else
-			{
-				mode = Mode::NORMAL;
-			}
-			break;
+		}
+		else
+		{
+			mode = Mode::NORMAL;
+		}
+		break;
 	}
 	TRACEPOINT;
 }
@@ -408,5 +423,5 @@ bool ViewController::hasFinalCall()
 {
 	return doesShowExitProgramButton;
 }
-
-}}
+}
+}

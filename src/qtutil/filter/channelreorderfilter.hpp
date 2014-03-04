@@ -10,28 +10,29 @@
 #include "../../dbg/dbg.hpp"
 #include "../../util/observer_ptr.hpp"
 
+namespace cvv
+{
+namespace qtutil
+{
 
-namespace cvv { namespace qtutil {
-
-
-class ChannelReorderFilter: public FilterFunctionWidget<1,1>
+class ChannelReorderFilter : public FilterFunctionWidget<1, 1>
 {
 	Q_OBJECT
-public:
+      public:
 	/**
 	 * @brief The input type.
 	 */
-	using InputArray  = FilterFunctionWidget<1,1>::InputArray;
+	using InputArray = FilterFunctionWidget<1, 1>::InputArray;
 
 	/**
 	 * @brief The output type.
 	 */
-	using OutputArray = FilterFunctionWidget<1,1>::OutputArray;
+	using OutputArray = FilterFunctionWidget<1, 1>::OutputArray;
 
 	/**
 	 * @brief Constructor
 	 */
-	ChannelReorderFilter(QWidget* parent = nullptr);
+	ChannelReorderFilter(QWidget *parent = nullptr);
 
 	/**
 	 * @brief Destructor
@@ -46,14 +47,17 @@ public:
 	 * @param in The input images.
 	 * @param out The output images.
 	 */
-	virtual void applyFilter(InputArray in,OutputArray out) const override;
+	virtual void applyFilter(InputArray in, OutputArray out) const override;
 
 	/**
-	 * @brief Checks whether input can be progressed by the applyFilter function.
+	 * @brief Checks whether input can be progressed by the applyFilter
+	 *function.
 	 * @param in The input images.
 	 * @return bool = true: the filter can be executed.
-	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
-	 *		QString = message for the user (e.g. why the filter can't be progressed.)
+	 *		bool = false: the filter cant be executed (e.g. images
+	 *have wrong depth)
+	 *		QString = message for the user (e.g. why the filter can't
+	 *be progressed.)
 	 */
 	virtual std::pair<bool, QString> checkInput(InputArray) const override;
 
@@ -63,7 +67,8 @@ public:
 		return channel_->value();
 	}
 
-private slots:
+      private
+slots:
 	/**
 	 * @brief Sets the number of channels.
 	 * @param n The number of channels.
@@ -81,7 +86,7 @@ private slots:
 	 */
 	void setChannel(std::size_t n);
 
-private:
+      private:
 	/**
 	 * @brief The layout.
 	 */
@@ -95,7 +100,7 @@ private:
 	 */
 	std::vector<util::ObserverPtr<QSpinBox>> channelAssignment_;
 };
-
-}}
+}
+}
 
 #endif // CVVISUAL_CHANNELREORDERFILTER_HPP

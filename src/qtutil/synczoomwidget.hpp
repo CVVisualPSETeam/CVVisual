@@ -6,34 +6,40 @@
 
 #include "zoomableimage.hpp"
 
-namespace cvv{ namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
-class SyncZoomWidget:public QWidget{
+class SyncZoomWidget : public QWidget
+{
 
-Q_OBJECT
+	Q_OBJECT
 
-public:
-
-	SyncZoomWidget(std::vector<ZoomableImage*> images,QWidget *parent=nullptr);
+      public:
+	SyncZoomWidget(std::vector<ZoomableImage *> images,
+	               QWidget *parent = nullptr);
 
 	~SyncZoomWidget()
-		{buttonGroup_->deleteLater();}
-public slots:
+	{
+		buttonGroup_->deleteLater();
+	}
+      public
+slots:
 
 	void selectMaster(int id);
 signals:
 
-	void updateArea(QRectF,qreal) const;
+	void updateArea(QRectF, qreal) const;
 
-private:
+      private:
 	void disconnectMaster();
 
-	std::vector<ZoomableImage*> images_;
+	std::vector<ZoomableImage *> images_;
 	size_t currentIdx_;
-	QButtonGroup* buttonGroup_;
+	QButtonGroup *buttonGroup_;
 };
-
-}}
+}
+}
 
 #endif
-

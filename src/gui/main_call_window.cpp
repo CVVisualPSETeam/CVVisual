@@ -7,22 +7,26 @@
 #include "../util/util.hpp"
 #include "../stfl/stringutils.hpp"
 
-namespace cvv { namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
-MainCallWindow::MainCallWindow(util::Reference<controller::ViewController> controller,
-		size_t id, OverviewPanel *ovPanel):
-	CallWindow(controller, id), ovPanel{ovPanel}
+MainCallWindow::MainCallWindow(
+    util::Reference<controller::ViewController> controller, size_t id,
+    OverviewPanel *ovPanel)
+    : CallWindow(controller, id), ovPanel{ ovPanel }
 {
 	TRACEPOINT;
 	tabOffset = 1;
 	QString name = "Overview";
 	tabWidget->insertTab(0, ovPanel, name);
 	auto *tabBar = tabWidget->getTabBar();
-	tabBar->tabButton(0,  QTabBar::RightSide)->hide();
+	tabBar->tabButton(0, QTabBar::RightSide)->hide();
 	setWindowTitle(QString("CVVisual | main window"));
-    TRACEPOINT;
+	TRACEPOINT;
 }
-	
+
 void MainCallWindow::showOverviewTab()
 {
 	TRACEPOINT;
@@ -33,9 +37,8 @@ void MainCallWindow::closeEvent(QCloseEvent *event)
 {
 	TRACEPOINT;
 	(void)event;
-    controller->setMode(controller::Mode::HIDE);
+	controller->setMode(controller::Mode::HIDE);
 	TRACEPOINT;
 }
-
-}}
-
+}
+}

@@ -10,21 +10,25 @@
 #include "cvvmatch.hpp"
 #include "../../dbg/dbg.hpp"
 
-namespace cvv{namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
  * This MatchPen return for all CVVMatches the same Color,
  * the Color can be choosen by an QColorDialog
  */
 
-class SingleColorMatchPen:public MatchSettings{
-Q_OBJECT
-public:
+class SingleColorMatchPen : public MatchSettings
+{
+	Q_OBJECT
+      public:
 	/**
 	 * @brief the constructor
 	 * @param parent the parent Widget
 	 */
-	SingleColorMatchPen(QWidget * parent =nullptr);
+	SingleColorMatchPen(QWidget *parent = nullptr);
 
 	/**
 	 * @brief the destructor
@@ -40,24 +44,30 @@ public:
 	/**
 	 * @brief return a single Color for all CVVMatch
 	 */
-	virtual void setSettings(CVVMatch& match) override;
+	virtual void setSettings(CVVMatch &match) override;
 
-public slots:
+      public
+slots:
 
 	/**
 	 * @brief updates the Color which will be returned in getPen(CVVMAtch&).
 	 * @param color a QColor
 	 */
-	void updateColor(const QColor& color);
+	void updateColor(const QColor &color);
 
-protected slots:
+      protected
+slots:
 	void colorButtonClicked()
-		{TRACEPOINT;
-		 colorDialog_->show();
-		TRACEPOINT;}
-protected:
+	{
+		TRACEPOINT;
+		colorDialog_->show();
+		TRACEPOINT;
+	}
+
+      protected:
 	QPen pen_;
 	QColorDialog *colorDialog_;
 };
-}}
+}
+}
 #endif

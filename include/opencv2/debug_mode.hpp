@@ -2,25 +2,27 @@
 #define CVVISUAL_DEBUG_MODE_HPP
 
 #if __cplusplus >= 201103L
-#	define CVV_THREAD_LOCAL thread_local
+#define CVV_THREAD_LOCAL thread_local
 #else
-#	define CVV_THREAD_LOCAL
+#define CVV_THREAD_LOCAL
 #endif
 
-namespace cvv{
+namespace cvv
+{
 
-namespace impl {
+namespace impl
+{
 
 /**
  * The debug-flag-singleton
  */
-static inline bool& getDebugFlag()
+static inline bool &getDebugFlag()
 {
 	CVV_THREAD_LOCAL static bool flag = true;
 	return flag;
 }
 
-} //namespace impl
+} // namespace impl
 
 /**
  * @brief Returns whether debug-mode is active for this TU and thread.
@@ -38,7 +40,6 @@ static inline void setDebugFlag(bool active)
 	impl::getDebugFlag() = active;
 }
 
-} //namespace cvv
-
+} // namespace cvv
 
 #endif

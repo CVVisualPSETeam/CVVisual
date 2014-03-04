@@ -17,18 +17,22 @@
 #include "../util/observer_ptr.hpp"
 #include "../dbg/dbg.hpp"
 
-namespace cvv{ namespace qtutil{
-namespace structures {
+namespace cvv
+{
+namespace qtutil
+{
+namespace structures
+{
 /**
  * @brief A graphics view with overwritten event handlers.
  */
-class ZoomableImageGraphicsView:public QGraphicsView
+class ZoomableImageGraphicsView : public QGraphicsView
 {
-public:
+      public:
 	/**
 	 * @brief Constructor
 	 */
-	ZoomableImageGraphicsView():QGraphicsView{}
+	ZoomableImageGraphicsView() : QGraphicsView{}
 	{
 		TRACEPOINT;
 	}
@@ -41,29 +45,29 @@ public:
 		TRACEPOINT;
 	}
 
-protected:
+      protected:
 	/**
 	 * @brief Ignores the wheel event if ctrl is pressed.
 	 * @param event The event.
 	 */
-	virtual void wheelEvent(QWheelEvent * event) override;
+	virtual void wheelEvent(QWheelEvent *event) override;
 };
 }
-
 
 /**
  * @brief The ZoomableImage class shows an image and adds zoom functionality.
  */
-class ZoomableImage:public QWidget
+class ZoomableImage : public QWidget
 {
-Q_OBJECT
-public:
+	Q_OBJECT
+      public:
 	/**
 	 * @brief Constructor
 	 * @param mat The image to display
 	 * @param parent The parent widget.
 	 */
-	ZoomableImage(const cv::Mat& mat=cv::Mat{}, QWidget* parent = nullptr);
+	ZoomableImage(const cv::Mat &mat = cv::Mat{},
+	              QWidget *parent = nullptr);
 
 	/**
 	 * @brief Destructor
@@ -77,7 +81,7 @@ public:
 	 * @brief Returns the current image.
 	 * @return The current image.
 	 */
-	const cv::Mat& mat() const
+	const cv::Mat &mat() const
 	{
 		TRACEPOINT;
 		return mat_;
@@ -87,7 +91,7 @@ public:
 	 * @brief Returns the current image.
 	 * @return The current image.
 	 */
-	cv::Mat& mat()
+	cv::Mat &mat()
 	{
 		TRACEPOINT;
 		return mat_;
@@ -112,7 +116,8 @@ public:
 	QPointF mapImagePointToParent(QPointF) const;
 
 	/**
-	 * @brief Returns the threshold that determines wheather the pixelvalues are shown.
+	 * @brief Returns the threshold that determines wheather the pixelvalues
+	 * are shown.
 	 * @return
 	 */
 	qreal threshold() const
@@ -124,10 +129,10 @@ public:
 	/**
 	 * @brief The overridden resize event (from QWidget).
 	 */
-	virtual void resizeEvent(QResizeEvent*) override
+	virtual void resizeEvent(QResizeEvent *) override
 	{
 		TRACEPOINT;
-		emit updateArea(visibleArea(),zoom_);
+		emit updateArea(visibleArea(), zoom_);
 		TRACEPOINT;
 	}
 
@@ -198,34 +203,38 @@ public:
 	QPixmap visibleImage() const
 	{
 		TRACEPOINT;
-		return QPixmap::grabWidget (view_->viewport());
+		return QPixmap::grabWidget(view_->viewport());
 	}
 
 signals:
 	/**
-	 * @brief Emmited whenever the image is updated. It passes the conversion result
+	 * @brief Emmited whenever the image is updated. It passes the
+	 * conversion result
 	 * and the image.
 	 */
-	void updateConversionResult(ImageConversionResult,const cv::Mat&) const;
+	void updateConversionResult(ImageConversionResult,
+	                            const cv::Mat &) const;
 
 	/**
-	 *@brief Emitted whenever the visible area changes. Passes the visible area and zoom factor.
+	 *@brief Emitted whenever the visible area changes. Passes the visible
+	 *area and zoom factor.
 	 */
-	void updateArea(QRectF,qreal) const;
+	void updateArea(QRectF, qreal) const;
 
-public slots:
+      public
+slots:
 	/**
 	 * @brief Sets the curent visible area (the center) and zoom factor.
 	 * @param rect The area.
 	 * @param zoom The zoom.
 	 */
-	void setArea(QRectF rect,qreal zoom);
+	void setArea(QRectF rect, qreal zoom);
 
 	/**
 	 * @brief Updates the image to display.
 	 * @param mat The new image to display.
 	 */
-	void setMatR(cv::Mat& mat)
+	void setMatR(cv::Mat &mat)
 	{
 		TRACEPOINT;
 		setMat(mat);
@@ -252,18 +261,19 @@ public slots:
 	void setAutoShowValues(bool enable = true)
 	{
 		TRACEPOINT;
-		autoShowValues_=enable;
+		autoShowValues_ = enable;
 		TRACEPOINT;
 	}
 
 	/**
-	 * @brief Sets the threshold that determines wheather the pixelvalues are shown.
+	 * @brief Sets the threshold that determines wheather the pixelvalues
+	 * are shown.
 	 * @param threshold The threshold.
 	 */
 	void setThreshold(qreal threshold = 60)
 	{
 		TRACEPOINT;
-		threshold_=threshold;
+		threshold_ = threshold;
 		TRACEPOINT;
 	}
 
@@ -279,7 +289,7 @@ public slots:
 	void setCTRLZoomFactor(qreal factor = 1.025)
 	{
 		TRACEPOINT;
-		scrollFactorCTRL_=factor;
+		scrollFactorCTRL_ = factor;
 		TRACEPOINT;
 	}
 
@@ -290,7 +300,7 @@ public slots:
 	void setCTRLShiftZoomFactor(qreal factor = 1.01)
 	{
 		TRACEPOINT;
-		scrollFactorCTRLShift_=factor;
+		scrollFactorCTRLShift_ = factor;
 		TRACEPOINT;
 	}
 
@@ -298,16 +308,17 @@ public slots:
 	 * @brief The overridden wheel event (from QWidget).
 	 * @param event The event.
 	 */
-	virtual void wheelEvent(QWheelEvent * event) override;
+	virtual void wheelEvent(QWheelEvent *event) override;
 
-private slots:
+      private
+slots:
 	/**
 	 * @brief Called when the graphic view is scrolled.
 	 */
 	void viewScrolled()
 	{
 		TRACEPOINT;
-		emit updateArea(visibleArea(),zoom_);
+		emit updateArea(visibleArea(), zoom_);
 		TRACEPOINT;
 	}
 
@@ -316,8 +327,9 @@ private slots:
 	 */
 	void drawValues();
 
-	void rightClick(const QPoint & pos);
-private:
+	void rightClick(const QPoint &pos);
+
+      private:
 	/**
 	 * @brief The image to display.
 	 */
@@ -351,7 +363,7 @@ private:
 	/**
 	 * @brief The values on the graphics scene.
 	 */
-	std::vector<QGraphicsTextItem*> values_;
+	std::vector<QGraphicsTextItem *> values_;
 	/**
 	 * @brief The factor multiplied to the number of scrolled pixels.
 	 */
@@ -362,6 +374,6 @@ private:
 	 */
 	qreal scrollFactorCTRLShift_;
 };
-
-}}
+}
+}
 #endif

@@ -8,9 +8,9 @@
 #include "show_image.hpp"
 #include "final_show.hpp"
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-	for(int i=1; i < argc; ++i)
+	for (int i = 1; i < argc; ++i)
 	{
 		cvv::showImage(cv::imread(argv[i]), CVVISUAL_LOCATION);
 	}

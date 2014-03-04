@@ -4,10 +4,12 @@
 #include <QWidget>
 #include <QPen>
 
-
 #include "../../dbg/dbg.hpp"
 
-namespace cvv{ namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
 class CVVMatch;
 
@@ -15,27 +17,33 @@ class CVVMatch;
  * @brief this abstract class returns an individual QPen for a CVVMatch.
  */
 
-class MatchSettings:public QWidget{
-Q_OBJECT
+class MatchSettings : public QWidget
+{
+	Q_OBJECT
 
-public:
+      public:
 	/**
 	 * @brief MatchPen
 	 * @param parent the parent Widget
 	 */
-	MatchSettings(QWidget* parent):QWidget(parent){TRACEPOINT;}
+	MatchSettings(QWidget *parent) : QWidget(parent)
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief getSettings
 	 * @param match a CVVMatch
 	 */
-	virtual void setSettings(CVVMatch& match)=0;
+	virtual void setSettings(CVVMatch &match) = 0;
 
 	/**
 	 * @brief this method emits the signal settingsChanged();
 	 */
 	void updateAll()
-		{emit settingsChanged(*this);}
+	{
+		emit settingsChanged(*this);
+	}
 
 signals:
 	/**
@@ -43,8 +51,8 @@ signals:
 	 * and the CVVMatch must update their Pens
 	 * @param the setting object which has changed
 	 */
-	void settingsChanged(MatchSettings& settings);
+	void settingsChanged(MatchSettings &settings);
 };
-
-}}
+}
+}
 #endif

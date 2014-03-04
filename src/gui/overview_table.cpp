@@ -12,10 +12,14 @@
 #include "../qtutil/accordion.hpp"
 #include "../dbg/dbg.hpp"
 
-namespace cvv { namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
-OverviewTable::OverviewTable(util::Reference<controller::ViewController> controller):
-	controller{controller}
+OverviewTable::OverviewTable(
+    util::Reference<controller::ViewController> controller)
+    : controller{ controller }
 {
 	TRACEPOINT;
 	subtableAccordion = new qtutil::Accordion{};
@@ -26,7 +30,8 @@ OverviewTable::OverviewTable(util::Reference<controller::ViewController> control
 	TRACEPOINT;
 }
 
-void OverviewTable::updateRowGroups(std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups)
+void OverviewTable::updateRowGroups(
+    std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups)
 {
 	TRACEPOINT;
 	bool startTheSame = true;
@@ -42,14 +47,16 @@ void OverviewTable::updateRowGroups(std::vector<stfl::ElementGroup<OverviewTable
 	if (startTheSame)
 	{
 		TRACEPOINT;
-		for (size_t i = 0; i < std::min(groups.size(), newGroups.size()); i++)
+		for (size_t i = 0;
+		     i < std::min(groups.size(), newGroups.size()); i++)
 		{
 			subTables.at(i)->setRowGroup(newGroups.at(i));
 			subTables.at(i)->updateUI();
 		}
 		if (groups.size() < newGroups.size())
 		{
-			for (size_t i = groups.size(); i < newGroups.size(); i++)
+			for (size_t i = groups.size(); i < newGroups.size();
+			     i++)
 			{
 				TRACEPOINT;
 				appendRowGroupToTable(newGroups.at(i));
@@ -60,7 +67,8 @@ void OverviewTable::updateRowGroups(std::vector<stfl::ElementGroup<OverviewTable
 		else if (groups.size() > newGroups.size())
 		{
 			TRACEPOINT;
-			for (size_t i = groups.size(); i > newGroups.size(); i--)
+			for (size_t i = groups.size(); i > newGroups.size();
+			     i--)
 			{
 				DEBUG(i);
 				subTables.pop_back();
@@ -85,7 +93,7 @@ void OverviewTable::updateRowGroups(std::vector<stfl::ElementGroup<OverviewTable
 	groups = newGroups;
 	TRACEPOINT;
 }
-	
+
 void OverviewTable::hideImages()
 {
 	TRACEPOINT;
@@ -93,7 +101,7 @@ void OverviewTable::hideImages()
 	updateUI();
 	TRACEPOINT;
 }
-	
+
 void OverviewTable::showImages()
 {
 	TRACEPOINT;
@@ -101,7 +109,7 @@ void OverviewTable::showImages()
 	updateUI();
 	TRACEPOINT;
 }
-	
+
 bool OverviewTable::isShowingImages()
 {
 	TRACEPOINT;
@@ -130,14 +138,17 @@ void OverviewTable::removeElement(size_t id)
 	}
 }
 
-void OverviewTable::appendRowGroupToTable(stfl::ElementGroup<OverviewTableRow> group)
+void
+OverviewTable::appendRowGroupToTable(stfl::ElementGroup<OverviewTableRow> group)
 {
 	if (group.size() > 0)
 	{
-		auto subtable = util::make_unique<OverviewGroupSubtable>(controller, this, std::move(group));
+		auto subtable = util::make_unique<OverviewGroupSubtable>(
+		    controller, this, std::move(group));
 		auto subtablePtr = subtable.get();
 		auto titles = group.getTitles();
-		QString title = "No grouping specified, use #group to specify one";
+		QString title =
+		    "No grouping specified, use #group to specify one";
 		if (titles.size() != 0)
 		{
 			title = titles.join(", ");
@@ -146,5 +157,5 @@ void OverviewTable::appendRowGroupToTable(stfl::ElementGroup<OverviewTableRow> g
 		subTables.push_back(subtablePtr);
 	}
 }
-
-}}
+}
+}

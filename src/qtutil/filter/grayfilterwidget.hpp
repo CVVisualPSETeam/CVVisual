@@ -1,8 +1,6 @@
 #ifndef CVVISUAL_GRAYFILTERWIDGET_HPP
 #define CVVISUAL_GRAYFILTERWIDGET_HPP
 
-
-
 #include <vector>
 
 #include <QVBoxLayout>
@@ -18,32 +16,34 @@
 #include "../../dbg/dbg.hpp"
 #include "../../util/observer_ptr.hpp"
 
-
-namespace cvv { namespace qtutil {
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
  * @brief Represents a gray filter.
  *
  * The user can select the factors used for every channel.
  */
-class GrayFilterWidget: public FilterFunctionWidget<1,1>
+class GrayFilterWidget : public FilterFunctionWidget<1, 1>
 {
 	Q_OBJECT
-public:
+      public:
 	/**
 	 * @brief The input type.
 	 */
-	using InputArray  = FilterFunctionWidget<1,1>::InputArray;
+	using InputArray = FilterFunctionWidget<1, 1>::InputArray;
 
 	/**
 	 * @brief The output type.
 	 */
-	using OutputArray = FilterFunctionWidget<1,1>::OutputArray;
+	using OutputArray = FilterFunctionWidget<1, 1>::OutputArray;
 
 	/**
 	 * @brief Constructor
 	 */
-	GrayFilterWidget(QWidget* parent = nullptr);
+	GrayFilterWidget(QWidget *parent = nullptr);
 
 	/**
 	 * @brief Destructor
@@ -58,18 +58,22 @@ public:
 	 * @param in The input images.
 	 * @param out The output images.
 	 */
-	virtual void applyFilter(InputArray in,OutputArray out) const override;
+	virtual void applyFilter(InputArray in, OutputArray out) const override;
 
 	/**
-	 * @brief Checks whether input can be progressed by the applyFilter function.
+	 * @brief Checks whether input can be progressed by the applyFilter
+	 *function.
 	 * @param in The input images.
 	 * @return bool = true: the filter can be executed.
-	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
-	 *		QString = message for the user (e.g. why the filter can't be progressed.)
+	 *		bool = false: the filter cant be executed (e.g. images
+	 *have wrong depth)
+	 *		QString = message for the user (e.g. why the filter can't
+	 *be progressed.)
 	 */
 	virtual std::pair<bool, QString> checkInput(InputArray) const override;
 
-private slots:
+      private
+slots:
 	/**
 	 * @brief Sets the number of channels.
 	 * @param n The number of channels.
@@ -92,7 +96,7 @@ private slots:
 	 */
 	void setStd();
 
-private:
+      private:
 	/**
 	 * @brief The layout.
 	 */
@@ -106,7 +110,7 @@ private:
 	 */
 	std::vector<util::ObserverPtr<QDoubleSpinBox>> chanValues_;
 };
-
-}}
+}
+}
 
 #endif // CVVISUAL_GRAYFILTERWIDGET_HPP

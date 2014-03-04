@@ -4,21 +4,29 @@
 
 #include <stdexcept>
 
-namespace cvv { namespace impl {
+namespace cvv
+{
+namespace impl
+{
 
-namespace {
-	class CallEquality {
-	public:
-		CallEquality(size_t Id): Id{Id} {}
-		
-		bool operator()(const std::unique_ptr<Call>& call) const
-		{
-			TRACEPOINT;
-			return call->getId() == Id;
-		}
-	private:
-		size_t Id;
-	};
+namespace
+{
+class CallEquality
+{
+      public:
+	CallEquality(size_t Id) : Id{ Id }
+	{
+	}
+
+	bool operator()(const std::unique_ptr<Call> &call) const
+	{
+		TRACEPOINT;
+		return call->getId() == Id;
+	}
+
+      private:
+	size_t Id;
+};
 }
 
 void DataController::addCall(std::unique_ptr<Call> call)
@@ -34,34 +42,34 @@ void DataController::addCall(std::unique_ptr<Call> call)
 void DataController::removeCall(size_t Id)
 {
 	TRACEPOINT;
-	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
-	if(it == calls.end())
+	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{ Id });
+	if (it == calls.end())
 	{
-		throw std::invalid_argument{"there is no call with this id"};
+		throw std::invalid_argument{ "there is no call with this id" };
 	}
 	calls.erase(it);
 	TRACEPOINT;
 }
 
-const Call& DataController::getCall(size_t Id) const
+const Call &DataController::getCall(size_t Id) const
 {
 	TRACEPOINT;
-	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
-	if(it == calls.end())
+	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{ Id });
+	if (it == calls.end())
 	{
-		throw std::invalid_argument{"there is no call with this id"};
+		throw std::invalid_argument{ "there is no call with this id" };
 	}
 	TRACEPOINT;
 	return **it;
 }
 
-Call& DataController::getCall(size_t Id)
+Call &DataController::getCall(size_t Id)
 {
 	TRACEPOINT;
-	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
-	if(it == calls.end())
+	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{ Id });
+	if (it == calls.end())
 	{
-		throw std::invalid_argument{"there is no call with this id"};
+		throw std::invalid_argument{ "there is no call with this id" };
 	}
 	TRACEPOINT;
 	return **it;
@@ -70,7 +78,7 @@ Call& DataController::getCall(size_t Id)
 bool DataController::hasCall(size_t Id)
 {
 	TRACEPOINT;
-	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{Id});
+	auto it = std::find_if(calls.begin(), calls.end(), CallEquality{ Id });
 	TRACEPOINT;
 	return it != calls.end();
 }
@@ -99,25 +107,28 @@ void DataController::lastCall()
 
 /**
  * @brief Actual implementation of the global DataController.
- * 
+ *
  * This is required to be able to delete it.
  */
-static std::unique_ptr<DataController>& realSingleton() {
+static std::unique_ptr<DataController> &realSingleton()
+{
 	TRACEPOINT;
 	static auto var = util::make_unique<DataController>();
 	TRACEPOINT;
 	return var;
 }
 
-void deleteDataController() {
+void deleteDataController()
+{
 	realSingleton().reset();
 }
 
-DataController& dataController()
+DataController &dataController()
 {
 	TRACEPOINT;
-	//static DataController controller{};
+	// static DataController controller{};
 	TRACEPOINT;
 	return *realSingleton();
 }
-}} // namespaces cvv::impl
+}
+} // namespaces cvv::impl

@@ -6,31 +6,37 @@
 #include "keypointsettings.hpp"
 #include "cvvkeypoint.hpp"
 
-namespace cvv{ namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
-class KeyPointSelector:public KeyPointSettings{
+class KeyPointSelector : public KeyPointSettings
+{
 
 	Q_OBJECT
 
-public:
-	KeyPointSelector(QWidget* parent=nullptr);
+      public:
+	KeyPointSelector(QWidget *parent = nullptr);
 
-	virtual void setSettings(CVVKeyPoint& key);
+	virtual void setSettings(CVVKeyPoint &key);
 
-public slots:
+      public
+slots:
 
-	void addToSelection(const cv::KeyPoint& keypoint);
+	void addToSelection(const cv::KeyPoint &keypoint);
 
-	void singleSelection(const cv::KeyPoint& keypoint);
+	void singleSelection(const cv::KeyPoint &keypoint);
 
-	void setSelection(const std::vector<cv::KeyPoint>& selection);
+	void setSelection(const std::vector<cv::KeyPoint> &selection);
 
 signals:
 
-	void updateSelection(const std::vector<cv::KeyPoint>& selection);
+	void updateSelection(const std::vector<cv::KeyPoint> &selection);
 
-private:
+      private:
 	std::vector<cv::KeyPoint> selection_;
 };
-}}
+}
+}
 #endif

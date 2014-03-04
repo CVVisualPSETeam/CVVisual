@@ -1,23 +1,27 @@
 #ifndef CVVISUAL_REGISTERHELPER_HPP
 #define CVVISUAL_REGISTERHELPER_HPP
-//std
+// std
 #include <map>
 #include <vector>
 #include <stdexcept>
 #include <memory>
 #include <functional>
-//QT
+// QT
 #include <QWidget>
 #include <QString>
 #include <QComboBox>
 #include <QVBoxLayout>
-//cvv
+// cvv
 #include "signalslot.hpp"
 #include "../dbg/dbg.hpp"
 
-namespace cvv { namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 /**
- * @brief The RegisterHelper class can be inherited to gain a mechanism to register fabric functions
+ * @brief The RegisterHelper class can be inherited to gain a mechanism to
+ *register fabric functions
  * for QWidgets.
  *
  * The registered functions are shared between all instances of a class.
@@ -27,37 +31,43 @@ namespace cvv { namespace qtutil{
  * Inheriting classes have to delete the member comboBox_ on destruction!
  * (e.g. by putting it into a layout)
  */
-template<class Value, class...Args>
-class RegisterHelper
+template <class Value, class... Args> class RegisterHelper
 {
-public:
+      public:
 	/**
 	 * @brief Constructor
 	 */
-	RegisterHelper():
-		comboBox_{new QComboBox{}},
-		signElementSelected_{},
-		slotElementRegistered_{[&](const QString& name){
-			TRACEPOINT;
-			comboBox_->addItem(name);
-			TRACEPOINT;
-		}}
+	RegisterHelper()
+	    : comboBox_{ new QComboBox{} }, signElementSelected_{},
+	      slotElementRegistered_{ [&](const QString &name)
 	{
 		TRACEPOINT;
-		//elem registered
-		QObject::connect(&signalElementRegistered(),&SignalQString::signal,
-				 &slotElementRegistered_,&SlotQString::slot);
-		//connect
+		comboBox_->addItem(name);
+		TRACEPOINT;
+	} }
+	{
+		TRACEPOINT;
+		// elem registered
+		QObject::connect(&signalElementRegistered(),
+		                 &SignalQString::signal,
+		                 &slotElementRegistered_, &SlotQString::slot);
+		// connect
 		QObject::connect(comboBox_, &QComboBox::currentTextChanged,
-				 &signalElementSelected(), &SignalQString::signal);
-		//add current list of elements
-		for(auto& elem: registeredElementsMap())
-			{comboBox_->addItem(elem.first);}
+		                 &signalElementSelected(),
+		                 &SignalQString::signal);
+		// add current list of elements
+		for (auto &elem : registeredElementsMap())
+		{
+			comboBox_->addItem(elem.first);
+		}
 
 		TRACEPOINT;
 	}
 
-	~RegisterHelper(){TRACEPOINT;}
+	~RegisterHelper()
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Returns the current selection from the QComboBox
@@ -74,10 +84,11 @@ public:
 	 * @param name The name to look up
 	 * @return true if there is a function. false otherwise
 	 */
-	static bool has(const QString& name)
+	static bool has(const QString &name)
 	{
 		TRACEPOINT;
-		return registeredElementsMap().find(name) != registeredElementsMap().end();
+		return registeredElementsMap().find(name) !=
+		       registeredElementsMap().end();
 	}
 
 	/**
@@ -88,7 +99,7 @@ public:
 	{
 		TRACEPOINT;
 		std::vector<QString> result{};
-		for(auto& elem:registeredElementsMap())
+		for (auto &elem : registeredElementsMap())
 		{
 			result.push_back(elem.first);
 		};
@@ -100,14 +111,16 @@ public:
 	 * @brief Registers a function.
 	 * @param name The name.
 	 * @param fabric The fabric function.
-	 * @return true if the function was registered. false if the name was taken
+	 * @return true if the function was registered. false if the name was
+	 * taken
 	 * (the function was not registered!)
 	 */
-	static bool registerElement(const QString& name,
-				const std::function< std::unique_ptr<Value>(Args...)>& fabric)
+	static bool registerElement(
+	    const QString &name,
+	    const std::function<std::unique_ptr<Value>(Args...)> &fabric)
 	{
 		TRACEPOINT;
-		if(has(name))
+		if (has(name))
 		{
 			TRACEPOINT;
 			return false;
@@ -124,22 +137,27 @@ public:
 	/**
 	 * @brief Selects an function according to name.
 	 * @param name The name of the function to select.
-	 * @return true if the function was selected. false if no function has name.
+	 * @return true if the function was selected. false if no function has
+	 * name.
 	 */
-	bool select(const QString& name)
+	bool select(const QString &name)
 	{
 		TRACEPOINT;
-		if(!has(name))
-			{return false;}
+		if (!has(name))
+		{
+			return false;
+		}
 		comboBox_->setCurrentText(name);
 		return true;
 		TRACEPOINT;
 	}
 
 	/**
-	 * @brief Returns the function according to the current selection of the QComboBox.
+	 * @brief Returns the function according to the current selection of the
+	 * QComboBox.
 	 * @throw std::out_of_range If there is no such function.
-	 * @return The function according to the current selection of the QComboBox.
+	 * @return The function according to the current selection of the
+	 * QComboBox.
 	 */
 	std::function<std::unique_ptr<Value>(Args...)> operator()()
 	{
@@ -153,7 +171,8 @@ public:
 	 * @throw std::out_of_range If there is no such function.
 	 * @return The function according to name.
 	 */
-	std::function<std::unique_ptr<Value>(Args...)> operator()(const QString& name)
+	std::function<std::unique_ptr<Value>(Args...)>
+	operator()(const QString &name)
 	{
 		TRACEPOINT;
 		return registeredElementsMap().at(name);
@@ -163,32 +182,35 @@ public:
 	 * @brief Returns a signal emitted whenever a function is registered.
 	 * @return A signal emitted whenever a function is registered.
 	 */
-	static const SignalQString& signalElementRegistered()
+	static const SignalQString &signalElementRegistered()
 	{
 		static const SignalQString signElementRegistered_{};
 		return signElementRegistered_;
 	}
 
 	/**
-	 * @brief Returns the signal emitted whenever a new element in the combobox is selected.
+	 * @brief Returns the signal emitted whenever a new element in the
+	 * combobox is selected.
 	 * (passes the selected string)
-	 * @return The signal emitted whenever a new element in the combobox is selected.
+	 * @return The signal emitted whenever a new element in the combobox is
+	 * selected.
 	 * (passes the selected string)
 	 */
-	const SignalQString& signalElementSelected() const
+	const SignalQString &signalElementSelected() const
 	{
 		return signElementSelected_;
 	}
-protected:
 
+      protected:
 	/**
 	 * @brief QComboBox containing all names of registered functions
 	 */
-	QComboBox* comboBox_;
+	QComboBox *comboBox_;
 
-private:
+      private:
 	/**
-	 * @brief Signal emitted whenever a new element in the combobox is selected.
+	 * @brief Signal emitted whenever a new element in the combobox is
+	 * selected.
 	 * (passes the selected string)
 	 */
 	const SignalQString signElementSelected_;
@@ -202,13 +224,17 @@ private:
 	 * @brief Returns the map of registered functions and their names.
 	 * @return The map of registered functions and their names.
 	 */
-	static std::map<QString,std::function<std::unique_ptr<Value>(Args...)>>&
-		registeredElementsMap()
+	static std::map<QString,
+	                std::function<std::unique_ptr<Value>(Args...)>> &
+	registeredElementsMap()
 	{
-		static std::map<QString,std::function<std::unique_ptr<Value>(Args...)>> map{};
+		static std::map<QString,
+		                std::function<std::unique_ptr<Value>(Args...)>>
+		map{};
 		return map;
 	}
 };
-}} // end namespaces qtutil, cvv
+}
+} // end namespaces qtutil, cvv
 
-#endif //CVVISUAL_REGISTERHELPER_HPP
+#endif // CVVISUAL_REGISTERHELPER_HPP

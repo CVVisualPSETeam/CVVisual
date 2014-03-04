@@ -1,38 +1,45 @@
 #ifndef CVVISUAL_SIGNALEMITTER_HPP
 #define CVVISUAL_SIGNALEMITTER_HPP
 
-//std
+// std
 #include <functional>
 #include <stdexcept>
 
 #include "opencv2/core/core.hpp"
 
-//QT
+// QT
 #include <QObject>
 #include <QString>
 
 #include "../dbg/dbg.hpp"
 
-namespace cvv { namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
- * @brief The Signal class can be used for privat or static signals and in case of
+ * @brief The Signal class can be used for privat or static signals and in case
+ * of
  * conflicts between templates and Q_OBJECT.
  */
-class Signal: public QObject
+class Signal : public QObject
 {
 	Q_OBJECT
-public:
+      public:
 	/**
 	 * @brief Constructor
 	 * @param parent The parent
 	 */
-	Signal(QObject* parent = nullptr):QObject{parent}
+	Signal(QObject *parent = nullptr) : QObject{ parent }
 	{
 		TRACEPOINT;
 	}
 
-	~Signal(){TRACEPOINT;}
+	~Signal()
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Emits the signal.
@@ -52,30 +59,36 @@ signals:
 };
 
 /**
- * @brief The Slot class can be used for static slots and in case of conflicts between
+ * @brief The Slot class can be used for static slots and in case of conflicts
+ * between
  * templates and Q_OBJECT.
  */
-class Slot: public QObject
+class Slot : public QObject
 {
 	Q_OBJECT
-public:
+      public:
 	/**
 	 * @brief Constructor
 	 * @param f Function called by the slot slot()
 	 * @throw std::invalid_argument If f is invalide
 	 * @param parent The parent
 	 */
-	Slot(const std::function<void()>& f, QObject* parent = nullptr):
-		QObject{parent}, function_{f}
+	Slot(const std::function<void()> &f, QObject *parent = nullptr)
+	    : QObject{ parent }, function_{ f }
 	{
 		TRACEPOINT;
-		if(!f)throw std::invalid_argument{"invalide function"};
+		if (!f)
+			throw std::invalid_argument{ "invalide function" };
 		TRACEPOINT;
 	}
 
-	~Slot(){TRACEPOINT;}
+	~Slot()
+	{
+		TRACEPOINT;
+	}
 
-public slots:
+      public
+slots:
 	/**
 	 * @brief The slot calling function()
 	 */
@@ -85,7 +98,8 @@ public slots:
 		function_();
 		TRACEPOINT;
 	}
-private:
+
+      private:
 	/**
 	 * @brief The function called by the slot slot()
 	 */
@@ -96,50 +110,57 @@ private:
 // manual "templating" for classes Signal and Slot
 // ///////////////////////////////////////////////////////////////
 
-
 /**
  * @brief Similar to Signal (difference: it accepts a QStriang).
  */
-class SignalQString: public QObject
+class SignalQString : public QObject
 {
 	Q_OBJECT
-public:
-	SignalQString(QObject* parent = nullptr):
-		QObject{parent}
+      public:
+	SignalQString(QObject *parent = nullptr) : QObject{ parent }
 	{
 		TRACEPOINT;
 	}
 
-	~SignalQString(){DEBUGF("this=%s", reinterpret_cast<size_t>(this));}
+	~SignalQString()
+	{
+		DEBUGF("this=%s", reinterpret_cast<size_t>(this));
+	}
 
-	void emitSignal(const QString& t) const
+	void emitSignal(const QString &t) const
 	{
 		TRACEPOINT;
 		emit signal(t);
 		TRACEPOINT;
 	}
 signals:
-	void signal( QString t) const;
+	void signal(QString t) const;
 };
 
 /**
  * @brief Similar to Slot (difference: it accepts a QString).
  */
-class SlotQString: public QObject
+class SlotQString : public QObject
 {
 	Q_OBJECT
-public:
-	SlotQString(const std::function<void(QString)>& f, QObject* parent = nullptr):
-		QObject{parent}, function_{f}
+      public:
+	SlotQString(const std::function<void(QString)> &f,
+	            QObject *parent = nullptr)
+	    : QObject{ parent }, function_{ f }
 	{
 		TRACEPOINT;
-		if(!f) throw std::invalid_argument{"invalide function"};
+		if (!f)
+			throw std::invalid_argument{ "invalide function" };
 		TRACEPOINT;
 	}
 
-	~SlotQString(){TRACEPOINT;}
+	~SlotQString()
+	{
+		TRACEPOINT;
+	}
 
-public slots:
+      public
+slots:
 	void slot(QString t) const
 	{
 		TRACEPOINT;
@@ -147,55 +168,63 @@ public slots:
 		TRACEPOINT;
 	}
 
-private:
+      private:
 	std::function<void(QString)> function_;
 };
-
 
 /**
  * @brief Similar to Signal (difference: it accepts a cv::Mat&).
  */
-class SignalMatRef: public QObject
+class SignalMatRef : public QObject
 {
 	Q_OBJECT
-public:
-	SignalMatRef(QObject* parent = nullptr):QObject{parent}
+      public:
+	SignalMatRef(QObject *parent = nullptr) : QObject{ parent }
 	{
 		TRACEPOINT;
 	}
 
-	~SignalMatRef(){TRACEPOINT;}
-
-	void emitSignal(cv::Mat& mat) const
+	~SignalMatRef()
 	{
 		TRACEPOINT;
-		emit signal(mat);TRACEPOINT;
+	}
+
+	void emitSignal(cv::Mat &mat) const
+	{
+		TRACEPOINT;
+		emit signal(mat);
+		TRACEPOINT;
 	}
 signals:
 	/**
 	 * @brief The signal emited by emitSignal.
 	 */
-	void signal(cv::Mat& mat) const;
+	void signal(cv::Mat &mat) const;
 };
 
 /**
  * @brief Similar to Slot (difference: it accepts a bool).
  */
-class SlotBool: public QObject
+class SlotBool : public QObject
 {
 	Q_OBJECT
-public:
-	SlotBool(const std::function<void(bool)>& f, QObject* parent = nullptr):
-		QObject{parent}, function_{f}
+      public:
+	SlotBool(const std::function<void(bool)> &f, QObject *parent = nullptr)
+	    : QObject{ parent }, function_{ f }
 	{
 		TRACEPOINT;
-		if(!f) throw std::invalid_argument{"invalide function"};
+		if (!f)
+			throw std::invalid_argument{ "invalide function" };
 		TRACEPOINT;
 	}
 
-	~SlotBool(){TRACEPOINT;}
+	~SlotBool()
+	{
+		TRACEPOINT;
+	}
 
-public slots:
+      public
+slots:
 	void slot(bool t) const
 	{
 		TRACEPOINT;
@@ -203,8 +232,9 @@ public slots:
 		TRACEPOINT;
 	}
 
-private:
+      private:
 	std::function<void(bool)> function_;
 };
-}} // end namespaces qtutil, cvv
-#endif //CVVISUAL_SIGNALEMITTER_HPP
+}
+} // end namespaces qtutil, cvv
+#endif // CVVISUAL_SIGNALEMITTER_HPP

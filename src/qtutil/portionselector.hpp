@@ -17,7 +17,10 @@
 #include "../util/observer_ptr.hpp"
 #include "signalslot.hpp"
 
-namespace cvv { namespace qtutil {
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
  * @brief Provides a function to select a portion of a set.
@@ -25,52 +28,49 @@ namespace cvv { namespace qtutil {
  * The highest | lowest n ^ n% of a given universe ^ selection can be selected.
  * Optionally the complement can be used.
  */
-class PortionSelector: public QWidget
+class PortionSelector : public QWidget
 {
-public:
+      public:
 	/**
 	 * @brief Constructor
 	 * @param parent Parent widget
 	 */
-	PortionSelector(QWidget* parent = nullptr):
-		QWidget{parent},
-		sigSettingsChanged_{},
-		highest_{nullptr},
-		lowest_{nullptr},
-		complement_{nullptr},
-		percentVal_{nullptr},
-		numberVal_{nullptr},
-		percent_{nullptr},
-		number_{nullptr},
-		useUniverse_{nullptr},
-		useSelection_{nullptr},
-		bgroupUnivSelec_{util::make_unique<QButtonGroup>()},
-		bgroupNumberPerc_{util::make_unique<QButtonGroup>()}
+	PortionSelector(QWidget *parent = nullptr)
+	    : QWidget{ parent }, sigSettingsChanged_{}, highest_{ nullptr },
+	      lowest_{ nullptr }, complement_{ nullptr },
+	      percentVal_{ nullptr }, numberVal_{ nullptr },
+	      percent_{ nullptr }, number_{ nullptr }, useUniverse_{ nullptr },
+	      useSelection_{ nullptr },
+	      bgroupUnivSelec_{ util::make_unique<QButtonGroup>() },
+	      bgroupNumberPerc_{ util::make_unique<QButtonGroup>() }
 	{
-		//create elements
-		auto highest=util::make_unique<QCheckBox>("highest");
-		auto lowest=util::make_unique<QCheckBox>("lowest");
-		auto complement=util::make_unique<QCheckBox>("select the complement");
+		// create elements
+		auto highest = util::make_unique<QCheckBox>("highest");
+		auto lowest = util::make_unique<QCheckBox>("lowest");
+		auto complement =
+		    util::make_unique<QCheckBox>("select the complement");
 
-		auto percentVal=util::make_unique<QDoubleSpinBox>();
-		auto numberVal=util::make_unique<QSpinBox>();
-		auto percent=util::make_unique<QRadioButton>("(100*n)%");
-		auto number=util::make_unique<QRadioButton>("n");
+		auto percentVal = util::make_unique<QDoubleSpinBox>();
+		auto numberVal = util::make_unique<QSpinBox>();
+		auto percent = util::make_unique<QRadioButton>("(100*n)%");
+		auto number = util::make_unique<QRadioButton>("n");
 
-		auto useUniverse=util::make_unique<QRadioButton>("of the universe");
-		auto useSelection=util::make_unique<QRadioButton>("of the selection");
+		auto useUniverse =
+		    util::make_unique<QRadioButton>("of the universe");
+		auto useSelection =
+		    util::make_unique<QRadioButton>("of the selection");
 
-		highest_=*highest;
-		lowest_=*lowest;
-		complement_=*complement;
-		percentVal_=*percentVal;
-		numberVal_=*numberVal;
-		percent_=*percent;
-		number_=*number;
-		useUniverse_=*useUniverse;
-		useSelection_=*useSelection;
+		highest_ = *highest;
+		lowest_ = *lowest;
+		complement_ = *complement;
+		percentVal_ = *percentVal;
+		numberVal_ = *numberVal;
+		percent_ = *percent;
+		number_ = *number;
+		useUniverse_ = *useUniverse;
+		useSelection_ = *useSelection;
 
-		//button groups
+		// button groups
 		bgroupUnivSelec_->addButton(useUniverse.get());
 		bgroupUnivSelec_->addButton(useSelection.get());
 		bgroupUnivSelec_->setExclusive(true);
@@ -79,42 +79,45 @@ public:
 		bgroupNumberPerc_->addButton(percent.get());
 		bgroupNumberPerc_->setExclusive(true);
 
-		//connect subwidgets
-		QObject::connect(number_.getPtr(),SIGNAL(toggled(bool)),
-				numberVal_.getPtr(), SLOT(setVisible(bool)));
-		QObject::connect(percent_.getPtr(),SIGNAL(toggled(bool)),
-				percentVal_.getPtr(), SLOT(setVisible(bool)));
+		// connect subwidgets
+		QObject::connect(number_.getPtr(), SIGNAL(toggled(bool)),
+		                 numberVal_.getPtr(), SLOT(setVisible(bool)));
+		QObject::connect(percent_.getPtr(), SIGNAL(toggled(bool)),
+		                 percentVal_.getPtr(), SLOT(setVisible(bool)));
 
-		//settings
-		percentVal->setRange(0,1);
+		// settings
+		percentVal->setRange(0, 1);
 		percentVal->setSingleStep(0.01);
-		numberVal->setRange(0,std::numeric_limits<int>::max());
+		numberVal->setRange(0, std::numeric_limits<int>::max());
 
 		useUniverse_->setChecked(true);
 		number_->setChecked(true);
 		percentVal_->setVisible(false);
 		numberVal_->setVisible(true);
 
-		//connect state changed
+		// connect state changed
 		QObject::connect(highest.get(), SIGNAL(clicked()),
-				&sigSettingsChanged_, SIGNAL(signal()));
+		                 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(lowest.get(), SIGNAL(clicked()),
-				&sigSettingsChanged_, SIGNAL(signal()));
-		QObject::connect(bgroupNumberPerc_.get(), SIGNAL(buttonClicked(int)),
-				&sigSettingsChanged_, SIGNAL(signal()));
+		                 &sigSettingsChanged_, SIGNAL(signal()));
+		QObject::connect(bgroupNumberPerc_.get(),
+		                 SIGNAL(buttonClicked(int)),
+		                 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(numberVal.get(), SIGNAL(valueChanged(int)),
-				&sigSettingsChanged_, SIGNAL(signal()));
+		                 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(percentVal.get(), SIGNAL(valueChanged(double)),
-				&sigSettingsChanged_, SIGNAL(signal()));
-		QObject::connect(bgroupUnivSelec_.get(), SIGNAL(buttonClicked(int)),
-				&sigSettingsChanged_, SIGNAL(signal()));
+		                 &sigSettingsChanged_, SIGNAL(signal()));
+		QObject::connect(bgroupUnivSelec_.get(),
+		                 SIGNAL(buttonClicked(int)),
+		                 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(complement.get(), SIGNAL(clicked()),
-				&sigSettingsChanged_, SIGNAL(signal()));
+		                 &sigSettingsChanged_, SIGNAL(signal()));
 
-		//build ui
-		auto lay=util::make_unique<QVBoxLayout>();
-		lay->setContentsMargins(0,0,0,0);
-		lay->addWidget(util::make_unique<QLabel>("select the").release());
+		// build ui
+		auto lay = util::make_unique<QVBoxLayout>();
+		lay->setContentsMargins(0, 0, 0, 0);
+		lay->addWidget(
+		    util::make_unique<QLabel>("select the").release());
 		lay->addWidget(highest.release());
 		lay->addWidget(lowest.release());
 		lay->addWidget(number.release());
@@ -136,40 +139,42 @@ public:
 	 * (bool cmp(const Type &a, const Type &b))
 	 * @return the selected values
 	 */
-	template<class Type, class Compare >
-	std::vector<Type> select(std::vector<Type> universe, std::vector<Type> selection,
-		Compare comp) const
+	template <class Type, class Compare>
+	std::vector<Type> select(std::vector<Type> universe,
+	                         std::vector<Type> selection,
+	                         Compare comp) const
 	{
-		//universe or selection
-		auto in=util::makeRef(universe);
-		if(useSelection_->isChecked())
+		// universe or selection
+		auto in = util::makeRef(universe);
+		if (useSelection_->isChecked())
 		{
-			in=selection;
+			in = selection;
 		}
-		std::sort(in->begin(),in->end(),comp);
+		std::sort(in->begin(), in->end(), comp);
 
-		//number
-		int n= numberVal_->value();
-		if(percent_->isChecked())
+		// number
+		int n = numberVal_->value();
+		if (percent_->isChecked())
 		{
-			n= (percentVal_->value())*in->size();
+			n = (percentVal_->value()) * in->size();
 		}
 
-		//lowest selected value
-		std::size_t lower= (lowest_->isChecked())? n : 0;
-		//highest selected value
-		std::size_t upper= in->size() - ((highest_->isChecked())? n : 0);
+		// lowest selected value
+		std::size_t lower = (lowest_->isChecked()) ? n : 0;
+		// highest selected value
+		std::size_t upper =
+		    in->size() - ((highest_->isChecked()) ? n : 0);
 
-		//element
-		bool complement= complement_->isChecked();
+		// element
+		bool complement = complement_->isChecked();
 
-		//filter
+		// filter
 		std::vector<Type> result;
-		for(std::size_t i=0;i<in->size();i++)
+		for (std::size_t i = 0; i < in->size(); i++)
 		{
-			if(complement != ((i<=lower)||(i>=upper)))
+			if (complement != ((i <= lower) || (i >= upper)))
 			{
-				//copy value
+				// copy value
 				result.push_back(in->at(i));
 			}
 		}
@@ -180,12 +185,12 @@ public:
 	 * @brief Returns the signal emitted when settings are changed.
 	 * @return The signal emitted when settings are changed.
 	 */
-	const Signal& signalSettingsChanged() const
+	const Signal &signalSettingsChanged() const
 	{
 		return sigSettingsChanged_;
 	}
 
-private:
+      private:
 	/**
 	 * @brief Emitted when settings are changed.
 	 */
@@ -235,7 +240,7 @@ private:
 	 */
 	std::unique_ptr<QButtonGroup> bgroupNumberPerc_;
 };
-
-}} //namespace cvv, namespace qtutil
+}
+} // namespace cvv, namespace qtutil
 
 #endif // CVVISUAL_PORTIONSELECTOR_HPP

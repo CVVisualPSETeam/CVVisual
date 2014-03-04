@@ -6,40 +6,41 @@
 #include <QString>
 #include <QCompleter>
 
-namespace cvv { namespace qtutil {
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
  * @brief A simple completer for the query widget.
  */
 class STFLQueryWidgetCompleter : public QCompleter
 {
-    Q_OBJECT
+	Q_OBJECT
 
-public:
+      public:
 	/**
 	 * @brief Constructor of this class.
 	 * @param parent widget
-	 */ 
-    STFLQueryWidgetCompleter(QObject* parent) :
-        QCompleter(parent), model()
-    {
-        setModel(&model);
-    }
+	 */
+	STFLQueryWidgetCompleter(QObject *parent) : QCompleter(parent), model()
+	{
+		setModel(&model);
+	}
 
 	/**
 	 * @brief Update the inherited model with the given suggestions.
 	 * @param suggestions given suggestions
 	 */
-    void update(QStringList suggestions)
-    {
-        model.setStringList(suggestions);
-        complete();
-    }
+	void update(QStringList suggestions)
+	{
+		model.setStringList(suggestions);
+		complete();
+	}
 
-private:
-    QStringListModel model;
+      private:
+	QStringListModel model;
 };
-
-
-}}
+}
+}
 #endif

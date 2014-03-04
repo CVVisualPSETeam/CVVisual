@@ -5,7 +5,6 @@
 #include <vector>
 #include <stdexcept>
 
-
 #include <QImage>
 #include <QPixmap>
 #include <QSet>
@@ -15,7 +14,10 @@
 
 #include "../dbg/dbg.hpp"
 
-namespace cvv { namespace qtutil {
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
  * @brief Represents the staus of an image conversion.
@@ -39,8 +41,10 @@ enum class ImageConversionResult
  * @param threads Number of threads to use (0 will use 1 thread).
  * @return The status of the conversion and the converted mat.
  */
-std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat,
-	bool skipFloatRangeTest=0, unsigned int threads = std::numeric_limits<unsigned int>::max());
+std::pair<ImageConversionResult, QImage>
+convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest = 0,
+                   unsigned int threads =
+                       std::numeric_limits<unsigned int>::max());
 
 /**
  * @brief Converts a cv::Mat to a QPixmap.
@@ -50,8 +54,10 @@ std::pair<ImageConversionResult,QImage>convertMatToQImage(const cv::Mat &mat,
  * @param threads Number of threads to use (0 will use 1 thread).
  * @return The status of the conversion and the converted mat.
  */
-std::pair<ImageConversionResult,QPixmap>  convertMatToQPixmap(const cv::Mat &mat,
-	bool skipFloatRangeTest=0, unsigned int threads = std::numeric_limits<unsigned int>::max());
+std::pair<ImageConversionResult, QPixmap>
+convertMatToQPixmap(const cv::Mat &mat, bool skipFloatRangeTest = 0,
+                    unsigned int threads =
+                        std::numeric_limits<unsigned int>::max());
 
 /**
  * @brief Creates a QSet<QString> with the given string as an inherited value.
@@ -64,22 +70,23 @@ QSet<QString> createStringSet(QString string);
  * @return A string containing the type of the mat.
  * (first = flase when the depth is unknown)
  */
-std::pair<bool, QString> typeToQString(const cv::Mat& mat);
+std::pair<bool, QString> typeToQString(const cv::Mat &mat);
 
-QString conversionResultToString(const ImageConversionResult& result);
+QString conversionResultToString(const ImageConversionResult &result);
 
 /**
  * @brief Splits a mat in multiple one channel mats.
  * @param mat The mat.
  * @return The splitted mats.
  */
-std::vector<cv::Mat> splitChannels(const cv::Mat& mat);
+std::vector<cv::Mat> splitChannels(const cv::Mat &mat);
 
 /**
  * @brief Merges multiple one channel mats into one.
  * @param mats The mats to merge.
  * @return Merged mat
- * @throw std::invalid_argument If the images have different depths. Or one mat has more than 1
+ * @throw std::invalid_argument If the images have different depths. Or one mat
+ * has more than 1
  * channel.
  */
 cv::Mat mergeChannels(std::vector<cv::Mat> mats);
@@ -94,7 +101,6 @@ cv::Mat mergeChannels(std::vector<cv::Mat> mats);
  */
 void openHelpBrowser(const QString &topic);
 
-
 /**
  * @brief Set the default setting for a given stettings key and scope.
  * It doesn't override existing settings.
@@ -102,7 +108,8 @@ void openHelpBrowser(const QString &topic);
  * @param key given settings key
  * @param value default value of the setting
  */
-void setDefaultSetting(const QString &scope, const QString &key, const QString &value);
+void setDefaultSetting(const QString &scope, const QString &key,
+                       const QString &value);
 
 /**
  * @brief Set the setting for a given stettings key and scope.
@@ -121,7 +128,7 @@ void setSetting(const QString &scope, const QString &key, const QString &value);
  * @return settings string
  */
 QString getSetting(const QString &scope, const QString &key);
-
-}}
+}
+}
 
 #endif

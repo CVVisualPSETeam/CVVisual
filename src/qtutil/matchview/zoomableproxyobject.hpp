@@ -6,21 +6,32 @@
 
 #include "../zoomableimage.hpp"
 
-namespace cvv{namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
-class ZoomableProxyObject:public QGraphicsProxyWidget{
-public:
-	ZoomableProxyObject(ZoomableImage* zoom);
+class ZoomableProxyObject : public QGraphicsProxyWidget
+{
+      public:
+	ZoomableProxyObject(ZoomableImage *zoom);
 
-	~ZoomableProxyObject(){TRACEPOINT;}
-protected:
-	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent * event)
-		{event->ignore();}
+	~ZoomableProxyObject()
+	{
+		TRACEPOINT;
+	}
 
-	virtual void wheelEvent(QGraphicsSceneWheelEvent * event);
+      protected:
+	virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+	{
+		event->ignore();
+	}
 
-private:
-	ZoomableImage* image_;
+	virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
+
+      private:
+	ZoomableImage *image_;
 };
-}}
+}
+}
 #endif

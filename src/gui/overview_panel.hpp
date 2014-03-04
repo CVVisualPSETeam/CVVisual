@@ -1,5 +1,5 @@
 #ifndef CVVISUAL_OVERVIEWPANEL_HPP
-#define	CVVISUAL_OVERVIEWPANEL_HPP
+#define CVVISUAL_OVERVIEWPANEL_HPP
 
 #include <QWidget>
 #include <QString>
@@ -15,80 +15,88 @@
 #include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
 
-namespace cvv {
+namespace cvv
+{
 
-namespace controller {
-    class ViewController;
+namespace controller
+{
+class ViewController;
 }
 
-namespace qtutil {
-    class STFLQueryWidget;
+namespace qtutil
+{
+class STFLQueryWidget;
 }
 
-namespace gui {
+namespace gui
+{
 
 class OverviewTable;
 class OverviewTableRow;
 
 /**
- * @brief The overview showing a filterable table displaying the different calls.
+ * @brief The overview showing a filterable table displaying the different
+ * calls.
  */
 class OverviewPanel : public QWidget
 {
 
-    Q_OBJECT
+	Q_OBJECT
 
-public:
-
+      public:
 	/**
 	 * @brief Contructs an OverviewPanel.
 	 * @param controller ViewController that inherits this overview
 	 */
-    OverviewPanel(util::Reference<controller::ViewController> controller);
+	OverviewPanel(util::Reference<controller::ViewController> controller);
 
-	~OverviewPanel() { TRACEPOINT; }
-	
+	~OverviewPanel()
+	{
+		TRACEPOINT;
+	}
+
 	/**
 	 * @brief Adds the given calll to the shown overview table.
 	 * @param newCall given call
 	 */
-    void addElement(const util::Reference<const impl::Call> newCall);
+	void addElement(const util::Reference<const impl::Call> newCall);
 
-    /**
-     * @brief Changes the "Resume program execution" button label to "Exit Application."
-     */
-    void showExitApplicationButton();
+	/**
+	 * @brief Changes the "Resume program execution" button label to "Exit
+	 * Application."
+	 */
+	void showExitApplicationButton();
 
-    /**
-     * @brief Removes and deletes the element with the given id.
-     * @param id given element id
-     */
-    void removeElement(size_t id);
+	/**
+	 * @brief Removes and deletes the element with the given id.
+	 * @param id given element id
+	 */
+	void removeElement(size_t id);
 
-private slots:
+      private
+slots:
 
-    void filterQuery(QString query);
+	void filterQuery(QString query);
 
-    void updateQuery(QString query);
+	void updateQuery(QString query);
 
-    void requestSuggestions(QString query);
+	void requestSuggestions(QString query);
 
-    void imgSizeSliderAction();
+	void imgSizeSliderAction();
 
 	void showHelp(QString topic);
 
-private:
-    stfl::STFLEngine<OverviewTableRow> queryEngine;
-    qtutil::STFLQueryWidget *queryWidget;
-    OverviewTable *table;
-    util::Reference<controller::ViewController> controller;
-    QLabel *imgSizeSliderLabel;
-    QSlider *imgSizeSlider;
+      private:
+	stfl::STFLEngine<OverviewTableRow> queryEngine;
+	qtutil::STFLQueryWidget *queryWidget;
+	OverviewTable *table;
+	util::Reference<controller::ViewController> controller;
+	QLabel *imgSizeSliderLabel;
+	QSlider *imgSizeSlider;
 
-    void initEngine();
-
+	void initEngine();
 };
-
-}}
+}
+}
 
 #endif

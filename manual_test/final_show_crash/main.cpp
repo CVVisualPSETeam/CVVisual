@@ -2,8 +2,8 @@
 
 #include "../../src/dbg/dbg.hpp"
 
-
-int main() {
+int main()
+{
 	TRACEPOINT;
 	cvv::finalShow();
 	TRACEPOINT;

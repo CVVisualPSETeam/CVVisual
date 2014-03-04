@@ -9,17 +9,17 @@
 #include "final_show.hpp"
 #include "filter.hpp"
 
-
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
 	std::vector<cv::Mat> images;
-	for(int i=1; i < argc; ++i)
+	for (int i = 1; i < argc; ++i)
 	{
 		auto img = cv::imread(argv[i]);
 		cvv::showImage(img, CVVISUAL_LOCATION, argv[i]);
-		auto elem = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(9, 9), cv::Point(4, 4));
+		auto elem = cv::getStructuringElement(
+		    cv::MORPH_RECT, cv::Size(9, 9), cv::Point(4, 4));
 		cv::Mat filteredImg;
-		cv::morphologyEx(img, filteredImg, cv::MORPH_GRADIENT, elem );
+		cv::morphologyEx(img, filteredImg, cv::MORPH_GRADIENT, elem);
 		cvv::debugFilter(img, filteredImg, CVVISUAL_LOCATION, argv[i]);
 		images.emplace_back(img);
 	}

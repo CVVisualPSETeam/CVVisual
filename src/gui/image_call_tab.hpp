@@ -10,8 +10,10 @@
 #include "../controller/view_controller.hpp"
 #include "../impl/single_image_call.hpp"
 
-namespace cvv {
-namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
 /** Single Image Call Tab.
  * @brief Inner part of a tab, contains an IageView.
@@ -19,28 +21,30 @@ namespace gui {
  * containing an ImageView.
  * Allows to access the help.
  */
-class ImageCallTab:
-		public CallTab
+class ImageCallTab : public CallTab
 {
-Q_OBJECT
+	Q_OBJECT
 
-public:
-
+      public:
 	/**
 	 * @brief Short constructor named after the Call.
-	 * Initializes the ImageCallTab and names it after the associated FilterCall.
-	 * @param call the SingleImageCall containing the information to be visualized.
+	 * Initializes the ImageCallTab and names it after the associated
+	 * FilterCall.
+	 * @param call the SingleImageCall containing the information to be
+	 * visualized.
 	 */
-	ImageCallTab(const cvv::impl::SingleImageCall& call);
+	ImageCallTab(const cvv::impl::SingleImageCall &call);
 
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor..
 	 * @param tabName.
-	 * @param call the SingleImageCall containing the information to be visualized.
+	 * @param call the SingleImageCall containing the information to be
+	 * visualized.
 	 * @attention might be deleted.
 	 */
-	ImageCallTab(const QString& tabName, const cvv::impl::SingleImageCall& call);
+	ImageCallTab(const QString &tabName,
+	             const cvv::impl::SingleImageCall &call);
 
 	/**
 	 * @brief get ID.
@@ -50,7 +54,8 @@ public:
 	 */
 	size_t getId() const override;
 
-private slots:
+      private
+slots:
 
 	/**
 	 * @brief Help Button clicked.
@@ -58,8 +63,7 @@ private slots:
 	 */
 	void helpButtonClicked() const;
 
-private:
-
+      private:
 	/**
 	 * @brief Sets up the visible parts.
 	 * Called by the constructors.
@@ -74,15 +78,14 @@ private:
 	void setView();
 
 	util::Reference<const cvv::impl::SingleImageCall> imageCall_;
-	cvv::view::ImageView* imageView_;
+	cvv::view::ImageView *imageView_;
 
-	QPushButton* helpButton_;
-	QHBoxLayout* hlayout_;
-	QVBoxLayout* vlayout_;
-	QWidget* upperBar_;
-
+	QPushButton *helpButton_;
+	QHBoxLayout *hlayout_;
+	QVBoxLayout *vlayout_;
+	QWidget *upperBar_;
 };
-
-}}//namespaces
+}
+} // namespaces
 
 #endif

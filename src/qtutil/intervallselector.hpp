@@ -16,66 +16,73 @@
 #include "../util/observer_ptr.hpp"
 #include "signalslot.hpp"
 
-namespace cvv{ namespace qtutil {
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
- * @brief Selects elements from a double range. The elements are converted to a double using the
+ * @brief Selects elements from a double range. The elements are converted to a
+ * double using the
  * given DoubleExtractor functor.
  */
-class IntervallSelector: public QWidget
+class IntervallSelector : public QWidget
 {
-public:
+      public:
 	/**
 	 * @brief Constructor
 	 * @param min Minimal value
 	 * @param max Maximal value
 	 * @param parent Parent widget
 	 */
-	IntervallSelector(double min, double max, QWidget* parent = nullptr):
-		QWidget{parent},
-		sigSettingsChanged_{},
-		min_{nullptr},
-		max_{nullptr},
-		complement_{nullptr},
-		useUniverse_{nullptr},
-		useSelection_{nullptr},
-		bgroupUnivSelec_{util::make_unique<QButtonGroup>()}
+	IntervallSelector(double min, double max, QWidget *parent = nullptr)
+	    : QWidget{ parent }, sigSettingsChanged_{}, min_{ nullptr },
+	      max_{ nullptr }, complement_{ nullptr }, useUniverse_{ nullptr },
+	      useSelection_{ nullptr },
+	      bgroupUnivSelec_{ util::make_unique<QButtonGroup>() }
 	{
-		auto minb=util::make_unique<QDoubleSpinBox>();
-		min_=*minb;;
-		auto maxb=util::make_unique<QDoubleSpinBox>();
-		max_=*maxb;
-		auto complement=util::make_unique<QCheckBox>("select the complement");
-		complement_=*complement;
-		//universe selection selection
-		auto useUniverse=util::make_unique<QRadioButton>("of the universe");
-		useUniverse_=*useUniverse;
-		auto useSelection=util::make_unique<QRadioButton>("of the selection");
-		useSelection_=*useSelection;
-		//button group
+		auto minb = util::make_unique<QDoubleSpinBox>();
+		min_ = *minb;
+		;
+		auto maxb = util::make_unique<QDoubleSpinBox>();
+		max_ = *maxb;
+		auto complement =
+		    util::make_unique<QCheckBox>("select the complement");
+		complement_ = *complement;
+		// universe selection selection
+		auto useUniverse =
+		    util::make_unique<QRadioButton>("of the universe");
+		useUniverse_ = *useUniverse;
+		auto useSelection =
+		    util::make_unique<QRadioButton>("of the selection");
+		useSelection_ = *useSelection;
+		// button group
 		bgroupUnivSelec_->addButton(useUniverse.get());
 		bgroupUnivSelec_->addButton(useSelection.get());
 		bgroupUnivSelec_->setExclusive(true);
 		useUniverse_->setChecked(true);
 
-		//set ranges
-		minb->setRange(min,max);
-		maxb->setRange(min,max);
-		//connect
-		QObject::connect(min_.getPtr(),SIGNAL(valueChanged(double)),
-				&sigSettingsChanged_, SIGNAL(signal()));
-		QObject::connect(max_.getPtr(),SIGNAL(valueChanged(double)),
-				&sigSettingsChanged_, SIGNAL(signal()));
+		// set ranges
+		minb->setRange(min, max);
+		maxb->setRange(min, max);
+		// connect
+		QObject::connect(min_.getPtr(), SIGNAL(valueChanged(double)),
+		                 &sigSettingsChanged_, SIGNAL(signal()));
+		QObject::connect(max_.getPtr(), SIGNAL(valueChanged(double)),
+		                 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(complement_.getPtr(), SIGNAL(clicked()),
-				&sigSettingsChanged_, SIGNAL(signal()));
-		QObject::connect(bgroupUnivSelec_.get(),SIGNAL(buttonClicked(int)),
-				&sigSettingsChanged_, SIGNAL(signal()));
-		//build ui
-		auto lay=util::make_unique<QVBoxLayout>();
-		lay->setContentsMargins(0,0,0,0);
-		lay->addWidget(util::make_unique<QLabel>("from lower bound:").release());
+		                 &sigSettingsChanged_, SIGNAL(signal()));
+		QObject::connect(bgroupUnivSelec_.get(),
+		                 SIGNAL(buttonClicked(int)),
+		                 &sigSettingsChanged_, SIGNAL(signal()));
+		// build ui
+		auto lay = util::make_unique<QVBoxLayout>();
+		lay->setContentsMargins(0, 0, 0, 0);
+		lay->addWidget(
+		    util::make_unique<QLabel>("from lower bound:").release());
 		lay->addWidget(minb.release());
-		lay->addWidget(util::make_unique<QLabel>("to upper bound:").release());
+		lay->addWidget(
+		    util::make_unique<QLabel>("to upper bound:").release());
 		lay->addWidget(maxb.release());
 		lay->addWidget(useUniverse.release());
 		lay->addWidget(useSelection.release());
@@ -90,29 +97,31 @@ public:
 	 * @param extr Extractor functor (has to be double extr(Type))
 	 * @return the selected values
 	 */
-	template<class Type, class DoubleExtractor>
-	std::vector<Type> select(std::vector<Type> universe, std::vector<Type> selection,
-		DoubleExtractor extr) const
+	template <class Type, class DoubleExtractor>
+	std::vector<Type> select(std::vector<Type> universe,
+	                         std::vector<Type> selection,
+	                         DoubleExtractor extr) const
 	{
-		auto in=util::makeRef(universe);
-		if(useSelection_->isChecked())
+		auto in = util::makeRef(universe);
+		if (useSelection_->isChecked())
 		{
-			in=selection;
+			in = selection;
 		}
 
 		std::vector<Type> result;
 
-		bool complement= complement_->isChecked();
+		bool complement = complement_->isChecked();
 
-		std::copy_if(in->begin(),
-				in->end(),
-				std::back_insert_iterator<std::vector<Type>>(result),
-				[=](Type t1){return complement !=
-					//check weather the element is in the interval
-					(((min_->value())<= extr(t1))
-					&& (extr(t1) <= max_->value()));
-				}
-		);
+		std::copy_if(in->begin(), in->end(),
+		             std::back_insert_iterator<std::vector<Type>>(
+		                 result),
+		             [=](Type t1)
+		{
+			return complement !=
+			       // check weather the element is in the interval
+			       (((min_->value()) <= extr(t1)) &&
+			        (extr(t1) <= max_->value()));
+		});
 		return result;
 	}
 
@@ -120,12 +129,12 @@ public:
 	 * @brief Returns the signal emitted when settings are changed.
 	 * @return The signal emitted when settings are changed.
 	 */
-	const Signal& signalSettingsChanged() const
+	const Signal &signalSettingsChanged() const
 	{
 		return sigSettingsChanged_;
 	}
 
-private:
+      private:
 	/**
 	 * @brief Emitted when settings are changed.
 	 */
@@ -155,6 +164,6 @@ private:
 	 */
 	std::unique_ptr<QButtonGroup> bgroupUnivSelec_;
 };
-
-}}
+}
+}
 #endif // CVVISUAL_INTERVALLSELECTOR_HPP

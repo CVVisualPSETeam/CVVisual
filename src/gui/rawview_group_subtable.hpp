@@ -1,5 +1,5 @@
 #ifndef CVVISUAL_RAWVIEW_GROUP_SUBTABLE_HPP
-#define	CVVISUAL_RAWVIEW_GROUP_SUBTABLE_HPP
+#define CVVISUAL_RAWVIEW_GROUP_SUBTABLE_HPP
 
 #include <memory>
 #include <set>
@@ -14,11 +14,18 @@
 #include "../util/optional.hpp"
 #include "../util/util.hpp"
 
-namespace cvv { namespace controller {
+namespace cvv
+{
+namespace controller
+{
 class ViewController;
-}}
+}
+}
 
-namespace cvv { namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
 class RawviewTable;
 
@@ -29,35 +36,34 @@ class RawviewGroupSubtable : public QWidget
 {
 	Q_OBJECT
 
-public:
-
-    /**
-     * @brief Constructs an over group subtable.
-	 * @param controller view controller
-	 * @param parent parent table
-	 * @param group the displayed group of overview data sets
-     */
-	RawviewGroupSubtable(RawviewTable *parent, stfl::ElementGroup<RawviewTableRow> group);
+      public:
+	/**
+	 * @brief Constructs an over group subtable.
+	     * @param controller view controller
+	     * @param parent parent table
+	     * @param group the displayed group of overview data sets
+	 */
+	RawviewGroupSubtable(RawviewTable *parent,
+	                     stfl::ElementGroup<RawviewTableRow> group);
 
 	/**
 	 * @brief Updates the displayed table UI.
 	 */
 	void updateUI();
 
-private slots:
+      private
+slots:
 	void customMenuRequested(QPoint location);
 	void customMenuAction(QAction *action);
 	void selectionChanged();
 
-
-private:
+      private:
 	RawviewTable *parent;
 	stfl::ElementGroup<RawviewTableRow> group;
 	QTableWidget *qTable;
 	std::set<int> currentRowIndexes;
 };
-
-}}
+}
+}
 
 #endif
-

@@ -12,55 +12,61 @@
 
 std::vector<cv::KeyPoint> makeRandomKeys(size_t x, size_t y, size_t n)
 {
-	static std::mt19937_64 gen{std::random_device{}()};
-	std::uniform_real_distribution<float> xdist{0.0f, static_cast<float>(x)};
-	std::uniform_real_distribution<float> ydist{0.0f, static_cast<float>(y)};
-	std::uniform_real_distribution<float> sdist{0.0f, 3.0f};
+	static std::mt19937_64 gen{ std::random_device{}() };
+	std::uniform_real_distribution<float> xdist{ 0.0f,
+		                                     static_cast<float>(x) };
+	std::uniform_real_distribution<float> ydist{ 0.0f,
+		                                     static_cast<float>(y) };
+	std::uniform_real_distribution<float> sdist{ 0.0f, 3.0f };
 	std::vector<cv::KeyPoint> keypoints;
-	for(size_t i=0; i < n; ++i)
+	for (size_t i = 0; i < n; ++i)
 	{
 		keypoints.emplace_back(xdist(gen), ydist(gen), sdist(gen));
 	}
 	return keypoints;
 }
-std::vector<cv::KeyPoint> scaleDown(const std::vector<cv::KeyPoint>& in, size_t x, size_t y,
-		float factor)
+std::vector<cv::KeyPoint> scaleDown(const std::vector<cv::KeyPoint> &in,
+                                    size_t x, size_t y, float factor)
 {
 	std::vector<cv::KeyPoint> points;
 	points.reserve(in.size());
-	
-	for(const auto& point: in)
+
+	for (const auto &point : in)
 	{
-		auto newX = (x*(1.0f-factor)/2)+ factor*point.pt.x;
-		auto newY = (y*(1.0f-factor)/2)+ factor*point.pt.y;
+		auto newX = (x * (1.0f - factor) / 2) + factor * point.pt.x;
+		auto newY = (y * (1.0f - factor) / 2) + factor * point.pt.y;
 		points.emplace_back(newX, newY, point.size);
 	}
-	
+
 	return points;
 }
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-	if(argc < 2)
+	if (argc < 2)
 	{
-		std::cerr << argv[0] << " must recieve one or more files as arguments\n";
+		std::cerr << argv[0]
+		          << " must recieve one or more files as arguments\n";
 		return 1;
 	}
-	for(int i = 1; i < argc; ++i)
+	for (int i = 1; i < argc; ++i)
 	{
 		auto src = cv::imread(argv[i]);
 		const size_t keypointCount = 20;
-		auto keypoints1 = makeRandomKeys(src.cols, src.rows, keypointCount);
-		auto keypoints2 = scaleDown(keypoints1, src.cols, src.rows,0.8f);
+		auto keypoints1 =
+		    makeRandomKeys(src.cols, src.rows, keypointCount);
+		auto keypoints2 =
+		    scaleDown(keypoints1, src.cols, src.rows, 0.8f);
 
 		std::vector<cv::DMatch> match;
-		std::mt19937_64 gen{std::random_device{}()};
-		std::uniform_real_distribution<float> dist{0.0f, 3.0f};
-		for(size_t i=0;i<keypointCount;i++)
+		std::mt19937_64 gen{ std::random_device{}() };
+		std::uniform_real_distribution<float> dist{ 0.0f, 3.0f };
+		for (size_t i = 0; i < keypointCount; i++)
 		{
-			match.emplace_back(i,i,dist(gen));
+			match.emplace_back(i, i, dist(gen));
 		}
-		
-		cvv::debugDMatch(src, keypoints1, src, keypoints2, match, CVVISUAL_LOCATION);
+
+		cvv::debugDMatch(src, keypoints1, src, keypoints2, match,
+		                 CVVISUAL_LOCATION);
 	}
 	cvv::finalShow();
 }

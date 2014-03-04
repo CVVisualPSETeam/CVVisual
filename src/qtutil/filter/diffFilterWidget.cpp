@@ -13,36 +13,44 @@
 #include "../../util/util.hpp"
 #include "diffFilterWidget.hpp"
 
-namespace cvv{
-namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
-DiffFilterFunction::DiffFilterFunction(QWidget* parent)
-	: FilterFunctionWidget<2,1>{parent}, filterType_{DiffFilterType::GRAYSCALE}
+DiffFilterFunction::DiffFilterFunction(QWidget *parent)
+    : FilterFunctionWidget<2, 1>{ parent },
+      filterType_{ DiffFilterType::GRAYSCALE }
 {
 	auto layout = util::make_unique<QVBoxLayout>();
 	auto comboBox = util::make_unique<QComboBox>();
-	
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
-		("Difference Image - hue",
-		[this](){filterType_ = DiffFilterType::HUE;}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
-		("Difference Image - saturation",
-		[this](){filterType_ = DiffFilterType::SATURATION;}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
-		("Difference Image - value",
-		[this](){filterType_ = DiffFilterType::VALUE;}));
-	filterMap_.insert(std::make_pair<std::string, std::function<void(void)>>
-		("Difference Image - grayscale",
-		[this](){filterType_ = DiffFilterType::GRAYSCALE;}));
-		
-	//Register filter names at comboBox
-	comboBox -> addItems(DiffFilterFunction::extractStringListfromMap());
-	connect(comboBox.get(), SIGNAL(currentIndexChanged(const QString&)), this,
-		SLOT(updateFilterType(const QString&)));
-	
-	//Add title of comboBox and comboBox to the layout
-	layout -> addWidget(util::make_unique<QLabel>("Select a filter").release());
-	layout -> addWidget(comboBox.release());
+
+	filterMap_.insert(
+	    std::make_pair<std::string, std::function<void(void)>>(
+	        "Difference Image - hue", [this]()
+	{ filterType_ = DiffFilterType::HUE; }));
+	filterMap_.insert(
+	    std::make_pair<std::string, std::function<void(void)>>(
+	        "Difference Image - saturation", [this]()
+	{ filterType_ = DiffFilterType::SATURATION; }));
+	filterMap_.insert(
+	    std::make_pair<std::string, std::function<void(void)>>(
+	        "Difference Image - value", [this]()
+	{ filterType_ = DiffFilterType::VALUE; }));
+	filterMap_.insert(
+	    std::make_pair<std::string, std::function<void(void)>>(
+	        "Difference Image - grayscale", [this]()
+	{ filterType_ = DiffFilterType::GRAYSCALE; }));
+
+	// Register filter names at comboBox
+	comboBox->addItems(DiffFilterFunction::extractStringListfromMap());
+	connect(comboBox.get(), SIGNAL(currentIndexChanged(const QString &)),
+	        this, SLOT(updateFilterType(const QString &)));
+
+	// Add title of comboBox and comboBox to the layout
+	layout->addWidget(
+	    util::make_unique<QLabel>("Select a filter").release());
+	layout->addWidget(comboBox.release());
 	setLayout(layout.release());
 }
 
@@ -51,13 +59,13 @@ void DiffFilterFunction::applyFilter(InputArray in, OutputArray out) const
 	TRACEPOINT;
 
 	auto check = checkInput(in);
-	if(!check.first)
+	if (!check.first)
 	{
 		TRACEPOINT;
 		return;
 	}
 
-	if(filterType_ == DiffFilterType::GRAYSCALE)
+	if (filterType_ == DiffFilterType::GRAYSCALE)
 	{
 		out.at(0).get() = cv::abs(in.at(0).get() - in.at(1).get());
 		return;
@@ -84,24 +92,26 @@ std::pair<bool, QString> DiffFilterFunction::checkInput(InputArray in) const
 	{
 		return std::make_pair(false, "images need to have same size");
 	}
-	
+
 	size_t inChannels = in.at(0).get().channels();
 
 	if (inChannels != static_cast<size_t>(in.at(1).get().channels()))
 	{
-		return std::make_pair(false, "images need to have same number of channels");
+		return std::make_pair(
+		    false, "images need to have same number of channels");
 	}
 
 	if (inChannels == 1 && filterType_ != DiffFilterType::GRAYSCALE)
 	{
-		return std::make_pair(false,
-			"images are grayscale, but selected Filter can only progress 3-channel images");
+		return std::make_pair(false, "images are grayscale, but "
+		                             "selected Filter can only "
+		                             "progress 3-channel images");
 	}
 
 	if (inChannels != 1 && inChannels != 3 && inChannels != 4)
 	{
-		return std::make_pair(false,
-			"images must have one, three or four channels");
+		return std::make_pair(
+		    false, "images must have one, three or four channels");
 	}
 
 	TRACEPOINT;
@@ -111,19 +121,18 @@ std::pair<bool, QString> DiffFilterFunction::checkInput(InputArray in) const
 
 QStringList DiffFilterFunction::extractStringListfromMap() const
 {
-	QStringList stringList {};
-	for(auto mapElem : filterMap_)
+	QStringList stringList{};
+	for (auto mapElem : filterMap_)
 	{
 		stringList << QString::fromStdString(mapElem.first);
 	}
 	return stringList;
 }
 
-void DiffFilterFunction::updateFilterType(const QString& name)
+void DiffFilterFunction::updateFilterType(const QString &name)
 {
-	filterMap_.find(name.toStdString()) -> second();
+	filterMap_.find(name.toStdString())->second();
 	signalFilterSettingsChanged().emitSignal();
 }
-
-}}
-
+}
+}

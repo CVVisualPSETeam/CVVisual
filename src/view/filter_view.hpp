@@ -9,15 +9,17 @@
 
 #include <opencv2/core/core.hpp>
 
-namespace cvv {
-namespace view {
+namespace cvv
+{
+namespace view
+{
 
 /**
  * @brief Interface over visualizations of filter operations.
  */
-class FilterView: public QWidget
+class FilterView : public QWidget
 {
-Q_OBJECT
+	Q_OBJECT
 
 signals:
 
@@ -33,27 +35,27 @@ signals:
 	 * Signal to update the right side of the footer with newText.
 	 * @param newText to show in the footer.
 	 */
-	void updateRightFoooter(const QString& newText);
+	void updateRightFoooter(const QString &newText);
 
-public:
+      public:
 	/**
 	 * @brief default constructor.
 	 **/
-	FilterView():FilterView{0}{};
-	
+	FilterView() : FilterView{ 0 } {};
+
 	/**
 	 * @brief default destructor.
 	 */
 	virtual ~FilterView() = default;
-	
-protected:
+
+      protected:
 	/**
 	 * @brief constructor of QWidget(parent).
 	 * @param parent the parent of this view
 	 **/
-	FilterView(QWidget *parent):QWidget{parent}{};
+	FilterView(QWidget *parent) : QWidget{ parent } {};
 };
-
-}} //namespaces
+}
+} // namespaces
 
 #endif

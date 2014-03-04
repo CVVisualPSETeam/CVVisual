@@ -6,37 +6,42 @@
 #include <QWidget>
 #include <QDoubleSpinBox>
 
-
 #include "opencv2/core/core.hpp"
 #include "zoomableimage.hpp"
 #include "util.hpp"
 #include "../dbg/dbg.hpp"
 
-
-namespace cvv { namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
 /*
- * @brief This Widget shows some Infos about the given cv::Mat from the given ZoomabelImage
+ * @brief This Widget shows some Infos about the given cv::Mat from the given
+ * ZoomabelImage
  * and has some Options for zooming
  */
-class ZoomableOptPanel : public QWidget{
+class ZoomableOptPanel : public QWidget
+{
 
-Q_OBJECT
+	Q_OBJECT
 
-public:
+      public:
 	/**
 	 * @brief the constructor
 	 * @param image the ZoomableImage which will be connected
 	 * @param parent the parent Widget
 	 */
-	ZoomableOptPanel(const ZoomableImage& zoomIm,QWidget *parent=nullptr);
+	ZoomableOptPanel(const ZoomableImage &zoomIm,
+	                 QWidget *parent = nullptr);
 
-public slots:
+      public
+slots:
 	void updateMat(cv::Mat mat);
-	void updateConvertStatus(ImageConversionResult result,const cv::Mat&);
-	void setZoom(QRectF,qreal);
+	void updateConvertStatus(ImageConversionResult result, const cv::Mat &);
+	void setZoom(QRectF, qreal);
 
-private:
+      private:
 	QDoubleSpinBox *zoomSpin_;
 	QLabel *labelConvert_;
 	QLabel *labelDim_;
@@ -44,9 +49,8 @@ private:
 	QLabel *labelChannel_;
 	QLabel *labelSize_;
 	QLabel *labelDepth_;
-
 };
-
-}}
+}
+}
 
 #endif

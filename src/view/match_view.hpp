@@ -10,15 +10,17 @@
 
 #include "../impl/match_call.hpp"
 
-namespace cvv {
-namespace view {
+namespace cvv
+{
+namespace view
+{
 
 /**
  * @brief interface over visualizations of match operations.
  */
-class MatchView: public QWidget
+class MatchView : public QWidget
 {
-Q_OBJECT
+	Q_OBJECT
 
 signals:
 
@@ -36,42 +38,50 @@ signals:
 	 */
 	void updateRightFoooter(QString newText);
 
-public:
+      public:
 	/**
 	 * @brief default constructor
 	 */
-	MatchView():MatchView{0}{}
+	MatchView() : MatchView{ 0 }
+	{
+	}
 
 	/**
 	 * @brief default destructor.
 	 */
 	virtual ~MatchView() = default;
 
-
 	virtual std::vector<cv::DMatch> getMatchSelection()
-		{return std::vector<cv::DMatch>{};}
+	{
+		return std::vector<cv::DMatch>{};
+	}
 
 	virtual std::vector<cv::KeyPoint> getKeyPointSelection()
-		{return std::vector<cv::KeyPoint>{};}
+	{
+		return std::vector<cv::KeyPoint>{};
+	}
 
-public slots:
+      public
+slots:
 
 	virtual void setMatchSelection(std::vector<cv::DMatch>)
-		{}
+	{
+	}
 
 	virtual void setKeyPointSelection(std::vector<cv::KeyPoint>)
-		{}
+	{
+	}
 
-protected:
+      protected:
 	/**
 	 * @brief constructor of QWidget(parent).
 	 * @param parent the parent of this view.
 	 **/
-	MatchView(QWidget *parent):QWidget{parent}{}
-
-
+	MatchView(QWidget *parent) : QWidget{ parent }
+	{
+	}
 };
-
-}} //namespaces
+}
+} // namespaces
 
 #endif

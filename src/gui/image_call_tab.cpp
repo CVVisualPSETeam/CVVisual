@@ -13,11 +13,13 @@
 
 #include "../dbg/dbg.hpp"
 
-namespace cvv {
-namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
-ImageCallTab::ImageCallTab(const cvv::impl::SingleImageCall& call):
-	imageCall_{call}
+ImageCallTab::ImageCallTab(const cvv::impl::SingleImageCall &call)
+    : imageCall_{ call }
 {
 	TRACEPOINT;
 	setName(imageCall_->description());
@@ -26,8 +28,9 @@ ImageCallTab::ImageCallTab(const cvv::impl::SingleImageCall& call):
 	TRACEPOINT;
 }
 
-ImageCallTab::ImageCallTab(const QString& tabName, const cvv::impl::SingleImageCall& call):
-	imageCall_{call}
+ImageCallTab::ImageCallTab(const QString &tabName,
+                           const cvv::impl::SingleImageCall &call)
+    : imageCall_{ call }
 {
 	TRACEPOINT;
 	setName(tabName);
@@ -52,17 +55,18 @@ size_t ImageCallTab::getId() const
 void ImageCallTab::createGui()
 {
 	TRACEPOINT;
-	hlayout_ = new QHBoxLayout{this};
+	hlayout_ = new QHBoxLayout{ this };
 	hlayout_->setAlignment(Qt::AlignTop);
-	hlayout_->addWidget(new QLabel{"Single Image View"});
-	helpButton_ = new QPushButton{"Help", this};
+	hlayout_->addWidget(new QLabel{ "Single Image View" });
+	helpButton_ = new QPushButton{ "Help", this };
 	hlayout_->addWidget(helpButton_);
-	connect(helpButton_, SIGNAL(clicked()), this, SLOT(helpButtonClicked()));
+	connect(helpButton_, SIGNAL(clicked()), this,
+	        SLOT(helpButtonClicked()));
 
-	upperBar_ = new QWidget{this};
+	upperBar_ = new QWidget{ this };
 	upperBar_->setLayout(hlayout_);
 
-	vlayout_ = new QVBoxLayout{this};
+	vlayout_ = new QVBoxLayout{ this };
 
 	vlayout_->addWidget(upperBar_);
 	setView();
@@ -74,9 +78,9 @@ void ImageCallTab::createGui()
 void ImageCallTab::setView()
 {
 	TRACEPOINT;
-	imageView_ = new cvv::view::ImageView{imageCall_->mat(), this};
+	imageView_ = new cvv::view::ImageView{ imageCall_->mat(), this };
 	vlayout_->addWidget(imageView_);
 	TRACEPOINT;
 }
-
-}}//namespaces
+}
+} // namespaces

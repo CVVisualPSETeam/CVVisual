@@ -15,14 +15,16 @@ int main(int argc, char *argv[])
 {
 
 	/* Create some data for the ImageCallTab: */
-	cv::Mat mat{100,100,CV_8U};
+	cv::Mat mat{ 100, 100, CV_8U };
 	cvv::impl::CallMetaData data{};
-	QString type{"test_type"};
-	cvv::impl::SingleImageCall call{mat, data, type, "some description", ""};
-	QApplication vc{argc, argv};
+	QString type{ "test_type" };
+	cvv::impl::SingleImageCall call{
+		mat, data, type, "some description", ""
+	};
+	QApplication vc{ argc, argv };
 
-	cvv::gui::ImageCallTab u{call};
-	cvv::gui::ImageCallTab v{"TestITab", call};
+	cvv::gui::ImageCallTab u{ call };
+	cvv::gui::ImageCallTab v{ "TestITab", call };
 	u.show();
 	v.show();
 	vc.exec();

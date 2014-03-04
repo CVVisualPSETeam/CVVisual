@@ -9,63 +9,72 @@
 #include "call.hpp"
 #include "../controller/view_controller.hpp"
 
-namespace cvv { namespace impl {
+namespace cvv
+{
+namespace impl
+{
 
 /**
- * @brief The central controller of the debug-framework that owns all the calldata.
+ * @brief The central controller of the debug-framework that owns all the
+ * calldata.
  */
-class DataController {
-public:
+class DataController
+{
+      public:
 	DataController() = default;
 	~DataController()
 	{
 		TRACEPOINT;
 	}
-	
+
 	/**
 	 * Add a new call to the calls-list.
 	 */
 	void addCall(std::unique_ptr<Call> call);
-	
+
 	/**
 	 * Remove a call.
 	 * @throws std::invalid_argument if no such call exists
 	 */
 	void removeCall(size_t Id);
-	
+
 	/**
 	 * Get read-access to a certain call.
 	 */
-	const Call& getCall(size_t Id) const;
-	
+	const Call &getCall(size_t Id) const;
+
 	/**
 	 * Get read/write-access to a certain call.
 	 */
-	Call& getCall(size_t Id);
-	
+	Call &getCall(size_t Id);
+
 	bool hasCall(size_t Id);
-	
+
 	/**
 	 * Get the number of currently managed calls.
 	 */
 	size_t numCalls() const;
-	
+
 	/**
 	 * Passes control to the View-controller.
-	 * 
-	 * Returns when the ViewController signals that normal program-execution shall continue.
-	 * 
+	 *
+	 * Returns when the ViewController signals that normal program-execution
+	 *shall continue.
+	 *
 	 */
 	void callUI();
-	
+
 	/**
-	 * @brief Replace the continue-buttons with close-buttons and show the UI.
-	 * 
-	 * This function is intended to be called directly before main returns after all the actual
+	 * @brief Replace the continue-buttons with close-buttons and show the
+	 *UI.
+	 *
+	 * This function is intended to be called directly before main returns
+	 *after all the actual
 	 * work is done.
 	 */
 	void lastCall();
-private:
+
+      private:
 	std::vector<std::unique_ptr<Call>> calls;
 	controller::ViewController viewController;
 };
@@ -76,10 +85,11 @@ private:
 void deleteDataController();
 
 /**
- * Provides access to a global DataController that is created upon the first call.
+ * Provides access to a global DataController that is created upon the first
+ * call.
  */
-DataController& dataController();
-
-}} // namespaces cvv::impl
+DataController &dataController();
+}
+} // namespaces cvv::impl
 
 #endif

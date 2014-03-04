@@ -7,31 +7,34 @@
 #include <QCheckBox>
 
 #include "../../util/observer_ptr.hpp"
-#include"../filterfunctionwidget.hpp"
+#include "../filterfunctionwidget.hpp"
 #include "grayfilterwidget.hpp"
 #include "channelreorderfilter.hpp"
 
-namespace cvv { namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 /**
  * @brief Represents the opencv sobel filter.
  */
-class SobelFilterWidget: public FilterFunctionWidget<1,1>
+class SobelFilterWidget : public FilterFunctionWidget<1, 1>
 {
-public:
+      public:
 	/**
 	 * @brief The input type.
 	 */
-	using InputArray  = typename FilterFunctionWidget<1,1>::InputArray;
+	using InputArray = typename FilterFunctionWidget<1, 1>::InputArray;
 
 	/**
 	 * @brief The output type.
 	 */
-	using OutputArray = typename FilterFunctionWidget<1,1>::OutputArray;
+	using OutputArray = typename FilterFunctionWidget<1, 1>::OutputArray;
 
 	/**
 	 * @brief Constructor
 	 */
-	SobelFilterWidget(QWidget* parent = nullptr);
+	SobelFilterWidget(QWidget *parent = nullptr);
 
 	/**
 	 * @brief virtual destructor.
@@ -46,17 +49,22 @@ public:
 	 * @param in The input images.
 	 * @param out The output images.
 	 */
-	virtual void applyFilter(InputArray in,OutputArray out) const override;
+	virtual void applyFilter(InputArray in, OutputArray out) const override;
 
 	/**
-	 * @brief Checks whether input can be progressed by the applyFilter function.
+	 * @brief Checks whether input can be progressed by the applyFilter
+	 *function.
 	 * @param in The input images.
 	 * @return bool = true: the filter can be executed.
-	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
-	 *		QString = message for the user (e.g. why the filter can't be progressed.)
+	 *		bool = false: the filter cant be executed (e.g. images
+	 *have wrong depth)
+	 *		QString = message for the user (e.g. why the filter can't
+	 *be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(InputArray in) const override;
-private:
+	virtual std::pair<bool, QString> checkInput(InputArray in) const
+	    override;
+
+      private:
 	/**
 	 * @brief Selection for parameter dx.
 	 */
@@ -74,7 +82,8 @@ private:
 	 */
 	util::ObserverPtr<QComboBox> borderType_;
 	/**
-	 * @brief Wheather a gray filter should be applied first (after reorder).
+	 * @brief Wheather a gray filter should be applied first (after
+	 * reorder).
 	 */
 	util::ObserverPtr<QCheckBox> gray_;
 	/**
@@ -90,7 +99,7 @@ private:
 	 */
 	util::ObserverPtr<ChannelReorderFilter> reorderFilter_;
 };
-
-}}
+}
+}
 
 #endif // SOBELFILTERWIDGET_HPP

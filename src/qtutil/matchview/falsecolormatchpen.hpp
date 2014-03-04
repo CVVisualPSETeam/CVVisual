@@ -3,27 +3,46 @@
 
 #include "matchsettings.hpp"
 
-namespace cvv{namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
-class FalseColorMatchPen: public MatchSettings{
-public:
-	FalseColorMatchPen(double max,double min,QWidget * parent=nullptr);
+class FalseColorMatchPen : public MatchSettings
+{
+      public:
+	FalseColorMatchPen(double max, double min, QWidget *parent = nullptr);
 
-	virtual void setSettings(CVVMatch& match) override;
+	virtual void setSettings(CVVMatch &match) override;
 
-public slots:
+      public
+slots:
 	void updateMin(double newMin)
-		{TRACEPOINT;min_=newMin;TRACEPOINT;}
+	{
+		TRACEPOINT;
+		min_ = newMin;
+		TRACEPOINT;
+	}
 
 	void updateMax(double newMax)
-		{TRACEPOINT;max_=newMax;TRACEPOINT;}
+	{
+		TRACEPOINT;
+		max_ = newMax;
+		TRACEPOINT;
+	}
 
-private slots:
+      private
+slots:
 	void emitSignal()
-		{TRACEPOINT;emit settingsChanged(*this);}
-private:
+	{
+		TRACEPOINT;
+		emit settingsChanged(*this);
+	}
+
+      private:
 	double max_;
 	double min_;
 };
-}}
+}
+}
 #endif
