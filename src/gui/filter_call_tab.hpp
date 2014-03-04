@@ -1,20 +1,12 @@
 #ifndef CVVISUAL_FILTER_CALL_TAB_HPP
 #define CVVISUAL_FILTER_CALL_TAB_HPP
 
-#include <memory>
-
 #include <QString>
-#include <QMap>
-#include <QPushButton>
-#include <QComboBox>
 #include <QWidget>
 
-#include "call_tab.hpp"
+#include "multiview_call_tab.hpp"
 #include "../view/filter_view.hpp"
 #include "../impl/filter_call.hpp"
-#include "../util/util.hpp"
-#include "../qtutil/registerhelper.hpp"
-#include "../qtutil/signalslot.hpp"
 #include "../dbg/dbg.hpp"
 
 namespace cvv {
@@ -27,7 +19,7 @@ namespace gui {
  * Allows to switch views and to access the help.
  */
 class FilterCallTab:
-		public CallTab, public cvv::qtutil::RegisterHelper<cvv::view::FilterView, const cvv::impl::FilterCall&, QWidget*>
+		public MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>
 {
 Q_OBJECT
 
@@ -38,38 +30,21 @@ public:
 	 * Initializes the FilterCallTab with the default view and names it after the associated FilterCall.
 	 * @param filterCall the FilterCall containing the information to be visualized.
 	 */
-	FilterCallTab(const cvv::impl::FilterCall& filterCall);
+	FilterCallTab(const cvv::impl::FilterCall& filterCall):
+		MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>(filterCall)
+	{
+		TRACEPOINT;
+		default_scope_ = QString{"default_views"};
+		default_key_ = QString{"default_filter_view"};
+		standard_default_ = QString{"DefaultFilterView"};
+		TRACEPOINT;
+	}
 
-	/**
-	 * @brief Constructor using default view.
-	 * Short constructor which initialises the Call Tab with default view from settings.
-	 * @param tabName.
-	 * @param filterCall the FilterCall containing the information to be visualized.
-	 */
-	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCalll);
-
-	/**
-	 * @brief Constructor with specific view.
-	 * Constructor initialising the Call Tab.
-	 * @param tabName.
-	 * @param filterCall the FilterCall containing the information to be visualized.
-	 * @param viewId the ID of the view to be shown inside this CallTab.
-	 */
-	FilterCallTab(const QString& tabName, const cvv::impl::FilterCall& filterCall, const QString& viewId);
-	
 	~FilterCallTab(){TRACEPOINT;}
 	
 	/**
-	 * @brief get ID.
-	 * @return the ID of the CallTab.
-	 * (ID is equal to the ID of the associated call).
-	 * Overrides CallTab's getId.
-	 */
-	size_t getId() const override;
-
-	/**
 	 * @brief Register the template class to the map of FilterViews.
-	 * View needs to offer a constructor of the form View(const cvv::::::impl::FilterCall&, QWidget*).
+	 * View needs to offer a constructor of the form View(const cvv::impl::FilterCall&, QWidget*).
 	 * @param name to register the class under.
 	 * @tparam View - Class to register.
 	 * @return true when the view was registered and false when the name was already taken.
@@ -78,57 +53,8 @@ public:
 	static bool registerFilterView(const QString& name)
 	{
 		TRACEPOINT;
-		return gui::FilterCallTab::registerElement(name,
-			[](const cvv::impl::FilterCall& mat, QWidget* parent){
-				TRACEPOINT;
-				return cvv::util::make_unique<View>(mat,parent);
-			}
-		);
+		return registerView<View>(name);
 	}
-
-private slots:
-
-	/**
-	 * @brief View selection change.
-	 * Called when the index of the view selection changes.
-	 */
-	void currentIndexChanged();
-
-	/**
-	 * @brief Help Button clicked.
-	 * Called when the help button is clicked.
-	 */
-	void helpButtonClicked() const;
-
-	/**
-	 * @brief setAsDefaultButton clicked.
-	 * Called when the setAsDefaultButton,which sets the current view as default, is clicked.
-	 */
-	void setAsDefaultButtonClicked();
-
-private:
-
-	/**
-	 * @brief Sets up the visible parts.
-	 * Called by the constructors.
-	 */
-	void createGui();
-
-	/**
-	 * @brief sets up the View currently selected in the ComboBox inherited from RegisterHelper.
-	 */
-	void setView();
-
-	util::Reference<const cvv::impl::FilterCall> filterCall_;
-	QString filterViewId_;
-	cvv::view::FilterView* filterView_;
-	std::map<QString, cvv::view::FilterView*> viewHistory_;
-
-	QPushButton* helpButton_;
-	QPushButton* setAsDefaultButton_;
-	QHBoxLayout* hlayout_;
-	QVBoxLayout* vlayout_;
-	QWidget* upperBar_;
 
 };
 

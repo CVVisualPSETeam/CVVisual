@@ -125,6 +125,9 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_signslot manual_test/signalslot/main.cpp)
 	target_link_libraries(test_manual_signslot cvvisual Qt5Core Qt5Widgets)
 
+	add_executable(test_manual_multiviewcalltab manual_test/multiview_call_tab/main.cpp)
+	target_link_libraries(test_manual_multiviewcalltab cvvisual Qt5Core Qt5Widgets)
+
 	add_executable(test_manual_filtercalltab manual_test/filter_call_tab/main.cpp)
 	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
 	
