@@ -112,9 +112,7 @@ void DataController::lastCall()
  */
 static std::unique_ptr<DataController> &realSingleton()
 {
-	TRACEPOINT;
-	static auto var = util::make_unique<DataController>();
-	TRACEPOINT;
+	static std::unique_ptr<DataController> var = nullptr;
 	return var;
 }
 
@@ -125,10 +123,12 @@ void deleteDataController()
 
 DataController &dataController()
 {
-	TRACEPOINT;
-	// static DataController controller{};
-	TRACEPOINT;
-	return *realSingleton();
+	auto& controller = realSingleton();
+	if(!realSingleton().get())
+	{
+		controller = util::make_unique<DataController>();
+	}
+	return *controller;
 }
 }
 } // namespaces cvv::impl

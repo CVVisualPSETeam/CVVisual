@@ -12,6 +12,7 @@
 int main(int argc, char **argv)
 {
 	std::vector<cv::Mat> images;
+	cvv::FinalShowCaller finalizer;
 	for (int i = 1; i < argc; ++i)
 	{
 		auto img = cv::imread(argv[i]);
@@ -23,5 +24,4 @@ int main(int argc, char **argv)
 		cvv::debugFilter(img, filteredImg, CVVISUAL_LOCATION, argv[i]);
 		images.emplace_back(img);
 	}
-	cvv::finalShow();
 }
