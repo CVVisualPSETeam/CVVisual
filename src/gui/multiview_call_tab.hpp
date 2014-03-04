@@ -24,8 +24,6 @@
 namespace cvv {
 namespace gui {
 
-class Slots;
-
 /** Call Tab for multiple views.
  * @brief Inner part of a tab, contains a View.
  * The inner part of a tab or window
@@ -54,10 +52,6 @@ public:
 	{
 		TRACEPOINT;
 		setName(tabName);
-		// Sets standard_default_ as default in case no other default is set:
-		qtutil::setDefaultSetting(default_scope_, default_key_, standard_default_);
-		viewId_ = qtutil::getSetting(default_scope_, default_key_);
-		createGui();
 		TRACEPOINT;
 	}
 
@@ -109,8 +103,6 @@ protected:
 	 */
 	QString standard_default_;
 
-private:
-
 	/**
 	 * @brief Sets up the visible parts.
 	 * Called by the constructors.
@@ -118,6 +110,10 @@ private:
 	void createGui()
 	{
 		TRACEPOINT;
+		// Sets standard_default_ as default in case no other default is set:
+		qtutil::setDefaultSetting(default_scope_, default_key_, standard_default_);
+		viewId_ = qtutil::getSetting(default_scope_, default_key_);
+
 		if(!this->select(viewId_))
 		{
 			this->select(standard_default_);
@@ -151,6 +147,8 @@ private:
 		QObject::connect(&this->signalElementSelected(), SIGNAL(signal(QString)), &currentIndexChanged, SLOT(slot()));
 		TRACEPOINT;
 	}
+
+private:
 
 	/**
 	 * @brief sets up the View currently selected in the ComboBox inherited from RegisterHelper.

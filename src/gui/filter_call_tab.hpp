@@ -37,6 +37,7 @@ public:
 		default_scope_ = QString{"default_views"};
 		default_key_ = QString{"default_filter_view"};
 		standard_default_ = QString{"DefaultFilterView"};
+		createGui();
 		TRACEPOINT;
 	}
 

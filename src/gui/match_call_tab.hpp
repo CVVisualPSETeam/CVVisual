@@ -39,6 +39,7 @@ public:
 		default_scope_ = QString{"default_views"};
 		default_key_ = QString{"default_match_view"};
 		standard_default_ = QString{"LineMatchView"};
+		createGui();
 		TRACEPOINT;
 	}
 
