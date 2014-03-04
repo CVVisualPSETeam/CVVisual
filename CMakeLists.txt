@@ -45,10 +45,8 @@ if(CVV_BUILD_TESTS)
 	include_directories(${GTEST_INCLUDE_DIR})
 endif()
 
-FIND_PACKAGE(Qt5Core REQUIRED)
-include_directories(${Qt5Core_INCLUDE_DIRS})
-FIND_PACKAGE(Qt5Widgets REQUIRED)
-include_directories(${Qt5Widgets_INCLUDE_DIRS})
+FIND_PACKAGE(Qt4 REQUIRED)
+INCLUDE(${QT_USE_FILE})
 add_definitions(${QT_DEFINITIONS})
 set(CMAKE_AUTOMOC ON)
 
@@ -81,9 +79,8 @@ target_link_libraries(cvvisual
 			    #(X)Ubuntu 13.10!!!
 	#Those do not work
 	#${QT_LIBRARIES}
-	Qt5Core
-	Qt5Widgets
-	Qt5Gui
+	QtCore
+	QtGui
 	#without the following libraries it doesn't run on debian testing anymore
 	m
 	stdc++
@@ -126,22 +123,22 @@ if(CVV_BUILD_TESTS)
 	target_link_libraries(test_manual_multiple_final_calls cvvisual opencv_core opencv_highgui)
 
 	add_executable(test_manual_signslot manual_test/signalslot/main.cpp)
-	target_link_libraries(test_manual_signslot cvvisual Qt5Core Qt5Widgets)
+	target_link_libraries(test_manual_signslot cvvisual QtCore QtGui)
 
 	add_executable(test_manual_multiviewcalltab manual_test/multiview_call_tab/main.cpp)
-	target_link_libraries(test_manual_multiviewcalltab cvvisual Qt5Core Qt5Widgets)
+	target_link_libraries(test_manual_multiviewcalltab cvvisual QtCore QtGui)
 
 	add_executable(test_manual_filtercalltab manual_test/filter_call_tab/main.cpp)
-	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
+	target_link_libraries(test_manual_filtercalltab cvvisual QtCore QtGui)
 	
 	add_executable(test_manual_matchcalltab manual_test/match_call_tab/main.cpp)
-	target_link_libraries(test_manual_matchcalltab cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
+	target_link_libraries(test_manual_matchcalltab cvvisual QtCore QtGui opencv_highgui opencv_core opencv_imgproc)
 
 	add_executable(test_manual_imagecalltab manual_test/image_call_tab/main.cpp)
-	target_link_libraries(test_manual_imagecalltab cvvisual Qt5Core Qt5Widgets)
+	target_link_libraries(test_manual_imagecalltab cvvisual QtCore QtGui)
 
 	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
-	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
+	target_link_libraries(test_manual_dbg_printer cvvisual QtCore)
 
 
 
@@ -149,55 +146,55 @@ if(CVV_BUILD_TESTS)
 
 	#accordion
 	add_executable(test_manual_accordion manual_test/accordion/main.cpp manual_test/accordion/acctester.cpp)
-	target_link_libraries(test_manual_accordion cvvisual Qt5Core Qt5Widgets)
+	target_link_libraries(test_manual_accordion cvvisual QtCore QtGui)
 
 	add_executable(test_manual_collapsable manual_test/collapsable/main.cpp)
 	target_link_libraries(test_manual_collapsable cvvisual)
 
 	#zoomableimage
 	add_executable(test_manual_zoomableimage manual_test/zoomableimage/main.cpp)
-	target_link_libraries(test_manual_zoomableimage cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
+	target_link_libraries(test_manual_zoomableimage cvvisual QtCore QtGui opencv_highgui opencv_core opencv_imgproc)
 
 	#imageconvert
 	add_executable(test_manual_imageconvert manual_test/imageconvert/main.cpp)
-	target_link_libraries(test_manual_imageconvert cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
+	target_link_libraries(test_manual_imageconvert cvvisual QtCore QtGui opencv_highgui opencv_core opencv_imgproc)
 
 	add_executable(test_manual_imageconvertperf manual_test/imageconvertperf/main.cpp)
-	target_link_libraries(test_manual_imageconvertperf cvvisual Qt5Core Qt5Widgets opencv_core opencv_imgproc)
+	target_link_libraries(test_manual_imageconvertperf cvvisual QtCore QtGui opencv_core opencv_imgproc)
 
 	#filter +register
 	add_executable(test_manual_registerhelper manual_test/registerhelper/main.cpp )
-	target_link_libraries(test_manual_registerhelper cvvisual Qt5Core Qt5Widgets Qt5Gui)
+	target_link_libraries(test_manual_registerhelper cvvisual QtCore QtGui)
 
 	add_executable(test_manual_fsw manual_test/fsw/main.cpp )
-	target_link_libraries(test_manual_fsw cvvisual Qt5Core Qt5Widgets Qt5Gui)
+	target_link_libraries(test_manual_fsw cvvisual QtCore QtGui)
 
 	add_executable(test_manual_autofilterwidget manual_test/autofilterwidget/main.cpp)
-	target_link_libraries(test_manual_autofilterwidget cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)	
+	target_link_libraries(test_manual_autofilterwidget cvvisual QtCore QtGui opencv_highgui opencv_core opencv_imgproc)
 
 
 	#VIEW
 
 	add_executable(test_manual_imageview manual_test/imageview/main.cpp)
-	target_link_libraries(test_manual_imageview cvvisual Qt5Core Qt5Widgets opencv_core opencv_highgui)
+	target_link_libraries(test_manual_imageview cvvisual QtCore QtGui opencv_core opencv_highgui)
 
 	#filter
 	add_executable(test_manual_dualfilterview manual_test/dual_filter_view/main.cpp)
-    	target_link_libraries(test_manual_dualfilterview cvvisual Qt5Core opencv_core opencv_highgui)
+    	target_link_libraries(test_manual_dualfilterview cvvisual QtCore opencv_core opencv_highgui)
 
 	add_executable(test_manual_defaultfilterview manual_test/defaultfilterviewtest/main.cpp)
-	target_link_libraries(test_manual_defaultfilterview cvvisual Qt5Core opencv_core)
+	target_link_libraries(test_manual_defaultfilterview cvvisual QtCore opencv_core)
 	
 	add_executable(test_manual_singlefilterview manual_test/singlefilterviewtest/main.cpp)
-	target_link_libraries(test_manual_singlefilterview cvvisual Qt5Core opencv_core opencv_highgui opencv_imgproc)
+	target_link_libraries(test_manual_singlefilterview cvvisual QtCore opencv_core opencv_highgui opencv_imgproc)
 
 	#match
 	add_executable(test_manual_linematchviewtest manual_test/linematchviewtest/main.cpp)
-	target_link_libraries(test_manual_linematchviewtest cvvisual Qt5Core opencv_highgui opencv_core)
+	target_link_libraries(test_manual_linematchviewtest cvvisual QtCore opencv_highgui opencv_core)
 
 	add_executable(test_manual_translationviewtest manual_test/translationviewtest/main.cpp)
-	target_link_libraries(test_manual_translationviewtest cvvisual Qt5Core opencv_highgui opencv_core)
+	target_link_libraries(test_manual_translationviewtest cvvisual QtCore opencv_highgui opencv_core)
 
 	add_executable(test_manual_depthviewtest manual_test/depthviewtest/main.cpp)
-	target_link_libraries(test_manual_depthviewtest cvvisual Qt5Core opencv_highgui opencv_core)
+	target_link_libraries(test_manual_depthviewtest cvvisual QtCore opencv_highgui opencv_core)
 endif()
