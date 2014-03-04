@@ -9,6 +9,7 @@
 #include <QGraphicsPixmapItem>
 #include <QWheelEvent>
 #include <QApplication>
+#include <QTimer>
 
 #include "opencv2/core/core.hpp"
 
@@ -51,6 +52,15 @@ class ZoomableImageGraphicsView : public QGraphicsView
 	 * @param event The event.
 	 */
 	virtual void wheelEvent(QWheelEvent *event) override;
+
+	/**
+	 * @brief Ignores the mouse move event.
+	 * @param event The event.
+	 */
+	virtual void mouseMoveEvent(QMouseEvent * event) override
+	{
+		event->ignore();
+	}
 };
 }
 
@@ -67,7 +77,7 @@ class ZoomableImage : public QWidget
 	 * @param parent The parent widget.
 	 */
 	ZoomableImage(const cv::Mat &mat = cv::Mat{},
-	              QWidget *parent = nullptr);
+		      QWidget *parent = nullptr);
 
 	/**
 	 * @brief Destructor
@@ -132,7 +142,7 @@ class ZoomableImage : public QWidget
 	virtual void resizeEvent(QResizeEvent *) override
 	{
 		TRACEPOINT;
-		emit updateArea(visibleArea(), zoom_);
+		queueUpdateArea();
 		TRACEPOINT;
 	}
 
@@ -213,13 +223,18 @@ signals:
 	 * and the image.
 	 */
 	void updateConversionResult(ImageConversionResult,
-	                            const cv::Mat &) const;
+				    const cv::Mat &) const;
 
 	/**
 	 *@brief Emitted whenever the visible area changes. Passes the visible
 	 *area and zoom factor.
 	 */
 	void updateArea(QRectF, qreal) const;
+
+	/**
+	 * @brief Updates information at mouse position (position, channel values of the pixel, whether the position is in the image)
+	 */
+	void updateMouseHover(QPointF,QString,bool);
 
       public
 slots:
@@ -310,6 +325,26 @@ slots:
 	 */
 	virtual void wheelEvent(QWheelEvent *event) override;
 
+	/**
+	 * @brief Sets the new delay between two updateArea signals.
+	 * (if 0 the signal will be emitted as soon as all the events in the window system's event queue have been processed)
+	 * @param i The new delay. (ignored if <0)
+	 */
+	void setUpdateAreaDelay(int i)
+	{
+		if(i>=0)
+		{
+			updateAreaDelay_=i;
+		}
+	}
+
+protected:
+	/**
+	 * @brief The mouse move event will output informations regarding the pixelvalue and the position in the image with updateMouseHover().
+	 * @param event The event
+	 */
+	virtual void mouseMoveEvent(QMouseEvent * event) override;
+
       private
 slots:
 	/**
@@ -318,7 +353,7 @@ slots:
 	void viewScrolled()
 	{
 		TRACEPOINT;
-		emit updateArea(visibleArea(), zoom_);
+		queueUpdateArea();
 		TRACEPOINT;
 	}
 
@@ -327,7 +362,23 @@ slots:
 	 */
 	void drawValues();
 
+	/**
+	 * @brief On right click a menu to save the current visible image or the full image will appear.
+	 * @param pos The position of the right click.
+	 */
 	void rightClick(const QPoint &pos);
+
+	/**
+	 * @brief This function will emit updateArea() and set updateAreaQueued_ = false.
+	 * It will be called by updateAreaTimer_.
+	 */
+	void emitUpdateArea();
+
+	/**
+	 * @brief This function will start the timer updateAreaTimer_ with the delay updateAreaDelay_ and set updateAreaQueued_ = true.
+	 * If updateAreaQueued_ was already set this function will do nothing.
+	 */
+	void queueUpdateArea();
 
       private:
 	/**
@@ -373,6 +424,21 @@ slots:
 	 * @brief The factor multiplied to the number of scrolled pixels.
 	 */
 	qreal scrollFactorCTRLShift_;
+
+	/**
+	 * @brief Will call emitUpdateArea() on timeout.
+	 */
+	QTimer updateAreaTimer_;
+
+	/**
+	 * @brief Whether updateAreaTimer_ is running.
+	 */
+	bool updateAreaQueued_;
+
+	/**
+	 * @brief The delay for updateAreaTimer_.
+	 */
+	int updateAreaDelay_;
 };
 }
 }
