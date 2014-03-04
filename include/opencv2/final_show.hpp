@@ -32,6 +32,22 @@ inline void finalShow()
 	}
 #endif
 }
+
+/**
+ * @brief RAII-class to call finalShow() in it's dtor.
+ */
+class FinalShowCaller
+{
+public:
+	/**
+	 * @brief Calls finalShow().
+	 */
+	~FinalShowCaller()
+	{
+		finalShow();
+	}
+};
+
 }
 
 #endif
