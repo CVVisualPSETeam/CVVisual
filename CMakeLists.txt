@@ -176,7 +176,7 @@ if(CVV_BUILD_TESTS)
 	#VIEW
 
 	add_executable(test_manual_imageview manual_test/imageview/main.cpp)
-	target_link_libraries(test_manual_imageview cvvisual Qt5Core Qt5Widgets opencv_core)
+	target_link_libraries(test_manual_imageview cvvisual Qt5Core Qt5Widgets opencv_core opencv_highgui)
 
 	#filter
 	add_executable(test_manual_dualfilterview manual_test/dual_filter_view/main.cpp)

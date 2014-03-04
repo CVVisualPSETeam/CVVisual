@@ -12,6 +12,7 @@
 #include "../qtutil/accordion.hpp"
 #include "../qtutil/zoomableimageoptpanel.hpp"
 #include "../qtutil/zoomableimage.hpp"
+#include "../util/util.hpp"
 
 namespace cvv
 {
@@ -50,39 +51,31 @@ signals:
 	ImageView(const cv::Mat &image, QWidget *parent = nullptr)
 	    : QWidget{ parent }
 	{
-		layout_ = new QHBoxLayout{ this };
-		accor_ = new qtutil::Accordion{ this };
+		layout_ = util::make_unique<QHBoxLayout>(this);
+		accor_ = util::make_unique<qtutil::Accordion>(this);
+		
 		accor_->setMinimumWidth(250);
 		accor_->setMaximumWidth(250);
 
-		layout_->addWidget(accor_);
+		layout_->addWidget(accor_.get());
 
-		zoomim_ = new qtutil::ZoomableImage{};
-		auto info =
-		    util::make_unique<qtutil::ZoomableOptPanel>(*zoomim_, this);
-
-		connect(zoomim_,
-		        SIGNAL(updateConversionResult(ImageConversionResult)),
-		        info.get(),
-		        SLOT(updateConvertStatus(ImageConversionResult)));
-
-		connect(info.get(), SIGNAL(getZoom(qreal)), zoomim_,
-		        SLOT(setZoom(qreal)));
-
+		zoomim_ = util::make_unique<qtutil::ZoomableImage>();
+		
+		accor_->insert(QString("ImageInformation:"),
+			std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomim_)));
 		zoomim_->setMat(image);
+		layout_->addWidget(zoomim_.get());
 
-		layout_->addWidget(zoomim_);
-		accor_->insert("ImageInformation", std::move(info));
-
-		setLayout(layout_);
+		setLayout(layout_.get());
 	}
-
-      private:
-	QHBoxLayout *layout_;
-	qtutil::Accordion *accor_;
-	qtutil::ZoomableImage *zoomim_;
+	
+private:
+	std::unique_ptr<QHBoxLayout> layout_;
+	std::unique_ptr<qtutil::Accordion> accor_;
+	std::unique_ptr<qtutil::ZoomableImage> zoomim_;
 };
 }
 } // namespaces
 
 #endif
+
