@@ -106,6 +106,11 @@ class CVVMatch : public QGraphicsObject
 
 	bool operator==(const cv::DMatch &o);
 
+	QPen getPen() const
+	{
+		return pen_;
+	}
+
       public
 slots:
 

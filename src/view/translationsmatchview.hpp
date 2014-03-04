@@ -11,7 +11,7 @@ namespace cvv
 {
 namespace view
 {
-/*
+/**
  * @brief this view shows the matches as tranlations line/arrows.
  *
  */
@@ -33,10 +33,10 @@ class TranslationMatchView : public MatchView
 	 * @param parent the parent widget
 	 */
 	TranslationMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
-	                     std::vector<cv::KeyPoint> rightKeyPoints,
-	                     std::vector<cv::DMatch> matches, cv::Mat leftIm,
-	                     cv::Mat rightIm, bool usetrainIdx = true,
-	                     QWidget *parent = nullptr);
+			     std::vector<cv::KeyPoint> rightKeyPoints,
+			     std::vector<cv::DMatch> matches, cv::Mat leftIm,
+			     cv::Mat rightIm, bool usetrainIdx = true,
+			     QWidget *parent = nullptr);
 
 	/**
 	 * @brief Short constructor.
@@ -44,7 +44,7 @@ class TranslationMatchView : public MatchView
 	 * @param parent of this QWidget.
 	 */
 	TranslationMatchView(const impl::MatchCall &call,
-	                     QWidget *parent = nullptr)
+			     QWidget *parent = nullptr)
 	    : TranslationMatchView{
 		      call.keyPoints1(), call.keyPoints2(),
 		      call.matches(),    call.img1(),
