@@ -83,8 +83,6 @@ Q_OBJECT
 		}
 };
 
-
-
 }} //namespaces
 
 #endif

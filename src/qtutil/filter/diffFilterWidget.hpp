@@ -9,6 +9,9 @@
 namespace cvv {
 namespace qtutil {
 
+/**
+* @brief Enum of the possible types of difference filters.
+*/
 enum class DiffFilterType
 {
 	HUE = 0,
@@ -18,6 +21,10 @@ enum class DiffFilterType
 	GRAYSCALE = 3
 };
 
+/**
+* @brief Class providing functionality of compute a difference image of two
+*	input matrices.
+*/
 class DiffFilterFunction: public FilterFunctionWidget<2,1>
 {
 Q_OBJECT
@@ -35,15 +42,22 @@ public:
 	//std::array<util::Reference<cv::Mat>,1>
 	
 	
+	/**
+	* @brief Constructs DiffFilterFunction with default filter grayscale.
+	* @param parent The parent of the widget
+	*/
 	DiffFilterFunction(QWidget* parent = nullptr);
 	
+	/**
+	* @brief Default destructuor.
+	*/
 	~DiffFilterFunction()
 	{
 		TRACEPOINT;
 	}
 
 	/**
-	* @brief Applys given difference filter
+	* @brief Applys difference filter specified by filterType_
 	* @param in array of input matrices
 	* @param out array of output matrices
 	*/
@@ -56,6 +70,7 @@ public:
 	
 private:
 	DiffFilterType filterType_;
+		//< type of difference filter that is to be applied
 	
 	std::unordered_map<std::string, std::function<void(void)>> filterMap_;
 			//< Map of all available filters with their names
@@ -66,7 +81,11 @@ private:
 	QStringList extractStringListfromMap() const;
 	
 private slots:
-	void updateFilterType(const QString&);
+	/**
+	* @brief Sets filterType_ and emits signFilterSettingsChanged.
+	* @param type The name of the new DiffFilterType.
+	*/
+	void updateFilterType(const QString& type);
 };
 
 }}

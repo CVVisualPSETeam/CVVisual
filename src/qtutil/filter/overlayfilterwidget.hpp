@@ -25,23 +25,46 @@ public:
 	using OutputArray = FilterFunctionWidget<2,1>::OutputArray;
 	//std::array<util::Reference<cv::Mat>,1>
 	
-	
+	/**
+	* @brief Constructs OverlayFilterWidget with default opacity 0,5.
+	* @param parent The parent of the widget
+	*/
 	OverlayFilterWidget(QWidget* parent = nullptr);
 	
+	/**
+	* @brief Default destructuor.
+	*/
 	~OverlayFilterWidget()
 	{
 		TRACEPOINT;
 	}
 
+	/**
+	* The opacity of the first image while overlaying is indicated by
+	* opacityOfOriginalImg_.
+	* @brief Overlays the original image
+	* @param in array of input matrices
+	* @param out array of output matrices
+	*/
 	void applyFilter(InputArray in,OutputArray out) const;
 
+	/**
+	* Checks whether the matrices have the same size and same number of channels.
+	* @brief Checks whether matrices in in can be processed by Overlayfilter
+	* @param in array of input matrices
+	*/
 	std::pair<bool, QString> checkInput(InputArray in) const;
 	
 private:
 	double opacityOfOriginalImg_;
+		//< opacity of the first input image when ovelaying
 	
 private slots:
-	void updateOpacity(int);
+	/**
+	* @brief Sets opacityOfOriginalImg_ and emits signFilterSettingsChanged.
+	* @param op new opacity
+	*/
+	void updateOpacity(int op);
 };
 
 }}

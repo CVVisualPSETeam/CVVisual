@@ -14,7 +14,7 @@ namespace cvv {
 namespace qtutil {
 
 OverlayFilterWidget::OverlayFilterWidget(QWidget* parent)
-	: FilterFunctionWidget<2,1>{parent}
+	: FilterFunctionWidget<2,1>{parent}, opacityOfOriginalImg_{0.5}
 {
 	TRACEPOINT;
 
@@ -54,12 +54,13 @@ void OverlayFilterWidget::applyFilter(InputArray in, OutputArray out) const
 std::pair<bool, QString> OverlayFilterWidget::checkInput(InputArray in) const
 {	
 	TRACEPOINT;
-
+	//check whether images have same size
 	if (in.at(0).get().size() != in.at(1).get().size())
 	{
 		return std::make_pair(false, "images need to have same size");
 	}
 
+	//check whether images have same number of channels
 	if (in.at(0).get().channels() != in.at(1).get().channels())
 	{
 		return std::make_pair(false, "images need to have same number of channels");
