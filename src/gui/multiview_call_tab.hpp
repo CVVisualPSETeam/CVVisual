@@ -31,6 +31,8 @@ namespace gui
  * The inner part of a tab or window
  * containing a View.
  * Allows to switch between different views and to access the help.
+ * @tparam ViewType A type of View.
+ * @tparam CallType A type of Call.
  */
 template <class ViewType, class CallType>
 class MultiViewCallTab
@@ -38,12 +40,30 @@ class MultiViewCallTab
       public cvv::qtutil::RegisterHelper<ViewType, const CallType &, QWidget *>
 {
       public:
+	/**
+	 * @brief Short constructor named after Call and using the default view.
+	 * Initializes the MultiViewCallTab with the default view and names it after
+	 * the associated Call.
+	 * @param call - the Call containing the information to be
+	 * visualized.
+	 * @param default_key - Key under which the default view is to be saved.
+	 * @param standard_default - Standard default view.
+	 */
 	MultiViewCallTab(const CallType &call, const QString& default_key, const QString& standard_default)
 	    : MultiViewCallTab{ call.description(), call, default_key, standard_default }
 	{
 		TRACEPOINT;
 	}
 
+	/**
+	 * @brief Constructor using the default view.
+	 * Initializes the MultiViewCallTab with the default view.
+	 * @param name - Name to give the CallTab.
+	 * @param call - the Call containing the information to be
+	 * visualized.
+	 * @param default_key - Key under which the default view is to be saved.
+	 * @param standard_default - Standard default view.
+	 */
 	MultiViewCallTab(const QString &tabName, const CallType &call, const QString& default_key, const QString& standard_default)
 	    : call_{ call }, currentIndexChanged{ [&]()
 	{
@@ -68,6 +88,23 @@ class MultiViewCallTab
 		viewId_ = qtutil::getSetting(default_scope_, default_key_);
 		createGui();
 		TRACEPOINT;
+	}
+
+	/**
+	 * @brief Constructor with possibility to select view.
+	 * Note that the default view is still created first.
+	 * @param call - the Call containing the information to be
+	 * visualized.
+	 * @param viewId - ID of the View to be set up. If a view of this name does
+	 * not exist, the default view will be used.
+	 * @param default_key - Key under which the default view is to be saved.
+	 * @param standard_default - Standard default view.
+	 */
+	MultiViewCallTab(const CallType& call, const QString& viewId, const QString& default_key, const QString& standard_default)
+		: MultiViewCallTab{call, default_key, standard_default}
+	{
+		this->select(viewId);
+		//currentIndexChanged.slot();
 	}
 
 	~MultiViewCallTab()

@@ -31,7 +31,7 @@ class FilterCallTab
 	 * view.
 	 * Initializes the FilterCallTab with the default view and names it
 	 * after the associated FilterCall.
-	 * @param filterCall the FilterCall containing the information to be
+	 * @param filterCall - the FilterCall containing the information to be
 	 * visualized.
 	 */
 	FilterCallTab(const cvv::impl::FilterCall &filterCall)
@@ -40,10 +40,21 @@ class FilterCallTab
 	      }
 	{
 		TRACEPOINT;
-		/*default_scope_ = QString{ "default_views" };
-		default_key_ = QString{ "default_filter_view" };
-		standard_default_ = QString{ "DefaultFilterView" };
-		createGui();*/
+	}
+
+	/**
+	 * @brief Constructor with possibility to select view.
+	 * Note that the default view is still created first.
+	 * @param call - the MatchCall containing the information to be
+	 * visualized.
+	 * @param filterViewId - ID of the View to be set up. If a view of this name does
+	 * not exist, the default view will be used.
+	 */
+	FilterCallTab(const cvv::impl::FilterCall &filterCall, const QString& filterViewId)
+	    : MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>{
+		      filterCall, filterViewId, QString{ "default_filter_view" }, QString{ "DefaultFilterView" }
+	      }
+	{
 		TRACEPOINT;
 	}
 

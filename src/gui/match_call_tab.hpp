@@ -10,7 +10,6 @@
 #include "../view/match_view.hpp"
 #include "../impl/match_call.hpp"
 #include "../util/util.hpp"
-#include "../qtutil/signalslot.hpp"
 
 namespace cvv
 {
@@ -33,7 +32,7 @@ class MatchCallTab
 	 * @brief Short constructor named after Call and using the default view.
 	 * Initializes the MatchCallTab with the default view and names it after
 	 * the associated MatchCall.
-	 * @param matchCall the MatchCall containing the information to be
+	 * @param matchCall - the MatchCall containing the information to be
 	 * visualized.
 	 */
 	MatchCallTab(const cvv::impl::MatchCall &matchCall)
@@ -44,6 +43,26 @@ class MatchCallTab
 		TRACEPOINT;
 		oldView_ = nullptr;
 		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
+		TRACEPOINT;
+	}
+
+	/**
+	 * @brief Constructor with possibility to select view.
+	 * Note that the default view is still created first.
+	 * @param matchCall - the MatchCall containing the information to be
+	 * visualized.
+	 * @param matchViewId - ID of the View to be set up. If a view of this name does
+	 * not exist, the default view will be used.
+	 */
+	MatchCallTab(const cvv::impl::MatchCall& matchCall, const QString& matchViewId)
+		: MultiViewCallTab<cvv::view::MatchView, cvv::impl::MatchCall>{
+			  matchCall, matchViewId, QString{ "default_match_view" }, QString{ "LineMatchView" }
+		  }
+	{
+		TRACEPOINT;
+		oldView_ = nullptr;
+		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
+		TRACEPOINT;
 	}
 
 	~MatchCallTab()
