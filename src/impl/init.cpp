@@ -9,6 +9,7 @@
 #include "../qtutil/filter/channelreorderfilter.hpp"
 #include "../qtutil/filter/diffFilterWidget.hpp"
 #include "../qtutil/filter/overlayfilterwidget.hpp"
+#include "../qtutil/filter/changed_pixels_widget.hpp"
 
 #include "../gui/filter_call_tab.hpp"
 #include "../view/filter_view.hpp"
@@ -46,6 +47,7 @@ void initializeFilterAndViews()
 
 	qtutil::registerFilter<2, 1, qtutil::DiffFilterFunction>("Difference");
 	qtutil::registerFilter<2, 1, qtutil::OverlayFilterWidget>("Overlay");
+	qtutil::registerFilter<2, 1, qtutil::ChangedPixelsWidget>("Changed Pixels");
 
 	// filter-views:
 	cvv::gui::FilterCallTab::registerFilterView<
