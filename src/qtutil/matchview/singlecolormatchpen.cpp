@@ -10,7 +10,8 @@ namespace qtutil
 {
 
 SingleColorMatchPen::SingleColorMatchPen(QWidget *parent)
-    : MatchSettings{ parent }
+    : MatchSettings{ parent },
+      color_(Qt::red)
 {
 	TRACEPOINT;
 	auto layout = util::make_unique<QVBoxLayout>();
@@ -18,10 +19,10 @@ SingleColorMatchPen::SingleColorMatchPen(QWidget *parent)
 	auto button = util::make_unique<QPushButton>("Color Dialog");
 
 	connect(colorDialog_, SIGNAL(currentColorChanged(const QColor &)), this,
-	        SLOT(updateColor(const QColor &)));
+		SLOT(updateColor(const QColor &)));
 
 	connect(button.get(), SIGNAL(clicked(bool)), this,
-	        SLOT(colorButtonClicked()));
+		SLOT(colorButtonClicked()));
 
 	layout->setMargin(0);
 	layout->addWidget(button.release());
@@ -33,17 +34,16 @@ SingleColorMatchPen::SingleColorMatchPen(QWidget *parent)
 void SingleColorMatchPen::setSettings(CVVMatch &match)
 {
 	TRACEPOINT;
-	if (match.isSelected())
-	{
-		match.setPen(pen_);
-	}
+	QPen pen=match.getPen();
+	pen.setColor(color_);
+	match.setPen(pen);
 	TRACEPOINT;
 }
 
 void SingleColorMatchPen::updateColor(const QColor &color)
 {
 	TRACEPOINT;
-	pen_ = QPen{ color };
+	color_ = color;
 	emit settingsChanged(*this);
 	TRACEPOINT;
 }

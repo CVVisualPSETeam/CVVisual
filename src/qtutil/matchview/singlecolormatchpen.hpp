@@ -36,9 +36,7 @@ class SingleColorMatchPen : public MatchSettings
 	 */
 	~SingleColorMatchPen()
 	{
-		TRACEPOINT;
 		colorDialog_->deleteLater();
-		TRACEPOINT;
 	}
 
 	/**
@@ -59,13 +57,11 @@ slots:
 slots:
 	void colorButtonClicked()
 	{
-		TRACEPOINT;
 		colorDialog_->show();
-		TRACEPOINT;
 	}
 
       protected:
-	QPen pen_;
+	QColor color_;
 	QColorDialog *colorDialog_;
 };
 }
