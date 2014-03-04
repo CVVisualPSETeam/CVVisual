@@ -3,7 +3,9 @@
 
 #include "../src/util/observer_ptr.hpp"
 
-class ObserverPtrTest: public testing::Test{};
+class ObserverPtrTest : public testing::Test
+{
+};
 
 using cvv::util::ObserverPtr;
 
@@ -15,5 +17,4 @@ TEST_F(ObserverPtrTest, ConstructionAssignment)
 	ptr = x;
 	EXPECT_FALSE(ptr.isNull());
 	EXPECT_EQ(&x, ptr.getPtr());
-
 }

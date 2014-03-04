@@ -2,10 +2,19 @@
 
 #include "data_controller.hpp"
 
-namespace cvv { namespace impl {
+namespace cvv
+{
+namespace impl
+{
 
-void finalShow() {
-	impl::dataController().lastCall();
+void finalShow()
+{
+	auto &controller = impl::dataController();
+	if (controller.numCalls() != 0)
+	{
+		controller.lastCall();
+	}
+	impl::deleteDataController();
 }
-
-}} // namespaces cvv::impl
+}
+} // namespaces cvv::impl

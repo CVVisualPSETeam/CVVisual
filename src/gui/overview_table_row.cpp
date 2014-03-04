@@ -1,5 +1,7 @@
 #include "overview_table_row.hpp"
 
+#include <algorithm>
+
 #include <QTableWidgetItem>
 #include <QImage>
 
@@ -7,9 +9,13 @@
 #include "../stfl/stringutils.hpp"
 #include "../dbg/dbg.hpp"
 
-namespace cvv { namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
-OverviewTableRow::OverviewTableRow(util::Reference<const impl::Call> call): call_{call}
+OverviewTableRow::OverviewTableRow(util::Reference<const impl::Call> call)
+    : call_{ call }
 {
 	TRACEPOINT;
 	id_ = call_->getId();
@@ -17,13 +23,14 @@ OverviewTableRow::OverviewTableRow(util::Reference<const impl::Call> call): call
 	for (size_t i = 0; i < 2 && i < call->matrixCount(); i++)
 	{
 		QPixmap img;
-		std::tie(std::ignore, img) = qtutil::convertMatToQPixmap(call->matrixAt(i));
+		std::tie(std::ignore, img) =
+		    qtutil::convertMatToQPixmap(call->matrixAt(i));
 		imgs.push_back(std::move(img));
 	}
 	description_ = QString(call_->description());
 	if (call_->metaData().isKnown)
 	{
-		const auto& data = call_->metaData();
+		const auto &data = call_->metaData();
 		line_ = data.line;
 		lineStr = QString::number(data.line);
 		fileStr = data.file;
@@ -33,22 +40,38 @@ OverviewTableRow::OverviewTableRow(util::Reference<const impl::Call> call): call
 	TRACEPOINT;
 }
 
-void OverviewTableRow::addToTable(QTableWidget *table, size_t row, bool showImages, size_t maxImages, int imgHeight, int imgWidth)
+void OverviewTableRow::addToTable(QTableWidget *table, size_t row,
+                                  bool showImages, size_t maxImages,
+                                  int imgHeight, int imgWidth)
 {
 	TRACEPOINT;
 	auto *idItem = new QTableWidgetItem(idStr);
-	std::vector<QTableWidgetItem*> items{};
+	std::vector<QTableWidgetItem *> items{};
 	items.push_back(idItem);
 	if (showImages)
 	{
 		for (size_t i = 0; i < imgs.size() && i < maxImages; i++)
 		{
 			QTableWidgetItem *imgWidget = new QTableWidgetItem{};
-            imgWidget->setData(Qt::DecorationRole, imgs.at(i).scaled(imgHeight, imgWidth, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-            imgWidget->setTextAlignment(Qt::AlignHCenter);
+			imgWidget->setData(
+			    Qt::DecorationRole,
+			    imgs.at(i).scaled(imgHeight, imgWidth,
+			                      Qt::KeepAspectRatio,
+			                      Qt::SmoothTransformation));
+			imgWidget->setTextAlignment(Qt::AlignHCenter);
 			items.push_back(imgWidget);
 		}
 	}
+
+	size_t emptyImagesToAdd =
+	    showImages ? maxImages - std::min(maxImages, imgs.size())
+	               : maxImages;
+
+	for (size_t i = 0; i < emptyImagesToAdd; i++)
+	{
+		items.push_back(new QTableWidgetItem(""));
+	}
+
 	items.push_back(new QTableWidgetItem(description_));
 	items.push_back(new QTableWidgetItem(functionStr, 30));
 	items.push_back(new QTableWidgetItem(fileStr));
@@ -62,5 +85,5 @@ void OverviewTableRow::addToTable(QTableWidget *table, size_t row, bool showImag
 	}
 	TRACEPOINT;
 }
-
-}}
+}
+}

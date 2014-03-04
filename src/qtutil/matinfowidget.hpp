@@ -6,26 +6,31 @@
 #include <QWidget>
 #include <QDoubleSpinBox>
 
-
 #include "opencv2/core/core.hpp"
 #include "util.hpp"
 #include "../dbg/dbg.hpp"
 
-namespace cvv { namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
-class MatInfoWidget : public QWidget{
-Q_OBJECT
-public:
-	MatInfoWidget(cv::Mat,QWidget *parent=nullptr);
+class MatInfoWidget : public QWidget
+{
+	Q_OBJECT
+      public:
+	MatInfoWidget(cv::Mat, QWidget *parent = nullptr);
 
-public slots:
+      public
+slots:
 	void updateMat(cv::Mat mat);
 	void updateConvertStatus(ImageConversionResult result);
-	void setZoom(QRectF,qreal);
+	void setZoom(QRectF, qreal);
 
 signals:
 	void getZoom(qreal zoomfac);
-private:
+
+      private:
 	QDoubleSpinBox *zoomSpin;
 	QLabel *labelConvert;
 	QLabel *labelDim;
@@ -33,9 +38,8 @@ private:
 	QLabel *labelChannel;
 	QLabel *labelSize;
 	QLabel *labelDepth;
-
 };
-
-}}
+}
+}
 
 #endif

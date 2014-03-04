@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <algorithm>
+#include <sstream>
 
 #include <QVBoxLayout>
 #include <QStringList>
@@ -18,16 +19,19 @@
 
 #include "../dbg/dbg.hpp"
 
-namespace cvv { namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
 OverviewGroupSubtable::OverviewGroupSubtable(
-		 util::Reference<controller::ViewController> controller,
-		 OverviewTable *parent,
-		 stfl::ElementGroup<OverviewTableRow> group):
-	controller{controller}, parent{parent}, group{std::move(group)}
+    util::Reference<controller::ViewController> controller,
+    OverviewTable *parent, stfl::ElementGroup<OverviewTableRow> group)
+    : controller{ controller }, parent{ parent }, group{ std::move(group) }
 {
 	TRACEPOINT;
-	controller->setDefaultSetting("overview", "imgsize", QString::number(100));
+	controller->setDefaultSetting("overview", "imgsize",
+	                              QString::number(100));
 	initUI();
 	TRACEPOINT;
 }
@@ -45,11 +49,11 @@ void OverviewGroupSubtable::initUI()
 	auto horizontalHeader = qTable->horizontalHeader();
 	horizontalHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
 	horizontalHeader->setStretchLastSection(false);
-	qTable->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
-	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(rowClicked(int,int)));
+	connect(qTable, SIGNAL(cellDoubleClicked(int, int)), this,
+	        SLOT(rowClicked(int, int)));
 	qTable->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), 
-			this, SLOT(customMenuRequested(QPoint)));
+	connect(qTable, SIGNAL(customContextMenuRequested(QPoint)), this,
+	        SLOT(customMenuRequested(QPoint)));
 	auto *layout = new QVBoxLayout;
 	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(qTable);
@@ -58,13 +62,15 @@ void OverviewGroupSubtable::initUI()
 	TRACEPOINT;
 }
 
-void OverviewGroupSubtable::updateUI(){
+void OverviewGroupSubtable::updateUI()
+{
 	TRACEPOINT;
-	imgSize = controller->getSetting("overview", "imgzoom").toInt() * width() / 400;
+	imgSize = controller->getSetting("overview", "imgzoom").toInt() *
+	          width() / 400;
 	QStringList list{};
 	list << "ID";
 	maxImages = 0;
-	for (auto element : group.getElements ())
+	for (auto element : group.getElements())
 	{
 		if (maxImages < element.call()->matrixCount())
 		{
@@ -73,9 +79,9 @@ void OverviewGroupSubtable::updateUI(){
 	}
 	if (parent->isShowingImages())
 	{
-		for (auto element : group.getElements ())
+		for (auto element : group.getElements())
 		{
-		if (maxImages < element.call()->matrixCount())
+			if (maxImages < element.call()->matrixCount())
 			{
 				maxImages = element.call()->matrixCount();
 			}
@@ -85,15 +91,29 @@ void OverviewGroupSubtable::updateUI(){
 			list << QString("Image ") + QString::number(i + 1);
 		}
 	}
-	list << "Description" << "Function" << "File" << "Line" << "Type";
+	list << "Description"
+	     << "Function"
+	     << "File"
+	     << "Line"
+	     << "Type";
 	qTable->setRowCount(group.size());
 	qTable->setColumnCount(list.size());
 	qTable->setHorizontalHeaderLabels(list);
-	rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
+	int textRowHeight = qTable->fontMetrics().height() + 5;
+	if (textRowHeight >= imgSize)
+	{
+		qTable->setVerticalScrollMode(QAbstractItemView::ScrollPerItem);
+	}
+	else
+	{
+		qTable->setVerticalScrollMode(
+		    QAbstractItemView::ScrollPerPixel);
+	}
+	rowHeight = std::max(imgSize, textRowHeight);
 	for (size_t i = 0; i < group.size(); i++)
 	{
 		group.get(i).addToTable(qTable, i, parent->isShowingImages(),
-								maxImages, imgSize, imgSize);
+		                        maxImages, imgSize, imgSize);
 		qTable->setRowHeight(i, rowHeight);
 	}
 	auto header = qTable->horizontalHeader();
@@ -106,8 +126,10 @@ void OverviewGroupSubtable::updateUI(){
 	{
 		header->setSectionResizeMode(i, QHeaderView::Stretch);
 	}
-	header->setSectionResizeMode(maxImages + 4, QHeaderView::ResizeToContents);
-	header->setSectionResizeMode(maxImages + 5, QHeaderView::ResizeToContents);
+	header->setSectionResizeMode(maxImages + 4,
+	                             QHeaderView::ResizeToContents);
+	header->setSectionResizeMode(maxImages + 5,
+	                             QHeaderView::ResizeToContents);
 	updateMinimumSize();
 	TRACEPOINT;
 }
@@ -130,14 +152,13 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	}
 	controller->removeEmptyWindows();
 	QMenu *menu = new QMenu(this);
-	connect(menu, SIGNAL(triggered(QAction*)), this, SLOT(customMenuAction(QAction*)));
 	TRACEPOINT;
 	auto windows = controller->getTabWindows();
 	menu->addAction(new QAction("Open in new window", this));
 	for (auto window : windows)
 	{
-		menu->addAction(new QAction(QString("Open in '%1'").arg(
-						window->windowTitle()), this));
+		menu->addAction(new QAction(
+		    QString("Open in '%1'").arg(window->windowTitle()), this));
 	}
 	TRACEPOINT;
 	menu->addAction(new QAction("Remove call", this));
@@ -152,9 +173,12 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 	TRACEPOINT;
 	QString idStr = qTable->item(row, 0)->text();
 	TRACEPOINT;
-	currentCustomMenuCallTabId = idStr.toInt();  
+	connect(menu, SIGNAL(triggered(QAction *)), this,
+	        SLOT(customMenuAction(QAction *)));
 	TRACEPOINT;
-	// FIXME: for some reasons this sometimes results in HUGE allocations followed by bad_alloc
+	std::stringstream{ idStr.toStdString() } >> currentCustomMenuCallTabId;
+	currentCustomMenuCallTabIdValid = true;
+	TRACEPOINT;
 	menu->popup(mapToGlobal(location));
 	TRACEPOINT;
 }
@@ -162,7 +186,7 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 void OverviewGroupSubtable::customMenuAction(QAction *action)
 {
 	TRACEPOINT;
-	if (currentCustomMenuCallTabId == -1)
+	if (!currentCustomMenuCallTabIdValid)
 	{
 		return;
 	}
@@ -178,7 +202,8 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 	else if (actionText == "Remove call")
 	{
 		TRACEPOINT;
-		controller->removeCallTab(currentCustomMenuCallTabId, true, true);
+		controller->removeCallTab(currentCustomMenuCallTabId, true,
+		                          true);
 		TRACEPOINT;
 		currentCustomMenuCallTabId = -1;
 		return;
@@ -186,10 +211,12 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 	auto windows = controller->getTabWindows();
 	for (auto window : windows)
 	{
-		if (actionText == QString("Open in '%1'").arg(window->windowTitle()))
+		if (actionText ==
+		    QString("Open in '%1'").arg(window->windowTitle()))
 		{
 			TRACEPOINT;
-			controller->moveCallTabToWindow(currentCustomMenuCallTabId, window->getId());
+			controller->moveCallTabToWindow(
+			    currentCustomMenuCallTabId, window->getId());
 			TRACEPOINT;
 			break;
 		}
@@ -202,12 +229,14 @@ void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
 {
 	TRACEPOINT;
 	(void)event;
-	imgSize = controller->getSetting("overview", "imgzoom").toInt() * width() / 400;
+	imgSize = controller->getSetting("overview", "imgzoom").toInt() *
+	          width() / 400;
 	rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
 	for (size_t row = 0; row < group.size(); row++)
 	{
-		group.get(row).addToTable(qTable, row, parent->isShowingImages(),
-										maxImages, imgSize, imgSize);
+		group.get(row).addToTable(qTable, row,
+		                          parent->isShowingImages(), maxImages,
+		                          imgSize, imgSize);
 		qTable->setRowHeight(row, rowHeight);
 	}
 	updateMinimumSize();
@@ -241,16 +270,17 @@ bool OverviewGroupSubtable::hasRow(size_t id)
 	return false;
 }
 
-void OverviewGroupSubtable::setRowGroup(stfl::ElementGroup<OverviewTableRow> &newGroup)
+void OverviewGroupSubtable::setRowGroup(
+    stfl::ElementGroup<OverviewTableRow> &newGroup)
 {
-	auto compFunc = [](const OverviewTableRow &first, const OverviewTableRow &second){
-		return first.id() == second.id();
-	};
+	auto compFunc = [](const OverviewTableRow &first,
+	                   const OverviewTableRow &second)
+	{ return first.id() == second.id(); };
 	if (group.hasSameElementList(newGroup, compFunc))
 	{
 		return;
 	}
-	//Now both groups aren't the same 
+	// Now both groups aren't the same
 	size_t newMax = 0;
 	for (auto row : newGroup.getElements())
 	{
@@ -265,7 +295,8 @@ void OverviewGroupSubtable::setRowGroup(stfl::ElementGroup<OverviewTableRow> &ne
 		updateUI();
 		return;
 	}
-	//Now both groups have the same maximum number of images within their elements
+	// Now both groups have the same maximum number of images within their
+	// elements
 	size_t minLength = std::min(group.size(), newGroup.size());
 	for (size_t i = 0; i < minLength; i++)
 	{
@@ -276,21 +307,24 @@ void OverviewGroupSubtable::setRowGroup(stfl::ElementGroup<OverviewTableRow> &ne
 			return;
 		}
 	}
-	//Now the bigger group's element lists starts with the smaller group's one
+	// Now the bigger group's element lists starts with the smaller group's
+	// one
 	if (group.size() < newGroup.size())
 	{
-		//Now the new group appends the current group
+		// Now the new group appends the current group
 		for (size_t row = group.size(); row < newGroup.size(); row++)
 		{
-			newGroup.get(row).addToTable(qTable, row, parent->isShowingImages(),
-											maxImages, imgSize, imgSize);
+			newGroup.get(row)
+			    .addToTable(qTable, row, parent->isShowingImages(),
+			                maxImages, imgSize, imgSize);
 			qTable->setRowHeight(row, rowHeight);
 		}
 	}
 	else
 	{
-		//Now the new group deletes elements from the current group
-		for (size_t row = group.size() - 1; row >= newGroup.size(); row--)
+		// Now the new group deletes elements from the current group
+		for (size_t row = group.size() - 1; row >= newGroup.size();
+		     row--)
 		{
 			qTable->removeRow(row);
 		}
@@ -311,5 +345,5 @@ void OverviewGroupSubtable::updateMinimumSize()
 	setMinimumHeight(height + (qTable->rowCount() * 1));
 	DEBUG(height);
 }
-
-}}
+}
+}

@@ -10,49 +10,52 @@
 #include "../controller/view_controller.hpp"
 #include "../impl/single_image_call.hpp"
 
-namespace cvv {
-namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
-/** Single Image Call Tab
+/** Single Image Call Tab.
  * @brief Inner part of a tab, contains an IageView.
  * The inner part of a tab or window
  * containing an ImageView.
  * Allows to access the help.
  */
-class ImageCallTab:
-		public CallTab
+class ImageCallTab : public CallTab
 {
-Q_OBJECT
+	Q_OBJECT
 
-public:
-
+      public:
 	/**
-	 * @brief Short constructor using name from Call and default view.
-	 * Initializes the ImageCallTab and names it after the associated FilterCall.
-	 * @param fc the SingleImageCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to.
+	 * @brief Short constructor named after the Call.
+	 * Initializes the ImageCallTab and names it after the associated
+	 * FilterCall.
+	 * @param call the SingleImageCall containing the information to be
+	 * visualized.
 	 */
-	ImageCallTab(const cvv::impl::SingleImageCall& call, cvv::controller::ViewController& vc);
+	ImageCallTab(const cvv::impl::SingleImageCall &call);
 
 	/**
 	 * @brief Constructor using default view.
 	 * Short constructor..
-	 * @param tabName
-	 * @param fc the SingleImageCall containing the information to be visualized.
-	 * @param vc the ViewController this CallTab belongs to.
-	 * @attention might be deleted
+	 * @param tabName.
+	 * @param call the SingleImageCall containing the information to be
+	 * visualized.
+	 * @attention might be deleted.
 	 */
-	ImageCallTab(const QString& tabName, const cvv::impl::SingleImageCall& call, cvv::controller::ViewController& vc);
+	ImageCallTab(const QString &tabName,
+	             const cvv::impl::SingleImageCall &call);
 
 	/**
-	 * @brief get ID
-	 * @return the ID of the CallTab
-	 * (ID is equal to the ID of the associated call)
+	 * @brief get ID.
+	 * @return the ID of the CallTab.
+	 * (ID is equal to the ID of the associated call).
 	 * Overrides CallTab's getId.
 	 */
 	size_t getId() const override;
 
-private slots:
+      private
+slots:
 
 	/**
 	 * @brief Help Button clicked.
@@ -60,8 +63,7 @@ private slots:
 	 */
 	void helpButtonClicked() const;
 
-private:
-
+      private:
 	/**
 	 * @brief Sets up the visible parts.
 	 * Called by the constructors.
@@ -76,16 +78,14 @@ private:
 	void setView();
 
 	util::Reference<const cvv::impl::SingleImageCall> imageCall_;
-	util::Reference<cvv::controller::ViewController> viewController_;
-	cvv::view::ImageView* imageView_;
+	cvv::view::ImageView *imageView_;
 
-	QPushButton* helpButton_;
-	QHBoxLayout* hlayout_;
-	QVBoxLayout* vlayout_;
-	QWidget* upperBar_;
-
+	QPushButton *helpButton_;
+	QHBoxLayout *hlayout_;
+	QVBoxLayout *vlayout_;
+	QWidget *upperBar_;
 };
-
-}}//namespaces
+}
+} // namespaces
 
 #endif

@@ -12,29 +12,28 @@
 
 class SigSlotTest : public QWidget
 {
-public:
-	explicit SigSlotTest(QWidget* parent = nullptr):
-		QWidget{parent}, i{0}, l{new QLabel{"pressed: 0"}}
-		,signEmi{}
-		,slotPressed{std::bind(&SigSlotTest::pressed, this)}
-		,slotEmi{std::bind(&SigSlotTest::emittedCatched,this)}
+      public:
+	explicit SigSlotTest(QWidget *parent = nullptr)
+	    : QWidget{ parent }, i{ 0 }, l{ new QLabel{ "pressed: 0" } },
+	      signEmi{}, slotPressed{ std::bind(&SigSlotTest::pressed, this) },
+	      slotEmi{ std::bind(&SigSlotTest::emittedCatched, this) }
 
 	{
-		QVBoxLayout* layout= new QVBoxLayout{};
-		QPushButton* b = new QPushButton{"push me"};
+		QVBoxLayout *layout = new QVBoxLayout{};
+		QPushButton *b = new QPushButton{ "push me" };
 		layout->addWidget(b);
 		layout->addWidget(l);
 		setLayout(layout);
-		connect(b,SIGNAL(pressed()),&slotPressed,SLOT(slot()));
-		connect(&signEmi,SIGNAL(signal()), &slotEmi,SLOT(slot()));
+		connect(b, SIGNAL(pressed()), &slotPressed, SLOT(slot()));
+		connect(&signEmi, SIGNAL(signal()), &slotEmi, SLOT(slot()));
 	}
 
 	unsigned int i;
-	QLabel* l;
+	QLabel *l;
 
 	cvv::qtutil::Signal signEmi;
 
-private:
+      private:
 	void pressed()
 	{
 		i++;
@@ -44,7 +43,7 @@ private:
 	void emittedCatched()
 	{
 		std::stringstream s;
-		s<<"pressed: "<<i;//a;
+		s << "pressed: " << i; // a;
 		l->setText(s.str().c_str());
 	}
 

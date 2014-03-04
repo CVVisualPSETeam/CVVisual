@@ -10,29 +10,33 @@
 
 #include "../dbg/dbg.hpp"
 
-namespace cvv {
-namespace stfl {
+namespace cvv
+{
+namespace stfl
+{
 
 /**
  * @brief A group of elements with a title.
  */
-template<class Element>
-class ElementGroup
+template <class Element> class ElementGroup
 {
-public:
-	
+      public:
 	/**
 	 * @brief Contructs an empty ElementGroup.
 	 */
-    ElementGroup(){}
-	
+	ElementGroup()
+	{
+	}
+
 	/**
 	 * @brief Constructs a new ElementGroup
 	 * @param _titles title of this group, consisting of several sub titles
-	 * @param _elements elements of this group 
+	 * @param _elements elements of this group
 	 */
-    ElementGroup(QStringList _titles, QList<Element> &_elements):
-        titles{_titles}, elements{_elements} {}
+	ElementGroup(QStringList _titles, QList<Element> &_elements)
+	    : titles{ _titles }, elements{ _elements }
+	{
+	}
 	/**
 	 * @brief Checks whether or not this group contains the element.
 	 * @param element element to be checked
@@ -58,24 +62,25 @@ public:
 	 * @brief Returns the number of elements in this group.
 	 * @return number of elements in this group
 	 */
-    size_t size() const
+	size_t size() const
 	{
 		TRACEPOINT;
 		return this->elements.size();
 	}
 
-    /**
-     * @brief Returns the title (consisting of sub titles).
-     * @return the group title
-     */
-    QStringList getTitles() const
-    {
-		TRACEPOINT;
-        return this->titles;
-    }
-	
 	/**
-	 * @brief Checks whether this an the given element group have the same titles.
+	 * @brief Returns the title (consisting of sub titles).
+	 * @return the group title
+	 */
+	QStringList getTitles() const
+	{
+		TRACEPOINT;
+		return this->titles;
+	}
+
+	/**
+	 * @brief Checks whether this an the given element group have the same
+	 * titles.
 	 * @param other given other element group
 	 * @return Does this element group and the given have the same titles.
 	 */
@@ -90,18 +95,23 @@ public:
 			}
 		}
 		TRACEPOINT;
-		return true;
+		return other.getTitles().size() == titles.size();
 	}
-	
+
 	/**
-	 * @brief Checks whether this an the given element have the same list of elements.
+	 * @brief Checks whether this an the given element have the same list of
+	 * elements.
 	 * @param other given other element group
-	 * @param elementCompFunc element comparison function that gets two elements passed 
+	 * @param elementCompFunc element comparison function that gets two
+	 * elements passed
 	 * and returns true if both can be considered equal
-	 * @return Does this element group and the given have the same list of elements.
+	 * @return Does this element group and the given have the same list of
+	 * elements.
 	 */
-	bool hasSameElementList(ElementGroup<Element> &other,
-							std::function<bool(const Element&, const Element&)> elementCompFunc)
+	bool
+	hasSameElementList(ElementGroup<Element> &other,
+	                   std::function<bool(const Element &, const Element &)>
+	                       elementCompFunc)
 	{
 		TRACEPOINT;
 		if (other.getElements().size() != elements.size())
@@ -118,10 +128,10 @@ public:
 		TRACEPOINT;
 		return true;
 	}
-	
+
 	/**
 	 * @brief Get the element at the given index (in this group).
-	 * 
+	 *
 	 * @param index given index
 	 * @return element at the given index
 	 * @throws std::invalid_argument if no such element exists
@@ -131,7 +141,9 @@ public:
 		TRACEPOINT;
 		if (index >= size())
 		{
-			throw std::invalid_argument{"there is no call with this id"};
+			throw std::invalid_argument{
+				"there is no call with this id"
+			};
 		}
 		TRACEPOINT;
 		return this->elements[index];
@@ -150,9 +162,9 @@ public:
 		}
 		TRACEPOINT;
 	}
-	
+
 	/**
-	 * @brief Sets the inhereted elements. 
+	 * @brief Sets the inhereted elements.
 	 * @param newElements new elements of this group
 	 */
 	void setElements(QList<Element> newElements)
@@ -161,13 +173,11 @@ public:
 		elements = newElements;
 		TRACEPOINT;
 	}
-	
-private:
+
+      private:
 	QStringList titles;
 	QList<Element> elements;
 };
-
-
 }
 }
 #endif

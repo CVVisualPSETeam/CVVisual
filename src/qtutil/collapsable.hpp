@@ -1,19 +1,23 @@
 #ifndef CVVISUAL_COLLAPSABLE_H
 #define CVVISUAL_COLLAPSABLE_H
-//std
+// std
 #include <cstddef>
-//QT
+// QT
 #include <QString>
 #include <QWidget>
 #include <QPushButton>
-#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QFrame>
 
 #include "../util/util.hpp"
+#include "../util/observer_ptr.hpp"
 #include "../dbg/dbg.hpp"
 
-namespace cvv{ namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
  * @brief Contains a widget and a title.
@@ -21,23 +25,29 @@ namespace cvv{ namespace qtutil{
  * The widget can be collapsed and expanded with a button.
  * If the widget is collapsed only button and title are shown.
  */
-class Collapsable : public QWidget
+class Collapsable : public QFrame
 {
 	Q_OBJECT
-public:
+      public:
 	/**
 	 * @brief Constructs a collapsable
 	 * @param title The title above the widget.
 	 * @param widget The widget to store.
-	 * @param isCollapsed If true the contained widget will be collapsed. (It will be shown
+	 * @param isCollapsed If true the contained widget will be collapsed.
+	 * (It will be shown
 	 * otherwise.)
 	 */
-	//explicit Collapsable(const QString& title, QWidget& widget, bool isCollapsed = true,
+	// explicit Collapsable(const QString& title, QWidget& widget, bool
+	// isCollapsed = true,
 	//		QWidget *parent = 0);
-	explicit Collapsable(const QString& title, std::unique_ptr<QWidget> widget, bool isCollapsed = true,
-			QWidget *parent = 0);
+	explicit Collapsable(const QString &title,
+	                     std::unique_ptr<QWidget> widget,
+	                     bool isCollapsed = true, QWidget *parent = 0);
 
-	~Collapsable(){TRACEPOINT;}
+	~Collapsable()
+	{
+		TRACEPOINT;
+	}
 
 	/**
 	 * @brief Collapses the contained widget.
@@ -67,7 +77,7 @@ public:
 	/**
 	* @brief Sets the title above the widget.
 	*/
-	void setTitle(const QString& title)
+	void setTitle(const QString &title)
 	{
 		TRACEPOINT;
 		button_->setText(title);
@@ -88,22 +98,26 @@ public:
 	 * @brief Returns a reference to the contained widget.
 	 * @return A reference to the contained widget.
 	 */
-	QWidget& widget()
+	QWidget &widget()
 	{
-		TRACEPOINT;return *widget_;
+		TRACEPOINT;
+		return *widget_;
 	}
 
-
-	const QWidget& widget() const
-		{TRACEPOINT;return *widget_;}
+	const QWidget &widget() const
+	{
+		TRACEPOINT;
+		return *widget_;
+	}
 
 	/**
 	 * @brief Detaches the contained widget. (ownership remains)
 	 * @return The contained widget
 	 */
-	QWidget* detachWidget();
+	QWidget *detachWidget();
 
-private slots:
+      private
+slots:
 	/**
 	 * @brief Toggles the visibility.
 	 */
@@ -114,22 +128,23 @@ private slots:
 		TRACEPOINT;
 	}
 
-private:
+      private:
 	/**
 	 * @brief The contained widget
 	 */
-	QWidget* widget_;
+	QWidget *widget_;
 
 	/**
 	 * @brief The button to toggle the widget
 	 */
-	QPushButton* button_;
+	QPushButton *button_;
 
 	/**
 	 * @brief The layout containing the header and widget
 	 */
-	QVBoxLayout* layout_;
-}; //Collapsable
-}} // end namespaces qtutil, cvv
+	util::ObserverPtr<QVBoxLayout> layout_;
+}; // Collapsable
+}
+} // end namespaces qtutil, cvv
 
 #endif // CVVISUAL_COLLAPSABLE_H

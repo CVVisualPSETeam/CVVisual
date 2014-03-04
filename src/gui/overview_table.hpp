@@ -1,5 +1,5 @@
 #ifndef CVVISUAL_OVERVIEWTABLE_HPP
-#define	CVVISUAL_OVERVIEWTABLE_HPP
+#define CVVISUAL_OVERVIEWTABLE_HPP
 
 #include <vector>
 
@@ -15,7 +15,10 @@
 #include "../controller/view_controller.hpp"
 #include "overview_group_subtable.hpp"
 
-namespace cvv { namespace gui {
+namespace cvv
+{
+namespace gui
+{
 
 class OverviewPanel;
 class OverviewTableRow;
@@ -27,34 +30,36 @@ class OverviewTableRow;
 class OverviewTable : public QWidget
 {
 	Q_OBJECT
-	
-public:
-	
+
+      public:
 	/**
 	 * @brief Constructs a new OverviewTable.
 	 * @param controller it's ViewController
-	 * @param parent it's parent overview
 	 */
-	OverviewTable(util::Reference<controller::ViewController> controller, OverviewPanel *parent);
-	
-	~OverviewTable() { TRACEPOINT; }
-	
+	OverviewTable(util::Reference<controller::ViewController> controller);
+
+	~OverviewTable()
+	{
+		TRACEPOINT;
+	}
+
 	/**
 	 * @brief Update the inherited groups of rows and rebuild the UI fully.
 	 * @param newGroups new groups for this table
 	 */
-	void updateRowGroups(const std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups);
-	
+	void updateRowGroups(
+	    const std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups);
+
 	/**
 	 * @brief Hide the thumbnail images in the tables.
 	 */
 	void hideImages();
-	
+
 	/**
 	 * @brief Show thumbnail images in the tables.
 	 */
 	void showImages();
-	
+
 	/**
 	 * @brief Does this the tables show thumbnail images?
 	 */
@@ -65,26 +70,23 @@ public:
 	 * Updates all subtables.
 	 */
 	void updateUI();
-	
+
 	/**
 	 * @brief Removes the table element with the given id.
 	 * @param id given element id
 	 */
 	void removeElement(size_t id);
 
-private:
+      private:
 	util::Reference<controller::ViewController> controller;
-	OverviewPanel *parent;
 	bool doesShowImages = true;
 	qtutil::Accordion *subtableAccordion;
-	std::vector<OverviewGroupSubtable*> subTables{};
+	std::vector<OverviewGroupSubtable *> subTables{};
 	std::vector<stfl::ElementGroup<OverviewTableRow>> groups;
-	
+
 	void appendRowGroupToTable(stfl::ElementGroup<OverviewTableRow> group);
-
 };
-
-}}
+}
+}
 
 #endif
-

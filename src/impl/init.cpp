@@ -2,76 +2,68 @@
 
 #include "../dbg/dbg.hpp"
 
-//filters
+// filters
+#include "../qtutil/filterselectorwidget.hpp"
 #include "../qtutil/filter/grayfilterwidget.hpp"
 #include "../qtutil/filter/sobelfilterwidget.hpp"
+#include "../qtutil/filter/channelreorderfilter.hpp"
+#include "../qtutil/filter/diffFilterWidget.hpp"
+#include "../qtutil/filter/overlayfilterwidget.hpp"
+
+#include "../gui/filter_call_tab.hpp"
+#include "../view/filter_view.hpp"
+#include "../view/defaultfilterview.hpp"
+#include "../view/dual_filter_view.hpp"
+#include "../view/singlefilterview.hpp"
+
+#include "../view/match_view.hpp"
+#include "../view/linematchview.hpp"
+#include "../view/rawview.hpp"
+#include "../view/translationsmatchview.hpp"
+#include "../view/depthview.hpp"
 
 #include "../gui/match_call_tab.hpp"
 
-namespace cvv {namespace impl {
-
+namespace cvv
+{
+namespace impl
+{
 
 void initializeFilterAndViews()
 {
-	TRACEPOINT;
-	qtutil::registerGray();
-	TRACEPOINT;
-	qtutil::registerSobel();
-	TRACEPOINT;
+	static bool alreadyCalled = false;
+	if (alreadyCalled)
+	{
+		return;
+	}
+	alreadyCalled = true;
 
-//	beispiel für einen filter call tab
-//	gui::FilterCallTab::registerElement(#NAME#,[](const std::vector<cv::Mat>& mat, QWidget* p){
-//		return std::unique_ptr<view::FilterView>{new #KLASSE#(mat,p)};
-//	});
+	// filter for filter-selector-widget
+	qtutil::registerFilter<1, 1, qtutil::GrayFilterWidget>("Gray filter");
+	qtutil::registerFilter<1, 1, qtutil::SobelFilterWidget>("Sobel");
+	qtutil::registerFilter<1, 1, qtutil::ChannelReorderFilter>(
+	    "Reorder channels");
 
-//	beispiel für einen match call tab
-//	gui::MatchCallTab::registerElement(#NAME#,
-//		[](const cv::Mat& mat1, const std::vector<cv::KeyPoint>& key1,
-//		   const cv::Mat& mat2, const std::vector<cv::KeyPoint>& key2,
-//		   const std::vector<cv::DMatch>& matches, QWidget* p){
-//		return std::unique_ptr<view::MatchView>{new #KLASSE#(mat1,key1,mat2,key2,matches,p)};
-//	});
+	qtutil::registerFilter<2, 1, qtutil::DiffFilterFunction>("Difference");
+	qtutil::registerFilter<2, 1, qtutil::OverlayFilterWidget>("Overlay");
 
+	// filter-views:
+	cvv::gui::FilterCallTab::registerFilterView<
+	    cvv::view::DefaultFilterView>("DefaultFilterView");
+	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DualFilterView>(
+	    "DualFilterView");
+	cvv::gui::FilterCallTab::registerFilterView<
+	    cvv::view::SingleFilterView>("SingleFilterView");
 
-/*
-alternativ könnten folgende funktionen erstellt und dann genutzt werden:
-
-
-template<class View>
-bool registerFilterView(const QString& name)
-{
-	TRACEPOINT;
-	return gui::FilterCallTab::registerElement(name,
-		[](const std::vector<cv::Mat>& mat, QWidget* p){
-			TRACEPOINT;
-			return std::unique_ptr<view::FilterView>{new View(mat,p)};
-		}
-	);
+	// match-views:
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::LineMatchView>(
+	    "LineMatchView");
+	cvv::gui::MatchCallTab::registerMatchView<
+	    cvv::view::TranslationMatchView>("TranslationMatchView");
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::DepthMatchView>(
+	    "DepthMatchView");
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::Rawview>(
+	    "RawView");
 }
-
-template<class View>
-bool registerMatchView(const QString& name)
-{
-	TRACEPOINT;
-	return gui::MatchCallTab::registerElement(name,
-		[](const cv::Mat& mat1, const std::vector<cv::KeyPoint>& key1,
-			const cv::Mat& mat2, const std::vector<cv::KeyPoint>& key2,
-			const std::vector<cv::DMatch>& matches, QWidget* p)
-		{
-			TRACEPOINT;
-			return std::unique_ptr<view::MatchView>
-				{new View(mat1,key1,mat2,key2,matches,p)};
-		}
-	);
 }
-
-nutzen sollte klar sein:
-registerFilterView<VIEW>("NAME");
-registerMatchView<VIEW>("NAME");
-
-return ist natuerlich, ob der filter registriert wurde (wenn flase nein, da der
-name schon genutzt wurde)
-*/
 }
-
-}}

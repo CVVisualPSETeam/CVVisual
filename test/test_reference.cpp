@@ -3,7 +3,9 @@
 
 #include "../src/util/util.hpp"
 
-class ReferenceTest: public testing::Test{};
+class ReferenceTest : public testing::Test
+{
+};
 
 using cvv::util::Reference;
 using cvv::util::makeRef;
@@ -11,7 +13,7 @@ using cvv::util::makeRef;
 TEST_F(ReferenceTest, Construction)
 {
 	int i = 3;
-	Reference<int> ref1{i};
+	Reference<int> ref1{ i };
 	EXPECT_EQ(*ref1, 3);
 }
 
@@ -19,10 +21,10 @@ TEST_F(ReferenceTest, Reassignment)
 {
 	int i1 = 3;
 	int i2 = 4;
-	Reference<int> ref{i1};
+	Reference<int> ref{ i1 };
 	EXPECT_EQ(ref.getPtr(), &i1);
 	EXPECT_EQ(*ref, 3);
-	ref = Reference<int>{i2};
+	ref = Reference<int>{ i2 };
 	EXPECT_EQ(*ref, 4);
 	EXPECT_EQ(ref.getPtr(), &i2);
 }
@@ -33,7 +35,7 @@ TEST_F(ReferenceTest, Comparing)
 	auto ref1 = makeRef(i1);
 	auto ref2 = makeRef(i1);
 	auto ref3 = makeRef(i2);
-	
+
 	EXPECT_EQ(ref1 == ref2, true);
 	EXPECT_EQ(ref1 != ref2, false);
 	EXPECT_EQ(ref1 == ref3, false);
@@ -55,14 +57,14 @@ TEST_F(ReferenceTest, ConstRefs)
 {
 	const int i = 3;
 	auto ref1 = makeRef(i);
-	Reference<const int> ref2{i};
+	Reference<const int> ref2{ i };
 	EXPECT_EQ(ref1, ref2);
 }
 
 TEST_F(ReferenceTest, ConstRefsFromMutable)
 {
 	int i;
-	Reference<const int> ref{i};
+	Reference<const int> ref{ i };
 	EXPECT_EQ(ref.getPtr(), &i);
 }
 
@@ -70,24 +72,28 @@ struct Base
 {
 	virtual ~Base() = default;
 };
-struct Derived: Base{};
-struct Derived2: Base{};
+struct Derived : Base
+{
+};
+struct Derived2 : Base
+{
+};
 
 TEST_F(ReferenceTest, LiberalConstruction)
 {
 	Derived var;
 	auto derivedRef = makeRef(var);
-	Reference<Base> baseRef{derivedRef};
+	Reference<Base> baseRef{ derivedRef };
 	EXPECT_EQ(&var, baseRef.getPtr());
 }
 
 TEST_F(ReferenceTest, castTo)
 {
 	Derived var;
-	Reference<Base> baseRef{var};
+	Reference<Base> baseRef{ var };
 	auto derivedRef = baseRef.castTo<Derived>();
 	EXPECT_EQ(&var, derivedRef.getPtr());
 	EXPECT_THROW(baseRef.castTo<Derived2>(), std::bad_cast);
 	// should result in a compiler-error:
-	//EXPECT_THROW(baseRef.castTo<std::vector<int>>(), std::bad_cast);
+	// EXPECT_THROW(baseRef.castTo<std::vector<int>>(), std::bad_cast);
 }

@@ -8,7 +8,9 @@ int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
-	auto l = cvv::util::make_unique<QLabel>("some \ntext \"with \nnewlines\n\n\n\nloooooooooooooooooooooooooong line");
+	auto l = cvv::util::make_unique<QLabel>("some \ntext \"with "
+	                                        "\nnewlines\n\n\n\nlooooooooooo"
+	                                        "ooooooooooooooong line");
 
 	cvv::qtutil::Collapsable w("TITLE GOES HERE", std::move(l));
 

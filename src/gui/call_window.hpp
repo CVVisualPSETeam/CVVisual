@@ -20,32 +20,39 @@
 #include "../util/util.hpp"
 #include "tabwidget.hpp"
 
-namespace cvv { 
+namespace cvv
+{
 
-namespace controller {
-	class ViewController;
+namespace controller
+{
+class ViewController;
 }
 
-namespace gui {
+namespace gui
+{
 
 /**
  * @brief Window inheriting some call tabs with in a tab widget.
  */
-class CallWindow : public QMainWindow 
+class CallWindow : public QMainWindow
 {
-	
+
 	Q_OBJECT
 
-public:
+      public:
 	/**
 	 * @brief Contructs a new call window.
 	 * @param controller view controller that this window belongs to
 	 * @param id id of the window
 	 */
-	CallWindow(util::Reference<controller::ViewController> controller, size_t id);
-	
-	~CallWindow() {TRACEPOINT;}
-	
+	CallWindow(util::Reference<controller::ViewController> controller,
+	           size_t id);
+
+	~CallWindow()
+	{
+		TRACEPOINT;
+	}
+
 	/**
 	 * @brief Shows an "Exit program" button.
 	 */
@@ -56,7 +63,7 @@ public:
 	 * @param tab new tab
 	 */
 	void addTab(CallTab *tab);
-	
+
 	/**
 	 * @brief Get the id of this window.
 	 * @return id of this window.
@@ -117,44 +124,47 @@ public:
 	 */
 	std::vector<size_t> getCallTabIds();
 
-public slots:
-	/**
-	 * @brief Resume the execution of the original program.
-	 * @note Should only be used by 'Resume Execution' like buttons (or menu items)
-	 */
-	void resumeProgramExecution(); 
-
-private slots:
+      private
+slots:
 	void contextMenuRequested(const QPoint &location);
 
 	void contextMenuAction(QAction *action);
 
-    void tabCloseRequested(int index);
+	void tabCloseRequested(int index);
 
-protected:
-	
+	void step();
+
+	void fastForward();
+
+	void closeApp();
+
+      protected:
 	size_t id;
 	util::Reference<controller::ViewController> controller;
 	TabWidget *tabWidget;
 	QMainWindow *window;
-	QPushButton *progButton;
-	std::map<size_t, CallTab*> tabMap; 
-	std::map<int, CallTab*> tabAtTabIndex;
+	QPushButton *closeButton;
+	QPushButton *stepButton;
+	QPushButton *fastForwardButton;
+	std::map<size_t, CallTab *> tabMap;
 	QLabel *leftFooter;
 	QLabel *rightFooter;
 	int currentContextMenuTabId = -1;
 	int tabOffset = 0;
 
 	void initMenu();
-	
+
 	void initTabs();
-	
+
 	void initFooter();
 
 	void closeEvent(QCloseEvent *event);
-	
-};
 
-}}
+	size_t getCallTabIdByTabIndex(int index);
+
+	bool hasTabAtIndex(int index);
+};
+}
+}
 
 #endif

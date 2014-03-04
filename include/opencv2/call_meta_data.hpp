@@ -5,42 +5,51 @@
 #include <cstddef>
 #include <utility>
 
-namespace cvv {
-namespace impl {
+namespace cvv
+{
+namespace impl
+{
 
 /**
  * @brief Optional information about a location in Code.
  */
-struct CallMetaData {
-public:
+struct CallMetaData
+{
+      public:
 	/**
 	 * @brief Creates an unknown location.
 	 */
-	CallMetaData(): file(nullptr), line(0), function(nullptr), isKnown(false) {}
-	
+	CallMetaData()
+	    : file(nullptr), line(0), function(nullptr), isKnown(false)
+	{
+	}
+
 	/**
 	 * @brief Creates the provided location.
-	 * 
+	 *
 	 * Argument should be self-explaining.
 	 */
-	CallMetaData(const char* file, size_t line, const char* function) :
-		file(file), line(line), function(function), isKnown(true) {}
-	operator bool() {
+	CallMetaData(const char *file, size_t line, const char *function)
+	    : file(file), line(line), function(function), isKnown(true)
+	{
+	}
+	operator bool()
+	{
 		return isKnown;
 	}
-	
-	//self-explaining:
-	const char* file;
+
+	// self-explaining:
+	const char *file;
 	const size_t line;
-	const char* function;
-	
+	const char *function;
+
 	/**
 	 * @brief Whether *this holds actual data.
 	 */
-    const bool isKnown;
+	const bool isKnown;
 };
-
-}} //namespaces
+}
+} // namespaces
 
 #ifdef __GNUC__
 #define CVVISUAL_FUNCTION_NAME_MACRO __PRETTY_FUNCTION__
@@ -49,8 +58,11 @@ public:
 #endif
 
 /**
- * @brief Creates an instance of CallMetaData with the location of the macro as value.
+ * @brief Creates an instance of CallMetaData with the location of the macro as
+ * value.
  */
-#define CVVISUAL_LOCATION ::cvv::impl::CallMetaData(__FILE__, __LINE__, CVVISUAL_FUNCTION_NAME_MACRO)
+#define CVVISUAL_LOCATION                                                      \
+	::cvv::impl::CallMetaData(__FILE__, __LINE__,                          \
+	                          CVVISUAL_FUNCTION_NAME_MACRO)
 
 #endif

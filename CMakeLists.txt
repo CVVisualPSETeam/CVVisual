@@ -19,7 +19,7 @@ endif()
 
 Option(CVV_DEBUG_MODE "cvvisual-debug-mode" ON)
 Option(CVV_BUILD_TESTS "cvvisual-build-tests" ON)
-Option(CVV_ASAN "cvvisual-asan" OFF)
+Option(CVV_ASAN "cvvisual-asan" ON)
 
 
 #####################
@@ -107,14 +107,26 @@ if(CVV_BUILD_TESTS)
 		COMMAND UnitTests
 	)
 	
+	add_executable(test_manual_final_show_crash manual_test/final_show_crash/main.cpp)
+	target_link_libraries(test_manual_final_show_crash cvvisual opencv_highgui)
+	
+	add_executable(test_manual_all manual_test/test_all/main.cpp)
+	target_link_libraries(test_manual_all cvvisual opencv_highgui)
+	
 	add_executable(test_manual_filters manual_test/filters/main.cpp)
 	target_link_libraries(test_manual_filters cvvisual opencv_highgui)
 	
 	add_executable(test_manual_match manual_test/match/main.cpp)
 	target_link_libraries(test_manual_match cvvisual opencv_core opencv_highgui)
 
+	add_executable(test_manual_single_image manual_test/single_image/main.cpp)
+	target_link_libraries(test_manual_single_image cvvisual opencv_core opencv_highgui)
+
 	add_executable(test_manual_signslot manual_test/signalslot/main.cpp)
 	target_link_libraries(test_manual_signslot cvvisual Qt5Core Qt5Widgets)
+
+	add_executable(test_manual_multiviewcalltab manual_test/multiview_call_tab/main.cpp)
+	target_link_libraries(test_manual_multiviewcalltab cvvisual Qt5Core Qt5Widgets)
 
 	add_executable(test_manual_filtercalltab manual_test/filter_call_tab/main.cpp)
 	target_link_libraries(test_manual_filtercalltab cvvisual Qt5Core Qt5Widgets)
@@ -122,6 +134,8 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_matchcalltab manual_test/match_call_tab/main.cpp)
 	target_link_libraries(test_manual_matchcalltab cvvisual Qt5Core Qt5Widgets opencv_highgui opencv_core opencv_imgproc)
 
+	add_executable(test_manual_imagecalltab manual_test/image_call_tab/main.cpp)
+	target_link_libraries(test_manual_imagecalltab cvvisual Qt5Core Qt5Widgets)
 
 	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
 	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)

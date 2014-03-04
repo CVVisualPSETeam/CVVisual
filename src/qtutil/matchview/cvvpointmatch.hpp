@@ -4,36 +4,38 @@
 #include <QBrush>
 
 #include "cvvmatch.hpp"
-#include "matchpointpen.hpp"
 
-
-namespace cvv{namespace qtutil{
-
-class MatchPointPen;
+namespace cvv
+{
+namespace qtutil
+{
 
 /**
  * @brief This CVVMatch will be shown as circles with a given Color and radius
  * this CVVMatches will be used in DepthView
  */
-class CVVPointMatch:public CVVMatch{
-Q_OBJECT
-public:
+class CVVPointMatch : public CVVMatch
+{
+	Q_OBJECT
+      public:
 	/**
 	* @brief the constructor
 	* @param left_key the left KeyPointPen
 	* @param right_key the right KeyPointPen
 	* @param matchValue the match distance
-	* @param isLeftKey if true the match is at Pos of the left key, otherwise it is at the
+	* @param isLeftKey if true the match is at Pos of the left key,
+	* otherwise it is at the
 	* pos of the right key
 	* @param radius the radius of the MatchPoint
 	* @param pen the pen
 	* @param brush the brush
 	* @param parent the parent Widget
 	*/
-	CVVPointMatch(CVVKeyPoint *left_key,CVVKeyPoint *right_key,const float& matchValue,
-		bool isLeftKey=true,qreal radius=1,const QPen& pen= QPen{Qt::red},
-		const QBrush& brush=QBrush{Qt::red},QGraphicsItem *parent=nullptr);
-
+	CVVPointMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key,
+	              const cv::DMatch &match, bool isLeftKey = true,
+	              qreal radius = 1, const QPen &pen = QPen{ Qt::red },
+	              const QBrush &brush = QBrush{ Qt::red },
+	              QGraphicsItem *parent = nullptr);
 
 	/**
 	 * @brief returns the boundingrect of this Mathc
@@ -44,15 +46,11 @@ public:
 	/**
 	 * @brief the paint function
 	 */
-	virtual void paint(QPainter *painter,const QStyleOptionGraphicsItem *,QWidget *)override;
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+	                   QWidget *) override;
 
-public slots:
-
-	/**
-	 * @brief this method updates the Pen
-	 * @param pen the new Pen
-	 */
-	virtual void updatePen(const MatchPointPen& pen);
+      public
+slots:
 
 	/**
 	 * @brief this slot will be called if the right keypoint has changed
@@ -66,12 +64,11 @@ public slots:
 	 */
 	virtual void updateLeftKey(bool visible) override;
 
-protected:
-
+      protected:
 	bool isLeftKey_;
 	qreal radius_;
 	QBrush brush_;
 };
-
-}}
+}
+}
 #endif

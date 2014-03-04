@@ -1,5 +1,5 @@
 #ifndef CVVISUAL_RAWVIEWTABLE_HPP
-#define	CVVISUAL_RAWVIEWTABLE_HPP
+#define CVVISUAL_RAWVIEWTABLE_HPP
 
 #include <vector>
 
@@ -13,13 +13,16 @@
 #include "../util/util.hpp"
 #include "rawview_group_subtable.hpp"
 
-namespace cvv { 
+namespace cvv
+{
 
-namespace view {
+namespace view
+{
 class Rawview;
 }
 
-namespace gui {
+namespace gui
+{
 
 class RawviewTableCollumn;
 
@@ -29,34 +32,41 @@ class RawviewTableCollumn;
 class RawviewTable : public QWidget
 {
 	Q_OBJECT
-	
-public:
-	
+
+      public:
 	/**
 	 * @brief Constructor of this class.
 	 * @param parent parent view
 	 */
 	RawviewTable(view::Rawview *parent);
-	
+
 	/**
 	 * @brief Update the inherited groups of rows and rebuild the UI fully.
 	 * @param newGroups new groups for this table
-	 */ 
-	void updateRowGroups(const std::vector<stfl::ElementGroup<RawviewTableRow>> newGroups);
+	 */
+	void updateRowGroups(
+	    const std::vector<stfl::ElementGroup<RawviewTableRow>> newGroups);
 
 	/**
 	 * @brief Updates the UI
 	 */
 	void updateUI();
 
-private:
+	/**
+	 * @brief Returns the parent view.
+	 * @return parent view
+	 */
+	view::Rawview *getParent()
+	{
+		return parent;
+	}
+
+      private:
 	view::Rawview *parent;
 	qtutil::Accordion *subtableAccordion;
-	std::vector<RawviewGroupSubtable*> subTables{};
-
+	std::vector<RawviewGroupSubtable *> subTables{};
 };
-
-}}
+}
+}
 
 #endif
-

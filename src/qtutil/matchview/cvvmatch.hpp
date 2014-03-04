@@ -1,7 +1,7 @@
 #ifndef CVVISUAL_CVVMATCH
 #define CVVISUAL_CVVMATCH
 
-#include <QGraphicsItem>
+#include <QGraphicsObject>
 #include <QPainter>
 #include <QPointF>
 #include <QRectF>
@@ -12,17 +12,21 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
-#include "../zoomableimage.hpp"
-#include "matchpen.hpp"
+
+#include "matchsettings.hpp"
 #include "cvvkeypoint.hpp"
+#include "../zoomableimage.hpp"
 #include "../../dbg/dbg.hpp"
 
-namespace cvv{ namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
-class CVVMatch:public QGraphicsObject{
-Q_OBJECT
-public:
-
+class CVVMatch : public QGraphicsObject
+{
+	Q_OBJECT
+      public:
 	/**
 	* @brief the constructor
 	* @param left_key the left KeyPointPen
@@ -30,9 +34,14 @@ public:
 	* @param matchValue the match distance
 	* @param parent the parent Widget
 	*/
-	CVVMatch(CVVKeyPoint *left_key,CVVKeyPoint *right_key,const float& matchValue,const QPen& pen= QPen{Qt::red},QGraphicsItem *parent=nullptr);
+	CVVMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key,
+	         const cv::DMatch &match, const QPen &pen = QPen{ Qt::red },
+	         QGraphicsItem *parent = nullptr);
 
-
+	~CVVMatch()
+	{
+		std::cout << "delete cvmatch" << std::endl;
+	}
 	/**
 	 * @brief returns the boundingrect of this Mathc
 	 * @return the boundingrect of this Mathc
@@ -42,65 +51,90 @@ public:
 	/**
 	 * @brief the paint function
 	 */
-	virtual void paint(QPainter *painter,const QStyleOptionGraphicsItem *option,QWidget *widget);
+	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
+	                   QWidget *);
 
 	/**
 	 * @brief returns the left keypoint.
 	 * @return the left keypoint.
 	 */
 	cv::KeyPoint leftKeyPoint() const
-		{TRACEPOINT;return left_key_->keyPoint();}
+	{
+		return left_key_->keyPoint();
+	}
 
 	/**
 	 * @brief returns the right keypoint.
 	 * @return the right keypoint.
 	 */
 	cv::KeyPoint rightKeyPoint() const
-		{TRACEPOINT;return right_key_->keyPoint();}
+	{
+		return right_key_->keyPoint();
+	}
 
 	/**
 	 * @brief maps the leftImagePoint to scene
 	 * @return the scene point of the leftkeypoint
 	 */
 	QPointF leftImPointInScene() const
-		{TRACEPOINT;return left_key_->imPointInScene();}
+	{
+		return left_key_->imPointInScene();
+	}
 
 	/**
 	 * @brief maps the leftImagePoint to scene
 	 * @return the scene point of the rightkeypoint
 	 */
 	QPointF rightImPointInScene() const
-		{TRACEPOINT;return right_key_->imPointInScene();}
+	{
+		return right_key_->imPointInScene();
+	}
 
 	/**
 	 * @brief returns the match value
 	 * @return the match value
 	 */
-	float matchValue() const
-		{TRACEPOINT;return matchValue_;}
-
-public slots:
-
-	/**
-	 * @brief this method updates the Pen
-	 * @param pen the new Pen
-	 */
-	void updatePen(const MatchPen& pen)
-		{TRACEPOINT;pen_=pen.getPen(*this);TRACEPOINT;}
-
-	/**
-	 * @brief if show=true the match will be visible if both keypoints are in the
-	 * visibleArea of its images
-	 * @param b new show value
-	 */
-	void setShow(const bool& b);
+	const cv::DMatch match() const
+	{
+		return match_;
+	}
 
 	/**
 	 * @brief returns the show value
 	 * @return the show value
 	 */
 	bool isShown() const
-		{TRACEPOINT;return show_;}
+	{
+		return show_;
+	}
+
+	bool operator==(const cv::DMatch &o);
+
+      public
+slots:
+
+	/**
+	 * @brief the match will call setSettings from settings
+	 * @param settings the settings for this match
+	 */
+	void updateSettings(MatchSettings &settings)
+	{
+		settings.setSettings(*this);
+	}
+
+	/**
+	 * @brief this method updates the Pen
+	 * @param pen the new Pen
+	 */
+	void setPen(const QPen &pen);
+
+	/**
+	 * @brief if show=true the match will be visible if both keypoints are
+	 * in the
+	 * visibleArea of its images
+	 * @param b new show value
+	 */
+	void setShow(const bool &b);
 
 	/**
 	 * @brief this slot will be called if the right keypoint has changed
@@ -114,18 +148,17 @@ public slots:
 	 */
 	virtual void updateLeftKey(bool visible);
 
-protected:
-
+      protected:
 	CVVKeyPoint *left_key_;
 	CVVKeyPoint *right_key_;
-	float matchValue_;
+	cv::DMatch match_;
 
 	QPen pen_;
 	bool show_;
 	bool left_key_visible_;
 	bool right_key_visible_;
 };
-
-}}
+}
+}
 
 #endif

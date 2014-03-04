@@ -4,30 +4,37 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QLabel>
+#include <QCheckBox>
 
-#include"../filterfunctionwidget.hpp"
+#include "../../util/observer_ptr.hpp"
+#include "../filterfunctionwidget.hpp"
+#include "grayfilterwidget.hpp"
+#include "channelreorderfilter.hpp"
 
-namespace cvv { namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 /**
  * @brief Represents the opencv sobel filter.
  */
-class SobelFilterWidget: public FilterFunctionWidget<1,1>
+class SobelFilterWidget : public FilterFunctionWidget<1, 1>
 {
-public:
+      public:
 	/**
 	 * @brief The input type.
 	 */
-	using InputArray  = typename FilterFunctionWidget<1,1>::InputArray;
+	using InputArray = typename FilterFunctionWidget<1, 1>::InputArray;
 
 	/**
 	 * @brief The output type.
 	 */
-	using OutputArray = typename FilterFunctionWidget<1,1>::OutputArray;
+	using OutputArray = typename FilterFunctionWidget<1, 1>::OutputArray;
 
 	/**
 	 * @brief Constructor
 	 */
-	SobelFilterWidget(QWidget* parent = nullptr);
+	SobelFilterWidget(QWidget *parent = nullptr);
 
 	/**
 	 * @brief virtual destructor.
@@ -42,50 +49,57 @@ public:
 	 * @param in The input images.
 	 * @param out The output images.
 	 */
-	virtual void applyFilter(InputArray in,OutputArray out) const override;
+	virtual void applyFilter(InputArray in, OutputArray out) const override;
 
 	/**
-	 * @brief Checks whether input can be progressed by the applyFilter function.
+	 * @brief Checks whether input can be progressed by the applyFilter
+	 *function.
 	 * @param in The input images.
 	 * @return bool = true: the filter can be executed.
-	 *		bool = false: the filter cant be executed (e.g. images have wrong depth)
-	 *		QString = message for the user (e.g. why the filter can't be progressed.)
+	 *		bool = false: the filter cant be executed (e.g. images
+	 *have wrong depth)
+	 *		QString = message for the user (e.g. why the filter can't
+	 *be progressed.)
 	 */
-	virtual std::pair<bool, QString> checkInput(InputArray) const override;
-private:
+	virtual std::pair<bool, QString> checkInput(InputArray in) const
+	    override;
+
+      private:
 	/**
 	 * @brief Selection for parameter dx.
 	 */
-	QSpinBox* dx_;
+	util::ObserverPtr<QSpinBox> dx_;
 	/**
 	 * @brief Selection for parameter dy.
 	 */
-	QSpinBox* dy_;
+	util::ObserverPtr<QSpinBox> dy_;
 	/**
 	 * @brief Selection for parameter ksize.
 	 */
-	QComboBox* ksize_;
-	/*
-	 * @brief Selection for parameter scale.
-	 */
-	//QDoubleSpinBox* scale_;
-	/*
-	 * @brief Selection for parameter delta.
-	 */
-	//QDoubleSpinBox* delta_;
+	util::ObserverPtr<QComboBox> ksize_;
 	/**
 	 * @brief Selection for parameter borderType.
 	 */
-	QComboBox* borderType_;
+	util::ObserverPtr<QComboBox> borderType_;
 	/**
-	 * @brief Errormessage
+	 * @brief Wheather a gray filter should be applied first (after
+	 * reorder).
 	 */
-	QLabel* label_;
+	util::ObserverPtr<QCheckBox> gray_;
+	/**
+	 * @brief a gray filter.
+	 */
+	util::ObserverPtr<GrayFilterWidget> grayFilter_;
+	/**
+	 * @brief Wheather a reorder filter should be applied first.
+	 */
+	util::ObserverPtr<QCheckBox> reorder_;
+	/**
+	 * @brief a reorder filter.
+	 */
+	util::ObserverPtr<ChannelReorderFilter> reorderFilter_;
 };
-
-void registerSobel();
-
-
-}}
+}
+}
 
 #endif // SOBELFILTERWIDGET_HPP

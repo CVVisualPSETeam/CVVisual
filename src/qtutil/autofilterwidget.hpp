@@ -16,37 +16,44 @@
 #include "filterselectorwidget.hpp"
 #include "signalslot.hpp"
 #include "../util/util.hpp"
+#include "../util/observer_ptr.hpp"
 #include "../dbg/dbg.hpp"
 #include "signalslot.hpp"
 
-namespace cvv { namespace qtutil{
+namespace cvv
+{
+namespace qtutil
+{
 
-template< std::size_t In, std::size_t Out> class AutoFilterWidget;
+template <std::size_t In, std::size_t Out> class AutoFilterWidget;
 
 /**
  * @brief Contains internal structures or classes.
  *
- * Stores the image input/output, the name and update signals for all output images.
- * Also provides the label to pass messages from the filter and provides a check box to select
+ * Stores the image input/output, the name and update signals for all output
+ *images.
+ * Also provides the label to pass messages from the filter and provides a check
+ *box to select
  * the input to be filtered (can be deactivated).
  */
-namespace structures{
+namespace structures
+{
 
 /**
  * @brief Represents an entry of an autofilterwidget.
  */
-template< std::size_t In, std::size_t Out>
-class AutoFilterWidgetEntry: public QWidget
+template <std::size_t In, std::size_t Out>
+class AutoFilterWidgetEntry : public QWidget
 {
-public:
+      public:
 	/**
 	 * The input type for a filter.
 	 */
-	using InputArray= typename AutoFilterWidget<In,Out>::InputArray;
+	using InputArray = typename AutoFilterWidget<In, Out>::InputArray;
 	/**
 	 * The type of an output parameter of a filter.
 	 */
-	using OutputArray= typename AutoFilterWidget<In,Out>::OutputArray;
+	using OutputArray = typename AutoFilterWidget<In, Out>::OutputArray;
 
 	/**
 	 * @brief Constructor
@@ -55,20 +62,24 @@ public:
 	 * @param out Image output
 	 * @param parent Parent widget
 	 */
-	AutoFilterWidgetEntry(const QString& name, InputArray in, OutputArray out,
-			QWidget* parent = nullptr):
-		QWidget{parent},
-		name_{name},
-		checkBox_{new QCheckBox{name}},
-		message_{new QLabel{}},
-		in_(in),
-		out_(out),
-		signals_()
+	AutoFilterWidgetEntry(const QString &name, InputArray in,
+	                      OutputArray out, QWidget *parent = nullptr)
+	    : QWidget{ parent }, name_{ name }, checkBox_{ nullptr },
+	      message_{ nullptr }, in_(in), out_(out), signals_()
 	{
 		TRACEPOINT;
-		auto lay=util::make_unique<QVBoxLayout>();
-		lay->addWidget(checkBox_);
-		lay->addWidget(message_);
+		auto box = util::make_unique<QCheckBox>(name);
+		checkBox_ = *box;
+
+		auto msg = util::make_unique<QLabel>();
+		message_ = *msg;
+
+		auto lay = util::make_unique<QVBoxLayout>();
+		lay->setAlignment(Qt::AlignTop);
+		lay->setSpacing(0);
+		lay->setContentsMargins(0, 0, 0, 0);
+		lay->addWidget(box.release());
+		lay->addWidget(msg.release());
 		message_->setVisible(false);
 		setLayout(lay.release());
 		enableUserSelection(true);
@@ -76,9 +87,17 @@ public:
 	}
 
 	/**
+	 * @brief Destructor
+	 */
+	~AutoFilterWidgetEntry()
+	{
+		TRACEPOINT;
+	}
+
+	/**
 	 * @brief Checks wheather the check box is checked.
 	 */
-	operator bool()
+	operator bool() const
 	{
 		TRACEPOINT;
 		return checkBox_->isChecked();
@@ -88,9 +107,10 @@ public:
 	 * @brief Returns the image input.
 	 * @return The image input.
 	 */
-	InputArray input()
+	InputArray input() const
 	{
-		TRACEPOINT;return in_;
+		TRACEPOINT;
+		return in_;
 	}
 
 	/**
@@ -107,11 +127,11 @@ public:
 	 * @brief Returns references to the update signals.
 	 * @return References to the update signals.
 	 */
-	std::vector<util::Reference<SignalMatRef>> signalsRef()
+	std::vector<util::Reference<const SignalMatRef>> signalsRef() const
 	{
 		TRACEPOINT;
-		std::vector<util::Reference<SignalMatRef>> result{};
-		for(auto& elem:signals_)
+		std::vector<util::Reference<const SignalMatRef>> result{};
+		for (auto &elem : signals_)
 		{
 			result.emplace_back(elem);
 		}
@@ -122,10 +142,10 @@ public:
 	/**
 	 * @brief Emits all update signals.
 	*/
-	void emitAll()
+	void emitAll() const
 	{
 		TRACEPOINT;
-		for(std::size_t i=0;i<Out;i++)
+		for (std::size_t i = 0; i < Out; i++)
 		{
 			signals_.at(i).emitSignal(out_.at(i).get());
 		}
@@ -134,20 +154,21 @@ public:
 
 	/**
 	 * @brief Sets the message to display.
-	 * @param msg The message to display (if msg == "" no message will be shown.
+	 * @param msg The message to display (if msg == "" no message will be
+	 * shown.
 	 */
-	void setMessage(const QString& msg = "")
+	void setMessage(const QString &msg = "")
 	{
 		TRACEPOINT;
-		if(msg=="")
+		if (msg == "")
 		{
 			message_->setVisible(false);
 			TRACEPOINT;
 			return;
 		}
 		message_->setVisible(true);
-		message_->setText(QString("<font color='red'>")+name_+QString(": ")
-				+msg+QString("</font>"));
+		message_->setText(QString("<font color='red'>") + name_ +
+		                  QString(": ") + msg + QString("</font>"));
 		TRACEPOINT;
 	}
 
@@ -159,7 +180,7 @@ public:
 	void enableUserSelection(bool enabled = true)
 	{
 		TRACEPOINT;
-		if(!enabled)
+		if (!enabled)
 		{
 			checkBox_->setChecked(true);
 		}
@@ -174,11 +195,11 @@ public:
 	/**
 	 * @brief The check box.
 	 */
-	QCheckBox* checkBox_;
+	util::ObserverPtr<QCheckBox> checkBox_;
 	/**
 	 * @brief The label to display messages.
 	 */
-	QLabel* message_;
+	util::ObserverPtr<QLabel> message_;
 	/**
 	 * @brief Image input.
 	 */
@@ -190,51 +211,62 @@ public:
 	/**
 	 * @brief The update signals for the output.
 	 */
-	std::array<SignalMatRef, Out> signals_;
+	std::array<const SignalMatRef, Out> signals_;
 };
 
-}//structures
+} // structures
 
 /**
- * @brief The AutoFilterWidget class automatically applies the selected filter to all added entries.
+ * @brief The AutoFilterWidget class automatically applies the selected filter
+ * to all added entries.
  */
-template< std::size_t In, std::size_t Out>
-class AutoFilterWidget: public FilterSelectorWidget<In,Out>
+template <std::size_t In, std::size_t Out>
+class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 {
-	public:
+      public:
 	/**
 	 * The input type for a filter.
 	 */
-	using InputArray= typename FilterSelectorWidget<In,Out>::InputArray;
+	using InputArray = typename FilterSelectorWidget<In, Out>::InputArray;
 	/**
 	 * The type of an output parameter of a filter.
 	 */
-	using OutputArray= typename FilterSelectorWidget<In,Out>::OutputArray;
+	using OutputArray = typename FilterSelectorWidget<In, Out>::OutputArray;
 
 	/**
 	 * @brief Constructor.
 	 * @param parent The parent widget.
 	 */
-	AutoFilterWidget(QWidget* parent = nullptr):
-		FilterSelectorWidget<In,Out>{parent},
-		slotEnableUserSelection_{[this](bool b){TRACEPOINT; this->enableUserSelection(b);}},
-		slotUseFilterIndividually_{[this](bool b){TRACEPOINT;
-						this->useFilterIndividually(b);}},
-		entryLayout_{new QVBoxLayout},
-		applyFilterIndividually_{false},
-		entries_{},
-		earliestActivationTime_{},
-		slotApplyFilter_{[this](){TRACEPOINT; this->autoApplyFilter();}}
+	AutoFilterWidget(QWidget *parent = nullptr)
+	    : FilterSelectorWidget<In, Out>{ parent },
+	      slotEnableUserSelection_{ [this](bool b)
 	{
 		TRACEPOINT;
-		//add sublayout
-		this->layout_->insertLayout(0,entryLayout_);
-		//connect auto filter slot
-		QObject::connect(&(this->signFilterSettingsChanged_),
-				 SIGNAL(signal()),//&AutoFilterWidget<In,Out>::signFilterSettingsChanged_::signal,
-				 &(this->slotApplyFilter_),
-				 SLOT(slot())//&AutoFilterWidget<In,Out>::slotApplyFilter_::slot
-				 );
+		this->enableUserSelection(b);
+	} },
+	      slotUseFilterIndividually_{ [this](bool b)
+	{
+		TRACEPOINT;
+		this->useFilterIndividually(b);
+	} },
+	      entryLayout_{ nullptr }, applyFilterIndividually_{ false },
+	      entries_{}, earliestActivationTime_{}, slotApplyFilter_{ [this]()
+	{
+		TRACEPOINT;
+		this->autoApplyFilter();
+	} },
+	      userSelection_{ true }
+	{
+		TRACEPOINT;
+		// add sublayout
+		auto lay = util::make_unique<QVBoxLayout>();
+		entryLayout_ = *lay;
+		lay->setContentsMargins(0, 0, 0, 0);
+		this->layout_->insertLayout(0, lay.release());
+		// connect auto filter slot
+		QObject::connect(&(this->signalFilterSettingsChanged()),
+		                 SIGNAL(signal()), &(this->slotApplyFilter_),
+		                 SLOT(slot()));
 		TRACEPOINT;
 	}
 
@@ -245,15 +277,17 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	 * @param out The image output.
 	 * @return The update signals for all output images.
 	 */
-	std::vector<util::Reference<SignalMatRef>>
-		addEntry(const QString& name, InputArray in, OutputArray out)
+	std::vector<util::Reference<const SignalMatRef>>
+	addEntry(const QString &name, InputArray in, OutputArray out)
 	{
 		TRACEPOINT;
-		auto elem=util::make_unique<structures::AutoFilterWidgetEntry<In,Out>>(name,in,out);
+		auto elem = util::make_unique<
+		    structures::AutoFilterWidgetEntry<In, Out>>(name, in, out);
 		auto result = elem->signalsRef();
-		//store element
+		elem->enableUserSelection(userSelection_);
+		// store element
 		entries_.emplace_back(*elem);
-		//add it to the widget
+		// add it to the widget
 		entryLayout_->addWidget(elem.release());
 		TRACEPOINT;
 		return result;
@@ -265,13 +299,13 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	void removeAll()
 	{
 		TRACEPOINT;
-		structures::AutoFilterWidgetEntry<In,Out>* elemToDelete;
-		for(auto& elem: entries_)
+		structures::AutoFilterWidgetEntry<In, Out> *elemToDelete;
+		for (auto &elem : entries_)
 		{
 			elemToDelete = elem.getPtr();
-			//remove from layout
+			// remove from layout
 			entryLayout_->removeWidget(elemToDelete);
-			//delete the element
+			// delete the element
 			elemToDelete->deleteLater();
 		}
 		entries_.clear();
@@ -279,149 +313,198 @@ class AutoFilterWidget: public FilterSelectorWidget<In,Out>
 	}
 
 	/**
-	 * @brief Enabels / disables the user to select entries to filter per combo boxes.
+	 * @brief Enabels / disables the user to select entries to filter per
+	 * combo boxes.
 	 * @param enabled If true it will be enabled.
 	 */
 	void enableUserSelection(bool enabled = true)
 	{
 		TRACEPOINT;
-		for(auto& elem:entries_)
+		userSelection_ = enabled;
+		for (auto &elem : entries_)
 		{
-			elem.get().enableUserSelection(enabled);
+			elem.get().enableUserSelection(userSelection_);
 		}
 		TRACEPOINT;
 	}
 
 	/**
-	 * @brief Sets whether the filter will be applied to entries it can be applied to
+	 * @brief Sets whether the filter will be applied to entries it can be
+	 * applied to
 	 * even when one other entry cant apply the filter.
-	 * @param individually If true each entry that can apply the filter does so.
+	 * @param individually If true each entry that can apply the filter does
+	 * so.
 	 */
 	void useFilterIndividually(bool individually = true)
 	{
 		TRACEPOINT;
-		applyFilterIndividually_=individually;
+		applyFilterIndividually_ = individually;
 		TRACEPOINT;
 	}
+
+	/**
+	 * @brief Returns a slot object that calls enableUserSelection.
+	 * @return A slot object that calls enableUserSelection.
+	 */
+	const SlotBool &slotEnableUserSelection() const
+	{
+		return slotEnableUserSelection_;
+	}
+
+	/**
+	 * @brief Returns a slot object that calls seFilterIndividually.
+	 * @return A slot object that calls seFilterIndividually.
+	 */
+	const SlotBool &slotUseFilterIndividually() const
+	{
+		return slotUseFilterIndividually_;
+	}
+
+      private:
 	/**
 	* @brief calls enableUserSelection
 	*/
-	SlotBool slotEnableUserSelection_;
+	const SlotBool slotEnableUserSelection_;
 	/**
 	 * @brief calls seFilterIndividually.
 	 */
-	SlotBool slotUseFilterIndividually_;
-private:
+	const SlotBool slotUseFilterIndividually_;
 	/**
 	 * @brief Applies the filter when some settings where changed.
 	 */
 	void autoApplyFilter()
 	{
 		TRACEPOINT;
-		auto start=std::chrono::high_resolution_clock::now();
-		//activate again?
-		if(start<earliestActivationTime_)
+		auto start = std::chrono::high_resolution_clock::now();
+		// activate again?
+		if (start < earliestActivationTime_)
 		{
 			TRACEPOINT;
 			return;
 		}
-		//apply filter
-		if(!applyFilterIndividually_)
+		// apply filter
+		if (!applyFilterIndividually_)
 		{
-			//only apply all filters at once
+			// only apply all filters at once
 			TRACEPOINT;
-			//check wheather all filters can be applied
+			// check wheather all filters can be applied
 			std::size_t failed = 0;
-			for(auto& elem:entries_)
+			for (auto &elem : entries_)
 			{
-				//activated?
-				if(elem.get())
+				// activated?
+				if (elem.get())
 				{
-					auto check=this->checkInput(elem.get().input());
+					auto check = this->checkInput(
+					    elem.get().input());
 
-					if(!check.first)
+					if (!check.first)
 					{
-						//elem cant apply filter
+						// elem cant apply filter
 						failed++;
-						elem.get().setMessage(check.second);
-					}else{
-						//elem can apply filter. delete message
+						elem.get().setMessage(
+						    check.second);
+					}
+					else
+					{
+						// elem can apply filter. delete
+						// message
 						elem.get().setMessage("");
 					}
-				}else{
-					//delete message
+				}
+				else
+				{
+					// delete message
 					elem.get().setMessage("");
 				}
 			}
-			if(failed)
+			if (failed)
 			{
-				//one filter failed
+				// one filter failed
 				TRACEPOINT;
 				return;
 			}
-			//all can apply filter
-			//apply filters
-			for(auto& elem:entries_)
+			// all can apply filter
+			// apply filters
+			for (auto &elem : entries_)
 			{
-				//activated?
-				if(elem.get())
+				// activated?
+				if (elem.get())
 				{
-					this->applyFilter(elem.get().input(),elem.get().output());
+					this->applyFilter(elem.get().input(),
+					                  elem.get().output());
 					elem.get().emitAll();
 				};
 			}
-		} else{ //applyFilterIndividually_==true
+		}
+		else
+		{ // applyFilterIndividually_==true
 			TRACEPOINT;
-			//filters can be applied individually
-			for(auto& elem:entries_)
+			// filters can be applied individually
+			for (auto &elem : entries_)
 			{
-				//activated?
-				if(elem.get())
+				// activated?
+				if (elem.get())
 				{
-					auto check=this->checkInput(elem.get().input());
-					if(!check.first)
+					auto check = this->checkInput(
+					    elem.get().input());
+					if (!check.first)
 					{
-						//set message
-						elem.get().setMessage(check.second);
-					}else{
-						//apply filter+set message
+						// set message
+						elem.get().setMessage(
+						    check.second);
+					}
+					else
+					{
+						// apply filter+set message
 						elem.get().setMessage("");
-						this->applyFilter(elem.get().input(),
-								  elem.get().output());
+						this->applyFilter(
+						    elem.get().input(),
+						    elem.get().output());
 						elem.get().emitAll();
 					}
-				}else{
-					//delete message
+				}
+				else
+				{
+					// delete message
 					elem.get().setMessage("");
 				}
 			}
 		}
-		//update activation time
-		earliestActivationTime_=std::chrono::high_resolution_clock::now()+
-			(std::chrono::high_resolution_clock::now()-start);//duration
+		// update activation time
+		earliestActivationTime_ =
+		    std::chrono::high_resolution_clock::now() +
+		    (std::chrono::high_resolution_clock::now() -
+		     start); // duration
 		TRACEPOINT;
 	}
 
 	/**
 	 * @brief The layout containing the entries.
 	 */
-	QVBoxLayout* entryLayout_;
+	util::ObserverPtr<QVBoxLayout> entryLayout_;
 	/**
-	 * @brief Wheater each entry that can apply the filter does so.
+	 * @brief Each entry that can apply the filter does so.
 	 */
 	bool applyFilterIndividually_;
 	/**
 	 * @brief The entries.
 	 */
-	std::vector<util::Reference<structures::AutoFilterWidgetEntry<In,Out>>> entries_;
+	std::vector<util::Reference<structures::AutoFilterWidgetEntry<In, Out>>>
+	entries_;
 	/**
 	 * @brief Time for the earliest next activation for the filter.
 	 */
-	std::chrono::time_point<std::chrono::high_resolution_clock> earliestActivationTime_;
+	std::chrono::time_point<std::chrono::high_resolution_clock>
+	earliestActivationTime_;
 	/**
 	 * @brief Slot called when filter settings change.
 	 */
 	Slot slotApplyFilter_;
+	/**
+	 * @brief Whether user selection is enabled
+	 */
+	bool userSelection_;
 };
-}}
+}
+}
 #endif // CVVISUAL_AUTOFILTERWIDGET_HPP

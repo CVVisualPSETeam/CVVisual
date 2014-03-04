@@ -13,55 +13,61 @@
 #include "../qtutil/zoomableimageoptpanel.hpp"
 #include "../qtutil/zoomableimage.hpp"
 
-namespace cvv {
-namespace view {
+namespace cvv
+{
+namespace view
+{
 
 /**
- * @brief shows one image.
+ * @brief Shows one image.
  */
-class ImageView: public QWidget
+class ImageView : public QWidget
 {
-Q_OBJECT
+	Q_OBJECT
 
 signals:
 
 	/**
-	 * @brief update left Footer
+	 * @brief update left Footer.
 	 * Signal to update the left side of the footer with newText.
-	 * @param newText
+	 * @param newText to update the footer with.
 	 */
 	void updateLeftFooter(const QString &newText);
 
 	/**
-	 * @brief update right Footer
+	 * @brief update right Footer.
 	 * Signal to update the right side of the footer with newText.
-	 * @param newText
+	 * @param newText to update the footer with.
 	 */
-	void updateRightFoooter(const QString& newText);
+	void updateRightFoooter(const QString &newText);
 
-public:
+      public:
 	/**
-	 * @brief default constructor
+	 * @brief Constructor.
+	 * @param image to show.
+	 * @param parent of this QWidget.
 	 **/
-	ImageView(const cv::Mat& image, QWidget* parent = nullptr): QWidget{parent}
+	ImageView(const cv::Mat &image, QWidget *parent = nullptr)
+	    : QWidget{ parent }
 	{
-		layout_ = new QHBoxLayout{this};
-		accor_ = new qtutil::Accordion{this};
+		layout_ = new QHBoxLayout{ this };
+		accor_ = new qtutil::Accordion{ this };
 		accor_->setMinimumWidth(250);
 		accor_->setMaximumWidth(250);
 
 		layout_->addWidget(accor_);
 
-		zoomim_ =new qtutil::ZoomableImage{};
-		auto info = util::make_unique<qtutil::ZoomableOptPanel>(*zoomim_,this);
+		zoomim_ = new qtutil::ZoomableImage{};
+		auto info =
+		    util::make_unique<qtutil::ZoomableOptPanel>(*zoomim_, this);
 
-		connect(zoomim_,SIGNAL(updateConversionResult(ImageConversionResult)),info.get(),
-			SLOT(updateConvertStatus(ImageConversionResult)));
+		connect(zoomim_,
+		        SIGNAL(updateConversionResult(ImageConversionResult)),
+		        info.get(),
+		        SLOT(updateConvertStatus(ImageConversionResult)));
 
-
-		connect(info.get(),SIGNAL(getZoom(qreal)),zoomim_,
-			SLOT(setZoom(qreal)));
-
+		connect(info.get(), SIGNAL(getZoom(qreal)), zoomim_,
+		        SLOT(setZoom(qreal)));
 
 		zoomim_->setMat(image);
 
@@ -70,13 +76,13 @@ public:
 
 		setLayout(layout_);
 	}
-	
-private:
-	QHBoxLayout* layout_;
-	qtutil::Accordion* accor_;
-	qtutil::ZoomableImage* zoomim_;
-};
 
-}} //namespaces
+      private:
+	QHBoxLayout *layout_;
+	qtutil::Accordion *accor_;
+	qtutil::ZoomableImage *zoomim_;
+};
+}
+} // namespaces
 
 #endif

@@ -12,72 +12,112 @@
 
 #include "../dbg/dbg.hpp"
 
-namespace cvv {
-namespace impl {
+namespace cvv
+{
+namespace impl
+{
 
+/**
+ * @brief Returns a new, unique id for calls.
+ */
 size_t newCallId();
 
-class Call {
-public:
+/**
+ * @brief Baseclass for all calls. Provides access to the common functionality.
+ */
+class Call
+{
+      public:
 	virtual ~Call()
 	{
 		DEBUG("Destructing Call #", id);
 	}
+
+	/**
+	 * @brief Returns the unique id of the call.
+	 */
 	size_t getId() const
 	{
 		TRACEPOINT;
 		return id;
 	}
-	
-	const QString& type() const
+
+	/**
+	 * Returns a string that identifies what kind of call this is.
+	 */
+	const QString &type() const
 	{
 		TRACEPOINT;
 		return calltype;
 	}
-	
+
 	/**
 	 * @brief Returns the number of images that are part of the call.
 	 */
 	virtual size_t matrixCount() const = 0;
-	virtual const cv::Mat& matrixAt(size_t index) const = 0;
-	
+
+	/**
+	 * Returns the n'th matrix that is involved in the call.
+	 *
+	 * @throws std::out_of_range if index is higher then matrixCount().
+	 */
+	virtual const cv::Mat &matrixAt(size_t index) const = 0;
+
 	/**
 	 * @brief provides a description of the call.
 	 */
-	const QString& description() const
+	const QString &description() const
 	{
 		TRACEPOINT;
 		return description_;
 	}
-	const QString& requestedView() const
+
+	/**
+	 * @brief Returns a string which view was requested by the caller of the
+	 * API.
+	 */
+	const QString &requestedView() const
 	{
 		TRACEPOINT;
 		return requestedView_;
 	}
-	
-	const CallMetaData& metaData() const
+
+	/**
+	 * @brief Provides read-access to the meta-data of the call (from where
+	 * it came).
+	 */
+	const CallMetaData &metaData() const
 	{
 		TRACEPOINT;
 		return metaData_;
 	}
-protected:
+
+      protected:
+	/**
+	 * @brief Default-construcs a new Call with a new, unique ID.
+	 */
 	Call();
-	Call(impl::CallMetaData callData, QString type, QString description, QString requestedView);
-	
-	Call(const Call&) = default;
-	Call(Call&&) = default;
-	
-	Call& operator=(const Call&) = default;
-	Call& operator=(Call&&) = default;
-	
+
+	/**
+	 * @brief Construcs a new Call with a new, unique ID and the provided
+	 * data.
+	 */
+	Call(impl::CallMetaData callData, QString type, QString description,
+	     QString requestedView);
+
+	Call(const Call &) = default;
+	Call(Call &&) = default;
+
+	Call &operator=(const Call &) = default;
+	Call &operator=(Call &&) = default;
+
 	impl::CallMetaData metaData_;
 	size_t id;
 	QString calltype;
 	QString description_;
 	QString requestedView_;
 };
-
-}} //namespaces
-
+}
+} // namespaces
 
 #endif
