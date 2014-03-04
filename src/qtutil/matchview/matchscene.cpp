@@ -20,11 +20,11 @@ MatchScene::MatchScene(cv::Mat imageLeft, cv::Mat imageRight, QWidget *parent)
 
 	auto basicLayout = util::make_unique<QHBoxLayout>();
 
-	auto graphicScene = util::make_unique<QGraphicsScene>();
+	auto graphicScene = util::make_unique<QGraphicsScene>(this);
 	graphicScene_ = graphicScene.get();
 	auto graphicView =
 	    util::make_unique<structures::MatchSceneGraphicsView>(
-	        graphicScene.release());
+		graphicScene.release());
 	graphicView_ = graphicView.get();
 
 	auto leftImage = util::make_unique<ZoomableImage>(imageLeft);
@@ -51,7 +51,7 @@ MatchScene::MatchScene(cv::Mat imageLeft, cv::Mat imageRight, QWidget *parent)
 	setLayout(basicLayout.release());
 
 	connect(graphicView_, SIGNAL(signalResized()), this,
-	        SLOT(viewReized()));
+		SLOT(viewReized()));
 	TRACEPOINT;
 }
 
