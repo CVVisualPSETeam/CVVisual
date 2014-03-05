@@ -19,7 +19,7 @@ endif()
 
 Option(CVV_DEBUG_MODE "cvvisual-debug-mode" ON)
 Option(CVV_BUILD_TESTS "cvvisual-build-tests" ON)
-Option(CVV_ASAN "cvvisual-asan" ON)
+Option(CVV_ASAN "cvvisual-asan" OFF)
 
 
 #####################
