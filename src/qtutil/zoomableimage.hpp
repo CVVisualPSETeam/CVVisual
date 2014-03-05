@@ -10,6 +10,7 @@
 #include <QWheelEvent>
 #include <QApplication>
 #include <QTimer>
+#include <QScrollBar>
 
 #include "opencv2/core/core.hpp"
 
@@ -85,9 +86,24 @@ class ZoomableImage : public QWidget
 	~ZoomableImage()
 	{
 		TRACEPOINT;
-		// This hopefully fixes a segfault.
-		// TODO: verify
+		//disconnect everything from custom signals
+		QObject::disconnect(this, SIGNAL(updateArea(QRectF,qreal)), 0, 0);
+		QObject::disconnect(this, SIGNAL(updateConversionResult(ImageConversionResult,cv::Mat)), 0, 0);
+		QObject::disconnect(this, SIGNAL(updateMouseHover(QPointF,QString,bool)), 0, 0);
+
+		//disconnect all slots
+		QObject::disconnect((view_->horizontalScrollBar()),
+				 &QScrollBar::valueChanged, this,
+				 &ZoomableImage::viewScrolled);
+		QObject::disconnect((view_->verticalScrollBar()),
+				 &QScrollBar::valueChanged, this,
+				 &ZoomableImage::viewScrolled);
+		QObject::disconnect(&updateAreaTimer_,SIGNAL(timeout()),this,SLOT(emitUpdateArea()));
+
+
+		//stop timer from being activated
 		updateAreaTimer_.stop();
+		updateAreaQueued_=true;
 		TRACEPOINT;
 	}
 

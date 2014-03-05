@@ -3,7 +3,6 @@
 #include <algorithm>
 
 #include <QHBoxLayout>
-#include <QScrollBar>
 #include <QAction>
 #include <QMenu>
 #include <QFileDialog>
