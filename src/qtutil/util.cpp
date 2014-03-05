@@ -57,7 +57,7 @@ std::pair<bool, QString> typeToQString(const cv::Mat &mat)
 		s.append("CV_64F");
 		break;
 	default:
-		s.append("DEPTH").append(QString::number(mat.depth()));
+		s.append("DEPTH<").append(QString::number(mat.depth())).append(">");
 		b = false;
 	}
 	s.append("C").append(QString::number(mat.channels()));
@@ -76,11 +76,11 @@ QString conversionResultToString(const ImageConversionResult &result)
 		break;
 	case ImageConversionResult::MAT_EMPTY:
 		TRACEPOINT;
-		return "Empty Mat";
+		return "Empty mat";
 		break;
 	case ImageConversionResult::MAT_NOT_2D:
 		TRACEPOINT;
-		return "Unsupported Dimension";
+		return "Mat not two dimensional";
 		break;
 	case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:
 		TRACEPOINT;
@@ -92,11 +92,11 @@ QString conversionResultToString(const ImageConversionResult &result)
 		break;
 	case ImageConversionResult::MAT_INVALID_SIZE:
 		TRACEPOINT;
-		return "Invalid Size";
+		return "Invalid size";
 		break;
 	case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:
 		TRACEPOINT;
-		return "Unsupported Depth ";
+		return "Unsupported depth ";
 		break;
 	}
 	TRACEPOINT;
@@ -155,7 +155,7 @@ const static GrayColorTable grayColorTable{};
 template <int depth, int channels> struct ConvertHelper
 {
 	static_assert(channels >= 1 && channels <= 4,
-	              "Illegal number of channels");
+		      "Illegal number of channels");
 	QImage image(const cv::Mat &mat);
 	void pixelOperation(int i, int j, const cv::Mat &mat, uchar *row);
 };
@@ -318,7 +318,7 @@ QImage convert(const cv::Mat &mat, unsigned int threads)
 		}
 		// there may be some rows left
 		convertPart<depth, channels>(mat, img, nperthread * nThreads,
-		                             mat.rows);
+					     mat.rows);
 
 		TRACEPOINT;
 		// join
@@ -346,13 +346,13 @@ QImage convert(const cv::Mat &mat, unsigned int threads)
  */
 template <int depth>
 bool checkValueRange(const cv::Mat &mat, DepthType<depth> min,
-                     DepthType<depth> max)
+		     DepthType<depth> max)
 {
 	TRACEPOINT;
 	std::pair<cv::MatConstIterator_<DepthType<depth>>,
-	          cv::MatConstIterator_<DepthType<depth>>>
+		  cv::MatConstIterator_<DepthType<depth>>>
 	mm{ std::minmax_element(mat.begin<DepthType<depth>>(),
-		                mat.end<DepthType<depth>>()) };
+				mat.end<DepthType<depth>>()) };
 
 	TRACEPOINT;
 	return cv::saturate_cast<DepthType<CV_8UC1>>(*(mm.first)) >= min &&
@@ -368,7 +368,7 @@ bool checkValueRange(const cv::Mat &mat, DepthType<depth> min,
  * @return The result.
  */
 std::pair<ImageConversionResult, QImage> errorResult(ImageConversionResult res,
-                                                     const cv::Mat &mat)
+						     const cv::Mat &mat)
 {
 	TRACEPOINT;
 	switch (res)
@@ -444,9 +444,9 @@ convert(const cv::Mat &mat, bool skipFloatRangeTest, unsigned int threads)
 		if (!skipFloatRangeTest)
 		{
 			if (!checkValueRange<CV_32F>(
-			         mat, cv::saturate_cast<DepthType<CV_32F>>(0),
-			         cv::saturate_cast<DepthType<CV_32F>>(
-			             1))) // floating depth + in range [0,1]
+				 mat, cv::saturate_cast<DepthType<CV_32F>>(0),
+				 cv::saturate_cast<DepthType<CV_32F>>(
+				     1))) // floating depth + in range [0,1]
 			{
 				return errorResult(
 				    ImageConversionResult::FLOAT_OUT_OF_0_TO_1,
@@ -461,9 +461,9 @@ convert(const cv::Mat &mat, bool skipFloatRangeTest, unsigned int threads)
 		if (!skipFloatRangeTest)
 		{
 			if (!checkValueRange<CV_64F>(
-			         mat, cv::saturate_cast<DepthType<CV_64F>>(0),
-			         cv::saturate_cast<DepthType<CV_64F>>(
-			             1))) // floating depth + in range [0,1]
+				 mat, cv::saturate_cast<DepthType<CV_64F>>(0),
+				 cv::saturate_cast<DepthType<CV_64F>>(
+				     1))) // floating depth + in range [0,1]
 			{
 				return errorResult(
 				    ImageConversionResult::FLOAT_OUT_OF_0_TO_1,
@@ -477,7 +477,7 @@ convert(const cv::Mat &mat, bool skipFloatRangeTest, unsigned int threads)
 	default:
 		TRACEPOINT;
 		return errorResult(ImageConversionResult::MAT_UNSUPPORTED_DEPTH,
-		                   mat);
+				   mat);
 	}
 	TRACEPOINT;
 }
@@ -493,7 +493,7 @@ convert(const cv::Mat &mat, bool skipFloatRangeTest, unsigned int threads)
  */
 std::pair<ImageConversionResult, QImage>
 convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest,
-                   unsigned int threads)
+		   unsigned int threads)
 {
 	TRACEPOINT;
 	// empty?
@@ -515,7 +515,7 @@ convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest,
 	{
 		TRACEPOINT;
 		return errorResult(ImageConversionResult::MAT_INVALID_SIZE,
-		                   mat);
+				   mat);
 	}
 
 	// check channels 1-4
@@ -552,7 +552,7 @@ convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest,
 
 std::pair<ImageConversionResult, QPixmap>
 convertMatToQPixmap(const cv::Mat &mat, bool skipFloatRangeTest,
-                    unsigned int threads)
+		    unsigned int threads)
 {
 	TRACEPOINT;
 	auto converted = convertMatToQImage(mat, skipFloatRangeTest, threads);
@@ -631,12 +631,12 @@ void openHelpBrowser(const QString &topic)
 	auto topicEncoded = QUrl::toPercentEncoding(topic);
 	QDesktopServices::openUrl(
 	    QUrl(QString("http://cvv.mostlynerdless.de/help.php?topic=") +
-	         topicEncoded));
+		 topicEncoded));
 	TRACEPOINT;
 }
 
 void setDefaultSetting(const QString &scope, const QString &key,
-                       const QString &value)
+		       const QString &value)
 {
 	TRACEPOINT;
 	QSettings settings{ "CVVisual", QSettings::IniFormat };

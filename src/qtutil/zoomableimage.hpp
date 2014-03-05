@@ -236,6 +236,15 @@ class ZoomableImage : public QWidget
 		return QPixmap::grabWidget(view_->viewport());
 	}
 
+	/**
+	 * @brief Returns the last image conversion result.
+	 * @return The last image conversion result.
+	 */
+	ImageConversionResult lastConversionResult() const
+	{
+		return lastConversionResult_;
+	}
+
 signals:
 	/**
 	 * @brief Emmited whenever the image is updated. It passes the
@@ -459,6 +468,11 @@ slots:
 	 * @brief The delay for updateAreaTimer_.
 	 */
 	int updateAreaDelay_;
+
+	/**
+	 * @brief The last image conversion result.
+	 */
+	ImageConversionResult lastConversionResult_;
 };
 }
 }

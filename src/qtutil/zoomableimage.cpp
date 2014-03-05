@@ -226,6 +226,7 @@ void ZoomableImage::setMat(cv::Mat mat)
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
 	emit updateConversionResult(result.first, mat);
+	lastConversionResult_=result.first;
 	// QTReference:
 	// void QGraphicsScene::clear() [slot]
 	// Removes and deletes all items from the scene, but

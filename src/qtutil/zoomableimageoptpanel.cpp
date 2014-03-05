@@ -1,5 +1,6 @@
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QCheckBox>
 
 #include "zoomableimageoptpanel.hpp"
 #include "../util/util.hpp"
@@ -16,6 +17,8 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
 	TRACEPOINT;
 	auto basicLayout = cvv::util::make_unique<QVBoxLayout>();
 
+	basicLayout->setContentsMargins(0,0,0,0);
+
 	auto zoomSpin = cvv::util::make_unique<QDoubleSpinBox>();
 	auto labelConvert = cvv::util::make_unique<QLabel>();
 	auto labelDim = cvv::util::make_unique<QLabel>();
@@ -25,24 +28,30 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
 	auto labelDepth = cvv::util::make_unique<QLabel>();
 	auto buttonFullImage =
 	    cvv::util::make_unique<QPushButton>("show full Image");
+	auto checkboxShowImage= util::make_unique<QCheckBox>("Show image");
 
 	// ConversionResult+ update mat
 	connect(&zoomIm, SIGNAL(updateConversionResult(ImageConversionResult,
-	                                               const cv::Mat &)),
-	        this, SLOT(updateConvertStatus(ImageConversionResult,
-	                                       const cv::Mat &)));
+						       const cv::Mat &)),
+		this, SLOT(updateConvertStatus(ImageConversionResult,
+					       const cv::Mat &)));
 
 	// getzoom from image
 	connect(&zoomIm, SIGNAL(updateArea(QRectF, qreal)), this,
-	        SLOT(setZoom(QRectF, qreal)));
+		SLOT(setZoom(QRectF, qreal)));
 
 	// set zoom to image
 	connect(zoomSpin.get(), SIGNAL(valueChanged(double)), &zoomIm,
-	        SLOT(setZoom(qreal)));
+		SLOT(setZoom(qreal)));
 
 	// fullimage
 	connect(buttonFullImage.get(), SIGNAL(clicked()), &zoomIm,
-	        SLOT(showFullImage()));
+		SLOT(showFullImage()));
+
+	//connect show image
+	checkboxShowImage->setChecked(true);
+	QObject::connect(checkboxShowImage.get(),SIGNAL(clicked(bool)),
+			 &zoomIm,SLOT(setVisible(bool)));
 
 	zoomSpin->setMinimum(0.0);
 	zoomSpin->setMaximum(2000.0);
@@ -56,55 +65,29 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
 	labelDepth_ = labelDepth.get();
 
 	basicLayout->addWidget(zoomSpin.release());
+	basicLayout->addWidget(checkboxShowImage.release());
 	basicLayout->addWidget(labelConvert.release());
+	basicLayout->addWidget(labelSize.release());
 	basicLayout->addWidget(labelDim.release());
 	basicLayout->addWidget(labelType.release());
-	basicLayout->addWidget(labelChannel.release());
-	basicLayout->addWidget(labelSize.release());
 	basicLayout->addWidget(labelDepth.release());
+	basicLayout->addWidget(labelChannel.release());
 	basicLayout->addWidget(buttonFullImage.release());
 
 	setLayout(basicLayout.release());
 
 	updateMat(zoomIm.mat());
+	updateConvertStatus(zoomIm.lastConversionResult(),zoomIm.mat());
 	TRACEPOINT;
 }
 
 void ZoomableOptPanel::updateConvertStatus(ImageConversionResult result,
-                                           const cv::Mat &mat)
+					   const cv::Mat &mat)
 {
 	TRACEPOINT;
-	QString qs{ "Convert Status: " };
-	switch (result)
-	{
-	case ImageConversionResult::SUCCESS:
-		labelConvert_->setText(qs.append("SUCCES"));
-		break;
-	case ImageConversionResult::MAT_EMPTY:
-		labelConvert_->setText(qs.append("Empty Mat"));
-		break;
-	case ImageConversionResult::MAT_NOT_2D:
-		labelConvert_->setText(qs.append("Unsupported Dimension"));
-		break;
-	case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:
-		labelConvert_->setText(
-		    qs.append("Float values out of range [0,1]"));
-		break;
-	case ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED:
-		labelConvert_->setText(
-		    qs.append("Unsupported number of channels"));
-		break;
-	case ImageConversionResult::MAT_INVALID_SIZE:
-		labelConvert_->setText(qs.append("Invalid Size"));
-		break;
-	case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:
-		labelConvert_->setText(qs.append("Unsupported Depth "));
-		break;
-	default:
-		labelConvert_->setText(
-		    qs.append("Unknown result from convert status"));
-		break;
-	}
+	labelConvert_->setText(
+		QString{ "Convert Status: " }.append(conversionResultToString(result)));
+
 	updateMat(mat);
 	TRACEPOINT;
 }
@@ -127,35 +110,10 @@ void ZoomableOptPanel::updateMat(cv::Mat mat)
 		    QString("Number of Channels: %1").arg(mat.channels()));
 		labelSize_->setText(
 		    QString("Size: %1/%2").arg(mat.rows).arg((mat.cols)));
-		labelDepth_->setText(QString("Depth: %1").arg(mat.depth()));
+		labelDepth_->setText(QString("Depth type: %1").arg(mat.depth()));
 
-		switch (mat.type())
-		{
-		case CV_8U:
-			labelType_->setText("Type: CV_8U");
-			break;
-		case CV_8S:
-			labelType_->setText("Type: CV_5U");
-			break;
-		case CV_16U:
-			labelType_->setText("Type: CV_16U");
-			break;
-		case CV_16S:
-			labelType_->setText("Type: CV_16S");
-			break;
-		case CV_32S:
-			labelType_->setText("Type: CV_32S");
-			break;
-		case CV_32F:
-			labelType_->setText("Type: CV_32F");
-			break;
-		case CV_64F:
-			labelType_->setText("Type: CV_64S");
-			break;
-		default:
-			labelType_->setText("Type: Unkown");
-			break;
-		}
+		auto type=typeToQString(mat);
+		labelType_->setText(QString{"Type: "}.append(type.second));
 	}
 	TRACEPOINT;
 }
