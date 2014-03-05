@@ -7,7 +7,6 @@
 #include <QTableWidget>
 #include <QAction>
 #include <QResizeEvent>
-#include <QTimer>
 
 #include "../stfl/element_group.hpp"
 #include "overview_table_row.hpp"
@@ -81,17 +80,16 @@ class OverviewGroupSubtable : public QWidget
 	 */
 	void setRowGroup(stfl::ElementGroup<OverviewTableRow> &newGroup);
 
-protected:
+      protected:
 	void resizeEvent(QResizeEvent *event);
-	
-private slots:
-	
+
+      private
+slots:
 	void rowClicked(int row, int collumn);
 	void customMenuRequested(QPoint location);
 	void customMenuAction(QAction *action);
-	void resize();
-	
-private:
+
+      private:
 	util::Reference<controller::ViewController> controller;
 	OverviewTable *parent;
 	stfl::ElementGroup<OverviewTableRow> group;
@@ -101,8 +99,6 @@ private:
 	size_t maxImages = 0;
 	int imgSize = 0;
 	int rowHeight = 0;
-	std::unique_ptr<QTimer> resizeTimer;
-	const int RESIZE_TIMEOUT = 250;
 
 	void initUI();
 

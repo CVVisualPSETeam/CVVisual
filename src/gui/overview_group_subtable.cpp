@@ -59,8 +59,6 @@ void OverviewGroupSubtable::initUI()
 	layout->addWidget(qTable);
 	setLayout(layout);
 	updateUI();
-	resizeTimer = util::make_unique<QTimer>(this);
-	connect(&(*resizeTimer), SIGNAL(timeout()), this, SLOT(resize()));
 	TRACEPOINT;
 }
 
@@ -229,15 +227,8 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 
 void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
 {
-	(void)event;
-	resizeTimer->stop();
-	resizeTimer->start(RESIZE_TIMEOUT);
-}
-
-void OverviewGroupSubtable::resize()
-{
 	TRACEPOINT;
-	resizeTimer->stop();
+	(void)event;
 	imgSize = controller->getSetting("overview", "imgzoom").toInt() *
 	          width() / 400;
 	rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
@@ -250,6 +241,7 @@ void OverviewGroupSubtable::resize()
 		qTable->setRowHeight(row, rowHeight);
 	}
 	updateMinimumSize();
+	event->accept();
 	TRACEPOINT;
 }
 
