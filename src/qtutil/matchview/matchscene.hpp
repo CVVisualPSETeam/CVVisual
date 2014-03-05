@@ -17,6 +17,7 @@
 #include "../zoomableimage.hpp"
 #include "../zoomableimageoptpanel.hpp"
 #include "../../dbg/dbg.hpp"
+#include "../../util/util.hpp"
 
 namespace cvv
 {
@@ -25,6 +26,9 @@ namespace qtutil
 
 namespace structures
 {
+/**
+ * @brief class for internal use in MatchScene
+ */
 class MatchSceneGraphicsView : public QGraphicsView
 {
 	Q_OBJECT
@@ -58,8 +62,8 @@ class MatchScene : public QGraphicsView
 	 * @param imageRight the right iamge
 	 * @param parent the parent Widget
 	 */
-	MatchScene(cv::Mat imageLeft, cv::Mat imageRight,
-	           QWidget *parent = nullptr);
+	MatchScene(const cv::Mat& imageLeft,const cv::Mat& imageRight,
+		   QWidget *parent = nullptr);
 
 	/**
 	 * @brief returns a ZoomableOptPanel of the left Image
@@ -79,17 +83,40 @@ class MatchScene : public QGraphicsView
 		return util::make_unique<ZoomableOptPanel>(*rightImage_);
 	}
 
+
+	/**
+	 * @brief get SyncZoomWidget
+	 * @return SyncZoomWidget for the images
+	 */
 	std::unique_ptr<SyncZoomWidget> getSyncZoomWidget();
 
-      public
-slots:
-	void addLeftKeypoint(CVVKeyPoint *);
-	void addRightKeyPoint(CVVKeyPoint *);
-	void addMatch(CVVMatch *);
-	void selectAll();
+	/**
+	 * @brief add keypoint to the left image.
+	 */
+	void addLeftKeypoint(std::unique_ptr<CVVKeyPoint>);
+
+	/**
+	 * @brief add keypoint to the right image.
+	 */
+	void addRightKeyPoint(std::unique_ptr<CVVKeyPoint>);
+
+	/**
+	 * @brief add Match.
+	 */
+	void addMatch(std::unique_ptr<CVVMatch>);
+
+public slots:
+
+	/**
+	 * @brief select all visible Items.
+	 */
+	void selectAllVisible();
 
       private
 slots:
+	/**
+	 * @brief an slot which will be calles when the MatchSceneGraphicsView was resized.
+	 */
 	void viewReized();
 
       private:

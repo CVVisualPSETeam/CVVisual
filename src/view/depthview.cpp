@@ -17,10 +17,10 @@ namespace view
 {
 
 DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
-                               std::vector<cv::KeyPoint> rightKeyPoints,
-                               std::vector<cv::DMatch> matches, cv::Mat leftIm,
-                               cv::Mat rightIm, bool usetrainIdx,
-                               QWidget *parent)
+			       std::vector<cv::KeyPoint> rightKeyPoints,
+			       std::vector<cv::DMatch> matches, cv::Mat leftIm,
+			       cv::Mat rightIm, bool usetrainIdx,
+			       QWidget *parent)
     : MatchView{ parent }
 {
 	TRACEPOINT;
@@ -37,7 +37,7 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 
 	accor->insert("Match Color", std::move(matchpen));
 	accor->insert("Sync Zoom ",
-	              std::move(matchscene_ptr->getSyncZoomWidget()));
+		      std::move(matchscene_ptr->getSyncZoomWidget()));
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
@@ -54,47 +54,47 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		auto key = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
 		key->setShow(false);
 		leftKeys.push_back(key.get());
-		matchscene_ptr->addLeftKeypoint(key.release());
+		matchscene_ptr->addLeftKeypoint(std::move(key));
 
 		auto keyinvisible =
 		    util::make_unique<qtutil::CVVKeyPoint>(keypoint);
 		keyinvisible->setShow(false);
 		rightinvisibleKeys.push_back(keyinvisible.get());
-		matchscene_ptr->addRightKeyPoint(keyinvisible.release());
+		matchscene_ptr->addRightKeyPoint(std::move(keyinvisible));
 	}
 	for (auto &keypoint : rightKeyPoints)
 	{
 		auto key = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
 		key->setShow(false);
 		rightKeys.push_back(key.get());
-		matchscene_ptr->addRightKeyPoint(key.release());
+		matchscene_ptr->addRightKeyPoint(std::move(key));
 
 		auto keyinvisible =
 		    util::make_unique<qtutil::CVVKeyPoint>(keypoint);
 		keyinvisible->setShow(false);
 		leftinvisibleKeys.push_back(keyinvisible.get());
-		matchscene_ptr->addLeftKeypoint(keyinvisible.release());
+		matchscene_ptr->addLeftKeypoint(std::move(keyinvisible));
 	}
 	for (auto &match : matches)
 	{
 		auto cvmatchleft = util::make_unique<qtutil::CVVPointMatch>(
 		    leftKeys.at(match.queryIdx),
 		    leftinvisibleKeys.at(
-		        (usetrainIdx ? match.trainIdx : match.imgIdx)),
+			(usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match);
 		connect(matchpen_ptr, SIGNAL(settingsChanged(MatchSettings &)),
-		        cvmatchleft.get(),
-		        SLOT(updateSettings(MatchSettings &)));
-		matchscene_ptr->addMatch(cvmatchleft.release());
+			cvmatchleft.get(),
+			SLOT(updateSettings(MatchSettings &)));
+		matchscene_ptr->addMatch(std::move(cvmatchleft));
 
 		auto cvmatchright = util::make_unique<qtutil::CVVPointMatch>(
 		    rightinvisibleKeys.at(match.queryIdx),
 		    rightKeys.at((usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match, false);
 		connect(matchpen_ptr, SIGNAL(settingsChanged(MatchSettings &)),
-		        cvmatchright.get(),
-		        SLOT(updateSettings(MatchSettings &)));
-		matchscene_ptr->addMatch(cvmatchright.release());
+			cvmatchright.get(),
+			SLOT(updateSettings(MatchSettings &)));
+		matchscene_ptr->addMatch(std::move(cvmatchright));
 	}
 	TRACEPOINT;
 }

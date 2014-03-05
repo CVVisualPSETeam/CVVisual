@@ -104,8 +104,17 @@ class CVVMatch : public QGraphicsObject
 		return show_;
 	}
 
+	/**
+	 * @brief operator ==
+	 * @param o a cv::DMatch
+	 * @return true if this has the same match
+	 */
 	bool operator==(const cv::DMatch &o);
 
+	/**
+	 * @brief get current pen
+	 * @return current Pen
+	 */
 	QPen getPen() const
 	{
 		return pen_;
