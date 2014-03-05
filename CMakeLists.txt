@@ -28,8 +28,10 @@ if(CVV_DEBUG_MODE MATCHES ON)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCVVISUAL_DEBUGMODE")
 endif()
 
-if(CVV_ASAN MATCHES ON)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+	if(CVV_ASAN MATCHES ON)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fno-omit-frame-pointer")
+	endif()
 endif()
 
 
