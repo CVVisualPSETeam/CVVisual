@@ -12,7 +12,7 @@ namespace cvv
 namespace view
 {
 
-/*
+/**
  * @brief this class interprets the translation of matches as depth value.
  * Unfinished
  */
@@ -33,10 +33,10 @@ class DepthMatchView : public MatchView
 	 * @param parent the parent widget
 	 */
 	DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
-	               std::vector<cv::KeyPoint> rightKeyPoints,
-	               std::vector<cv::DMatch> matches, cv::Mat leftIm,
-	               cv::Mat rightIm, bool usetrainIdx = true,
-	               QWidget *parent = nullptr);
+		       std::vector<cv::KeyPoint> rightKeyPoints,
+		       std::vector<cv::DMatch> matches, cv::Mat leftIm,
+		       cv::Mat rightIm, bool usetrainIdx = true,
+		       QWidget *parent = nullptr);
 
 	/**
 	 * @brief Short constructor.
@@ -45,9 +45,9 @@ class DepthMatchView : public MatchView
 	 */
 	DepthMatchView(const impl::MatchCall &call, QWidget *parent = nullptr)
 	    : DepthMatchView{ call.keyPoints1(), call.keyPoints2(),
-		              call.matches(),    call.img1(),
-		              call.img2(),       call.usesTrainDescriptor(),
-		              parent }
+			      call.matches(),    call.img1(),
+			      call.img2(),       call.usesTrainDescriptor(),
+			      parent }
 	{
 		TRACEPOINT;
 	}

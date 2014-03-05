@@ -37,10 +37,10 @@ class CVVKeyPoint : public QGraphicsObject
 	 * @param image the zoomable image
 	 */
 	CVVKeyPoint(const cv::KeyPoint &key,
-	            qtutil::ZoomableImage *image = nullptr,
-	            QPen pen = QPen{ Qt::red },
-	            QBrush brush = QBrush{ Qt::white },
-	            QGraphicsItem *parent = nullptr);
+		    qtutil::ZoomableImage *image = nullptr,
+		    QPen pen = QPen{ Qt::red },
+		    QBrush brush = QBrush{ Qt::white },
+		    QGraphicsItem *parent = nullptr);
 
 	/**
 	 * @brief this method maps the imagepoint to the scene
@@ -71,7 +71,7 @@ class CVVKeyPoint : public QGraphicsObject
 	 * @brief the paint function.
 	 */
 	void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-	           QWidget *);
+		   QWidget *);
 
 	/**
 	 * @brief returns true if this keypoint is in the visble area of its
@@ -94,6 +94,16 @@ class CVVKeyPoint : public QGraphicsObject
 	}
 
 	bool operator==(const cv::KeyPoint &o);
+
+	QPen getPen() const
+	{
+		return pen_;
+	}
+
+	QBrush getBrush() const
+	{
+		return brush_;
+	}
 
 signals:
 	/**

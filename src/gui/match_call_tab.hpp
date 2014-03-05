@@ -32,19 +32,36 @@ class MatchCallTab
 	 * @brief Short constructor named after Call and using the default view.
 	 * Initializes the MatchCallTab with the default view and names it after
 	 * the associated MatchCall.
-	 * @param matchCall the MatchCall containing the information to be
+	 * @param matchCall - the MatchCall containing the information to be
 	 * visualized.
 	 */
 	MatchCallTab(const cvv::impl::MatchCall &matchCall)
 	    : MultiViewCallTab<cvv::view::MatchView, cvv::impl::MatchCall>{
-		      matchCall
+		      matchCall, QString{ "default_match_view" }, QString{ "LineMatchView" }
 	      }
 	{
 		TRACEPOINT;
-		default_scope_ = QString{ "default_views" };
-		default_key_ = QString{ "default_match_view" };
-		standard_default_ = QString{ "LineMatchView" };
-		createGui();
+		oldView_ = nullptr;
+		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
+		TRACEPOINT;
+	}
+
+	/**
+	 * @brief Constructor with possibility to select view.
+	 * Note that the default view is still created first.
+	 * @param matchCall - the MatchCall containing the information to be
+	 * visualized.
+	 * @param matchViewId - ID of the View to be set up. If a view of this name does
+	 * not exist, the default view will be used.
+	 */
+	MatchCallTab(const cvv::impl::MatchCall& matchCall, const QString& matchViewId)
+		: MultiViewCallTab<cvv::view::MatchView, cvv::impl::MatchCall>{
+			  matchCall, matchViewId, QString{ "default_match_view" }, QString{ "LineMatchView" }
+		  }
+	{
+		TRACEPOINT;
+		oldView_ = nullptr;
+		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
 		TRACEPOINT;
 	}
 
@@ -67,6 +84,30 @@ class MatchCallTab
 		TRACEPOINT;
 		return registerView<View>(name);
 	}
+
+private slots:
+
+	/**
+	 * @brief Slot called when the view has completely changed.
+	 */
+	void viewChanged()
+	{
+		TRACEPOINT;
+		if(oldView_ != nullptr)
+		{
+			view_->setKeyPointSelection(oldView_->getKeyPointSelection());
+			view_->setMatchSelection(oldView_->getMatchSelection());
+		}
+		oldView_ = view_;
+	}
+
+private:
+
+	/**
+	 * @brief usually equal to view_, but not immediately changed when view_ is changed.
+	 */
+	cvv::view::MatchView* oldView_;
+
 };
 }
 } // namespaces

@@ -12,7 +12,7 @@ namespace cvv
 namespace view
 {
 
-/*
+/**
  * @brief this view shows the matches as connect Lines between the images.
  */
 
@@ -32,10 +32,10 @@ class LineMatchView : public MatchView
 	 * @param parent the parent widget
 	 */
 	LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
-	              std::vector<cv::KeyPoint> rightKeyPoints,
-	              std::vector<cv::DMatch> matches, cv::Mat leftIm,
-	              cv::Mat rightIm, bool usetrainIdx = true,
-	              QWidget *parent = nullptr);
+		      std::vector<cv::KeyPoint> rightKeyPoints,
+		      std::vector<cv::DMatch> matches, cv::Mat leftIm,
+		      cv::Mat rightIm, bool usetrainIdx = true,
+		      QWidget *parent = nullptr);
 
 	/**
 	 * @brief Short constructor.
@@ -44,9 +44,9 @@ class LineMatchView : public MatchView
 	 */
 	LineMatchView(const impl::MatchCall &call, QWidget *parent = nullptr)
 	    : LineMatchView{ call.keyPoints1(), call.keyPoints2(),
-		             call.matches(),    call.img1(),
-		             call.img2(),       call.usesTrainDescriptor(),
-		             parent }
+			     call.matches(),    call.img1(),
+			     call.img2(),       call.usesTrainDescriptor(),
+			     parent }
 	{
 		TRACEPOINT;
 	}

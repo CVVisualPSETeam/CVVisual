@@ -35,13 +35,9 @@ class CVVMatch : public QGraphicsObject
 	* @param parent the parent Widget
 	*/
 	CVVMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key,
-	         const cv::DMatch &match, const QPen &pen = QPen{ Qt::red },
-	         QGraphicsItem *parent = nullptr);
+		 const cv::DMatch &match, const QPen &pen = QPen{ Qt::red },
+		 QGraphicsItem *parent = nullptr);
 
-	~CVVMatch()
-	{
-		std::cout << "delete cvmatch" << std::endl;
-	}
 	/**
 	 * @brief returns the boundingrect of this Mathc
 	 * @return the boundingrect of this Mathc
@@ -52,7 +48,7 @@ class CVVMatch : public QGraphicsObject
 	 * @brief the paint function
 	 */
 	virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *,
-	                   QWidget *);
+			   QWidget *);
 
 	/**
 	 * @brief returns the left keypoint.
@@ -109,6 +105,11 @@ class CVVMatch : public QGraphicsObject
 	}
 
 	bool operator==(const cv::DMatch &o);
+
+	QPen getPen() const
+	{
+		return pen_;
+	}
 
       public
 slots:

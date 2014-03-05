@@ -15,7 +15,7 @@ namespace cvv
 namespace view
 {
 
-/*
+/**
  * @brief This Filterview shows only the given images and has no other options.
 */
 class DefaultFilterView : public cvv::view::FilterView
@@ -28,7 +28,7 @@ class DefaultFilterView : public cvv::view::FilterView
 	 * @param parent The parent of this QWidget
 	 */
 	DefaultFilterView(const std::vector<cv::Mat> &images,
-	                  QWidget *parent = nullptr);
+			  QWidget *parent = nullptr);
 
 	/**
 	 * @brief Constructor using a filter call to get its data from.
@@ -36,7 +36,7 @@ class DefaultFilterView : public cvv::view::FilterView
 	 * @param parent of this QWidget.
 	 */
 	DefaultFilterView(const cvv::impl::FilterCall &call,
-	                  QWidget *parent = nullptr)
+			  QWidget *parent = nullptr)
 	    : DefaultFilterView{ { call.original(), call.result() }, parent }
 	{
 		TRACEPOINT;

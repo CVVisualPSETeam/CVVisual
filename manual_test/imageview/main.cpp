@@ -4,20 +4,26 @@
 #include <QApplication>
 
 #include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
+#include "../../src/impl/init.hpp"
 #include "../../src/view/image_view.hpp"
 
 int main(int argc, char *argv[])
 {
+	QApplication a(argc, argv);
 
-	QApplication vc{ argc, argv };
+	if(argc < 2)
+	{
+		std::cerr << "Only execute this with filenames of images as arguments!" << std::endl;
+		return -1;
+	}
+	auto src = cv::imread(argv[1]);
 
-	/* Create some data: */
-	cv::Mat im{ 100, 100, CV_8U };
+	cvv::impl::initializeFilterAndViews();
+	cvv::view::ImageView view{src};
+	view.setWindowTitle("Image View Test");
+	view.show();
 
-	cvv::view::ImageView v{ im };
-
-	v.show();
-	vc.exec();
-	return 0;
+	return a.exec();
 }

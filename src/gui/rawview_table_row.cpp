@@ -259,7 +259,7 @@ QString RawviewTableRow::rowsToText(const std::vector<RawviewTableRow> &rows,
 	}
 	else if (format == "JSON" || format == "PYTHON" || format == "RUBY")
 	{
-		text = QString("[%1]").arg(lines.join(",\n"));
+		text = QString("[%1]").arg(lines.join(",\r\n"));
 	}
 	TRACEPOINT;
 	return text;

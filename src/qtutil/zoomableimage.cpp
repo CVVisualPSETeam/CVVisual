@@ -22,7 +22,7 @@
  */
 template <int depth>
 void putInStream(std::stringstream &ss,
-                 const cvv::qtutil::DepthType<depth> &val)
+		 const cvv::qtutil::DepthType<depth> &val)
 {
 	ss << val;
 }
@@ -35,7 +35,7 @@ void putInStream(std::stringstream &ss,
  */
 template <>
 void putInStream<CV_8U>(std::stringstream &ss,
-                        const cvv::qtutil::DepthType<CV_8U> &val)
+			const cvv::qtutil::DepthType<CV_8U> &val)
 {
 	ss << static_cast<cvv::qtutil::DepthType<CV_16S>>(val);
 }
@@ -48,7 +48,7 @@ void putInStream<CV_8U>(std::stringstream &ss,
  */
 template <>
 void putInStream<CV_8S>(std::stringstream &ss,
-                        const cvv::qtutil::DepthType<CV_8S> &val)
+			const cvv::qtutil::DepthType<CV_8S> &val)
 {
 	ss << static_cast<cvv::qtutil::DepthType<CV_16S>>(val);
 }
@@ -180,7 +180,8 @@ namespace qtutil
 ZoomableImage::ZoomableImage(const cv::Mat &mat, QWidget *parent)
     : QWidget{ parent }, mat_{ mat }, pixmap_{ nullptr }, view_{ nullptr },
       scene_{ nullptr }, zoom_{ 1 }, threshold_{ 60 }, autoShowValues_{ true },
-      values_{}, scrollFactorCTRL_{ 1.025 }, scrollFactorCTRLShift_{ 1.01 }
+      values_{}, scrollFactorCTRL_{ 1.025 }, scrollFactorCTRLShift_{ 1.01 },
+      updateAreaTimer_{}, updateAreaQueued_{false}, updateAreaDelay_{50}
 {
 	// qt5 doc : "The view does not take ownership of scene."
 	auto scene = util::make_unique<QGraphicsScene>(this);
@@ -191,13 +192,13 @@ ZoomableImage::ZoomableImage(const cv::Mat &mat, QWidget *parent)
 	view_->setScene(scene.release());
 
 	QObject::connect((view_->horizontalScrollBar()),
-	                 &QScrollBar::valueChanged, this,
-	                 &ZoomableImage::viewScrolled);
+			 &QScrollBar::valueChanged, this,
+			 &ZoomableImage::viewScrolled);
 	QObject::connect((view_->verticalScrollBar()),
-	                 &QScrollBar::valueChanged, this,
-	                 &ZoomableImage::viewScrolled);
+			 &QScrollBar::valueChanged, this,
+			 &ZoomableImage::viewScrolled);
 	QObject::connect(this, SIGNAL(updateArea(QRectF, qreal)), this,
-	                 SLOT(drawValues()));
+			 SLOT(drawValues()));
 	// scrollbars should have strong focus
 	view_->horizontalScrollBar()->setFocusPolicy(Qt::FocusPolicy::NoFocus);
 	view_->verticalScrollBar()->setFocusPolicy(Qt::NoFocus);
@@ -210,10 +211,14 @@ ZoomableImage::ZoomableImage(const cv::Mat &mat, QWidget *parent)
 	// rightklick
 	setContextMenuPolicy(Qt::CustomContextMenu);
 	QObject::connect(this,
-	                 SIGNAL(customContextMenuRequested(const QPoint &)),
-	                 this, SLOT(rightClick(QPoint)));
+			 SIGNAL(customContextMenuRequested(const QPoint &)),
+			 this, SLOT(rightClick(QPoint)));
+	//update area timer
+	updateAreaTimer_.setSingleShot(true);
+	QObject::connect(&updateAreaTimer_,SIGNAL(timeout()),this,SLOT(emitUpdateArea()));
 
 	showFullImage();
+	setMouseTracking(true);
 }
 
 void ZoomableImage::setMat(cv::Mat mat)
@@ -245,7 +250,17 @@ void ZoomableImage::setZoom(qreal factor)
 	qreal nscale = factor / zoom_;
 	zoom_ = factor;
 	view_->scale(nscale, nscale);
-	emit updateArea(visibleArea(), zoom_);
+	//less signals
+	queueUpdateArea();
+}
+
+void ZoomableImage::queueUpdateArea()
+{
+	if(!updateAreaQueued_)
+	{
+		updateAreaQueued_=true;
+		updateAreaTimer_.start(updateAreaDelay_);
+	}
 }
 
 void ZoomableImage::drawValues()
@@ -281,7 +296,7 @@ void ZoomableImage::drawValues()
 			QGraphicsTextItem *txt = scene_->addText("");
 			txt->setHtml(
 			    QString("<div style='background-color:rgba(255, "
-			            "255, 255, 0.5);'>") +
+				    "255, 255, 0.5);'>") +
 			    s + "</div>");
 			txt->setPos(i, j);
 			txt->setScale(0.008);
@@ -323,7 +338,7 @@ void ZoomableImage::setArea(QRectF rect, qreal zoom)
 {
 	setZoom(zoom);
 	view_->centerOn(rect.topLeft() +
-	                (rect.bottomRight() - rect.topLeft()) / 2);
+			(rect.bottomRight() - rect.topLeft()) / 2);
 }
 
 void ZoomableImage::showFullImage()
@@ -335,7 +350,7 @@ void ZoomableImage::showFullImage()
 		return;
 	}
 	setZoom(std::min(static_cast<qreal>(view_->viewport()->width()) / iw,
-	                 static_cast<qreal>(view_->viewport()->height()) / ih));
+			 static_cast<qreal>(view_->viewport()->height()) / ih));
 }
 
 QRectF ZoomableImage::visibleArea() const
@@ -389,6 +404,27 @@ QPointF ZoomableImage::mapImagePointToParent(QPointF point) const
 {
 	return mapToParent(view_->mapToParent(
 	    view_->mapFromScene(pixmap_->mapToScene(point))));
+}
+
+void ZoomableImage::mouseMoveEvent(QMouseEvent * event)
+{
+	QPointF imgPos=view_->mapToScene(view_->mapFromGlobal(event->globalPos()));
+	bool inImage=(imgPos.x()>=0)
+			&&(imgPos.y()>=0)
+			&&(imgPos.x()<=imageWidth())
+			&&(imgPos.y()<=imageHeight());
+	QString pixelVal{""};
+	if(inImage)
+	{
+		pixelVal=QString{printPixel(mat_, imgPos.x(), imgPos.y()).c_str()};
+	}
+	emit updateMouseHover(imgPos,pixelVal,inImage);
+}
+
+void ZoomableImage::emitUpdateArea()
+{
+	updateAreaQueued_=false;
+	emit updateArea(visibleArea(),zoom_);
 }
 
 namespace structures

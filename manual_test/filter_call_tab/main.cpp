@@ -34,8 +34,10 @@ int main(int argc, char *argv[])
 	    cvv::view::SingleFilterView>("SingleFilterView");
 
 	cvv::gui::FilterCallTab u{ fc };
+	cvv::gui::FilterCallTab v{ fc, "SingleFilterView" };
 
 	u.show();
+	v.show();
 	controller.exec();
 	return 0;
 }

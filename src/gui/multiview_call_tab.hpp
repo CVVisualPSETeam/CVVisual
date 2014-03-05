@@ -31,6 +31,8 @@ namespace gui
  * The inner part of a tab or window
  * containing a View.
  * Allows to switch between different views and to access the help.
+ * @tparam ViewType A type of View.
+ * @tparam CallType A type of Call.
  */
 template <class ViewType, class CallType>
 class MultiViewCallTab
@@ -38,13 +40,31 @@ class MultiViewCallTab
       public cvv::qtutil::RegisterHelper<ViewType, const CallType &, QWidget *>
 {
       public:
-	MultiViewCallTab(const CallType &call)
-	    : MultiViewCallTab{ call.description(), call }
+	/**
+	 * @brief Short constructor named after Call and using the default view.
+	 * Initializes the MultiViewCallTab with the default view and names it after
+	 * the associated Call.
+	 * @param call - the Call containing the information to be
+	 * visualized.
+	 * @param default_key - Key under which the default view is to be saved.
+	 * @param standard_default - Standard default view.
+	 */
+	MultiViewCallTab(const CallType &call, const QString& default_key, const QString& standard_default)
+	    : MultiViewCallTab{ call.description(), call, default_key, standard_default }
 	{
 		TRACEPOINT;
 	}
 
-	MultiViewCallTab(const QString &tabName, const CallType &call)
+	/**
+	 * @brief Constructor using the default view.
+	 * Initializes the MultiViewCallTab with the default view.
+	 * @param name - Name to give the CallTab.
+	 * @param call - the Call containing the information to be
+	 * visualized.
+	 * @param default_key - Key under which the default view is to be saved.
+	 * @param standard_default - Standard default view.
+	 */
+	MultiViewCallTab(const QString &tabName, const CallType &call, const QString& default_key, const QString& standard_default)
 	    : call_{ call }, currentIndexChanged{ [&]()
 	{
 		vlayout_->removeWidget(view_);
@@ -58,7 +78,33 @@ class MultiViewCallTab
 	{
 		TRACEPOINT;
 		setName(tabName);
+		default_scope_ = QString{ "default_views" };
+		default_key_ = default_key;
+		standard_default_ = standard_default;
+		// Sets standard_default_ as default in case no other default is
+		// set:
+		qtutil::setDefaultSetting(default_scope_, default_key_,
+					  standard_default_);
+		viewId_ = qtutil::getSetting(default_scope_, default_key_);
+		createGui();
 		TRACEPOINT;
+	}
+
+	/**
+	 * @brief Constructor with possibility to select view.
+	 * Note that the default view is still created first.
+	 * @param call - the Call containing the information to be
+	 * visualized.
+	 * @param viewId - ID of the View to be set up. If a view of this name does
+	 * not exist, the default view will be used.
+	 * @param default_key - Key under which the default view is to be saved.
+	 * @param standard_default - Standard default view.
+	 */
+	MultiViewCallTab(const CallType& call, const QString& viewId, const QString& default_key, const QString& standard_default)
+		: MultiViewCallTab{call, default_key, standard_default}
+	{
+		this->select(viewId);
+		//currentIndexChanged.slot();
 	}
 
 	~MultiViewCallTab()
@@ -119,12 +165,6 @@ class MultiViewCallTab
 	void createGui()
 	{
 		TRACEPOINT;
-		// Sets standard_default_ as default in case no other default is
-		// set:
-		qtutil::setDefaultSetting(default_scope_, default_key_,
-		                          standard_default_);
-		viewId_ = qtutil::getSetting(default_scope_, default_key_);
-
 		if (!this->select(viewId_))
 		{
 			this->select(standard_default_);
@@ -166,7 +206,6 @@ class MultiViewCallTab
 		TRACEPOINT;
 	}
 
-      private:
 	/**
 	 * @brief sets up the View currently selected in the ComboBox inherited
 	 * from RegisterHelper.
@@ -189,6 +228,7 @@ class MultiViewCallTab
 			view_ = viewHistory_.at(this->selection());
 			vlayout_->addWidget(view_);
 		}
+		viewSet.emitSignal();
 		TRACEPOINT;
 	}
 
@@ -202,6 +242,12 @@ class MultiViewCallTab
 	QHBoxLayout *hlayout_;
 	QVBoxLayout *vlayout_;
 	QWidget *upperBar_;
+
+	//signals:
+	/**
+	 * @brief signal emitted whem view is completely set up.
+	 */
+	qtutil::Signal viewSet;
 
 	// slots:
 	/**

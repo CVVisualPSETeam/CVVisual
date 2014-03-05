@@ -9,7 +9,6 @@
 #include <QString>
 #include <QWidget>
 // CVV
-#include "../qtutil/matinfowidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
 #include "filter_view.hpp"
 #include "../impl/filter_call.hpp"
@@ -66,7 +65,7 @@ class DualFilterView : public FilterView
 	* @param parent The Widget that is to be the parent of the view
 	*/
 	DualFilterView(std::array<cv::Mat, 2> images,
-	               QWidget *parent = nullptr);
+		       QWidget *parent = nullptr);
 
 	/**
 	* Default view is DiffFilter grayscale.
@@ -79,7 +78,7 @@ class DualFilterView : public FilterView
 	* @param parent The Widget that is to be the parent of the view
 	*/
 	DualFilterView(const std::vector<cv::Mat> &images,
-	               QWidget *parent = nullptr);
+		       QWidget *parent = nullptr);
 
 	/**
 	 * @brief Constructor using a filter call to get its data from.
@@ -87,7 +86,7 @@ class DualFilterView : public FilterView
 	 * @param parent of this QWidget.
 	 */
 	DualFilterView(const cvv::impl::FilterCall &call,
-	               QWidget *parent = nullptr)
+		       QWidget *parent = nullptr)
 	    : DualFilterView{
 		      convertToArray({ call.original(), call.result() }), parent
 	      }

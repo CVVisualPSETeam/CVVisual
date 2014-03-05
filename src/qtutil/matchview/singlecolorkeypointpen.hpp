@@ -63,7 +63,7 @@ slots:
 
       private:
 	QColorDialog *colordia_;
-	QPen pen_;
+	QColor color_;
 };
 }
 }
