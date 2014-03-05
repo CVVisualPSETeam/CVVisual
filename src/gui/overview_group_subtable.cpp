@@ -235,7 +235,7 @@ void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
 	for (size_t row = 0; row < group.size(); row++)
 	{
 		DEBUG(QString("Iteration %1").arg(row));
-		group.get(row).addToTable(qTable, row,
+		group.get(row).resizeInTable(qTable, row,
 		                          parent->isShowingImages(), maxImages,
 		                          imgSize, imgSize);
 		qTable->setRowHeight(row, rowHeight);
