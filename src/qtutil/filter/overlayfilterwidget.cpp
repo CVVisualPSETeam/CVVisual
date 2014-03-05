@@ -16,7 +16,7 @@ namespace qtutil
 {
 
 OverlayFilterWidget::OverlayFilterWidget(QWidget *parent)
-    : FilterFunctionWidget<2, 1>{ parent }, opacityOfOriginalImg_{ 0.5 }
+    : FilterFunctionWidget<2, 1>{ parent }, opacityOfFilterImg_{ 0.5 }
 {
 	TRACEPOINT;
 
@@ -24,6 +24,7 @@ OverlayFilterWidget::OverlayFilterWidget(QWidget *parent)
 	auto slider = util::make_unique<QSlider>(Qt::Horizontal);
 
 	slider->setRange(0, 100);
+	slider->setSliderPosition(50);
 	slider->setTickPosition(QSlider::TicksAbove);
 	slider->setTickInterval(10);
 
@@ -32,7 +33,7 @@ OverlayFilterWidget::OverlayFilterWidget(QWidget *parent)
 
 	// Add title of slider and slider to the layout
 	layout->addWidget(util::make_unique<QLabel>(
-	    "Select opacity of original image").release());
+	    "Select opacity of right image").release());
 	layout->addWidget(slider.release());
 	setLayout(layout.release());
 
@@ -50,8 +51,8 @@ void OverlayFilterWidget::applyFilter(InputArray in, OutputArray out) const
 		return;
 	}
 
-	cv::addWeighted(in.at(0).get(), opacityOfOriginalImg_, in.at(1).get(),
-	                1 - opacityOfOriginalImg_, 0, out.at(0).get());
+	cv::addWeighted(in.at(0).get(), 1 - opacityOfFilterImg_, in.at(1).get(),
+	                opacityOfFilterImg_, 0, out.at(0).get());
 
 	TRACEPOINT;
 }
@@ -80,7 +81,7 @@ std::pair<bool, QString> OverlayFilterWidget::checkInput(InputArray in) const
 void OverlayFilterWidget::updateOpacity(int newOpacity)
 {
 	TRACEPOINT;
-	opacityOfOriginalImg_ = newOpacity / 100.0;
+	opacityOfFilterImg_ = newOpacity / 100.0;
 	signalFilterSettingsChanged().emitSignal();
 	TRACEPOINT;
 }
