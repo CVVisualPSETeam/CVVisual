@@ -30,3 +30,21 @@ int main(int argc, char *argv[])
 	vc.exec();
 	return 0;
 }
+
+/*
+ * ImageCallTab Test:
+ * 1. Start the test.
+ * Two windows should appear, both showing ImageView (refer to its test).
+ * [-> all Constructors work]
+ * In each window, on the top above the View there should be (left to right)
+ * a label reading "Single Image View" and a "Help" button.
+ * [-> GUI is complete]
+ *
+ * 2. Click "Help".
+ * The help page of Single Image View should open in a web browser.
+ * [-> Help works]
+ *
+ * 3. Close the windows.
+ * There should be no segfaults or other problems.
+ * [-> Closing works]
+ */
