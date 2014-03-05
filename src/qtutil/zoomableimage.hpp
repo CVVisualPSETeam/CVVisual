@@ -85,6 +85,10 @@ class ZoomableImage : public QWidget
 	~ZoomableImage()
 	{
 		TRACEPOINT;
+		// This hopefully fixes a segfault.
+		// TODO: verify
+		updateAreaTimer_.stop();
+		TRACEPOINT;
 	}
 
 	/**
