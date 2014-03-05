@@ -18,7 +18,7 @@ namespace view
 {
 
 SingleFilterView::SingleFilterView(const std::vector<cv::Mat> &images,
-                                   QWidget *parent)
+				   QWidget *parent)
     : FilterView{ parent }
 {
 	TRACEPOINT;
@@ -36,58 +36,56 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat> &images,
 	qtutil::AutoFilterWidget<1, 1> *filterSel = filterSelector.get();
 
 	accor->insert("Select a Filter", std::move(filterSelector));
-	
+
 	std::vector<qtutil::ZoomableImage*> syncVec;
 	int count = 0;
 	for (auto &image : images)
 	{
-		auto dualImageWidget = util::make_unique<QWidget>();
-		auto dualImageLayout = util::make_unique<QVBoxLayout>();
-		
-		auto originalZoomIm = util::make_unique<qtutil::ZoomableImage>();
+	auto originalZoomIm = util::make_unique<qtutil::ZoomableImage>(image);
 		accor->insert(
 		    QString("Information: Original image ") + QString::number(count),
 		    std::move(
-		        util::make_unique<qtutil::ZoomableOptPanel>(*originalZoomIm)));
-		originalZoomIm->setMat(image.clone());
+			util::make_unique<qtutil::ZoomableOptPanel>(*originalZoomIm)));
 		syncVec.push_back(originalZoomIm.get());
-		dualImageLayout->addWidget(originalZoomIm.release());
-		
-		
-		auto filterZoomIm = util::make_unique<qtutil::ZoomableImage>();
+
+
+		auto filterZoomIm = util::make_unique<qtutil::ZoomableImage>(image.clone());
 
 		// für das AutofilterWidget muss die output Mat gespeichert
 		// werden dies übernimmt
 		// das ZoomableImage
 		auto filterSignals = filterSel->addEntry(
 		    QString("Image: ") + QString::number(count),
-		    { { util::makeRef<const cv::Mat>(image) } },
+		    { { util::makeRef<const cv::Mat>(/*image*/originalZoomIm->mat()) } },
 		    { { util::makeRef<cv::Mat>(filterZoomIm->mat()) } });
 
 		// connect entry=> zoomableimage
 		connect(filterSignals.front().getPtr(),
-		        SIGNAL(signal(cv::Mat &)), filterZoomIm.get(),
-		        SLOT(setMatR(cv::Mat &)));
+			SIGNAL(signal(cv::Mat &)), filterZoomIm.get(),
+			SLOT(setMatR(cv::Mat &)));
 
 		accor->insert(
 		    QString("Information: Filtered image ") + QString::number(count),
 		    std::move(
-		        util::make_unique<qtutil::ZoomableOptPanel>(*filterZoomIm)));
+			util::make_unique<qtutil::ZoomableOptPanel>(*filterZoomIm)));
 
-		filterZoomIm->setMat(image.clone());
 		syncVec.push_back(filterZoomIm.get());
+
+		auto dualImageLayout = util::make_unique<QVBoxLayout>();
+		dualImageLayout->addWidget(originalZoomIm.release());
 		dualImageLayout->addWidget(filterZoomIm.release());
-		
+
+		auto dualImageWidget = util::make_unique<QWidget>();
 		dualImageWidget->setLayout(dualImageLayout.release());
 		imageLayout->addWidget(dualImageWidget.release());
 		count++;
 	}
 
 	imwid->setLayout(imageLayout.release());
-	
+
 	accor->insert("Zoom synchronization",
 		std::move(util::make_unique<qtutil::SyncZoomWidget>(syncVec)), true, 1);
-	
+
 	layout->addWidget(accor.release());
 	layout->addWidget(imwid.release());
 
