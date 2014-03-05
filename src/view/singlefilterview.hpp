@@ -22,7 +22,7 @@ class SingleFilterView : public cvv::view::FilterView
 	Q_OBJECT
       public:
 	/**
-	 * @brief the constructor
+	 * @brief Cnstructor
 	 * @param images a vector of images which will be shown
 	 * @param parent the parent Widget
 	 */
@@ -31,8 +31,8 @@ class SingleFilterView : public cvv::view::FilterView
 
 	/**
 	 * @brief Constructor using a filter call to get its data from.
-	 * @param call to get the data from.
-	 * @param parent of this QWidget.
+	 * @param call Call to get the data from.
+	 * @param parent Parent of this QWidget.
 	 */
 	SingleFilterView(const cvv::impl::FilterCall &call,
 			 QWidget *parent = nullptr)
@@ -41,6 +41,9 @@ class SingleFilterView : public cvv::view::FilterView
 		TRACEPOINT;
 	}
 
+	/**
+	* @brief Destructor
+	*/
 	~SingleFilterView()
 	{
 		TRACEPOINT;

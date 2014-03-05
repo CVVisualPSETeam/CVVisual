@@ -61,7 +61,9 @@ int main(int argc, char *argv[])
 	    "RawView");
 
 	cvv::gui::MatchCallTab v{ mc };
+	cvv::gui::MatchCallTab w{ mc, "RawView" };
 	v.show();
+	w.show();
 	vc.exec();
 	return 0;
 }

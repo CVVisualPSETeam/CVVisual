@@ -18,9 +18,9 @@ namespace structures
 template <int depth> struct DepthTypeConverter
 {
 	static_assert(!(depth == CV_8U || depth == CV_8S || depth == CV_16U ||
-	                depth == CV_16S || depth == CV_32S || depth == CV_32F ||
-	                depth == CV_64F),
-	              "Conversion of unknown type");
+			depth == CV_16S || depth == CV_32S || depth == CV_32F ||
+			depth == CV_64F),
+		      "Conversion of unknown type");
 	// using type;
 };
 /**
@@ -80,8 +80,8 @@ template <> struct DepthTypeConverter<CV_64F>
  */
 template <class depthtype, int channels> struct PixelTypeConverter
 {
-	static_assert(channels >= 1 && channels <= 4,
-	              "Illegal number of channels");
+	static_assert(channels >= 1 && channels <= 10,
+		      "Illegal number of channels");
 	using type = cv::Vec<depthtype, channels>;
 };
 }
@@ -156,7 +156,7 @@ template <> inline uchar convertTo8U<CV_16S>(const DepthType<CV_16S> value)
 template <> inline uchar convertTo8U<CV_8S>(const DepthType<CV_8S> value)
 {
 	return convertTo8U<CV_16S>(cv::saturate_cast<DepthType<CV_16S>>(value) *
-	                           256);
+				   256);
 }
 
 /**

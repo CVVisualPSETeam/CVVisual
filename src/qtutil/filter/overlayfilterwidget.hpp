@@ -59,13 +59,13 @@ class OverlayFilterWidget : public FilterFunctionWidget<2, 1>
 	std::pair<bool, QString> checkInput(InputArray in) const;
 
       private:
-	double opacityOfOriginalImg_;
-	//< opacity of the first input image when ovelaying
+	double opacityOfFilterImg_;
+	//< opacity of the second input image when ovelaying
 
       private
 slots:
 	/**
-	* @brief Sets opacityOfOriginalImg_ and emits signFilterSettingsChanged.
+	* @brief Sets opacityOfFilterImg_ and emits signFilterSettingsChanged.
 	* @param op new opacity
 	*/
 	void updateOpacity(int op);

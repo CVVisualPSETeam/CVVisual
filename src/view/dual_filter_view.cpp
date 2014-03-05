@@ -3,6 +3,7 @@
 #include <iostream> //for debugging
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "opencv2/core/core.hpp"
 
@@ -17,6 +18,7 @@
 #include "../qtutil/autofilterwidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
 #include "../qtutil/zoomableimageoptpanel.hpp"
+#include "../qtutil/synczoomwidget.hpp"
 #include "../qtutil/util.hpp"
 #include "../util/util.hpp"
 #include "dual_filter_view.hpp"
@@ -36,9 +38,9 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 	auto imwid = util::make_unique<QWidget>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 
-	accor->setMinimumWidth(250);
-	accor->setMaximumWidth(250);
-
+	accor->setMinimumWidth(300);
+	accor->setMaximumWidth(300);
+	
 	auto filterSelector =
 	    util::make_unique<qtutil::AutoFilterWidget<2, 1>>(this);
 	filterSelector->enableUserSelection(false);
@@ -78,13 +80,23 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		{
 			zoomIm->setMat(image.clone());
 		}
-		imageLayout.get()->addWidget(zoomIm.release());
+		imageLayout.get()->addWidget(zoomIm.get());
+		
+		return zoomIm.release();
 	};
-
-	lambda(rawImages_.at(0), 0);
-	lambda(rawImages_.at(0), 1);
-	lambda(rawImages_.at(1), 2);
-
+	
+	std::vector<qtutil::ZoomableImage*> syncVec;
+	
+	syncVec.push_back(lambda(rawImages_.at(0), 0));
+	syncVec.push_back(lambda(rawImages_.at(0), 1));
+	syncVec.push_back(lambda(rawImages_.at(1), 2));
+	
+	accor->insert("Zoom synchronization",
+		std::move(util::make_unique<qtutil::SyncZoomWidget>(syncVec)), true, 1);
+	
+	imageLayout->setStretch(0,1);
+	imageLayout->setStretch(1,1);
+	imageLayout->setStretch(2,1);
 	imwid->setLayout(imageLayout.release());
 
 	layout->addWidget(accor.release());

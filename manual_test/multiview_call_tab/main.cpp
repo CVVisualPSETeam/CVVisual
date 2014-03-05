@@ -40,9 +40,12 @@ int main(int argc, char *argv[])
 	u{ fc, QString{ "default_filter_view"}, QString{ "DefaultFilterView"} };
 	cvv::gui::MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>
 	v{ "TestFTab", fc, QString{ "default_filter_view"}, QString{ "DefaultFilterView"} };
+	cvv::gui::MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>
+	w{ fc, QString{ "SingleFilterView" }, QString{ "default_filter_view"}, QString{ "DefaultFilterView"} };
 
 	u.show();
 	v.show();
+	w.show();
 	controller.exec();
 	return 0;
 }

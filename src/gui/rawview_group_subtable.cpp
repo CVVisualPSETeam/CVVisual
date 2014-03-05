@@ -157,11 +157,10 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 	bool single = group.getTitles().contains("single key point");
 	if (currentRowIndexes.size() > 0)
 	{
-		DEBUG(currentRowIndexes);
 		std::vector<RawviewTableRow> rows;
 		for (auto index : currentRowIndexes)
 		{
-			if (index < qTable->rowCount() && index > 0)
+			if (index < qTable->rowCount() && index >= 0)
 			{
 				rows.push_back(group.get(index));
 			}
@@ -201,7 +200,6 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 					formattedRows =
 					    RawviewTableRow::rowsToText(
 					        rows, format, single);
-					DEBUG(formattedRows);
 					QApplication::clipboard()->setText(
 					    formattedRows);
 					break;
@@ -210,7 +208,6 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 		}
 	}
 	DEBUG("Action: " + action->text().toStdString());
-	currentRowIndexes = {};
 	TRACEPOINT;
 }
 }
