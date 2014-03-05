@@ -15,12 +15,13 @@ class ChangedPixelsWidget : public FilterFunctionWidget<2, 1>
 {
 	Q_OBJECT
 public:
-	using FilterFunctionWidget::FilterFunctionWidget;
-	
+
+	ChangedPixelsWidget(QWidget* parent = nullptr);
+
 	void applyFilter(InputArray in, OutputArray out) const override;
-	
+
 	std::pair<bool, QString> checkInput(InputArray in) const override;
-	
+
 };
 
 }
