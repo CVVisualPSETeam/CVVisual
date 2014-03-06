@@ -25,7 +25,7 @@ namespace qtutil
 /**
  * @brief Provides a function to select a portion of a set.
  *
- * The highest | lowest n ^ n% of a given universe ^ selection can be selected.
+ * The highest | lowest n ^ n% of a given selection can be selected.
  * Optionally the complement can be used.
  */
 class PortionSelector : public QWidget
@@ -77,7 +77,6 @@ class PortionSelector : public QWidget
 		percentVal->setSingleStep(0.01);
 		numberVal->setRange(0, std::numeric_limits<int>::max());
 
-		useUniverse_->setChecked(true);
 		number_->setChecked(true);
 		percentVal_->setVisible(false);
 		numberVal_->setVisible(true);
@@ -109,8 +108,6 @@ class PortionSelector : public QWidget
 		lay->addWidget(util::make_unique<QLabel>("with n =").release());
 		lay->addWidget(numberVal.release());
 		lay->addWidget(percentVal.release());
-		lay->addWidget(useUniverse.release());
-		lay->addWidget(useSelection.release());
 		lay->addWidget(complement.release());
 		setLayout(lay.release());
 	}
@@ -133,23 +130,25 @@ class PortionSelector : public QWidget
 			n = (percentVal_->value()) * selection.size();
 		}
 
+		std::sort(selection.begin(),selection.end(),comp);
+
 		// lowest selected value
 		std::size_t lower = (lowest_->isChecked()) ? n : 0;
 		// highest selected value
 		std::size_t upper =
-		    selection->size() - ((highest_->isChecked()) ? n : 0);
+		    selection.size() - ((highest_->isChecked()) ? n : 0);
 
 		// element
 		bool complement = complement_->isChecked();
 
 		// filter
 		std::vector<Type> result;
-		for (std::size_t i = 0; i < selection->size(); i++)
+		for (std::size_t i = 0; i < selection.size(); i++)
 		{
 			if (complement != ((i <= lower) || (i >= upper)))
 			{
 				// copy value
-				result.push_back(selection->at(i));
+				result.push_back(selection.at(i));
 			}
 		}
 		return result;
