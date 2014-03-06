@@ -7,15 +7,13 @@
 #include <QRectF>
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
-#include <QGraphicsScene>
-#include <QGraphicsProxyWidget>
+
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
 
 #include "matchsettings.hpp"
 #include "cvvkeypoint.hpp"
-#include "../zoomableimage.hpp"
 #include "../../dbg/dbg.hpp"
 
 namespace cvv
@@ -23,6 +21,12 @@ namespace cvv
 namespace qtutil
 {
 
+class MatchSettings;
+
+/**
+ * @brief this class represents a match which is displayed
+ * a Matchscene.
+ */
 class CVVMatch : public QGraphicsObject
 {
 	Q_OBJECT
@@ -31,11 +35,14 @@ class CVVMatch : public QGraphicsObject
 	* @brief the constructor
 	* @param left_key the left KeyPointPen
 	* @param right_key the right KeyPointPen
-	* @param matchValue the match distance
+	* @param match the match
+	* @param pen a QPen
 	* @param parent the parent Widget
 	*/
-	CVVMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key,
-		 const cv::DMatch &match, const QPen &pen = QPen{ Qt::red },
+	CVVMatch(CVVKeyPoint *left_key,
+		 CVVKeyPoint *right_key,
+		 const cv::DMatch &match,
+		 const QPen &pen = QPen{ Qt::red },
 		 QGraphicsItem *parent = nullptr);
 
 	/**

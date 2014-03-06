@@ -11,7 +11,7 @@ namespace qtutil
 QColor getFalseColor(double value, double max, double min)
 {
 	QColor color{};
-	color.setHsvF(((value - min) / (max - min)) * 255, 255, 255);
+	color.setHsvF(((value - min) / (max - min)) * 1, 1, 1);
 	return color;
 }
 

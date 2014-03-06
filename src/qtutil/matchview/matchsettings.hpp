@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_MATCH_PEN
-#define CVVISUAL_MATCH_PEN
+#ifndef CVVISUAL_MATCH_SETTINGS
+#define CVVISUAL_MATCH_SETTINGS
 
 #include <QFrame>
 #include <QPen>
@@ -14,9 +14,8 @@ namespace qtutil
 class CVVMatch;
 
 /**
- * @brief this abstract class returns an individual QPen for a CVVMatch.
+ * @brief this abstract class returns an individual Setting for a CVVMatch.
  */
-
 class MatchSettings : public QFrame
 {
 	Q_OBJECT
@@ -29,11 +28,13 @@ class MatchSettings : public QFrame
 	MatchSettings(QWidget *parent) : QFrame(parent){}
 
 	/**
-	 * @brief getSettings
-	 * @param match a CVVMatch
+	 * @brief set individual settings for a selected cvvmatch
 	 */
 	virtual void setSettings(CVVMatch &match) = 0;
 
+	/**
+	 * @brief set individual settings for a non-selected cvvmatch
+	 */
 	virtual void setUnSelectedSettings(CVVMatch &)
 		{}
 
@@ -42,17 +43,14 @@ public slots:
 	 * @brief this method emits the signal settingsChanged();
 	 */
 	void updateAll()
-		{TRACEPOINT;emit settingsChanged(*this);}
+		{emit settingsChanged(*this);}
 
 signals:
 	/**
 	 * @brief this signal will be emitted if the settings changed
-	 * and the CVVMatch must update their Pens
-	 * @param the setting object which has changed
+	 * and the CVVMatch must update their Settings
 	 */
 	void settingsChanged(MatchSettings &settings);
-
-
 };
 }
 }

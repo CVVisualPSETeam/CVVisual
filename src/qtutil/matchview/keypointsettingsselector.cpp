@@ -1,13 +1,13 @@
 #include <QVBoxLayout>
 
-#include "matchsettingsselector.hpp"
+#include "keypointsettingsselector.hpp"
 #include "../../util/util.hpp"
 
 namespace cvv{ namespace qtutil{
 
-MatchSettingsSelector::MatchSettingsSelector(const std::vector<cv::DMatch> &univers, QWidget *parent):
-	MatchSettings{parent},
-	RegisterHelper<MatchSettings,std::vector<cv::DMatch>>{},
+KeyPointSettingsSelector::KeyPointSettingsSelector(const std::vector<cv::KeyPoint> &univers, QWidget *parent):
+	KeyPointSettings{parent},
+	RegisterHelper<KeyPointSettings,std::vector<cv::KeyPoint>>{},
 	univers_{univers}
 {
 	auto layout=util::make_unique<QVBoxLayout>();
@@ -25,12 +25,12 @@ MatchSettingsSelector::MatchSettingsSelector(const std::vector<cv::DMatch> &univ
 	TRACEPOINT;
 }
 
-void MatchSettingsSelector::setSettings(CVVMatch &match)
+void KeyPointSettingsSelector::setSettings(CVVKeyPoint &key)
 {
-	setting_->setSettings(match);
+	setting_->setSettings(key);
 }
 
-void MatchSettingsSelector::changedSetting()
+void KeyPointSettingsSelector::changedSetting()
 {
 	TRACEPOINT;
 	auto setting=(*this)()(univers_);
@@ -40,8 +40,8 @@ void MatchSettingsSelector::changedSetting()
 		if(setting_){
 			TRACEPOINT;
 			layout_->removeWidget(setting_);
-			disconnect(setting_,SIGNAL(settingsChanged(MatchSettings&)),
-				   this,SIGNAL(settingsChanged(MatchSettings&)));
+			disconnect(setting_,SIGNAL(settingsChanged(KeyPointSettings&)),
+				   this,SIGNAL(settingsChanged(KeyPointSettings&)));
 		}
 		TRACEPOINT;
 		setting_->deleteLater();
@@ -50,8 +50,8 @@ void MatchSettingsSelector::changedSetting()
 		TRACEPOINT;
 		layout_->addWidget(setting.release());
 		TRACEPOINT;
-		connect(setting_,SIGNAL(settingsChanged(MatchSettings&)),
-			this,SIGNAL(settingsChanged(MatchSettings&)));
+		connect(setting_,SIGNAL(settingsChanged(KeyPointSettings&)),
+		this,SIGNAL(settingsChanged(KeyPointSettings&)));
 	}
 }
 

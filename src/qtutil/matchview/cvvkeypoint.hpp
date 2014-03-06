@@ -3,6 +3,7 @@
 
 #include <QGraphicsObject>
 #include <QPainter>
+#include <QPointF>
 #include <QRectF>
 #include <QStyleOptionGraphicsItem>
 #include <QWidget>
@@ -23,10 +24,9 @@ namespace qtutil
 class KeyPointSettings;
 
 /**
- * @brief this class represents a Keypoint which is displayed an a Matchscene.
- *
+ * @brief this class represents a Keypoint which is displayed
+ *  a Matchscene.
  **/
-
 class CVVKeyPoint : public QGraphicsObject
 {
 	Q_OBJECT

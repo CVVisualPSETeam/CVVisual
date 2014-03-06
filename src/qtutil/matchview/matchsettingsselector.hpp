@@ -32,6 +32,9 @@ public:
 
 public slots:
 
+	/**
+	 * @brief emits the remove signal this
+	 */
 	void removeMe()
 		{emit remove(this);}
 

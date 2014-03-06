@@ -7,6 +7,7 @@
 
 #include "matchselectionselector.hpp"
 #include "matchsettingsselector.hpp"
+#include "matchsettings.hpp"
 #include "cvvmatch.hpp"
 
 namespace cvv
@@ -32,7 +33,6 @@ public:
 
 	/**
 	 * @brief set the settings if this match is selected
-	 * @param match a cvvmatch
 	 */
 	virtual void setSettings(CVVMatch &match);
 
@@ -46,6 +46,9 @@ public:
 	 */
 	void addSelection(std::unique_ptr<MatchSelectionSelector>);
 
+	/**
+	 * @brief returns the current selection.
+	 */
 	std::vector<cv::DMatch> getCurrentSelection()
 		{return selection_;}
 
@@ -59,7 +62,6 @@ public slots:
 
 	/**
 	 * @brief set the selection to the given single match
-	 * @param match
 	 */
 	void singleSelection(const cv::DMatch &match);
 
@@ -68,9 +70,10 @@ public slots:
 	 */
 	void setSelection(const std::vector<cv::DMatch> &selection);
 
-	//TODO Machsettings=>MatchSettingsSelector
 	//MatchSettingSelector
-
+	/**
+	 * @brief add a new Setting
+	 */
 	void addSetting();
 
 	void removeSetting(MatchSettingsSelector *setting);
@@ -86,6 +89,9 @@ public slots:
 	 */
 	void removeSelection(MatchSelectionSelector *selector);
 
+	/**
+	 * @brief select with the selections
+	 */
 	void applySelection();
 
 signals:

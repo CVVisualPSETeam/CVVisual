@@ -7,15 +7,15 @@
 #include <QLabel>
 #include <QFrame>
 
-#include "matchmanagement.hpp"
+#include "keypointmanagement.hpp"
 
 namespace cvv
 {
 namespace qtutil
 {
 
-MatchManagement::MatchManagement(std::vector<cv::DMatch> univers,QWidget *parent) :
-	MatchSettings{parent},
+KeyPointManagement::KeyPointManagement(std::vector<cv::KeyPoint> univers,QWidget *parent) :
+	KeyPointSettings{parent},
 	univers_{univers},
 	selection_{univers_}
 {
@@ -34,7 +34,7 @@ MatchManagement::MatchManagement(std::vector<cv::DMatch> univers,QWidget *parent
 	auto buttonAddSetting=util::make_unique<QPushButton>("Add setting");
 	auto buttonAddSelection=util::make_unique<QPushButton>("Add selector");
 	auto buttonApply=util::make_unique<QPushButton>("Apply settings");
-	auto buttonApplySelection=util::make_unique<QPushButton>("Apply Selection");
+	auto buttonApplySelection=util::make_unique<QPushButton>("Apply selection");
 
 	connect(buttonAddSetting.get(),SIGNAL(clicked()),this,SLOT(addSetting()));
 	connect(buttonAddSelection.get(),SIGNAL(clicked()),this,SLOT(addSelection()));
@@ -65,65 +65,65 @@ MatchManagement::MatchManagement(std::vector<cv::DMatch> univers,QWidget *parent
 	addSetting();
 }
 
-void MatchManagement::setSettings(CVVMatch &match)
+void KeyPointManagement::setSettings(CVVKeyPoint &key)
 {
 	if (std::find_if(selection_.begin(), selection_.end(),
-			 [&](const cv::DMatch &o)
-		{ return match == o; }) != selection_.end())
+			 [&](const cv::KeyPoint &o)
+		{ return key == o; }) != selection_.end())
 	{
-		connect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
-			&match,SLOT(updateSettings(MatchSettings&)));
+		connect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
+			&key,SLOT(updateSettings(KeyPointSettings&)));
 		for(auto setting: settingsList_)
 		{
-			setting->setSettings(match);
+			setting->setSettings(key);
 		}
 	}else{
-		disconnect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
-			&match,SLOT(updateSettings(MatchSettings&)));
+		disconnect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
+			&key,SLOT(updateSettings(KeyPointSettings&)));
 		for(auto setting: settingsList_)
 		{
-			setting->setUnSelectedSettings(match);
+			setting->setUnSelectedSettings(key);
 		}
 	}
 }
 
-void MatchManagement::addToSelection(const cv::DMatch &match)
+void KeyPointManagement::addToSelection(const cv::KeyPoint &key)
 {
-	selection_.push_back(match);
+	selection_.push_back(key);
 	updateAll();
 }
 
-void MatchManagement::singleSelection(const cv::DMatch &match)
+void KeyPointManagement::singleSelection(const cv::KeyPoint &key)
 {
 	selection_.erase(selection_.begin());
-	selection_.push_back(match);
+	selection_.push_back(key);
 	updateAll();
 }
 
-void MatchManagement::setSelection(
-    const std::vector<cv::DMatch> &selection)
+void KeyPointManagement::setSelection(
+    const std::vector<cv::KeyPoint> &selection)
 {
 	selection_.erase(selection_.begin());
-	for (auto &match : selection)
+	for (auto &key : selection)
 	{
-		selection_.push_back(match);
+		selection_.push_back(key);
 	}
 	updateAll();
 }
 
-void MatchManagement::addSetting()
+void KeyPointManagement::addSetting()
 {
-	addSetting(std::move(util::make_unique<MatchSettingsSelector>(univers_)));
+	addSetting(std::move(util::make_unique<KeyPointSettingsSelector>(univers_)));
 }
 
 
-void MatchManagement::addSetting(std::unique_ptr<MatchSettingsSelector> setting)
+void KeyPointManagement::addSetting(std::unique_ptr<KeyPointSettingsSelector> setting)
 {
-	connect(setting.get(),SIGNAL(settingsChanged(MatchSettings &)),
-		this,SIGNAL(applySettingsToSelection(MatchSettings&)));
+	connect(setting.get(),SIGNAL(settingsChanged(KeyPointSettings &)),
+		this,SIGNAL(applySettingsToSelection(KeyPointSettings&)));
 
-	connect(setting.get(),SIGNAL(remove(MatchSettingsSelector *)),
-		this,SLOT(removeSetting(MatchSettingsSelector*)));
+	connect(setting.get(),SIGNAL(remove(KeyPointSettings *)),
+		this,SLOT(removeSetting(KeyPointSettings*)));
 
 	settingsList_.push_back(setting.get());
 	setting->setLineWidth(1);
@@ -131,25 +131,25 @@ void MatchManagement::addSetting(std::unique_ptr<MatchSettingsSelector> setting)
 	settingsLayout_->addWidget(setting.release());
 }
 
-void MatchManagement::removeSetting(MatchSettingsSelector *setting)
+void KeyPointManagement::removeSetting(KeyPointSettingsSelector *setting)
 {
 	std::remove_if(settingsList_.begin(),settingsList_.end(),
-		[=](const MatchSettings* other)
+		[=](const KeyPointSettings* other)
 		{return other==setting;}
 	);
 	settingsLayout_->removeWidget(setting);
 	setting->deleteLater();
 }
 
-void MatchManagement::addSelection()
+void KeyPointManagement::addSelection()
 {
-	addSelection(std::move(util::make_unique<MatchSelectionSelector>(univers_)));
+	addSelection(std::move(util::make_unique<KeyPointSelectionSelector>(univers_)));
 }
 
-void MatchManagement::addSelection(std::unique_ptr<MatchSelectionSelector> selection)
+void KeyPointManagement::addSelection(std::unique_ptr<KeyPointSelectionSelector> selection)
 {
-	connect(selection.get(),SIGNAL(remove(MatchSelectionSelector*))
-		,this,SLOT(removeSelection(MatchSelectionSelector*)));
+	connect(selection.get(),SIGNAL(remove(KeyPointSelectionSelector*))
+		,this,SLOT(removeSelection(KeyPointSelectionSelector*)));
 
 	connect(selection.get(),SIGNAL(settingsChanged()),this,SLOT(applySelection()));
 	selectorList_.push_back(selection.get());
@@ -158,10 +158,10 @@ void MatchManagement::addSelection(std::unique_ptr<MatchSelectionSelector> selec
 	selectorLayout_->addWidget(selection.release());
 }
 
-void MatchManagement::removeSelection(MatchSelectionSelector *selector)
+void KeyPointManagement::removeSelection(KeyPointSelectionSelector *selector)
 {
 	std::remove_if(selectorList_.begin(),selectorList_.end(),
-		[=](const MatchSelectionSelector* other)
+		[=](const KeyPointSelectionSelector* other)
 		{return other==selector;}
 	);
 	selectorLayout_->removeWidget(selector);
@@ -169,9 +169,9 @@ void MatchManagement::removeSelection(MatchSelectionSelector *selector)
 	selector->deleteLater();
 }
 
-void MatchManagement::applySelection()
+void KeyPointManagement::applySelection()
 {
-	std::vector<cv::DMatch> currentSelection=univers_;
+	std::vector<cv::KeyPoint> currentSelection=univers_;
 	for(auto& selector:selectorList_){
 		currentSelection=selector->select(currentSelection);
 	}

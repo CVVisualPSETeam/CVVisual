@@ -31,10 +31,16 @@ public:
 	std::vector<cv::DMatch> select(const std::vector<cv::DMatch>& selection);
 
 public slots:
+	/**
+	 * @brief emits the signal remove with this.
+	 */
 	void removeMe()
 		{emit remove(this);}
 
 signals:
+	/**
+	 * @brief this signal contains a KeyPointSelectionSelector which should be removed. Normally the argumen is this.
+	 */
 	void remove(MatchSelectionSelector*);
 
 private slots:
@@ -50,7 +56,7 @@ private:
 	QLayout *layout_;
 };
 template <class Selection>
-bool registerSelection(const QString &name)
+bool registerMatchSelection(const QString &name)
 {
 	TRACEPOINT;
 	return MatchSelectionSelector::registerElement(
