@@ -142,7 +142,7 @@ slots:
       private:
 	cv::KeyPoint key_;
 
-	qtutil::ZoomableImage *image_;
+	qtutil::ZoomableImage *image_=nullptr;
 
 	QPen pen_;
 	QBrush brush_;

@@ -70,7 +70,9 @@ void CVVKeyPoint::setBrush(const QBrush &brush)
 void CVVKeyPoint::setShow(bool b)
 {
 	show_ = b;
-	setVisible(show_&imagePointisVisible());
+	if(image_){
+		setVisible(show_&imagePointisVisible());
+	}
 }
 
 QRectF CVVKeyPoint::boundingRect() const

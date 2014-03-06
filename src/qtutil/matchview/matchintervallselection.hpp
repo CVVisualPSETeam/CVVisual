@@ -14,7 +14,7 @@ namespace qtutil
  * @brief this widget select an intervall of matches from the given selection.
  * it use IntervallSelector
  */
-class MatchIntervallSelector:MatchSelection{
+class MatchIntervallSelector:public MatchSelection{
 
 	Q_OBJECT
 public:
@@ -23,7 +23,7 @@ public:
 	 * @param matches all matches which can be selected
 	 * @param parent the parent widget
 	 */
-	MatchIntervallSelector(std::vector<cv::DMatch> matches,QWidget*parent);
+	MatchIntervallSelector(std::vector<cv::DMatch> matches,QWidget*parent=nullptr);
 
 	/**
 	 * @brief select matches from the given selecton
