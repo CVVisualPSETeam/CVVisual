@@ -8,6 +8,7 @@
 #include "opencv2/core/core.hpp"
 
 #include <QApplication>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QString>
@@ -34,7 +35,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 {
 	TRACEPOINT;
 	auto layout = util::make_unique<QHBoxLayout>();
-	auto imageLayout = util::make_unique<QHBoxLayout>();
+	auto imageLayout = util::make_unique<QGridLayout>();
 	auto imwid = util::make_unique<QWidget>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 
@@ -80,7 +81,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		{
 			zoomIm->setMat(image.clone());
 		}
-		imageLayout.get()->addWidget(zoomIm.get());
+		imageLayout.get()->addWidget(zoomIm.get(), 0, count);
 		
 		return zoomIm.release();
 	};
@@ -94,9 +95,12 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 	accor->insert("Zoom synchronization",
 		std::move(util::make_unique<qtutil::SyncZoomWidget>(syncVec)), true, 1);
 	
-	imageLayout->setStretch(0,1);
-	imageLayout->setStretch(1,1);
-	imageLayout->setStretch(2,1);
+	imageLayout->setColumnStretch(0, 1);
+	imageLayout->setColumnStretch(1, 1);
+	imageLayout->setColumnStretch(2, 1);
+	imageLayout->setColumnMinimumWidth(0, 300);
+	imageLayout->setColumnMinimumWidth(1, 300);
+	imageLayout->setColumnMinimumWidth(2, 300);
 	imwid->setLayout(imageLayout.release());
 
 	layout->addWidget(accor.release());
