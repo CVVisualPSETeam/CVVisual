@@ -46,6 +46,8 @@ public:
 	 */
 	void addSelection(std::unique_ptr<MatchSelectionSelector>);
 
+	std::vector<cv::DMatch> getCurrentSelection()
+		{return selection_;}
 
 public slots:
 

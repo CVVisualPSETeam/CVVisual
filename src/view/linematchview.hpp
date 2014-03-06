@@ -6,6 +6,7 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/features2d/features2d.hpp"
 
+#include "../qtutil/matchview/matchmanagement.hpp"
 #include "match_view.hpp"
 namespace cvv
 {
@@ -47,14 +48,23 @@ class LineMatchView : public MatchView
 			     call.matches(),    call.img1(),
 			     call.img2(),       call.usesTrainDescriptor(),
 			     parent }
+	{}
+
+	virtual std::vector<cv::DMatch> getMatchSelection() override
 	{
-		TRACEPOINT;
+		return matchManagment_->getCurrentSelection();
 	}
 
-	~LineMatchView()
+public slots:
+
+	virtual void setMatchSelection(std::vector<cv::DMatch> selection)
 	{
-		TRACEPOINT;
+		matchManagment_->setSelection(selection);
 	}
+
+private:
+	qtutil::MatchManagement *matchManagment_;
+
 };
 }
 }

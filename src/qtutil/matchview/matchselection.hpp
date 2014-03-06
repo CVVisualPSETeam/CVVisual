@@ -19,12 +19,14 @@ public:
 	 * @brief the constructor
 	 */
 	MatchSelection(QWidget * parent =nullptr):QFrame{parent}{}
+
+
 	virtual std::vector<cv::DMatch> select(const std::vector<cv::DMatch>& selection) = 0;
 
+signals:
 
-private:
+	void settingsChanged();
 
-	MatchSelection* currentSelection_;
 };
 
 }}

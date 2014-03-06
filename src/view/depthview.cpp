@@ -31,11 +31,16 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	auto matchmnt = util::make_unique<qtutil::MatchManagement>(matches);
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
-	qtutil::MatchManagement *matchmnt_ptr = matchmnt.get();
+	matchManagment_ = matchmnt.get();
+
 	accor->setMinimumWidth(350);
 	accor->setMaximumWidth(350);
 
 	accor->insert("Match Settings", std::move(matchmnt));
+	accor->insert("Left Image ",
+		      std::move(matchscene_ptr->getLeftMatInfoWidget()));
+	accor->insert("Right Image ",
+		      std::move(matchscene_ptr->getRightMatInfoWidget()));
 	accor->insert("Sync Zoom ",
 		      std::move(matchscene_ptr->getSyncZoomWidget()));
 
@@ -82,7 +87,7 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		    leftinvisibleKeys.at(
 			(usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match);
-		connect(matchmnt_ptr, SIGNAL(settingsChanged(MatchSettings &)),
+		connect(matchManagment_, SIGNAL(settingsChanged(MatchSettings &)),
 			cvmatchleft.get(),
 			SLOT(updateSettings(MatchSettings &)));
 		matchscene_ptr->addMatch(std::move(cvmatchleft));
@@ -91,12 +96,12 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		    rightinvisibleKeys.at(match.queryIdx),
 		    rightKeys.at((usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match, false);
-		connect(matchmnt_ptr, SIGNAL(settingsChanged(MatchSettings &)),
+		connect(matchManagment_, SIGNAL(settingsChanged(MatchSettings &)),
 			cvmatchright.get(),
 			SLOT(updateSettings(MatchSettings &)));
 		matchscene_ptr->addMatch(std::move(cvmatchright));
 	}
-	matchmnt_ptr->updateAll();
+	matchManagment_->updateAll();
 	TRACEPOINT;
 }
 }

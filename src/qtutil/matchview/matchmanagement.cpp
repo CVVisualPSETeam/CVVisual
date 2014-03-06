@@ -75,11 +75,15 @@ void MatchManagement::setSettings(CVVMatch &match)
 			&match,SLOT(updateSettings(MatchSettings&)));
 		for(auto setting: settingsList_)
 		{
-			match.updateSettings(*setting);
+			setting->setSettings(match);
 		}
 	}else{
-		disconnect(this,SIGNAL(applySettingsToSelection(MatchSettings*)),
+		disconnect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
 			&match,SLOT(updateSettings(MatchSettings&)));
+		for(auto setting: settingsList_)
+		{
+			setting->setUnSelectedSettings(match);
+		}
 	}
 }
 
@@ -147,6 +151,7 @@ void MatchManagement::addSelection(std::unique_ptr<MatchSelectionSelector> selec
 	connect(selection.get(),SIGNAL(remove(MatchSelectionSelector*))
 		,this,SLOT(removeSelection(MatchSelectionSelector*)));
 
+	connect(selection.get(),SIGNAL(settingsChanged()),this,SLOT(applySelection()));
 	selectorList_.push_back(selection.get());
 	selection->setLineWidth(1);
 	selection->setFrameStyle(QFrame::Box);
@@ -172,6 +177,7 @@ void MatchManagement::applySelection()
 	}
 	selection_=currentSelection;
 	emit updateSelection(selection_);
+	updateAll();
 }
 
 }

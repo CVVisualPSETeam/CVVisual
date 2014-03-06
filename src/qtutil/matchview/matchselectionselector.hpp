@@ -49,7 +49,17 @@ private:
 	std::vector<cv::DMatch> univers_;
 	QLayout *layout_;
 };
-
+template <class Selection>
+bool registerSelection(const QString &name)
+{
+	TRACEPOINT;
+	return MatchSelectionSelector::registerElement(
+	    name, [](std::vector<cv::DMatch> univers)
+	{
+		    TRACEPOINT;
+		    return std::unique_ptr<MatchSelection>{ new Selection{univers}};
+	});
+}
 }}
 
 #endif

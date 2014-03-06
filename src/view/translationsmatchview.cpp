@@ -5,7 +5,6 @@
 #include "../qtutil/matchview/matchscene.hpp"
 #include "../qtutil/matchview/cvvkeypoint.hpp"
 #include "../qtutil/matchview/cvvmatch.hpp"
-#include "../qtutil/matchview/matchmanagement.hpp"
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
 #include "../util/util.hpp"
 
@@ -31,7 +30,9 @@ TranslationMatchView::TranslationMatchView(
 	auto keypen = util::make_unique<qtutil::SingleColorKeyPen>();
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
-	qtutil::MatchManagement *matchmnt_ptr = matchmnt.get();
+
+	matchManagment_ = matchmnt.get();
+
 	qtutil::SingleColorKeyPen *keypen_ptr = keypen.get();
 
 	accor->setMinimumWidth(350);
@@ -105,7 +106,7 @@ TranslationMatchView::TranslationMatchView(
 		    leftinvisibleKeys.at(
 			(usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match);
-		connect(matchmnt_ptr, SIGNAL(settingsChanged(MatchSettings &)),
+		connect(matchManagment_, SIGNAL(settingsChanged(MatchSettings &)),
 			cvmatchleft.get(),
 			SLOT(updateSettings(MatchSettings &)));
 		matchscene_ptr->addMatch(std::move(cvmatchleft));
@@ -116,12 +117,12 @@ TranslationMatchView::TranslationMatchView(
 		    rightKeys.at((usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match);
 
-		connect(matchmnt_ptr, SIGNAL(settingsChanged(MatchSettings &)),
+		connect(matchManagment_, SIGNAL(settingsChanged(MatchSettings &)),
 			cvmatchright.get(),
 			SLOT(updateSettings(MatchSettings &)));
 		matchscene_ptr->addMatch(std::move(cvmatchright));
 	}
-	matchmnt_ptr->updateAll();
+	matchManagment_->updateAll();
 	TRACEPOINT;
 }
 }

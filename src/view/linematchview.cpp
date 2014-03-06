@@ -29,7 +29,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	auto keypen = util::make_unique<qtutil::SingleColorKeyPen>();
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
-	qtutil::MatchManagement *matchmnt_ptr = matchmnt.get();
+	matchManagment_ = matchmnt.get();
 	qtutil::SingleColorKeyPen *keypen_ptr = keypen.get();
 
 	accor->setMinimumWidth(350);
@@ -83,12 +83,12 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		    rightKeys.at((usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match);
 
-		connect(matchmnt_ptr, SIGNAL(settingsChanged(MatchSettings &)),
+		connect(matchManagment_, SIGNAL(settingsChanged(MatchSettings &)),
 			cvmatch.get(), SLOT(updateSettings(MatchSettings &)));
 
 		matchscene_ptr->addMatch(std::move(cvmatch));
 	}
-	matchmnt_ptr->updateAll();
+	matchManagment_->updateAll();
 }
 }
 }

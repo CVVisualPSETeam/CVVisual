@@ -25,6 +25,7 @@ MatchIntervallSelector::MatchIntervallSelector(std::vector<cv::DMatch> matches, 
 	auto selector=util::make_unique<IntervallSelector>(min,max);
 
 	selector_=selector.get();
+	connect(&(selector->signalSettingsChanged()),SIGNAL(signal()),this,SIGNAL(settingsChanged()));
 
 	layout->addWidget(selector.release());
 	setLayout(layout.release());

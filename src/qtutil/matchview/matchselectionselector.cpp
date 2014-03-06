@@ -13,17 +13,19 @@ MatchSelectionSelector::MatchSelectionSelector(const std::vector<cv::DMatch> &un
 	univers_{univers}
 {
 	auto layout=util::make_unique<QVBoxLayout>();
+
+	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changeSelector()));
+
 	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(comboBox_);
-	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changeSelector()));
+
 	layout_=layout.get();
+
 	setLayout(layout.release());
-	TRACEPOINT;
+
 	if(this->has(this->selection())){
-		TRACEPOINT;
 		changeSelector();
 	}
-	TRACEPOINT;
 }
 
 std::vector<cv::DMatch> cvv::qtutil::MatchSelectionSelector::select(const std::vector<cv::DMatch> &selection)
@@ -33,22 +35,18 @@ std::vector<cv::DMatch> cvv::qtutil::MatchSelectionSelector::select(const std::v
 
 void MatchSelectionSelector::changeSelector()
 {
-	TRACEPOINT;
 	auto selection=(*this)()(univers_);
-	TRACEPOINT;
+
 	if(selection){
-		TRACEPOINT;
 		if(selection_){
-			TRACEPOINT;
 			layout_->removeWidget(selection_);
+			disconnect(selection_,SIGNAL(settingsChanged()),this,SIGNAL(settingsChanged()));
 		}
-		TRACEPOINT;
+
 		selection_->deleteLater();
-		TRACEPOINT;
-		selection_=selection.get();
-		TRACEPOINT;
+		selection_ = selection.get();
+		connect(selection.get(),SIGNAL(settingsChanged()),this,SIGNAL(settingsChanged()));
 		layout_->addWidget(selection.release());
-		TRACEPOINT;
 	}
 }
 
