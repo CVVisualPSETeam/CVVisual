@@ -1,7 +1,7 @@
 #ifndef CVVISUAL_MATCH_PEN
 #define CVVISUAL_MATCH_PEN
 
-#include <QWidget>
+#include <QFrame>
 #include <QPen>
 
 #include "../../dbg/dbg.hpp"
@@ -17,7 +17,7 @@ class CVVMatch;
  * @brief this abstract class returns an individual QPen for a CVVMatch.
  */
 
-class MatchSettings : public QWidget
+class MatchSettings : public QFrame
 {
 	Q_OBJECT
 
@@ -26,7 +26,7 @@ class MatchSettings : public QWidget
 	 * @brief MatchPen
 	 * @param parent the parent Widget
 	 */
-	MatchSettings(QWidget *parent) : QWidget(parent){}
+	MatchSettings(QWidget *parent) : QFrame(parent){}
 
 	/**
 	 * @brief getSettings
@@ -39,7 +39,7 @@ public slots:
 	 * @brief this method emits the signal settingsChanged();
 	 */
 	void updateAll()
-		{emit settingsChanged(*this);}
+		{TRACEPOINT;emit settingsChanged(*this);}
 
 signals:
 	/**
@@ -48,6 +48,8 @@ signals:
 	 * @param the setting object which has changed
 	 */
 	void settingsChanged(MatchSettings &settings);
+
+
 };
 }
 }

@@ -5,7 +5,7 @@
 #include "../qtutil/matchview/matchscene.hpp"
 #include "../qtutil/matchview/cvvkeypoint.hpp"
 #include "../qtutil/matchview/cvvmatch.hpp"
-#include "../qtutil/matchview/singlecolormatchpen.hpp"
+#include "../qtutil/matchview/matchmanagement.hpp"
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
 #include "../util/util.hpp"
 
@@ -27,17 +27,17 @@ TranslationMatchView::TranslationMatchView(
 	auto accor = util::make_unique<qtutil::Accordion>();
 	auto matchscene =
 	    util::make_unique<qtutil::MatchScene>(leftIm, rightIm);
-	auto matchpen = util::make_unique<qtutil::SingleColorMatchPen>(matches);
+	auto matchmnt = util::make_unique<qtutil::MatchManagement>(matches);
 	auto keypen = util::make_unique<qtutil::SingleColorKeyPen>();
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
-	qtutil::SingleColorMatchPen *matchpen_ptr = matchpen.get();
+	qtutil::MatchManagement *matchmnt_ptr = matchmnt.get();
 	qtutil::SingleColorKeyPen *keypen_ptr = keypen.get();
 
-	accor->setMinimumWidth(250);
-	accor->setMaximumWidth(250);
+	accor->setMinimumWidth(350);
+	accor->setMaximumWidth(350);
 
-	accor->insert("Match Color", std::move(matchpen));
+	accor->insert("Match Settings", std::move(matchmnt));
 	accor->insert("KeyPoint Color", std::move(keypen));
 	accor->insert("Left Image ",
 		      std::move(matchscene_ptr->getLeftMatInfoWidget()));
@@ -105,7 +105,7 @@ TranslationMatchView::TranslationMatchView(
 		    leftinvisibleKeys.at(
 			(usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match);
-		connect(matchpen_ptr, SIGNAL(settingsChanged(MatchSettings &)),
+		connect(matchmnt_ptr, SIGNAL(settingsChanged(MatchSettings &)),
 			cvmatchleft.get(),
 			SLOT(updateSettings(MatchSettings &)));
 		matchscene_ptr->addMatch(std::move(cvmatchleft));
@@ -116,11 +116,12 @@ TranslationMatchView::TranslationMatchView(
 		    rightKeys.at((usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match);
 
-		connect(matchpen_ptr, SIGNAL(settingsChanged(MatchSettings &)),
+		connect(matchmnt_ptr, SIGNAL(settingsChanged(MatchSettings &)),
 			cvmatchright.get(),
 			SLOT(updateSettings(MatchSettings &)));
 		matchscene_ptr->addMatch(std::move(cvmatchright));
 	}
+	matchmnt_ptr->updateAll();
 	TRACEPOINT;
 }
 }

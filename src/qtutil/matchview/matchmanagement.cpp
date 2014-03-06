@@ -2,6 +2,10 @@
 #include <algorithm>
 
 #include <QVBoxLayout>
+#include <QGridLayout>
+#include <QPushButton>
+#include <QLabel>
+#include <QFrame>
 
 #include "matchmanagement.hpp"
 
@@ -12,19 +16,53 @@ namespace qtutil
 
 MatchManagement::MatchManagement(std::vector<cv::DMatch> univers,QWidget *parent) :
 	MatchSettings{parent},
-	univers_{univers}
+	univers_{univers},
+	selection_{univers_}
 {
 	auto basicLayout=util::make_unique<QVBoxLayout>();
+	auto buttonLayout=util::make_unique<QGridLayout>();
 	auto settingsLayout=util::make_unique<QVBoxLayout>();
 	auto selectorLayout=util::make_unique<QVBoxLayout>();
+
+	auto buttonFrame=util::make_unique<QFrame>();
+	buttonFrame->setLineWidth(1);
+	buttonFrame->setFrameStyle(QFrame::Box);
+
+	auto labelSettings=util::make_unique<QLabel>("settings");
+	auto labelSelection=util::make_unique<QLabel>("selection");
+
+	auto buttonAddSetting=util::make_unique<QPushButton>("add setting");
+	auto buttonAddSelection=util::make_unique<QPushButton>("add selector");
+	auto buttonApply=util::make_unique<QPushButton>("apply settings");
+	auto buttonApplySelection=util::make_unique<QPushButton>("apply Selection");
+
+	connect(buttonAddSetting.get(),SIGNAL(clicked()),this,SLOT(addSetting()));
+	connect(buttonAddSelection.get(),SIGNAL(clicked()),this,SLOT(addSelection()));
+	connect(buttonApply.get(),SIGNAL(clicked()),this,SLOT(updateAll()));
+	connect(buttonApplySelection.get(),SIGNAL(clicked()),this,SLOT(applySelection()));
 
 	settingsLayout_=settingsLayout.get();
 	selectorLayout_=selectorLayout.get();
 
+	buttonLayout->addWidget(buttonAddSetting.release(),0,0);
+	buttonLayout->addWidget(buttonAddSelection.release(),1,0);
+	buttonLayout->addWidget(buttonApply.release(),0,1);
+	buttonLayout->addWidget(buttonApplySelection.release(),1,1);
+
+	buttonFrame->setLayout(buttonLayout.release());
+
+	basicLayout->addWidget(buttonFrame.release());
+	basicLayout->addWidget(labelSettings.release());
 	basicLayout->addLayout(settingsLayout.release());
+	basicLayout->addWidget(labelSelection.release());
 	basicLayout->addLayout(selectorLayout.release());
 
+	basicLayout->setContentsMargins(0, 0, 0, 0);
+
 	setLayout(basicLayout.release());
+
+	addSelection();
+	addSetting();
 }
 
 void MatchManagement::setSettings(CVVMatch &match)
@@ -33,10 +71,15 @@ void MatchManagement::setSettings(CVVMatch &match)
 			 [&](const cv::DMatch &ma1)
 		{ return match == ma1; }) != selection_.end())
 	{
+		connect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
+			&match,SLOT(updateSettings(MatchSettings&)));
 		for(auto setting: settingsList_)
 		{
 			match.updateSettings(*setting);
 		}
+	}else{
+		disconnect(this,SIGNAL(applySettingsToSelection(MatchSettings*)),
+			&match,SLOT(updateSettings(MatchSettings&)));
 	}
 }
 
@@ -64,14 +107,27 @@ void MatchManagement::setSelection(
 	updateAll();
 }
 
-/*
-void MatchManagement::addSetting(std::unique_ptr<MatchSettings> setting)
+void MatchManagement::addSetting()
 {
+	addSetting(std::move(util::make_unique<MatchSettingsSelector>(univers_)));
+}
+
+
+void MatchManagement::addSetting(std::unique_ptr<MatchSettingsSelector> setting)
+{
+	connect(setting.get(),SIGNAL(settingsChanged(MatchSettings &)),
+		this,SIGNAL(applySettingsToSelection(MatchSettings&)));
+
+	connect(setting.get(),SIGNAL(remove(MatchSettingsSelector *)),
+		this,SLOT(removeSetting(MatchSettingsSelector*)));
+
 	settingsList_.push_back(setting.get());
+	setting->setLineWidth(1);
+	setting->setFrameStyle(QFrame::Box);
 	settingsLayout_->addWidget(setting.release());
 }
 
-void MatchManagement::removeSetting(MatchSettings *setting)
+void MatchManagement::removeSetting(MatchSettingsSelector *setting)
 {
 	std::remove_if(settingsList_.begin(),settingsList_.end(),
 		[=](const MatchSettings* other)
@@ -79,12 +135,22 @@ void MatchManagement::removeSetting(MatchSettings *setting)
 	);
 	settingsLayout_->removeWidget(setting);
 	setting->deleteLater();
-}*/
+}
 
-void MatchManagement::addSelection(MatchSelectionSelector *selection)
+void MatchManagement::addSelection()
 {
-	selectorList_.push_back(selection);
-	selectorLayout_->addWidget(selection);
+	addSelection(std::move(util::make_unique<MatchSelectionSelector>(univers_)));
+}
+
+void MatchManagement::addSelection(std::unique_ptr<MatchSelectionSelector> selection)
+{
+	connect(selection.get(),SIGNAL(remove(MatchSelectionSelector*))
+		,this,SLOT(removeSelection(MatchSelectionSelector*)));
+
+	selectorList_.push_back(selection.get());
+	selection->setLineWidth(1);
+	selection->setFrameStyle(QFrame::Box);
+	selectorLayout_->addWidget(selection.release());
 }
 
 void MatchManagement::removeSelection(MatchSelectionSelector *selector)
@@ -96,6 +162,16 @@ void MatchManagement::removeSelection(MatchSelectionSelector *selector)
 	selectorLayout_->removeWidget(selector);
 
 	selector->deleteLater();
+}
+
+void MatchManagement::applySelection()
+{
+	std::vector<cv::DMatch> currentSelection=univers_;
+	for(auto& selector:selectorList_){
+		currentSelection=selector->select(currentSelection);
+	}
+	selection_=currentSelection;
+	emit updateSelection(selection_);
 }
 
 }

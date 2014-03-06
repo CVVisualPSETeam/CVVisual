@@ -6,7 +6,7 @@
 #include "opencv2/features2d/features2d.hpp"
 
 #include "matchselectionselector.hpp"
-#include "matchsettings.hpp"
+#include "matchsettingsselector.hpp"
 #include "cvvmatch.hpp"
 
 namespace cvv
@@ -36,6 +36,17 @@ public:
 	 */
 	virtual void setSettings(CVVMatch &match);
 
+	/**
+	 * @brief add the given MatchSettingsSelector to the list
+	 */
+	void addSetting(std::unique_ptr<MatchSettingsSelector>);
+
+	/**
+	 * @brief add the given MatchSelectionSelector to the list
+	 */
+	void addSelection(std::unique_ptr<MatchSelectionSelector>);
+
+
 public slots:
 
 	//selection
@@ -56,23 +67,24 @@ public slots:
 	void setSelection(const std::vector<cv::DMatch> &selection);
 
 	//TODO Machsettings=>MatchSettingsSelector
-	//TODO unique_ptr or slot
 	//MatchSettingSelector
-	/*
-	void addSetting(std::unique_ptr<MatchSettings> setting);
 
-	void removeSetting(MatchSettings *setting);
-*/
+	void addSetting();
+
+	void removeSetting(MatchSettingsSelector *setting);
+
 	//Match Selection
 	/**
 	 * @brief add the given MatchSelectionSelector to the list
 	 */
-	void addSelection(MatchSelectionSelector *selection);
+	void addSelection();
 
 	/**
 	 * @brief remove a given MatchSelector from the list
 	 */
 	void removeSelection(MatchSelectionSelector *selector);
+
+	void applySelection();
 
 signals:
 
@@ -82,10 +94,16 @@ signals:
 	 */
 	void updateSelection(const std::vector<cv::DMatch> &selection);
 
+	/**
+	 * @brief this singal has the same function like settingsChanged from MatchSettings,
+	 * but this will be only connect to the current selection
+	 */
+	void applySettingsToSelection(MatchSettings&);
+
 private:
 	std::vector<cv::DMatch> univers_;
 	std::vector<cv::DMatch> selection_;
-	std::vector<MatchSettings*> settingsList_;
+	std::vector<MatchSettingsSelector*> settingsList_;
 	std::vector<MatchSelectionSelector*> selectorList_;
 
 	QLayout *settingsLayout_;

@@ -9,16 +9,22 @@ namespace cvv{ namespace qtutil{
 
 MatchSelectionSelector::MatchSelectionSelector(const std::vector<cv::DMatch> &univers, QWidget *parent):
 	MatchSelection{parent},
+	RegisterHelper<MatchSelection,std::vector<cv::DMatch>>{},
 	univers_{univers}
 {
 	auto layout=util::make_unique<QVBoxLayout>();
+	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(comboBox_);
-
 	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changeSelector()));
+	layout_=layout.get();
 	setLayout(layout.release());
-	changeSelector();
+	TRACEPOINT;
+	if(this->has(this->selection())){
+		TRACEPOINT;
+		changeSelector();
+	}
+	TRACEPOINT;
 }
-
 
 std::vector<cv::DMatch> cvv::qtutil::MatchSelectionSelector::select(const std::vector<cv::DMatch> &selection)
 {
@@ -27,11 +33,23 @@ std::vector<cv::DMatch> cvv::qtutil::MatchSelectionSelector::select(const std::v
 
 void MatchSelectionSelector::changeSelector()
 {
+	TRACEPOINT;
 	auto selection=(*this)()(univers_);
-	layout_->removeWidget(selection_);
-	selection_=selection.get();
-	layout_->addWidget(selection.release());
-
+	TRACEPOINT;
+	if(selection){
+		TRACEPOINT;
+		if(selection_){
+			TRACEPOINT;
+			layout_->removeWidget(selection_);
+		}
+		TRACEPOINT;
+		selection_->deleteLater();
+		TRACEPOINT;
+		selection_=selection.get();
+		TRACEPOINT;
+		layout_->addWidget(selection.release());
+		TRACEPOINT;
+	}
 }
 
 }}

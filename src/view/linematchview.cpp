@@ -2,11 +2,11 @@
 
 #include "../qtutil/accordion.hpp"
 #include "../qtutil/matchview/matchscene.hpp"
-#include "../qtutil/matchview/singlecolormatchpen.hpp"
 #include "../qtutil/matchview/cvvkeypoint.hpp"
 #include "../qtutil/matchview/cvvmatch.hpp"
-#include "../qtutil/matchview/singlecolormatchpen.hpp"
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
+#include "../qtutil/matchview/matchmanagement.hpp"
+#include "../qtutil/matchview/matchsettingsselector.hpp"
 #include "../util/util.hpp"
 
 #include "linematchview.hpp"
@@ -24,24 +24,21 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 {
 	auto layout = util::make_unique<QHBoxLayout>();
 	auto accor = util::make_unique<qtutil::Accordion>();
-	auto matchscene =
-	    util::make_unique<qtutil::MatchScene>(leftIm, rightIm);
-	auto matchpen = util::make_unique<qtutil::SingleColorMatchPen>(matches);
+	auto matchscene = util::make_unique<qtutil::MatchScene>(leftIm, rightIm);
+	auto matchmnt = util::make_unique<qtutil::MatchManagement>(matches);
 	auto keypen = util::make_unique<qtutil::SingleColorKeyPen>();
-	//auto matchSelector = util::make_unique<qtutil::MatchSelector>();
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
-	qtutil::SingleColorMatchPen *matchpen_ptr = matchpen.get();
+	qtutil::MatchManagement *matchmnt_ptr = matchmnt.get();
 	qtutil::SingleColorKeyPen *keypen_ptr = keypen.get();
-	//qtutil::MatchSelector *matchSelector_ptr = matchSelector.get();
 
-	accor->setMinimumWidth(250);
-	accor->setMaximumWidth(250);
+	accor->setMinimumWidth(350);
+	accor->setMaximumWidth(350);
 
 	std::vector<qtutil::CVVKeyPoint *> leftKeys;
 	std::vector<qtutil::CVVKeyPoint *> rightKeys;
 
-	accor->insert("Match Color", std::move(matchpen));
+	accor->insert("Match Settings", std::move(matchmnt));
 	accor->insert("KeyPoint Color", std::move(keypen));
 	accor->insert("Left Image ",
 		      std::move(matchscene_ptr->getLeftMatInfoWidget()));
@@ -49,6 +46,10 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		      std::move(matchscene_ptr->getRightMatInfoWidget()));
 	accor->insert("Sync Zoom ",
 		      std::move(matchscene_ptr->getSyncZoomWidget()));
+
+	accor->insert("Test",
+		      std::move(util::make_unique<qtutil::MatchSelectionSelector>(matches)));
+
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
@@ -82,14 +83,12 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		    rightKeys.at((usetrainIdx ? match.trainIdx : match.imgIdx)),
 		    match);
 
-		connect(matchpen_ptr, SIGNAL(settingsChanged(MatchSettings &)),
+		connect(matchmnt_ptr, SIGNAL(settingsChanged(MatchSettings &)),
 			cvmatch.get(), SLOT(updateSettings(MatchSettings &)));
 
-	//	connect(matchSelector_ptr,
-	//		SIGNAL(settingsChanged(MatchSettings &)), cvmatch.get(),
-	//		SLOT(updateSettings(MatchSettings &)));
 		matchscene_ptr->addMatch(std::move(cvmatch));
 	}
+	matchmnt_ptr->updateAll();
 }
 }
 }

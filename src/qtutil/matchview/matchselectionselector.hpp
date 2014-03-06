@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "opencv2/features2d/features2d.hpp"
+
 #include "matchselection.hpp"
 #include "../registerhelper.hpp"
 
@@ -28,14 +30,22 @@ public:
 	 */
 	std::vector<cv::DMatch> select(const std::vector<cv::DMatch>& selection);
 
+public slots:
+	void removeMe()
+		{emit remove(this);}
+
+signals:
+	void remove(MatchSelectionSelector*);
+
 private slots:
 
 	/**
 	 * @brief swap the current MatchSelection if the user choose another.
 	 */
 	virtual void changeSelector();
+
 private:
-	MatchSelection * selection_;
+	MatchSelection * selection_=nullptr;
 	std::vector<cv::DMatch> univers_;
 	QLayout *layout_;
 };

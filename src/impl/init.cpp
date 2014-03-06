@@ -80,6 +80,12 @@ void initializeFilterAndViews()
 		}
 	);
 
+	cvv::qtutil::MatchSettingsSelector::registerElement("False Color", [](const std::vector<cv::DMatch>& univers)
+		{
+			return std::unique_ptr<cvv::qtutil::MatchSettings>{new cvv::qtutil::FalseColorMatchPen{univers}};
+		}
+	);
+
 	//match Selector
 	cvv::qtutil::MatchSelectionSelector::registerElement("Intervall Selector", [](const std::vector<cv::DMatch>& univers)
 	{
