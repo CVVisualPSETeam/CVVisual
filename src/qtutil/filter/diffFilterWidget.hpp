@@ -58,21 +58,21 @@ class DiffFilterFunction : public FilterFunctionWidget<2, 1>
 	}
 
 	/**
-	* @brief Applys difference filter specified by filterType_
-	* @param in array of input matrices
-	* @param out array of output matrices
+	* @brief Applys difference filter specified by filterType_.
+	* @param in Array of input matrices
+	* @param out Array of output matrices
 	*/
 	void applyFilter(InputArray in, OutputArray out) const;
 
 	/**
-	* @brief Checks whether matrices in in can be processed by this
+	* @brief Checks whether matrices in 'in' can be processed by this
 	* DiffFilter
 	*/
 	std::pair<bool, QString> checkInput(InputArray in) const;
 
       private:
 	DiffFilterType filterType_;
-	//< type of difference filter that is to be applied
+	//< Type of difference filter that is to be applied
 
 	std::unordered_map<std::string, std::function<void(void)>> filterMap_;
 	//< Map of all available filters with their names

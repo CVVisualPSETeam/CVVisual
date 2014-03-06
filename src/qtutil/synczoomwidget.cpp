@@ -20,7 +20,7 @@ cvv::qtutil::SyncZoomWidget::SyncZoomWidget(
 	{
 
 		auto layout = util::make_unique<QVBoxLayout>();
-		auto label = util::make_unique<QLabel>("choos 'master' image");
+		auto label = util::make_unique<QLabel>("choose 'master' image");
 		auto none = util::make_unique<QRadioButton>("no sync");
 
 		buttonGroup_->setExclusive(true);

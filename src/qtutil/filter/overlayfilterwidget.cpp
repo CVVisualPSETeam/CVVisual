@@ -63,19 +63,19 @@ std::pair<bool, QString> OverlayFilterWidget::checkInput(InputArray in) const
 	// check whether images have same size
 	if (in.at(0).get().size() != in.at(1).get().size())
 	{
-		return std::make_pair(false, "images need to have same size");
+		return std::make_pair(false, "Images need to have same size");
 	}
 
 	// check whether images have same number of channels
 	if (in.at(0).get().channels() != in.at(1).get().channels())
 	{
 		return std::make_pair(
-		    false, "images need to have same number of channels");
+		    false, "Images need to have same number of channels");
 	}
 
 	TRACEPOINT;
 
-	return std::make_pair(true, "images can be converted");
+	return std::make_pair(true, "Images can be converted");
 }
 
 void OverlayFilterWidget::updateOpacity(int newOpacity)

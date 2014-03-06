@@ -19,7 +19,7 @@ namespace view
 {
 
 /**
-* @brief Enum class for possible types of difference Filters used by
+* @brief Enum class for possible types of difference filters used by
 *		applyDiffFilter
 */
 enum class DiffFilterType
@@ -56,7 +56,7 @@ class DualFilterView : public FilterView
 
       public:
 	/**
-	* Default view is DiffFilter grayscale.
+	* Default filter is DiffFilterType::GRAYSCALE.
 	* @brief Constructs View showing original image, default filtered image
 	*and
 	*		result image.
