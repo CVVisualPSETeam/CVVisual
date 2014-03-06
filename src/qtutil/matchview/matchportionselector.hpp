@@ -12,13 +12,12 @@ namespace cvv {namespace qtutil{
 
 class MatchPortionSelection:public MatchSelection{
 public:
-	MatchPortionSelection(std::vector<cv::DMatch> univers,QWidget * parent=nullptr);
+	MatchPortionSelection(std::vector<cv::DMatch>, QWidget * parent=nullptr);
 
 
 	virtual std::vector<cv::DMatch> select(const std::vector<cv::DMatch>& selection)override;
 
 private:
-	std::vector<cv::DMatch> univers_;
 	PortionSelector* selector_;
 };
 
