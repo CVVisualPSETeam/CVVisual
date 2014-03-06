@@ -39,7 +39,7 @@ class CVVKeyPoint : public QGraphicsObject
 	CVVKeyPoint(const cv::KeyPoint &key,
 		    qtutil::ZoomableImage *image = nullptr,
 		    QPen pen = QPen{ Qt::red },
-		    QBrush brush = QBrush{ Qt::white },
+		    QBrush brush = QBrush{ Qt::red },
 		    QGraphicsItem *parent = nullptr);
 
 	/**
@@ -47,10 +47,7 @@ class CVVKeyPoint : public QGraphicsObject
 	 * @return maps the imagepoint to the scene
 	 */
 	QPointF imPointInScene() const
-	{
-		return image_->mapImagePointToParent(
-		    QPointF{ key_.pt.x, key_.pt.y });
-	}
+		{return imagePointInScene_;}
 
 	/**
 	 * @brief boundingRect
@@ -63,9 +60,7 @@ class CVVKeyPoint : public QGraphicsObject
 	 * @return the keypoint
 	 */
 	cv::KeyPoint keyPoint() const
-	{
-		return key_;
-	}
+		{return key_;}
 
 	/**
 	 * @brief the paint function.
@@ -79,9 +74,7 @@ class CVVKeyPoint : public QGraphicsObject
 	 * @return true if this keypoint is in the visble area of its image
 	 */
 	bool imagePointisVisible()
-	{
-		return image_->visibleArea().contains(key_.pt.x, key_.pt.y);
-	}
+		{return image_->visibleArea().contains(key_.pt.x, key_.pt.y);	}
 
 	/**
 	 * @brief if show is true this keypoint will be visible if it is the
@@ -89,21 +82,15 @@ class CVVKeyPoint : public QGraphicsObject
 	 * @return the show Value
 	 */
 	bool isShown() const
-	{
-		return show_;
-	}
+		{return show_;}
 
 	bool operator==(const cv::KeyPoint &o);
 
 	QPen getPen() const
-	{
-		return pen_;
-	}
+		{return pen_;}
 
 	QBrush getBrush() const
-	{
-		return brush_;
-	}
+		{return brush_;	}
 
 signals:
 	/**
@@ -134,17 +121,14 @@ slots:
 	 * visibleArea
 	 * @param b the new show Value
 	 */
-	void setShow(bool b)
-	{
-		show_ = b;
-	}
+	void setShow(bool b);
 
 	/**
 	 * @brief updates the coordinates and visibleState of this KeyPoint
 	 * @param visibleArea the visibleArea of the ZoomableImage
 	 * @param zoom the zoomfactor
 	 */
-	void updateImageSet(const QRectF &visibleArea, const qreal &zoom);
+	void updateImageSet(const QRectF &, const qreal &zoom);
 
 	/**
 	 * @brief this method sets and connects this keypoint which the given
@@ -164,6 +148,8 @@ slots:
 	QBrush brush_;
 	qreal zoom_;
 	bool show_;
+
+	QPointF imagePointInScene_;
 };
 }
 }

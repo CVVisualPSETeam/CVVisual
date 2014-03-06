@@ -7,15 +7,14 @@ namespace cvv
 {
 namespace qtutil
 {
-
-QColor getFalseColor(double value, double max, double min = 0)
+//TODO Replace
+QColor getFalseColor(double value, double max, double min)
 {
-	TRACEPOINT;
 	QColor color{};
 	color.setHsvF(((value - min) / (max - min)) * 255, 255, 255);
-	TRACEPOINT;
 	return color;
 }
+
 }
 }
 #endif

@@ -27,7 +27,7 @@ TranslationMatchView::TranslationMatchView(
 	auto accor = util::make_unique<qtutil::Accordion>();
 	auto matchscene =
 	    util::make_unique<qtutil::MatchScene>(leftIm, rightIm);
-	auto matchpen = util::make_unique<qtutil::SingleColorMatchPen>();
+	auto matchpen = util::make_unique<qtutil::SingleColorMatchPen>(matches);
 	auto keypen = util::make_unique<qtutil::SingleColorKeyPen>();
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();

@@ -31,11 +31,7 @@ class SingleColorKeyPen : public KeyPointSettings
 	 * @brief the destructor
 	 */
 	~SingleColorKeyPen()
-	{
-		TRACEPOINT;
-		colordia_->deleteLater();
-		TRACEPOINT;
-	}
+	{ colordia_->deleteLater();}
 
 	/**
 	 * @brief this method returns the same PEn for all CVVKeyPoints
@@ -55,11 +51,7 @@ slots:
       private
 slots:
 	void colorButtonClicked()
-	{
-		TRACEPOINT;
-		colordia_->show();
-		TRACEPOINT;
-	}
+		{colordia_->show();}
 
       private:
 	QColorDialog *colordia_;

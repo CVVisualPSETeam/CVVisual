@@ -53,6 +53,8 @@ void CVVKeyPoint::updateSettings(KeyPointSettings &settings)
 	settings.setSettings(*this);
 }
 
+
+
 void CVVKeyPoint::setPen(const QPen &pen)
 {
 	pen_ = pen;
@@ -65,6 +67,12 @@ void CVVKeyPoint::setBrush(const QBrush &brush)
 	update();
 }
 
+void CVVKeyPoint::setShow(bool b)
+{
+	show_ = b;
+	setVisible(show_&imagePointisVisible());
+}
+
 QRectF CVVKeyPoint::boundingRect() const
 {
 	// TODO throw image==nullptr
@@ -74,10 +82,14 @@ QRectF CVVKeyPoint::boundingRect() const
 	};
 }
 
-void CVVKeyPoint::updateImageSet(const QRectF &visibleArea, const qreal &zoom)
+void CVVKeyPoint::updateImageSet(const QRectF &, const qreal &zoom)
 {
-	setVisible(show_ && visibleArea.contains(key_.pt.x, key_.pt.y));
-	emit updatePoint(visibleArea.contains(key_.pt.x, key_.pt.y));
+	imagePointInScene_=image_->mapImagePointToParent(
+				QPointF{ key_.pt.x, key_.pt.y });
+
+	bool isInVisibleArea=imagePointisVisible();
+	setVisible(show_ && isInVisibleArea);
+	emit updatePoint(isInVisibleArea);
 	zoom_ = zoom;
 	prepareGeometryChange();
 	// update();
