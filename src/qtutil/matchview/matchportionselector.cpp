@@ -5,7 +5,7 @@
 namespace cvv {namespace qtutil{
 
 MatchPortionSelection::MatchPortionSelection(std::vector<cv::DMatch> , QWidget *parent):
-	MatchSelection{parent},
+	MatchSelection{parent}
 {
 	auto layout=util::make_unique<QVBoxLayout>();
 	auto selector=util::make_unique<PortionSelector>();
