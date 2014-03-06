@@ -42,18 +42,6 @@ class DualFilterView : public FilterView
 {
 	Q_OBJECT
 
-      private:
-	std::array<cv::Mat, 2> rawImages_; //< Original and resulting image
-
-	std::array<cvv::qtutil::ZoomableImage, 3> zoomImages_;
-	//< Original, filtered and resulting image
-
-	/**
-	* @brief Converts vector of size two to array
-	*/
-	std::array<cv::Mat, 2>
-	convertToArray(const std::vector<cv::Mat> &) const;
-
       public:
 	/**
 	* Default filter is DiffFilterType::GRAYSCALE.
@@ -93,6 +81,15 @@ class DualFilterView : public FilterView
 	{
 		TRACEPOINT;
 	}
+
+      private:
+	std::array<cv::Mat, 2> rawImages_; //< Original and resulting image
+
+	/**
+	* @brief Converts vector of size two to array
+	*/
+	std::array<cv::Mat, 2>
+	convertToArray(const std::vector<cv::Mat> &) const;
 };
 }
 } // namespaces

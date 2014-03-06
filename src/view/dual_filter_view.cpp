@@ -108,6 +108,10 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 
 	setLayout(layout.release());
 
+	for(auto& zoomableImage: syncVec)
+	{
+		zoomableImage->showFullImage();
+	}
 	TRACEPOINT;
 }
 

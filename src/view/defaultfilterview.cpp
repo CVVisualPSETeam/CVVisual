@@ -6,6 +6,7 @@
 #include "../qtutil/zoomableimageoptpanel.hpp"
 #include "../qtutil/zoomableimage.hpp"
 #include "../qtutil/synczoomwidget.hpp"
+#include "../util/util.hpp"
 
 namespace cvv
 {
@@ -27,10 +28,12 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	accor->setMaximumWidth(250);
 
 	std::vector<qtutil::ZoomableImage*> syncVec;
+	std::vector<util::Reference<qtutil::ZoomableImage>> zoomableImages;
 
 	for (auto image : images)
 	{
 		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
+		zoomableImages.emplace_back(*zoomIm);
 
 		syncVec.push_back(zoomIm.get());
 
@@ -53,6 +56,10 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	layout->addWidget(imwid.release());
 
 	setLayout(layout.release());
+	for(auto& zoomableImage: zoomableImages)
+	{
+		zoomableImage->showFullImage();
+	}
 	TRACEPOINT;
 }
 }
