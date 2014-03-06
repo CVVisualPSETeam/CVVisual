@@ -19,7 +19,7 @@ namespace view
 {
 
 ImageView::ImageView(const cv::Mat &image, QWidget *parent)
-	    : QWidget{ parent }
+	    : QWidget{ parent }, image{nullptr}
 {
 	auto layout = util::make_unique<QHBoxLayout>(this);
 	auto accor = util::make_unique<qtutil::Accordion>(this);
@@ -33,9 +33,16 @@ ImageView::ImageView(const cv::Mat &image, QWidget *parent)
 	zoomim->setMat(image);
 
 	layout->addWidget(accor.release());
+	this->image = (*zoomim);
 	layout->addWidget(zoomim.release());
 
 	setLayout(layout.release());
 }
+
+void ImageView::showFullImage()
+{
+	image->showFullImage();
+}
+
 
 }} //namespaces

@@ -6,6 +6,9 @@
 
 #include <opencv2/core/core.hpp>
 
+#include "../qtutil/zoomableimage.hpp"
+#include "../util/observer_ptr.hpp"
+
 namespace cvv
 {
 namespace view
@@ -43,9 +46,12 @@ signals:
 	ImageView(const cv::Mat &image, QWidget *parent = nullptr);
 	
 	/**
-	* @brief Default destructor
-	*/
-	~ImageView() {}
+	 * @brief Shows the full image.
+	 */
+	void showFullImage();
+	
+      private:
+	util::ObserverPtr<qtutil::ZoomableImage> image;
 };
 }
 } // namespaces
