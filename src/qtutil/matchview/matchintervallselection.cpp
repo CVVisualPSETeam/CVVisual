@@ -10,7 +10,6 @@ namespace cvv{ namespace qtutil{
 
 MatchIntervallSelector::MatchIntervallSelector(std::vector<cv::DMatch> matches, QWidget *parent):
 	MatchSelection{parent},
-	univers_{matches}
 {
 	double min=0.0;
 	double max=0.0;

@@ -34,6 +34,9 @@ class MatchSettings : public QFrame
 	 */
 	virtual void setSettings(CVVMatch &match) = 0;
 
+	virtual void setUnSelectedSettings(CVVMatch &)
+		{}
+
 public slots:
 	/**
 	 * @brief this method emits the signal settingsChanged();
