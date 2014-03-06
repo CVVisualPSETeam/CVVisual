@@ -1,6 +1,6 @@
 
 #include <QVBoxLayout>
-#include <QCheckBox>
+#include <QRadioButton>
 #include <QLabel>
 
 #include "synczoomwidget.hpp"
@@ -20,11 +20,11 @@ cvv::qtutil::SyncZoomWidget::SyncZoomWidget(
 	{
 
 		auto layout = util::make_unique<QVBoxLayout>();
-		auto label = util::make_unique<QLabel>("choos 'master' image");
-		auto none = util::make_unique<QCheckBox>("no sync");
+		auto label = util::make_unique<QLabel>("choose 'master' image");
+		auto none = util::make_unique<QRadioButton>("no sync");
 
 		buttonGroup_->setExclusive(true);
-		none->setCheckState(Qt::Checked);
+		none->setChecked(true);
 		buttonGroup_->addButton(none.get(), images.size());
 
 		layout->addWidget(label.release());
@@ -33,7 +33,7 @@ cvv::qtutil::SyncZoomWidget::SyncZoomWidget(
 		for (size_t i = 0; i < images_.size(); i++)
 		{
 
-			auto checkbox = util::make_unique<QCheckBox>(QString
+			auto checkbox = util::make_unique<QRadioButton>(QString
 			{ "Image Nr. %1" }.arg(i));
 
 			buttonGroup_->addButton(checkbox.get(), i);
@@ -41,10 +41,10 @@ cvv::qtutil::SyncZoomWidget::SyncZoomWidget(
 			layout->addWidget(checkbox.release());
 
 			connect(this, SIGNAL(updateArea(QRectF, qreal)),
-			        images_.at(i), SLOT(setArea(QRectF, qreal)));
+				images_.at(i), SLOT(setArea(QRectF, qreal)));
 		}
 		connect(buttonGroup_, SIGNAL(buttonClicked(int)), this,
-		        SLOT(selectMaster(int)));
+			SLOT(selectMaster(int)));
 
 		setLayout(layout.release());
 	}
@@ -55,22 +55,22 @@ void SyncZoomWidget::selectMaster(int id)
 	if (currentIdx_ < images_.size())
 	{
 		disconnect(images_.at(currentIdx_),
-		           SIGNAL(updateArea(QRectF, qreal)), this,
-		           SIGNAL(updateArea(QRectF, qreal)));
+			   SIGNAL(updateArea(QRectF, qreal)), this,
+			   SIGNAL(updateArea(QRectF, qreal)));
 
 		connect(this, SIGNAL(updateArea(QRectF, qreal)),
-		        images_.at(currentIdx_), SLOT(setArea(QRectF, qreal)));
+			images_.at(currentIdx_), SLOT(setArea(QRectF, qreal)));
 	}
 	currentIdx_ = id;
 	if (currentIdx_ < images_.size())
 	{
 		disconnect(this, SIGNAL(updateArea(QRectF, qreal)),
-		           images_.at(currentIdx_),
-		           SLOT(setArea(QRectF, qreal)));
+			   images_.at(currentIdx_),
+			   SLOT(setArea(QRectF, qreal)));
 
 		connect(images_.at(currentIdx_),
-		        SIGNAL(updateArea(QRectF, qreal)), this,
-		        SIGNAL(updateArea(QRectF, qreal)));
+			SIGNAL(updateArea(QRectF, qreal)), this,
+			SIGNAL(updateArea(QRectF, qreal)));
 	}
 }
 }

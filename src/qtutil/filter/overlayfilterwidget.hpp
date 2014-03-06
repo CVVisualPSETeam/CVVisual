@@ -11,6 +11,10 @@ namespace cvv
 namespace qtutil
 {
 
+/**
+* @brief Class providing functionality of compute an overlay image of two
+*	input matrices.
+*/
 class OverlayFilterWidget : public FilterFunctionWidget<2, 1>
 {
 	Q_OBJECT
@@ -42,31 +46,31 @@ class OverlayFilterWidget : public FilterFunctionWidget<2, 1>
 	}
 
 	/**
-	* The opacity of the first image while overlaying is indicated by
-	* opacityOfOriginalImg_.
-	* @brief Overlays the original image
-	* @param in array of input matrices
-	* @param out array of output matrices
+	* The opacity of the second image while overlaying is indicated by
+	* opacityOfFilterImg_.
+	* @brief Overlays the original images
+	* @param in Array of input matrices
+	* @param out Array of output matrices
 	*/
 	void applyFilter(InputArray in, OutputArray out) const;
 
 	/**
 	* Checks whether the matrices have the same size and same number of
 	* channels.
-	* @brief Checks whether matrices in in can be processed by Overlayfilter
-	* @param in array of input matrices
+	* @brief Checks whether matrices in "in" can be processed by Overlayfilter
+	* @param in Array of input matrices
 	*/
 	std::pair<bool, QString> checkInput(InputArray in) const;
 
       private:
-	double opacityOfOriginalImg_;
-	//< opacity of the first input image when ovelaying
+	double opacityOfFilterImg_;
+	//< Opacity of the second input image when ovelaying
 
       private
 slots:
 	/**
-	* @brief Sets opacityOfOriginalImg_ and emits signFilterSettingsChanged.
-	* @param op new opacity
+	* @brief Sets opacityOfFilterImg_ and emits signFilterSettingsChanged.
+	* @param op New opacity
 	*/
 	void updateOpacity(int op);
 };

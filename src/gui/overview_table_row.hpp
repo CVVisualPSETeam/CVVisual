@@ -23,7 +23,8 @@ namespace gui
  */
 class OverviewTableRow
 {
-      public:
+
+public:
 	/**
 	 * @brief Constructor of this class.
 	 * @param call call this row is based on
@@ -47,7 +48,22 @@ class OverviewTableRow
 	void addToTable(QTableWidget *table, size_t row, bool showImages,
 	                size_t maxImages, int imgHeight = 100,
 	                int imgWidth = 100);
-
+	
+	/**
+	 * @brief Resizes the images in the given row.
+	 * Make sure to call this after (!) you called addToTable() with the
+	 * same row parameter on this object some time. 
+	 * @param table given table
+	 * @param row row index at which the data will be shown
+	 * @param showImages does the table show images?
+	 * @param maxImages the maximum number of images the table shows
+	 * @param imgHeight height of the shown images
+	 * @param imgWidth width of the shown images
+	 */
+	void resizeInTable(QTableWidget *table, size_t row, bool showImages,
+				  size_t maxImages, int imgHeight = 100,
+                  int imgWidth = 100);
+	
 	/**
 	 * @brief Get the inherited call.
 	 * @return the inherited call
@@ -111,7 +127,7 @@ class OverviewTableRow
 		return typeStr;
 	}
 
-      private:
+private:
 	util::Reference<const impl::Call> call_;
 	size_t id_ = 0;
 	size_t line_ = 0;

@@ -9,14 +9,13 @@ namespace cvv
 namespace qtutil
 {
 
-SingleColorMatchPen::SingleColorMatchPen(QWidget *parent)
+SingleColorMatchPen::SingleColorMatchPen(std::vector<cv::DMatch>, QWidget *parent)
     : MatchSettings{ parent },
       color_(Qt::red)
 {
-	TRACEPOINT;
-	auto layout = util::make_unique<QVBoxLayout>();
 	colorDialog_ = new QColorDialog{}; // wird im Destructor zerstört
-	auto button = util::make_unique<QPushButton>("Color Dialog");
+	auto layout = util::make_unique<QVBoxLayout>();
+	auto button = util::make_unique<QPushButton>("Change Color");
 
 	connect(colorDialog_, SIGNAL(currentColorChanged(const QColor &)), this,
 		SLOT(updateColor(const QColor &)));
@@ -28,24 +27,20 @@ SingleColorMatchPen::SingleColorMatchPen(QWidget *parent)
 	layout->addWidget(button.release());
 
 	setLayout(layout.release());
-	TRACEPOINT;
 }
 
 void SingleColorMatchPen::setSettings(CVVMatch &match)
 {
-	TRACEPOINT;
 	QPen pen=match.getPen();
 	pen.setColor(color_);
 	match.setPen(pen);
-	TRACEPOINT;
 }
 
 void SingleColorMatchPen::updateColor(const QColor &color)
 {
-	TRACEPOINT;
 	color_ = color;
 	emit settingsChanged(*this);
-	TRACEPOINT;
 }
+
 }
 }

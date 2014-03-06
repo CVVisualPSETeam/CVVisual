@@ -26,10 +26,7 @@ class KeyPointSettings : public QWidget
 	 * @brief KeyPointPen
 	 * @param parent the parent Widget
 	 */
-	KeyPointSettings(QWidget *parent) : QWidget(parent)
-	{
-		TRACEPOINT;
-	}
+	KeyPointSettings(QWidget *parent) : QWidget(parent){}
 
 	/**
 	 * @brief getPen
@@ -38,13 +35,12 @@ class KeyPointSettings : public QWidget
 	 */
 	virtual void setSettings(CVVKeyPoint &key) = 0;
 
+public slots:
 	/**
 	 * @brief this method emits the signal settingsChanged();
 	 */
 	void updateAll()
-	{
-		emit settingsChanged(*this);
-	}
+		{ emit settingsChanged(*this); }
 signals:
 	/**
 	 * @brief this signal will be emitted if the settings changed

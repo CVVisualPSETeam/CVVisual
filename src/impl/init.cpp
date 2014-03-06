@@ -17,13 +17,19 @@
 #include "../view/dual_filter_view.hpp"
 #include "../view/singlefilterview.hpp"
 
+#include "../gui/match_call_tab.hpp"
 #include "../view/match_view.hpp"
 #include "../view/linematchview.hpp"
 #include "../view/rawview.hpp"
 #include "../view/translationsmatchview.hpp"
 #include "../view/depthview.hpp"
 
-#include "../gui/match_call_tab.hpp"
+#include "../qtutil/matchview/matchselectionselector.hpp"
+#include "../qtutil/matchview/matchintervallselection.hpp"
+
+#include "../qtutil/matchview/matchsettingsselector.hpp"
+#include "../qtutil/matchview/singlecolormatchpen.hpp"
+#include "../qtutil/matchview/falsecolormatchpen.hpp"
 
 namespace cvv
 {
@@ -51,8 +57,8 @@ void initializeFilterAndViews()
 
 	// filter-views:
 	cvv::gui::FilterCallTab::registerFilterView<
-	    cvv::view::DefaultFilterView>("DefaultFilterView");
-	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DualFilterView>(
+	    cvv::view::DefaultFilterView> ("DefaultFilterView");
+	cvv::gui::FilterCallTab::registerFilterView<cvv::view::DualFilterView> (
 	    "DualFilterView");
 	cvv::gui::FilterCallTab::registerFilterView<
 	    cvv::view::SingleFilterView>("SingleFilterView");
@@ -66,6 +72,26 @@ void initializeFilterAndViews()
 	    "DepthMatchView");
 	cvv::gui::MatchCallTab::registerMatchView<cvv::view::Rawview>(
 	    "RawView");
+
+	//match Settings
+	cvv::qtutil::MatchSettingsSelector::registerElement("Single Color", [](const std::vector<cv::DMatch>& univers)
+		{
+			return std::unique_ptr<cvv::qtutil::MatchSettings>{new cvv::qtutil::SingleColorMatchPen{univers}};
+		}
+	);
+
+	cvv::qtutil::MatchSettingsSelector::registerElement("False Color", [](const std::vector<cv::DMatch>& univers)
+		{
+			return std::unique_ptr<cvv::qtutil::MatchSettings>{new cvv::qtutil::FalseColorMatchPen{univers}};
+		}
+	);
+
+	//match Selector
+	cvv::qtutil::MatchSelectionSelector::registerElement("Intervall Selector", [](const std::vector<cv::DMatch>& univers)
+	{
+		return std::unique_ptr<cvv::qtutil::MatchSelection>{new cvv::qtutil::MatchIntervallSelector{univers}};
+	});
+
 }
 }
 }

@@ -19,7 +19,7 @@ namespace view
 {
 
 /**
-* @brief Enum class for possible types of difference Filters used by
+* @brief Enum class for possible types of difference filters used by
 *		applyDiffFilter
 */
 enum class DiffFilterType
@@ -42,21 +42,9 @@ class DualFilterView : public FilterView
 {
 	Q_OBJECT
 
-      private:
-	std::array<cv::Mat, 2> rawImages_; //< Original and resulting image
-
-	std::array<cvv::qtutil::ZoomableImage, 3> zoomImages_;
-	//< Original, filtered and resulting image
-
-	/**
-	* @brief Converts vector of size two to array
-	*/
-	std::array<cv::Mat, 2>
-	convertToArray(const std::vector<cv::Mat> &) const;
-
       public:
 	/**
-	* Default view is DiffFilter grayscale.
+	* Default filter is DiffFilterType::GRAYSCALE.
 	* @brief Constructs View showing original image, default filtered image
 	*and
 	*		result image.
@@ -93,6 +81,15 @@ class DualFilterView : public FilterView
 	{
 		TRACEPOINT;
 	}
+
+      private:
+	std::array<cv::Mat, 2> rawImages_; //< Original and resulting image
+
+	/**
+	* @brief Converts vector of size two to array
+	*/
+	std::array<cv::Mat, 2>
+	convertToArray(const std::vector<cv::Mat> &) const;
 };
 }
 } // namespaces

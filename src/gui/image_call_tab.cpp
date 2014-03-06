@@ -72,6 +72,7 @@ void ImageCallTab::createGui()
 	setView();
 
 	setLayout(vlayout_);
+	imageView_->showFullImage();
 	TRACEPOINT;
 }
 

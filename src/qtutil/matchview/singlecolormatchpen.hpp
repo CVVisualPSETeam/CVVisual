@@ -28,16 +28,14 @@ class SingleColorMatchPen : public MatchSettings
 	 * @brief the constructor
 	 * @param parent the parent Widget
 	 */
-	SingleColorMatchPen(QWidget *parent = nullptr);
+	SingleColorMatchPen(std::vector<cv::DMatch> ,QWidget *parent = nullptr);
 
 	/**
 	 * @brief the destructor
 	 * the QColorDialog has no parent/layout it must be deleted.
 	 */
 	~SingleColorMatchPen()
-	{
-		colorDialog_->deleteLater();
-	}
+		{colorDialog_->deleteLater();}
 
 	/**
 	 * @brief return a single Color for all CVVMatch
@@ -56,9 +54,7 @@ slots:
       protected
 slots:
 	void colorButtonClicked()
-	{
-		colorDialog_->show();
-	}
+	{colorDialog_->show();}
 
       protected:
 	QColor color_;

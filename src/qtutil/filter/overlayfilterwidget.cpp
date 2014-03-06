@@ -16,7 +16,7 @@ namespace qtutil
 {
 
 OverlayFilterWidget::OverlayFilterWidget(QWidget *parent)
-    : FilterFunctionWidget<2, 1>{ parent }, opacityOfOriginalImg_{ 0.5 }
+    : FilterFunctionWidget<2, 1>{ parent }, opacityOfFilterImg_{ 0.5 }
 {
 	TRACEPOINT;
 
@@ -24,6 +24,7 @@ OverlayFilterWidget::OverlayFilterWidget(QWidget *parent)
 	auto slider = util::make_unique<QSlider>(Qt::Horizontal);
 
 	slider->setRange(0, 100);
+	slider->setSliderPosition(50);
 	slider->setTickPosition(QSlider::TicksAbove);
 	slider->setTickInterval(10);
 
@@ -32,7 +33,7 @@ OverlayFilterWidget::OverlayFilterWidget(QWidget *parent)
 
 	// Add title of slider and slider to the layout
 	layout->addWidget(util::make_unique<QLabel>(
-	    "Select opacity of original image").release());
+	    "Select opacity of right image").release());
 	layout->addWidget(slider.release());
 	setLayout(layout.release());
 
@@ -50,8 +51,8 @@ void OverlayFilterWidget::applyFilter(InputArray in, OutputArray out) const
 		return;
 	}
 
-	cv::addWeighted(in.at(0).get(), opacityOfOriginalImg_, in.at(1).get(),
-	                1 - opacityOfOriginalImg_, 0, out.at(0).get());
+	cv::addWeighted(in.at(0).get(), 1 - opacityOfFilterImg_, in.at(1).get(),
+	                opacityOfFilterImg_, 0, out.at(0).get());
 
 	TRACEPOINT;
 }
@@ -62,25 +63,25 @@ std::pair<bool, QString> OverlayFilterWidget::checkInput(InputArray in) const
 	// check whether images have same size
 	if (in.at(0).get().size() != in.at(1).get().size())
 	{
-		return std::make_pair(false, "images need to have same size");
+		return std::make_pair(false, "Images need to have same size");
 	}
 
 	// check whether images have same number of channels
 	if (in.at(0).get().channels() != in.at(1).get().channels())
 	{
 		return std::make_pair(
-		    false, "images need to have same number of channels");
+		    false, "Images need to have same number of channels");
 	}
 
 	TRACEPOINT;
 
-	return std::make_pair(true, "images can be converted");
+	return std::make_pair(true, "Images can be converted");
 }
 
 void OverlayFilterWidget::updateOpacity(int newOpacity)
 {
 	TRACEPOINT;
-	opacityOfOriginalImg_ = newOpacity / 100.0;
+	opacityOfFilterImg_ = newOpacity / 100.0;
 	signalFilterSettingsChanged().emitSignal();
 	TRACEPOINT;
 }

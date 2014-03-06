@@ -3,10 +3,12 @@
 #include <iostream> //for debugging
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 #include "opencv2/core/core.hpp"
 
 #include <QApplication>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QString>
@@ -17,6 +19,7 @@
 #include "../qtutil/autofilterwidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
 #include "../qtutil/zoomableimageoptpanel.hpp"
+#include "../qtutil/synczoomwidget.hpp"
 #include "../qtutil/util.hpp"
 #include "../util/util.hpp"
 #include "dual_filter_view.hpp"
@@ -32,13 +35,13 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 {
 	TRACEPOINT;
 	auto layout = util::make_unique<QHBoxLayout>();
-	auto imageLayout = util::make_unique<QHBoxLayout>();
+	auto imageLayout = util::make_unique<QGridLayout>();
 	auto imwid = util::make_unique<QWidget>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 
-	accor->setMinimumWidth(250);
-	accor->setMaximumWidth(250);
-
+	accor->setMinimumWidth(300);
+	accor->setMaximumWidth(300);
+	
 	auto filterSelector =
 	    util::make_unique<qtutil::AutoFilterWidget<2, 1>>(this);
 	filterSelector->enableUserSelection(false);
@@ -78,13 +81,26 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		{
 			zoomIm->setMat(image.clone());
 		}
-		imageLayout.get()->addWidget(zoomIm.release());
+		imageLayout.get()->addWidget(zoomIm.get(), 0, count);
+		
+		return zoomIm.release();
 	};
-
-	lambda(rawImages_.at(0), 0);
-	lambda(rawImages_.at(0), 1);
-	lambda(rawImages_.at(1), 2);
-
+	
+	std::vector<qtutil::ZoomableImage*> syncVec;
+	
+	syncVec.push_back(lambda(rawImages_.at(0), 0));
+	syncVec.push_back(lambda(rawImages_.at(0), 1));
+	syncVec.push_back(lambda(rawImages_.at(1), 2));
+	
+	accor->insert("Zoom synchronization",
+		std::move(util::make_unique<qtutil::SyncZoomWidget>(syncVec)), true, 1);
+	
+	imageLayout->setColumnStretch(0, 1);
+	imageLayout->setColumnStretch(1, 1);
+	imageLayout->setColumnStretch(2, 1);
+	imageLayout->setColumnMinimumWidth(0, 300);
+	imageLayout->setColumnMinimumWidth(1, 300);
+	imageLayout->setColumnMinimumWidth(2, 300);
 	imwid->setLayout(imageLayout.release());
 
 	layout->addWidget(accor.release());
@@ -92,6 +108,10 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 
 	setLayout(layout.release());
 
+	for(auto& zoomableImage: syncVec)
+	{
+		zoomableImage->showFullImage();
+	}
 	TRACEPOINT;
 }
 

@@ -43,8 +43,8 @@ enum class ImageConversionResult
  */
 std::pair<ImageConversionResult, QImage>
 convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest = 0,
-                   unsigned int threads =
-                       std::numeric_limits<unsigned int>::max());
+		   unsigned int threads =
+		       std::numeric_limits<unsigned int>::max());
 
 /**
  * @brief Converts a cv::Mat to a QPixmap.
@@ -56,8 +56,8 @@ convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest = 0,
  */
 std::pair<ImageConversionResult, QPixmap>
 convertMatToQPixmap(const cv::Mat &mat, bool skipFloatRangeTest = 0,
-                    unsigned int threads =
-                        std::numeric_limits<unsigned int>::max());
+		    unsigned int threads =
+			std::numeric_limits<unsigned int>::max());
 
 /**
  * @brief Creates a QSet<QString> with the given string as an inherited value.
@@ -72,6 +72,11 @@ QSet<QString> createStringSet(QString string);
  */
 std::pair<bool, QString> typeToQString(const cv::Mat &mat);
 
+/**
+ * @brief Returns a string descripton to a image conversion result.
+ * @param result The image conversion result.
+ * @return The descripton.
+ */
 QString conversionResultToString(const ImageConversionResult &result);
 
 /**
@@ -109,7 +114,7 @@ void openHelpBrowser(const QString &topic);
  * @param value default value of the setting
  */
 void setDefaultSetting(const QString &scope, const QString &key,
-                       const QString &value);
+		       const QString &value);
 
 /**
  * @brief Set the setting for a given stettings key and scope.

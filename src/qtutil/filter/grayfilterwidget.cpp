@@ -36,7 +36,7 @@ GrayFilterWidget::GrayFilterWidget(QWidget *parent)
 	channel_->setRange(1, 10);
 	// and connect it with the slot setChannel.
 	QObject::connect(channel_.getPtr(), SIGNAL(valueChanged(int)), this,
-	                 SLOT(setChannel(int)));
+			 SLOT(setChannel(int)));
 
 	TRACEPOINT;
 	// build ui (some labels for the user are added)
@@ -63,13 +63,15 @@ void GrayFilterWidget::applyFilter(InputArray in, OutputArray out) const
 		TRACEPOINT;
 		return;
 	}
+	DEBUGF("\nin rows: %s, cols: %s",in.at(0).get().rows,in.at(0).get().cols);
 	// the filter can be applied
 	TRACEPOINT;
 	// split the cannels of the input image
 	auto channels = splitChannels(in.at(0).get());
 	// create a zero image
 	cv::Mat tmp = cv::Mat::zeros(in.at(0).get().rows, in.at(0).get().cols,
-	                             in.at(0).get().depth());
+				     in.at(0).get().depth());
+	DEBUGF("\ntmp: rows: %s, cols: %s",tmp.rows,tmp.cols);
 	TRACEPOINT;
 	// multiply all channels with their factor and add it to tmp
 	// if there are factors for more channels than the input image has, this
@@ -86,6 +88,7 @@ void GrayFilterWidget::applyFilter(InputArray in, OutputArray out) const
 	}
 	// finally assign tmp to out
 	out.at(0).get() = tmp;
+	DEBUGF("\nout after assign rows: %s, cols: %s",out.at(0).get().rows,out.at(0).get().cols);
 	TRACEPOINT;
 }
 
@@ -105,7 +108,7 @@ std::pair<bool, QString> GrayFilterWidget::checkInput(InputArray) const
 		// the settings are invalid => return fale + a error message
 		TRACEPOINT;
 		return { false, QString{ "total : " } + QString::number(sum) +
-			            QString{ " > 1" } };
+				    QString{ " > 1" } };
 	}
 	TRACEPOINT;
 	// the settings are valid
@@ -152,8 +155,8 @@ void GrayFilterWidget::setChannel(std::size_t n)
 		chanValues_.emplace_back(*box);
 		// connect it to signFilterSettingsChanged_.
 		QObject::connect(box.get(), SIGNAL(valueChanged(double)),
-		                 &(this->signalFilterSettingsChanged()),
-		                 SIGNAL(signal()));
+				 &(this->signalFilterSettingsChanged()),
+				 SIGNAL(signal()));
 		// and add it to the layout
 		layout_->addWidget(box.release());
 	}

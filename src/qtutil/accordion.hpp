@@ -22,7 +22,7 @@ namespace qtutil
 /**
  * @brief The Accordion class.
  *
- * Contains multiple widgets an their title. These get stored in collapsables.
+ * Contains multiple widgets and their title. These get stored in collapsables.
  * The collapsables are stored in a collumn.
  */
 class Accordion : public QWidget
@@ -188,7 +188,7 @@ class Accordion : public QWidget
 	}
 
 	/**
-	 * @brief Sets all elements visibility to !b
+	 * @brief Sets all elements' visibility to !b
 	 * @param b
 	 * @parblock
 	 * 		true: makes all elements invisible
@@ -198,7 +198,7 @@ class Accordion : public QWidget
 	void hideAll(bool b = true);
 
 	/**
-	 * @brief Sets all elements visibility to b
+	 * @brief Sets all elements' visibility to b
 	 * @param b
 	 * @parblock
 	 * 		true: makes all elements visible
@@ -217,7 +217,7 @@ class Accordion : public QWidget
 	 * @param title The title to display
 	 * @param widget The widget to display
 	 * @param isCollapsed Whether the widget is collapsed after creation
-	 * @param position The position. if it is greater than the number of
+	 * @param position The position. If it is greater than the number of
 	 *elements the widget
 	 *	will be added to the end
 	 * @return The handle to access the element
@@ -265,7 +265,7 @@ class Accordion : public QWidget
 	void remove(Handle handle);
 
 	/**
-	 * @brief Removes all elements and delets them immediately.
+	 * @brief Removes all elements and deletes them immediately.
 	 * @param del
 	 */
 	void clear();
@@ -273,7 +273,7 @@ class Accordion : public QWidget
 	/**
 	 * @brief Removes an element and returns its title and Collapsable.
 	 * (ownership remains)
-	 * @param handle Handle handle of the element
+	 * @param handle Handle of the element
 	 * @throw std::out_of_range If there is no element corresponding to
 	 * handle
 	 * @return Title and reference
@@ -286,7 +286,7 @@ class Accordion : public QWidget
 	void deleteLast();
 
 	/**
-	 * @brief Removes alle elements from the Accordion and returns their
+	 * @brief Removes all elements from the Accordion and returns their
 	 *titles
 	 *	and Collapsables  (ownership remains)
 	 * @return A vector containing all titles and references

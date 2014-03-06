@@ -1,8 +1,10 @@
 #ifndef CVVISUAL_IMAGE_CALL_TAB_HPP
 #define CVVISUAL_IMAGE_CALL_TAB_HPP
 
+#include <QHBoxLayout>
 #include <QString>
 #include <QPushButton>
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "call_tab.hpp"

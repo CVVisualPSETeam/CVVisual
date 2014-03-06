@@ -7,6 +7,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "../../src/view/translationsmatchview.hpp"
+#include "../../src/impl/init.hpp"
 
 int main(int argc, char **argv)
 {
@@ -16,7 +17,7 @@ int main(int argc, char **argv)
 	if (argc != 3)
 	{
 		std::cerr << "Only execute this test with filenames of two "
-		             "images as arguments! \n";
+			     "images as arguments! \n";
 		return -1;
 	}
 	auto src = cv::imread(argv[1]);
@@ -26,8 +27,8 @@ int main(int argc, char **argv)
 	for (int i = std::min(src.rows, src.cols); i > 0; i -= 30)
 	{
 		cv::Point2f pt{ static_cast<float>(
-			            std::min(src.rows, src.cols) - i),
-			        static_cast<float>(i) };
+				    std::min(src.rows, src.cols) - i),
+				static_cast<float>(i) };
 		key1.emplace_back(pt, 0.0f);
 	}
 	std::vector<cv::KeyPoint> key2;
@@ -41,7 +42,7 @@ int main(int argc, char **argv)
 	{
 		match.emplace_back(i, i + 1, 1.0f);
 	}
-
+	cvv::impl::initializeFilterAndViews();
 	cvv::view::TranslationMatchView view{ key1, key2, match, src, train };
 	view.setWindowTitle("TranslationMatchView Test");
 	view.show();

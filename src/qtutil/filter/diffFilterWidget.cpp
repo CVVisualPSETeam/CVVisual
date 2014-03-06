@@ -27,19 +27,19 @@ DiffFilterFunction::DiffFilterFunction(QWidget *parent)
 
 	filterMap_.insert(
 	    std::make_pair<std::string, std::function<void(void)>>(
-	        "Difference Image - hue", [this]()
+	        "Hue", [this]()
 	{ filterType_ = DiffFilterType::HUE; }));
 	filterMap_.insert(
 	    std::make_pair<std::string, std::function<void(void)>>(
-	        "Difference Image - saturation", [this]()
+	        "Saturation", [this]()
 	{ filterType_ = DiffFilterType::SATURATION; }));
 	filterMap_.insert(
 	    std::make_pair<std::string, std::function<void(void)>>(
-	        "Difference Image - value", [this]()
+	        "Value", [this]()
 	{ filterType_ = DiffFilterType::VALUE; }));
 	filterMap_.insert(
 	    std::make_pair<std::string, std::function<void(void)>>(
-	        "Difference Image - grayscale", [this]()
+	        "Grayscale", [this]()
 	{ filterType_ = DiffFilterType::GRAYSCALE; }));
 
 	// Register filter names at comboBox
@@ -90,7 +90,7 @@ std::pair<bool, QString> DiffFilterFunction::checkInput(InputArray in) const
 
 	if (in.at(0).get().size() != in.at(1).get().size())
 	{
-		return std::make_pair(false, "images need to have same size");
+		return std::make_pair(false, "Images need to have same size");
 	}
 
 	size_t inChannels = in.at(0).get().channels();
@@ -98,12 +98,12 @@ std::pair<bool, QString> DiffFilterFunction::checkInput(InputArray in) const
 	if (inChannels != static_cast<size_t>(in.at(1).get().channels()))
 	{
 		return std::make_pair(
-		    false, "images need to have same number of channels");
+		    false, "Images need to have same number of channels");
 	}
 
 	if (inChannels == 1 && filterType_ != DiffFilterType::GRAYSCALE)
 	{
-		return std::make_pair(false, "images are grayscale, but "
+		return std::make_pair(false, "Images are grayscale, but "
 		                             "selected Filter can only "
 		                             "progress 3-channel images");
 	}
@@ -111,12 +111,12 @@ std::pair<bool, QString> DiffFilterFunction::checkInput(InputArray in) const
 	if (inChannels != 1 && inChannels != 3 && inChannels != 4)
 	{
 		return std::make_pair(
-		    false, "images must have one, three or four channels");
+		    false, "Images must have one, three or four channels");
 	}
 
 	TRACEPOINT;
 
-	return std::make_pair(true, "images can be converted");
+	return std::make_pair(true, "Images can be converted");
 }
 
 QStringList DiffFilterFunction::extractStringListfromMap() const

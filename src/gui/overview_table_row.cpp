@@ -84,5 +84,28 @@ void OverviewTableRow::addToTable(QTableWidget *table, size_t row,
 	}
 	TRACEPOINT;
 }
+
+void OverviewTableRow::resizeInTable(QTableWidget *table, size_t row,
+                                  bool showImages, size_t maxImages,
+                                  int imgHeight, int imgWidth)
+{
+	TRACEPOINT;
+	if (showImages)
+	{
+		for (size_t i = 0; i < imgs.size() && i < maxImages; i++)
+		{
+			auto imgWidget = util::make_unique<QTableWidgetItem>("");
+			imgWidget->setData(
+			    Qt::DecorationRole,
+			    imgs.at(i).scaled(imgHeight, imgWidth,
+			                      Qt::KeepAspectRatio,
+			                      Qt::SmoothTransformation));
+			imgWidget->setTextAlignment(Qt::AlignHCenter);
+			imgWidget->setFlags(imgWidget->flags() ^ Qt::ItemIsEditable);
+			table->setItem(row, i + 1, imgWidget.release());
+		}
+	}
+	TRACEPOINT;
+}
 }
 }

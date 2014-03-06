@@ -13,11 +13,9 @@ namespace cvv
 namespace qtutil
 {
 
-MatchScene::MatchScene(cv::Mat imageLeft, cv::Mat imageRight, QWidget *parent)
+MatchScene::MatchScene(const cv::Mat &imageLeft, const cv::Mat &imageRight, QWidget *parent)
     : QGraphicsView{ parent }
 {
-	TRACEPOINT;
-
 	auto basicLayout = util::make_unique<QHBoxLayout>();
 
 	auto graphicScene = util::make_unique<QGraphicsScene>(this);
@@ -32,18 +30,15 @@ MatchScene::MatchScene(cv::Mat imageLeft, cv::Mat imageRight, QWidget *parent)
 	leftImage_ = leftImage.get();
 	rightImage_ = rightImage.get();
 
-	TRACEPOINT;
-	leftImWidget_ = new ZoomableProxyObject{ leftImage.release() };
-	TRACEPOINT;
+	auto leftImWidget = util::make_unique<ZoomableProxyObject>(leftImage.release());
+	auto rightImWidget = util::make_unique<ZoomableProxyObject>( rightImage.release() );
 
-	rightImWidget_ = new ZoomableProxyObject{ rightImage.release() };
-	TRACEPOINT;
+	leftImWidget_=leftImWidget.get();
+	rightImWidget_=rightImWidget.get();
 
-	graphicScene_->addItem(leftImWidget_);
-	TRACEPOINT;
-	graphicScene_->addItem(rightImWidget_);
+	graphicScene_->addItem(leftImWidget.release());
+	graphicScene_->addItem(rightImWidget.release());
 
-	TRACEPOINT;
 	leftImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
 	rightImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
 
@@ -52,7 +47,6 @@ MatchScene::MatchScene(cv::Mat imageLeft, cv::Mat imageRight, QWidget *parent)
 
 	connect(graphicView_, SIGNAL(signalResized()), this,
 		SLOT(viewReized()));
-	TRACEPOINT;
 }
 
 std::unique_ptr<SyncZoomWidget> MatchScene::getSyncZoomWidget()
@@ -63,28 +57,24 @@ std::unique_ptr<SyncZoomWidget> MatchScene::getSyncZoomWidget()
 	return util::make_unique<SyncZoomWidget>(images);
 }
 
-void MatchScene::addLeftKeypoint(CVVKeyPoint *keypoint)
+void MatchScene::addLeftKeypoint(std::unique_ptr<CVVKeyPoint> keypoint)
 {
-	TRACEPOINT;
 	keypoint->setZoomableImage(leftImage_);
-	graphicScene_->addItem(keypoint);
-	TRACEPOINT;
-}
-void MatchScene::addRightKeyPoint(CVVKeyPoint *keypoint)
-{
-	TRACEPOINT;
-	keypoint->setZoomableImage(rightImage_);
-	graphicScene_->addItem(keypoint);
-	TRACEPOINT;
-}
-void MatchScene::addMatch(CVVMatch *cvmatch)
-{
-	TRACEPOINT;
-	graphicScene_->addItem(cvmatch);
-	TRACEPOINT;
+	graphicScene_->addItem(keypoint.release());
 }
 
-void MatchScene::selectAll()
+void MatchScene::addRightKeyPoint(std::unique_ptr<CVVKeyPoint> keypoint)
+{
+	keypoint->setZoomableImage(rightImage_);
+	graphicScene_->addItem(keypoint.release());
+}
+
+void MatchScene::addMatch(std::unique_ptr<CVVMatch> cvmatch)
+{
+	graphicScene_->addItem(cvmatch.release());
+}
+
+void MatchScene::selectAllVisible()
 {
 	QPainterPath selectionPath{};
 	selectionPath.addRect(graphicScene_->itemsBoundingRect());
@@ -93,7 +83,6 @@ void MatchScene::selectAll()
 
 void MatchScene::viewReized()
 {
-	TRACEPOINT;
 	int width = graphicView_->viewport()->width();
 	int heigth = graphicView_->viewport()->height();
 
@@ -109,8 +98,6 @@ void MatchScene::viewReized()
 	rightImWidget_->update();
 	leftImWidget_->update();
 	graphicView_->setSceneRect(0, 0, width, heigth);
-
-	TRACEPOINT;
 }
 }
 }

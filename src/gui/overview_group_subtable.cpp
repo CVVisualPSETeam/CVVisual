@@ -234,12 +234,14 @@ void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
 	rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
 	for (size_t row = 0; row < group.size(); row++)
 	{
-		group.get(row).addToTable(qTable, row,
+		DEBUG(QString("Iteration %1").arg(row));
+		group.get(row).resizeInTable(qTable, row,
 		                          parent->isShowingImages(), maxImages,
 		                          imgSize, imgSize);
 		qTable->setRowHeight(row, rowHeight);
 	}
 	updateMinimumSize();
+	event->accept();
 	TRACEPOINT;
 }
 
