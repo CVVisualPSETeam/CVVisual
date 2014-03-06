@@ -4,6 +4,9 @@
 #include <QScrollBar>
 #include <QPainterPath>
 #include <QTransform>
+#include <QFileDialog>
+#include <QMenu>
+#include <QAction>
 
 #include "matchscene.hpp"
 #include "../../dbg/dbg.hpp"
@@ -47,6 +50,12 @@ MatchScene::MatchScene(const cv::Mat &imageLeft, const cv::Mat &imageRight, QWid
 
 	connect(graphicView_, SIGNAL(signalResized()), this,
 		SLOT(viewReized()));
+
+	// rightklick
+	setContextMenuPolicy(Qt::CustomContextMenu);
+	QObject::connect(this,
+			 SIGNAL(customContextMenuRequested(const QPoint &)),
+			 this, SLOT(rightClick(QPoint)));
 }
 
 std::unique_ptr<SyncZoomWidget> MatchScene::getSyncZoomWidget()
@@ -98,6 +107,58 @@ void MatchScene::viewReized()
 	rightImWidget_->update();
 	leftImWidget_->update();
 	graphicView_->setSceneRect(0, 0, width, heigth);
+}
+
+void MatchScene::rightClick(const QPoint &pos)
+{
+	TRACEPOINT;
+	QPoint p = mapToGlobal(pos);
+	QMenu menu;
+
+	menu.addAction("Save visible image");
+	menu.addAction("Save left image (orginal)");
+	menu.addAction("Save left image (visible)");
+	menu.addAction("Save right image (orginal)");
+	menu.addAction("Save right image (visible)");
+
+	QAction *item = menu.exec(p);
+	if (item)
+	{
+		TRACEPOINT;
+		QString fileName = QFileDialog::getSaveFileName(
+		    this, tr("Save File"), ".",
+		    tr("BMP (*.bmp);;GIF (*.gif);;JPG (*.jpg);;PNG (*.png);;"
+		       "PBM (*.pbm);;PGM (*.pgm);;PPM (*.ppm);;XBM (*.xbm);;"
+		       "XPM (*.xpm)"));
+		if (fileName == "")
+		{
+			TRACEPOINT;
+			return;
+		}
+		QPixmap pmap;
+
+		QString str=item->text();
+
+		if(str.contains("left"))
+		{
+			if(str.contains("orginal")){
+				pmap = leftImage_->fullImage();
+			}else{
+				pmap = leftImage_->visibleImage();
+			}
+		}else if(str.contains("right"))
+		{
+			if(str.contains("orginal")){
+				pmap = rightImage_->fullImage();
+			}else{
+				pmap = rightImage_->visibleImage();
+			}
+		}else{
+			pmap = QPixmap::grabWidget(graphicView_->viewport());
+		}
+		pmap.save(fileName, 0, 100);
+	}
+	TRACEPOINT;
 }
 }
 }

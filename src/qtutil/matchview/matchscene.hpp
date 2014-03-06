@@ -119,6 +119,12 @@ slots:
 	 */
 	void viewReized();
 
+	/**
+	 * @brief On right click a menu to save the current visible image or the zoomable images.
+	 * @param pos The position of the right click.
+	 */
+	void rightClick(const QPoint &pos);
+
       private:
 	structures::MatchSceneGraphicsView *graphicView_;
 	QGraphicsScene *graphicScene_;

@@ -32,7 +32,7 @@ MatchIntervallSelector::MatchIntervallSelector(std::vector<cv::DMatch> matches, 
 
 std::vector<cv::DMatch> MatchIntervallSelector::select(const std::vector<cv::DMatch> &selection)
 {
-	return selector_->select(univers_,selection, [&](const cv::DMatch& match){return match.distance;});
+	return selector_->select(selection, [&](const cv::DMatch& match){return match.distance;});
 }
 
 
