@@ -7,6 +7,7 @@
 #include "opencv2/features2d/features2d.hpp"
 
 #include "../qtutil/matchview/matchmanagement.hpp"
+#include "../qtutil/matchview/keypointmanagement.hpp"
 #include "match_view.hpp"
 namespace cvv
 {
@@ -55,6 +56,11 @@ class LineMatchView : public MatchView
 		return matchManagment_->getCurrentSelection();
 	}
 
+	virtual std::vector<cv::KeyPoint> getKeyPointSelection()
+	{
+		return keyManagment_->getCurrentSelection();
+	}
+
 public slots:
 
 	virtual void setMatchSelection(std::vector<cv::DMatch> selection)
@@ -62,8 +68,15 @@ public slots:
 		matchManagment_->setSelection(selection);
 	}
 
+	virtual void setKeyPointSelection(std::vector<cv::KeyPoint> selection)
+	{
+		keyManagment_->setSelection(selection);
+	}
+
 private:
 	qtutil::MatchManagement *matchManagment_;
+	qtutil::KeyPointManagement *keyManagment_;
+
 
 };
 }
