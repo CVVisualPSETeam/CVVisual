@@ -35,6 +35,7 @@
 
 #include "../qtutil/matchview/keypointselectionselector.hpp"
 #include "../qtutil/matchview/keypointintervallselection.hpp"
+#include "../qtutil/matchview/keypointportionselector.hpp"
 
 #include "../qtutil/matchview/keypointsettingsselector.hpp"
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
@@ -101,6 +102,7 @@ void initializeFilterAndViews()
 
 	//keypoint Selection
 	cvv::qtutil::registerKeyPointSelection<cvv::qtutil::KeyPointIntervallSelector>("Intervall Selector");
+	cvv::qtutil::registerKeyPointSelection<cvv::qtutil::KeyPointPortionSelection>("Portion Selector");
 
 }
 }
