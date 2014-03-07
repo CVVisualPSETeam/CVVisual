@@ -52,13 +52,6 @@ void CallWindow::initTabs()
 	    "QPushButton {background-color: red; color: white;}");
 	closeButton->setToolTip("Close this debugging application.");
 	connect(closeButton, SIGNAL(clicked()), this, SLOT(closeApp()));
-	stepButton = new QPushButton("Step", this);
-	flowButtons->addWidget(stepButton);
-	stepButton->setStyleSheet(
-	    "QPushButton {background-color: green; color: white;}");
-	stepButton->setToolTip(
-	    "Resume program execution for a next debugging step.");
-	connect(stepButton, SIGNAL(clicked()), this, SLOT(step()));
 	fastForwardButton = new QPushButton(">>", this);
 	flowButtons->addWidget(fastForwardButton);
 	fastForwardButton->setStyleSheet(
@@ -67,6 +60,13 @@ void CallWindow::initTabs()
 	    "Fast forward until cvv::finalCall() gets called.");
 	connect(fastForwardButton, SIGNAL(clicked()), this,
 	        SLOT(fastForward()));
+	stepButton = new QPushButton("Step", this);
+	flowButtons->addWidget(stepButton);
+	stepButton->setStyleSheet(
+	    "QPushButton {background-color: green; color: white;}");
+	stepButton->setToolTip(
+	    "Resume program execution for a next debugging step.");
+	connect(stepButton, SIGNAL(clicked()), this, SLOT(step()));
 	flowButtons->setContentsMargins(0, 0, 0, 0);
 	flowButtons->setSpacing(0);
 
