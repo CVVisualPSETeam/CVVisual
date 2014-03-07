@@ -281,11 +281,6 @@ class Accordion : public QWidget
 	std::pair<QString, Collapsable *> pop(Handle handle);
 
 	/**
-	 * @brief Deletes and removes the last element (if any are present).
-	 */
-	void deleteLast();
-
-	/**
 	 * @brief Removes all elements from the Accordion and returns their
 	 *titles
 	 *	and Collapsables  (ownership remains)

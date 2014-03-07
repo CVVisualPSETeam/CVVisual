@@ -84,7 +84,7 @@ void Accordion::clear()
 	for (auto &elem : elements_)
 	{
 		layout_->removeWidget(elem.second);
-		elem.second->setParent(0);
+		elem.second->setParent(nullptr);
 		elem.second->deleteLater();
 	}
 	elements_.clear();
@@ -103,19 +103,6 @@ std::pair<QString, Collapsable *> Accordion::pop(Handle handle)
 	elements_.erase(handle);
 	TRACEPOINT;
 	return result;
-}
-
-void Accordion::deleteLast()
-{
-	TRACEPOINT;
-	if (layout_->count() > 0 && elements_.size() > 0)
-	{
-		auto elem = layout_->takeAt(layout_->count() - 1)->widget();
-		elements_.erase(elem);
-		elem->setParent(0);
-		elem->deleteLater();
-	}
-	TRACEPOINT;
 }
 
 std::vector<std::pair<QString, Collapsable *>> Accordion::popAll()
