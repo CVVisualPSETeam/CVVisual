@@ -44,7 +44,7 @@ void OverviewTable::updateRowGroups(
 		}
 	}
 	TRACEPOINT;
-	if (startTheSame)
+	if (startTheSame && groups.size() <= newGroups.size())
 	{
 		TRACEPOINT;
 		for (size_t i = 0;
@@ -53,31 +53,13 @@ void OverviewTable::updateRowGroups(
 			subTables.at(i)->setRowGroup(newGroups.at(i));
 			subTables.at(i)->updateUI();
 		}
-		if (groups.size() < newGroups.size())
-		{
-			for (size_t i = groups.size(); i < newGroups.size();
-			     i++)
-			{
-				TRACEPOINT;
-				appendRowGroupToTable(newGroups.at(i));
-				TRACEPOINT;
-				subTables.at(i)->setRowGroup(newGroups.at(i));
-			}
-		}
-		else if (groups.size() > newGroups.size())
+		for (size_t i = groups.size(); i < newGroups.size(); i++)
 		{
 			TRACEPOINT;
-			for (size_t i = groups.size(); i > newGroups.size();
-			     i--)
-			{
-				DEBUG(i);
-				subTables.pop_back();
-				TRACEPOINT;
-				subtableAccordion->deleteLast();
-				TRACEPOINT;
-			}
+			appendRowGroupToTable(newGroups.at(i));
+			TRACEPOINT;
+			subTables.at(i)->setRowGroup(newGroups.at(i));
 		}
-		TRACEPOINT;
 	}
 	else
 	{

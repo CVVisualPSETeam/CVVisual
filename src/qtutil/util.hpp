@@ -42,7 +42,7 @@ enum class ImageConversionResult
  * @return The status of the conversion and the converted mat.
  */
 std::pair<ImageConversionResult, QImage>
-convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest = 0,
+convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest = true,
 		   unsigned int threads =
 		       std::numeric_limits<unsigned int>::max());
 
@@ -55,7 +55,7 @@ convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest = 0,
  * @return The status of the conversion and the converted mat.
  */
 std::pair<ImageConversionResult, QPixmap>
-convertMatToQPixmap(const cv::Mat &mat, bool skipFloatRangeTest = 0,
+convertMatToQPixmap(const cv::Mat &mat, bool skipFloatRangeTest = true,
 		    unsigned int threads =
 			std::numeric_limits<unsigned int>::max());
 

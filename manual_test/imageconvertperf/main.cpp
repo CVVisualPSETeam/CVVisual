@@ -23,15 +23,39 @@ template <int depth> void test(int w, int h, int threads)
 	auto elapsed = end - start;
 
 	std::cout << "success: "
-	          << (res.first == cvv::qtutil::ImageConversionResult::SUCCESS)
-	          << "\t";
+		  << (res.first == cvv::qtutil::ImageConversionResult::SUCCESS)
+		  << "\t";
 
 	std::cout << "time: " << ((elapsed.count() * c::period::num) /
-	                          (c::period::den / 1000)) << "\n";
+				  (c::period::den / 1000)) << "\n";
 }
 
+/**
+ * @brief
+ * - "qt allows images with: 1000 M pixels" will be printed if qt allows the craetion of
+ *   1 G pixel images
+ * - "# threads?:" will be printed and the user has to enter the number of threads to use
+ * - the following text will be printed where XXXX is the time needed to execute (in ms)
+	##test:
+	depth 30	pixel: 1 M pixels	success: 1	time: XXXX
+	##test:
+	depth 28	pixel: 1 M pixels	success: 1	time: XXXX
+	##test:
+	depth 30	pixel: 10 M pixels	success: 1	time: XXXX
+	##test:
+	depth 28	pixel: 10 M pixels	success: 1	time: XXXX
+	continue with 100M pixel test? will need about 3,2 gig mem (y)
+ * - if the user enters anything other than y the programm will exit
+ * - if y was entered the following text will be printed where XXXX is the
+ *  time needed to execute (in ms)
+	##test:
+	depth 30	pixel: 100 M pixels	success: 1	time: XXXX
+	##test:
+	depth 28	pixel: 100 M pixels	success: 1	time: XXXX
+ */
 int main()
 {
+	cvv::dbg::setLoggingState(false);
 	try
 	{
 		{
@@ -41,7 +65,7 @@ int main()
 			QImage i{ w, h, QImage::Format_ARGB32 };
 			i.fill(99);
 			std::cout << "qt allows images with: "
-			          << ((w * h) / 1000000) << " M pixels\n";
+				  << ((w * h) / 1000000) << " M pixels\n";
 		}
 		int threads;
 		std::cout << "# threads?:\n";
@@ -56,7 +80,7 @@ int main()
 		// 100M
 		char c;
 		std::cout << "continue with 100M pixel test? will need about "
-		             "3,2 gig mem (y)\n";
+			     "3,2 gig mem (y)\n";
 		std::cin >> c;
 		if (c != 'y')
 		{
