@@ -57,6 +57,18 @@ private:
 
 };
 
+template <class Setting>
+bool registerMatchSettings(const QString &name)
+{
+	TRACEPOINT;
+	return MatchSettingsSelector::registerElement(
+	    name, [](std::vector<cv::DMatch> univers)
+	{
+		    TRACEPOINT;
+		    return std::unique_ptr<MatchSettings>{ new Setting{univers}};
+	});
+}
+
 }}
 
 #endif
