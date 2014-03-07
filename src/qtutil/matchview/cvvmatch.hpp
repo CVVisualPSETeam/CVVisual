@@ -27,7 +27,7 @@ class MatchSettings;
  * @brief this class represents a match which is displayed
  * a Matchscene.
  */
-class CVVMatch : public QGraphicsObject
+class CVVMatch : public QGraphicsObject,public cv::DMatch
 {
 	Q_OBJECT
       public:
@@ -99,7 +99,7 @@ class CVVMatch : public QGraphicsObject
 	 */
 	const cv::DMatch match() const
 	{
-		return match_;
+		return *this;
 	}
 
 	/**
@@ -168,7 +168,7 @@ slots:
       protected:
 	CVVKeyPoint *left_key_;
 	CVVKeyPoint *right_key_;
-	cv::DMatch match_;
+	//cv::DMatch match_;
 
 	QPen pen_;
 	bool show_;

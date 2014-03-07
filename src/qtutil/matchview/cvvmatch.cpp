@@ -11,8 +11,8 @@ namespace qtutil
 CVVMatch::CVVMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key,
 		   const cv::DMatch &match, const QPen &pen,
 		   QGraphicsItem *parent)
-    : QGraphicsObject{ parent }, left_key_{ left_key }, right_key_{ right_key },
-      match_{ match }, pen_{ pen }, show_{ true },
+    : QGraphicsObject{ parent },cv::DMatch{ match }, left_key_{ left_key }, right_key_{ right_key },
+       pen_{ pen }, show_{ true },
       left_key_visible_{ left_key->imagePointisVisible() },
       right_key_visible_{ right_key_->imagePointisVisible() }
 {
@@ -23,10 +23,10 @@ CVVMatch::CVVMatch(CVVKeyPoint *left_key, CVVKeyPoint *right_key,
 
 	setToolTip(QString
 	{ "Match distance: %1 \n queryIdx %2 \n trainIdx %3 \n imIdx %4 " }
-		       .arg(match_.distance)
-		       .arg(match_.queryIdx)
-		       .arg(match_.trainIdx)
-		       .arg(match_.imgIdx));
+		       .arg(distance)
+		       .arg(queryIdx)
+		       .arg(trainIdx)
+		       .arg(imgIdx));
 
 	connect(left_key_, SIGNAL(updatePoint(bool)), this,
 		SLOT(updateLeftKey(bool)));
@@ -56,8 +56,8 @@ void CVVMatch::paint(QPainter *painter, const QStyleOptionGraphicsItem *,
 
 bool CVVMatch::operator==(const cv::DMatch &o)
 {
-	return o.queryIdx == match_.queryIdx && o.trainIdx == match_.trainIdx &&
-	       o.imgIdx == match_.imgIdx;
+	return o.queryIdx == queryIdx && o.trainIdx == trainIdx &&
+	       o.imgIdx == imgIdx;
 }
 
 void CVVMatch::setPen(const QPen &pen)

@@ -27,7 +27,7 @@ class KeyPointSettings;
  * @brief this class represents a Keypoint which is displayed
  *  a Matchscene.
  **/
-class CVVKeyPoint : public QGraphicsObject
+class CVVKeyPoint : public QGraphicsObject,public cv::KeyPoint
 {
 	Q_OBJECT
       public:
@@ -60,7 +60,7 @@ class CVVKeyPoint : public QGraphicsObject
 	 * @return the keypoint
 	 */
 	cv::KeyPoint keyPoint() const
-		{return key_;}
+		{return *this;}
 
 	/**
 	 * @brief the paint function.
@@ -74,7 +74,7 @@ class CVVKeyPoint : public QGraphicsObject
 	 * @return true if this keypoint is in the visble area of its image
 	 */
 	bool imagePointisVisible()
-		{return image_->visibleArea().contains(key_.pt.x, key_.pt.y);	}
+		{return image_->visibleArea().contains(pt.x, pt.y);	}
 
 	/**
 	 * @brief if show is true this keypoint will be visible if it is the
@@ -140,8 +140,6 @@ slots:
 	void setZoomableImage(ZoomableImage *image);
 
       private:
-	cv::KeyPoint key_;
-
 	qtutil::ZoomableImage *image_=nullptr;
 
 	QPen pen_;
