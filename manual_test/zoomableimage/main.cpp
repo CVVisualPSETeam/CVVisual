@@ -28,6 +28,20 @@ cv::Mat renderImg();
 
 static const int w = 400;
 
+/**
+ * @brief
+ * - a window with 4 columns pops up
+ * - the first column contains a spin box and two toggleable buttons
+ *  ("autoshow", "fullimg")
+ * - the 2nd column contains a vertical blue green image with a false color
+ * palete at the top left
+ * - the 3rd column contains a vertical blue image
+ * - the 4th column contains an image of a red rook
+ * - the images can be zoomed with the spin box ctrl+scroll or ctrl+shift+scroll
+ * - if "autoshow" is toggled an the image is zoomed in (60 on the spin box)
+ *  the pixel values are printed
+ * - if "fullimg" is pressed the images are resized and the whole image is visible
+ */
 int main(int argc, char *argv[])
 {
 	cvv::dbg::setLoggingState(false);
@@ -80,6 +94,7 @@ int main(int argc, char *argv[])
 			 SLOT(setAutoShowValues(bool)));
 	QObject::connect(bautoshow, SIGNAL(toggled(bool)), i3,
 			 SLOT(setAutoShowValues(bool)));
+	bautoshow->setChecked(true);
 	layleft->addWidget(bautoshow);
 
 	QPushButton *bshowfull = new QPushButton{ "fullimg" };
@@ -89,6 +104,7 @@ int main(int argc, char *argv[])
 			 SLOT(showFullImage()));
 	QObject::connect(bshowfull, SIGNAL(clicked()), i3,
 			 SLOT(showFullImage()));
+	bautoshow->setChecked(true);
 	layleft->addWidget(bshowfull);
 
 	lay->addLayout(layleft);
