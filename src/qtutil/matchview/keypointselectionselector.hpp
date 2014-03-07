@@ -54,7 +54,9 @@ private:
 	KeyPointSelection * selection_=nullptr;
 	std::vector<cv::KeyPoint> univers_;
 	QLayout *layout_;
-};
+
+};//end class
+
 template <class Selection>
 bool registerKeyPointSelection(const QString &name)
 {

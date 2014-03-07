@@ -57,6 +57,19 @@ private:
 
 };
 
+
+template <class Setting>
+bool registerKeyPointSetting(const QString &name)
+{
+	TRACEPOINT;
+	return KeyPointSettingsSelector::registerElement(
+	    name, [](std::vector<cv::KeyPoint> univers)
+	{
+		    TRACEPOINT;
+		    return std::unique_ptr<KeyPointSettings>{ new Setting{univers}};
+	});
+}
+
 }}
 
 #endif

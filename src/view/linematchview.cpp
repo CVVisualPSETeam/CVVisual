@@ -26,7 +26,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	auto accor = util::make_unique<qtutil::Accordion>();
 	auto matchscene = util::make_unique<qtutil::MatchScene>(leftIm, rightIm);
 	auto matchmnt = util::make_unique<qtutil::MatchManagement>(matches);
-	auto keypen = util::make_unique<qtutil::SingleColorKeyPen>();
+	auto keypen = util::make_unique<qtutil::SingleColorKeyPen>(rightKeyPoints);
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
 	matchManagment_ = matchmnt.get();

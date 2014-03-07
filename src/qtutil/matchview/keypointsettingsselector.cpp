@@ -1,4 +1,6 @@
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
 
 #include "keypointsettingsselector.hpp"
 #include "../../util/util.hpp"
@@ -11,10 +13,19 @@ KeyPointSettingsSelector::KeyPointSettingsSelector(const std::vector<cv::KeyPoin
 	univers_{univers}
 {
 	auto layout=util::make_unique<QVBoxLayout>();
-	layout->setContentsMargins(0, 0, 0, 0);
-	layout->addWidget(comboBox_);
+	auto headerLayout=util::make_unique<QHBoxLayout>();
+	auto closebutton=util::make_unique<QPushButton>("-");
+	closebutton->setMaximumWidth(30);
 
+	connect(closebutton.get(),SIGNAL(clicked()),this,SLOT(removeMe()));
 	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changedSetting()));
+
+	headerLayout->addWidget(closebutton.release());
+	headerLayout->addWidget(comboBox_);
+
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->addLayout(headerLayout.release());
+
 	layout_=layout.get();
 	setLayout(layout.release());
 	TRACEPOINT;

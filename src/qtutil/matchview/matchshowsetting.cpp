@@ -29,8 +29,6 @@ MatchShowSetting::MatchShowSetting(std::vector<cv::DMatch>, QWidget *parent):
 
 void MatchShowSetting::updateButton()
 {
-	TRACEPOINT;
-	DEBUGF("\n\n#########################################\n\n");
 	if(button_->isChecked()){
 		button_->setText("show");
 	}else{
