@@ -31,13 +31,16 @@
 #include "../qtutil/matchview/matchsettingsselector.hpp"
 #include "../qtutil/matchview/singlecolormatchpen.hpp"
 #include "../qtutil/matchview/falsecolormatchpen.hpp"
+#include "../qtutil/matchview/matchshowsetting.hpp"
 
 #include "../qtutil/matchview/keypointselectionselector.hpp"
 #include "../qtutil/matchview/keypointintervallselection.hpp"
+#include "../qtutil/matchview/keypointportionselector.hpp"
 
 #include "../qtutil/matchview/keypointsettingsselector.hpp"
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
 #include "../qtutil/matchview/falsecolorkeypointpen.hpp"
+#include "../qtutil/matchview/keypointshowsetting.hpp"
 
 
 
@@ -86,7 +89,7 @@ void initializeFilterAndViews()
 	//match Settings
 	cvv::qtutil::registerMatchSettings<cvv::qtutil::SingleColorMatchPen>("Single Color");
 	cvv::qtutil::registerMatchSettings<cvv::qtutil::FalseColorMatchPen>("False Color");
-
+	cvv::qtutil::registerMatchSettings<cvv::qtutil::MatchShowSetting>("Show/Hide");
 
 	//match Selector
 	cvv::qtutil::registerMatchSelection<cvv::qtutil::MatchIntervallSelector>("Intervall Selector");
@@ -95,9 +98,11 @@ void initializeFilterAndViews()
 	//keypoint Settings
 	cvv::qtutil::registerKeyPointSetting<cvv::qtutil::SingleColorKeyPen>("Single Color");
 	cvv::qtutil::registerKeyPointSetting<cvv::qtutil::FalseColorKeyPointPen>("False Color");
+	cvv::qtutil::registerKeyPointSetting<cvv::qtutil::KeyPointShowSetting>("Show/Hide");
 
 	//keypoint Selection
 	cvv::qtutil::registerKeyPointSelection<cvv::qtutil::KeyPointIntervallSelector>("Intervall Selector");
+	cvv::qtutil::registerKeyPointSelection<cvv::qtutil::KeyPointPortionSelection>("Portion Selector");
 
 }
 }

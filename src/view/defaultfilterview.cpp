@@ -28,12 +28,10 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	accor->setMaximumWidth(250);
 
 	std::vector<qtutil::ZoomableImage*> syncVec;
-	std::vector<util::Reference<qtutil::ZoomableImage>> zoomableImages;
 
 	for (auto image : images)
 	{
 		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
-		zoomableImages.emplace_back(*zoomIm);
 
 		syncVec.push_back(zoomIm.get());
 
@@ -56,7 +54,8 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	layout->addWidget(imwid.release());
 
 	setLayout(layout.release());
-	for(auto& zoomableImage: zoomableImages)
+	//images should be seen fully at beginning
+	for(auto& zoomableImage: syncVec)
 	{
 		zoomableImage->showFullImage();
 	}

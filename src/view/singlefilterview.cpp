@@ -2,6 +2,7 @@
 #include <vector>
 
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "../qtutil/accordion.hpp"
@@ -41,9 +42,9 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat> &images,
 	int count = 0;
 	for (auto &image : images)
 	{
-	auto originalZoomIm = util::make_unique<qtutil::ZoomableImage>(image);
+		auto originalZoomIm = util::make_unique<qtutil::ZoomableImage>(image);
 		accor->insert(
-		    QString("Information: Original image ") + QString::number(count),
+		    QString("Info original image ") + QString::number(count),
 		    std::move(
 			util::make_unique<qtutil::ZoomableOptPanel>(*originalZoomIm)));
 		syncVec.push_back(originalZoomIm.get());
@@ -65,7 +66,7 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat> &images,
 			SLOT(setMatR(cv::Mat &)));
 
 		accor->insert(
-		    QString("Information: Filtered image ") + QString::number(count),
+		    QString("Info filtered image ") + QString::number(count),
 		    std::move(
 			util::make_unique<qtutil::ZoomableOptPanel>(*filterZoomIm)));
 

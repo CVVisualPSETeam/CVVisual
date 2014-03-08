@@ -1,5 +1,6 @@
 
 #include <QVBoxLayout>
+#include <QPushButton>
 
 
 #include "matchselectionselector.hpp"
@@ -13,11 +14,18 @@ MatchSelectionSelector::MatchSelectionSelector(const std::vector<cv::DMatch> &un
 	univers_{univers}
 {
 	auto layout=util::make_unique<QVBoxLayout>();
+	auto headerLayout=util::make_unique<QHBoxLayout>();
+	auto closebutton=util::make_unique<QPushButton>("-");
+	closebutton->setMaximumWidth(30);
 
-	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changeSelector()));
+	connect(closebutton.get(),SIGNAL(clicked()),this,SLOT(removeMe()));
+	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changedSetting()));
+
+	headerLayout->addWidget(closebutton.release());
+	headerLayout->addWidget(comboBox_);
 
 	layout->setContentsMargins(0, 0, 0, 0);
-	layout->addWidget(comboBox_);
+	layout->addLayout(headerLayout.release());
 
 	layout_=layout.get();
 

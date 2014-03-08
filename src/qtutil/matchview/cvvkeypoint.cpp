@@ -7,16 +7,16 @@ namespace qtutil
 
 CVVKeyPoint::CVVKeyPoint(const cv::KeyPoint &key, qtutil::ZoomableImage *image,
 			 QPen pen, QBrush brush, QGraphicsItem *parent)
-    : QGraphicsObject{ parent }, key_{ key }, image_{ image }, pen_{ pen },
+    : QGraphicsObject{ parent }, cv::KeyPoint{ key }, image_{ image }, pen_{ pen },
       brush_{ brush }, show_{ true }
 {
 	//setFlag(QGraphicsItem::ItemIsSelectable, true);
 	//setSelected(true);
 	setToolTip(QString
 	{ "KeyPoint size: %1 \n angle %2 \n response %3 " }
-		       .arg(key_.size)
-		       .arg(key_.angle)
-		       .arg(key_.response));
+		       .arg(size)
+		       .arg(angle)
+		       .arg(response));
 	if (image != nullptr)
 	{
 		updateImageSet(image->visibleArea(), image->zoom());
@@ -43,9 +43,9 @@ void CVVKeyPoint::setZoomableImage(ZoomableImage *image)
 
 bool CVVKeyPoint::operator==(const cv::KeyPoint &o)
 {
-	return o.pt == key_.pt && o.size == key_.size &&
-	       o.angle == key_.angle && o.response == key_.response &&
-	       o.octave == key_.octave && o.class_id == key_.class_id;
+	return o.pt == pt && o.size == size &&
+	       o.angle == angle && o.response == response &&
+	       o.octave == octave && o.class_id == class_id;
 }
 
 void CVVKeyPoint::updateSettings(KeyPointSettings &settings)
@@ -87,7 +87,7 @@ QRectF CVVKeyPoint::boundingRect() const
 void CVVKeyPoint::updateImageSet(const QRectF &, const qreal &zoom)
 {
 	imagePointInScene_=image_->mapImagePointToParent(
-				QPointF{ key_.pt.x, key_.pt.y });
+				QPointF{ pt.x, pt.y });
 
 	bool isInVisibleArea=imagePointisVisible();
 	setVisible(show_ && isInVisibleArea);

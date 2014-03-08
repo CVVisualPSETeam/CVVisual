@@ -78,7 +78,7 @@ class Slot : public QObject
 	{
 		TRACEPOINT;
 		if (!f)
-			throw std::invalid_argument{ "invalide function" };
+			throw std::invalid_argument{ "invalid function" };
 		TRACEPOINT;
 	}
 

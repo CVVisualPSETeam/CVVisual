@@ -22,15 +22,25 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 			     cv::Mat rightIm, bool usetrainIdx, QWidget *parent)
     : MatchView{ parent }
 {
+	std::vector<cv::KeyPoint> allkeypoints;
+	for(auto key:rightKeyPoints)
+	{
+		allkeypoints.push_back(key);
+	}
+
+	for(auto key:leftKeyPoints){
+		allkeypoints.push_back(key);
+	}
+
 	auto layout = util::make_unique<QHBoxLayout>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 	auto matchscene = util::make_unique<qtutil::MatchScene>(leftIm, rightIm);
 	auto matchmnt = util::make_unique<qtutil::MatchManagement>(matches);
-	auto keypen = util::make_unique<qtutil::SingleColorKeyPen>(rightKeyPoints);
+	auto keyPointmnt = util::make_unique<qtutil::KeyPointManagement>(allkeypoints);
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
 	matchManagment_ = matchmnt.get();
-	qtutil::SingleColorKeyPen *keypen_ptr = keypen.get();
+	keyManagment_ = keyPointmnt.get();
 
 	accor->setMinimumWidth(350);
 	accor->setMaximumWidth(350);
@@ -39,7 +49,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	std::vector<qtutil::CVVKeyPoint *> rightKeys;
 
 	accor->insert("Match Settings", std::move(matchmnt));
-	accor->insert("KeyPoint Color", std::move(keypen));
+	accor->insert("KeyPoint Color", std::move(keyPointmnt));
 	accor->insert("Left Image ",
 		      std::move(matchscene_ptr->getLeftMatInfoWidget()));
 	accor->insert("Right Image ",
@@ -59,7 +69,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	for (auto &keypoint : leftKeyPoints)
 	{
 		auto key = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
-		connect(keypen_ptr, SIGNAL(settingsChanged(KeyPointSettings &)),
+		connect(keyManagment_, SIGNAL(settingsChanged(KeyPointSettings &)),
 			key.get(), SLOT(updateSettings(KeyPointSettings &)));
 
 		leftKeys.push_back(key.get());
@@ -69,7 +79,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	for (auto &keypoint : rightKeyPoints)
 	{
 		auto key = util::make_unique<qtutil::CVVKeyPoint>(keypoint);
-		connect(keypen_ptr, SIGNAL(settingsChanged(KeyPointSettings &)),
+		connect(keyManagment_, SIGNAL(settingsChanged(KeyPointSettings &)),
 			key.get(), SLOT(updateSettings(KeyPointSettings &)));
 
 		rightKeys.push_back(key.get());
