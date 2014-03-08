@@ -13,6 +13,7 @@
 #include <QLabel>
 #include <QString>
 #include <QtGui>
+#include <QVBoxLayout>
 
 #include "../dbg/dbg.hpp"
 #include "../qtutil/accordion.hpp"
@@ -35,7 +36,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 {
 	TRACEPOINT;
 	auto layout = util::make_unique<QHBoxLayout>();
-	auto imageLayout = util::make_unique<QGridLayout>();
+	auto imageLayout = util::make_unique<QHBoxLayout>();
 	auto imwid = util::make_unique<QWidget>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 
@@ -81,7 +82,14 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		{
 			zoomIm->setMat(image.clone());
 		}
-		imageLayout->addWidget(zoomIm.get(), 0, count);
+		
+		//to ensure that hidden images don't take space put zoomIm in extra widget
+		auto zoomImLayout = util::make_unique<QVBoxLayout>();
+		auto zoomImWid = util::make_unique<QWidget>();
+		
+		zoomImLayout->addWidget(zoomIm.get());
+		zoomImWid->setLayout(zoomImLayout.release());
+		imageLayout->addWidget(zoomImWid.release());
 		
 		return zoomIm.release();
 	};
@@ -96,12 +104,6 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		std::move(util::make_unique<qtutil::SyncZoomWidget>(syncVec)), true, 1);
 	
 	//ensure that all images have same width
-	imageLayout->setColumnStretch(0, 1);
-	imageLayout->setColumnStretch(1, 1);
-	imageLayout->setColumnStretch(2, 1);
-	imageLayout->setColumnMinimumWidth(0, 300);
-	imageLayout->setColumnMinimumWidth(1, 300);
-	imageLayout->setColumnMinimumWidth(2, 300);
 	imwid->setLayout(imageLayout.release());
 
 	layout->addWidget(accor.release());

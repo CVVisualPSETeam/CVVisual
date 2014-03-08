@@ -2,6 +2,7 @@
 #include <vector>
 
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "../qtutil/accordion.hpp"
