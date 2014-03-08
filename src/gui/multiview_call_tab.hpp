@@ -104,7 +104,6 @@ class MultiViewCallTab
 		: MultiViewCallTab{call, default_key, standard_default}
 	{
 		this->select(viewId);
-		//currentIndexChanged.slot();
 	}
 
 	~MultiViewCallTab()
@@ -178,7 +177,7 @@ class MultiViewCallTab
 			 */
 		}
 		hlayout_ = new QHBoxLayout{};
-		hlayout_->setAlignment(Qt::AlignTop);
+		hlayout_->setAlignment(Qt::AlignTop | Qt::AlignRight);
 		hlayout_->addWidget(new QLabel{ "View:" });
 		hlayout_->addWidget(this->comboBox_);
 		setAsDefaultButton_ = new QPushButton{ "Set as default", this };
