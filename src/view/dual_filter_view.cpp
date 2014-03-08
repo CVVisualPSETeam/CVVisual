@@ -81,7 +81,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		{
 			zoomIm->setMat(image.clone());
 		}
-		imageLayout.get()->addWidget(zoomIm.get(), 0, count);
+		imageLayout->addWidget(zoomIm.get(), 0, count);
 		
 		return zoomIm.release();
 	};
@@ -95,6 +95,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 	accor->insert("Zoom synchronization",
 		std::move(util::make_unique<qtutil::SyncZoomWidget>(syncVec)), true, 1);
 	
+	//ensure that all images have same width
 	imageLayout->setColumnStretch(0, 1);
 	imageLayout->setColumnStretch(1, 1);
 	imageLayout->setColumnStretch(2, 1);
@@ -107,7 +108,8 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 	layout->addWidget(imwid.release());
 
 	setLayout(layout.release());
-
+	
+	//full images are shown at beginning
 	for(auto& zoomableImage: syncVec)
 	{
 		zoomableImage->showFullImage();
