@@ -28,8 +28,8 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat> &images,
 	auto layout = util::make_unique<QHBoxLayout>();
 	auto imageLayout = util::make_unique<QHBoxLayout>();
 
-	accor->setMinimumWidth(300); // ggf anpassen
-	accor->setMaximumWidth(300);
+	accor->setMinimumWidth(280); // ggf anpassen
+	accor->setMaximumWidth(280);
 
 	auto filterSelector =
 	    util::make_unique<qtutil::AutoFilterWidget<1, 1>>(this);

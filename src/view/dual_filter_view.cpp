@@ -70,7 +70,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		}
 
 		accor->insert(
-		    QString("ImageInformation: ") + QString::number(count),
+		    QString("Image Information: ") + QString::number(count),
 		    std::move(
 		        util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
 

@@ -1,4 +1,5 @@
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "defaultfilterview.hpp"
@@ -28,21 +29,22 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	accor->setMaximumWidth(250);
 
 	std::vector<qtutil::ZoomableImage*> syncVec;
-
-	for (auto image : images)
+	
+	size_t count = 0;
+	for (auto& image : images)
 	{
 		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
 
 		syncVec.push_back(zoomIm.get());
 
 		accor->insert(
-		    "ImageInformation",
+		    QString("Image Information: ") + QString::number(count),
 		    std::move(
 			util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
 
 		zoomIm->setMat(image);
-
 		imageLayout->addWidget(zoomIm.release());
+		count++;
 	}
 
 	accor->insert("Zoom synchronization",
