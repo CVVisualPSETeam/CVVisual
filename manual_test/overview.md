@@ -1,7 +1,7 @@
 #Tests for the Overview*
 (The OverviewPanel, OverviewTable, etc. are tested together)
 
-First off all: For all of the following tests, call the test_all (or the filters test) and click on the fast forward (">>") button for all but the first two tests.
+First off all: For all of the following tests, call the test_all (or the filters) test and click on the fast forward (">>") button for all but the first two tests.
 
 1. Click the "Step" button. A new item should appear in the list. Enter a filter query and hit <ENTER>, then hit "Step" button several times, the list should be updated according to your filter query each time.
 2. Hit the fast forward button. The program should take some time and then present all items to you. The fast forward and the step button should be hidden now. Restart the test and hit the fast forward button after you typed a filter query and hit <ENTER>. The items should be sorted, filtered and grouped accordingly.
