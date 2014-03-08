@@ -1,1 +1,9 @@
 filterquery: filterquery-ref.md
+SingleImageView: views-ref.md
+DefaultFilterView: views-ref.md
+DualFilterView: views-ref.md
+SingleFilterView: views-ref.md
+DepthMatchView: views-ref.md
+LineMatchView: views-ref.md
+RawView: views-ref.md
+TranslationMatchView: views-ref.md
