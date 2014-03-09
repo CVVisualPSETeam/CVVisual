@@ -71,15 +71,15 @@ void KeyPointManagement::setSettings(CVVKeyPoint &key)
 			 [&](const cv::KeyPoint &o)
 		{ return key == o; }) != selection_.end())
 	{
-		connect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
-			&key,SLOT(updateSettings(KeyPointSettings&)));
+		//connect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
+		//	&key,SLOT(updateSettings(KeyPointSettings&)));
 		for(auto setting: settingsList_)
 		{
 			setting->setSettings(key);
 		}
 	}else{
-		disconnect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
-			&key,SLOT(updateSettings(KeyPointSettings&)));
+		//disconnect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
+//			&key,SLOT(updateSettings(KeyPointSettings&)));
 		for(auto setting: settingsList_)
 		{
 			setting->setUnSelectedSettings(key);
@@ -90,14 +90,14 @@ void KeyPointManagement::setSettings(CVVKeyPoint &key)
 void KeyPointManagement::addToSelection(const cv::KeyPoint &key)
 {
 	selection_.push_back(key);
-	updateAll();
+//	updateAll();
 }
 
 void KeyPointManagement::singleSelection(const cv::KeyPoint &key)
 {
 	selection_.erase(selection_.begin());
 	selection_.push_back(key);
-	updateAll();
+//	updateAll();
 }
 
 void KeyPointManagement::setSelection(
@@ -108,7 +108,7 @@ void KeyPointManagement::setSelection(
 	{
 		selection_.push_back(key);
 	}
-	updateAll();
+//	updateAll();
 }
 
 void KeyPointManagement::addSetting()
@@ -119,8 +119,8 @@ void KeyPointManagement::addSetting()
 
 void KeyPointManagement::addSetting(std::unique_ptr<KeyPointSettingsSelector> setting)
 {
-	connect(setting.get(),SIGNAL(settingsChanged(KeyPointSettings &)),
-		this,SIGNAL(applySettingsToSelection(KeyPointSettings&)));
+//	connect(setting.get(),SIGNAL(settingsChanged(KeyPointSettings &)),
+		//this,SIGNAL(applySettingsToSelection(KeyPointSettings&)));
 
 	connect(setting.get(),SIGNAL(remove(KeyPointSettingsSelector *)),
 		this,SLOT(removeSetting(KeyPointSettingsSelector*)));
@@ -133,10 +133,14 @@ void KeyPointManagement::addSetting(std::unique_ptr<KeyPointSettingsSelector> se
 
 void KeyPointManagement::removeSetting(KeyPointSettingsSelector *setting)
 {
-	std::remove_if(settingsList_.begin(),settingsList_.end(),
-		[=](const KeyPointSettings* other)
-		{return other==setting;}
-	);
+	auto it = std::find(settingsList_.begin(), settingsList_.end(), setting);
+
+	if(it == settingsList_.end())
+	{
+		return;
+	}
+
+	settingsList_.erase(it);
 	settingsLayout_->removeWidget(setting);
 	setting->deleteLater();
 }
@@ -151,7 +155,7 @@ void KeyPointManagement::addSelection(std::unique_ptr<KeyPointSelectionSelector>
 	connect(selection.get(),SIGNAL(remove(KeyPointSelectionSelector*))
 		,this,SLOT(removeSelection(KeyPointSelectionSelector*)));
 
-	connect(selection.get(),SIGNAL(settingsChanged()),this,SLOT(applySelection()));
+	//connect(selection.get(),SIGNAL(settingsChanged()),this,SLOT(applySelection()));
 	selectorList_.push_back(selection.get());
 	selection->setLineWidth(1);
 	selection->setFrameStyle(QFrame::Box);
@@ -160,10 +164,14 @@ void KeyPointManagement::addSelection(std::unique_ptr<KeyPointSelectionSelector>
 
 void KeyPointManagement::removeSelection(KeyPointSelectionSelector *selector)
 {
-	std::remove_if(selectorList_.begin(),selectorList_.end(),
-		[=](const KeyPointSelectionSelector* other)
-		{return other==selector;}
-	);
+	auto it = std::find(selectorList_.begin(), selectorList_.end(), selector);
+
+	if(it == selectorList_.end())
+	{
+		return;
+	}
+
+	selectorList_.erase(it);
 	selectorLayout_->removeWidget(selector);
 
 	selector->deleteLater();
