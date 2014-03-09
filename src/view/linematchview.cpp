@@ -57,10 +57,6 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	accor->insert("Sync Zoom ",
 		      std::move(matchscene_ptr->getSyncZoomWidget()));
 
-	accor->insert("Test",
-		      std::move(util::make_unique<qtutil::MatchSelectionSelector>(matches)));
-
-
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
 
