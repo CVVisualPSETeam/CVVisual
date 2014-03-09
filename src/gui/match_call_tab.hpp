@@ -41,7 +41,7 @@ class MatchCallTab
 	      }
 	{
 		TRACEPOINT;
-		oldView_ = nullptr;
+		oldView_ = view_;
 		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
 		TRACEPOINT;
 	}
@@ -60,7 +60,7 @@ class MatchCallTab
 		  }
 	{
 		TRACEPOINT;
-		oldView_ = nullptr;
+		oldView_ = view_;
 		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
 		TRACEPOINT;
 	}
