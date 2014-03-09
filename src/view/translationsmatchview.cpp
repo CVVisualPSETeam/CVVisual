@@ -130,6 +130,7 @@ TranslationMatchView::TranslationMatchView(
 		matchscene_ptr->addMatch(std::move(cvmatchright));
 	}
 	matchManagment_->updateAll();
+	keyManagment_->updateAll();
 	TRACEPOINT;
 }
 }

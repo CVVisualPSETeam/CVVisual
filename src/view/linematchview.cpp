@@ -95,6 +95,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		matchscene_ptr->addMatch(std::move(cvmatch));
 	}
 	matchManagment_->updateAll();
+	keyManagment_->updateAll();
 }
 }
 }

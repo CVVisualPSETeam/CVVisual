@@ -53,9 +53,8 @@ void KeyPointSettingsSelector::changedSetting()
 			layout_->removeWidget(setting_);
 			disconnect(setting_,SIGNAL(settingsChanged(KeyPointSettings&)),
 				   this,SIGNAL(settingsChanged(KeyPointSettings&)));
+			setting_->deleteLater();
 		}
-		TRACEPOINT;
-		setting_->deleteLater();
 		TRACEPOINT;
 		setting_=setting.get();
 		TRACEPOINT;

@@ -51,9 +51,8 @@ void MatchSettingsSelector::changedSetting()
 			layout_->removeWidget(setting_);
 			disconnect(setting_,SIGNAL(settingsChanged(MatchSettings&)),
 				   this,SIGNAL(settingsChanged(MatchSettings&)));
+			setting_->deleteLater();
 		}
-		TRACEPOINT;
-		setting_->deleteLater();
 		TRACEPOINT;
 		setting_=setting.get();
 		TRACEPOINT;

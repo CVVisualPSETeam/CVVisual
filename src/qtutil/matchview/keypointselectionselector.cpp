@@ -50,9 +50,8 @@ void KeyPointSelectionSelector::changeSelector()
 		if(selection_){
 			layout_->removeWidget(selection_);
 			disconnect(selection_,SIGNAL(settingsChanged()),this,SIGNAL(settingsChanged()));
+			selection_->deleteLater();
 		}
-
-		selection_->deleteLater();
 		selection_ = selection.get();
 		connect(selection.get(),SIGNAL(settingsChanged()),this,SIGNAL(settingsChanged()));
 		layout_->addWidget(selection.release());
