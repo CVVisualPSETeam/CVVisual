@@ -20,7 +20,7 @@ public:
 
 signals:
 
-	void valuechanged();
+	void valueChanged();
 
 private:
 	QComboBox *combBox_;

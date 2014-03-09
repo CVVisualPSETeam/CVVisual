@@ -18,6 +18,8 @@ namespace qtutil
  */
 class FalseColorKeyPointPen : public KeyPointSettings
 {
+
+	Q_OBJECT
 public:
 	/**
 	 * @brief the constructor

@@ -122,8 +122,8 @@ void KeyPointManagement::addSetting(std::unique_ptr<KeyPointSettingsSelector> se
 	connect(setting.get(),SIGNAL(settingsChanged(KeyPointSettings &)),
 		this,SIGNAL(applySettingsToSelection(KeyPointSettings&)));
 
-	connect(setting.get(),SIGNAL(remove(KeyPointSettings *)),
-		this,SLOT(removeSetting(KeyPointSettings*)));
+	connect(setting.get(),SIGNAL(remove(KeyPointSettingsSelector *)),
+		this,SLOT(removeSetting(KeyPointSettingsSelector*)));
 
 	settingsList_.push_back(setting.get());
 	setting->setLineWidth(1);

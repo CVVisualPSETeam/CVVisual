@@ -25,7 +25,7 @@ FalseColorKeyPointPen::FalseColorKeyPointPen(std::vector<cv::KeyPoint> univers, 
 	auto button = util::make_unique<QPushButton>("use false color");
 	valueChooser_=valueChooser.get();
 
-	connect(valueChooser.get(),SIGNAL(valuechanged()),this,SLOT(updateMinMax()));
+	connect(valueChooser.get(),SIGNAL(valueChanged()),this,SLOT(updateMinMax()));
 	connect(button.get(), SIGNAL(clicked()), this, SLOT(updateAll()));
 
 	layout->addWidget(valueChooser.release());
@@ -39,8 +39,11 @@ FalseColorKeyPointPen::FalseColorKeyPointPen(std::vector<cv::KeyPoint> univers, 
 void FalseColorKeyPointPen::setSettings(CVVKeyPoint &key)
 {
 	QPen pen= key.getPen();
+	QBrush brush=key.getBrush();
 	pen.setColor(getFalseColor( valueChooser_->getChoosenValue(key.keyPoint()), maxDistance_, minDistance_) );
+	brush.setColor(getFalseColor( valueChooser_->getChoosenValue(key.keyPoint()), maxDistance_, minDistance_) );
 	key.setPen(pen);
+	key.setBrush(brush);
 }
 
 void FalseColorKeyPointPen::updateMinMax()

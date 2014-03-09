@@ -19,7 +19,7 @@ MatchSelectionSelector::MatchSelectionSelector(const std::vector<cv::DMatch> &un
 	closebutton->setMaximumWidth(30);
 
 	connect(closebutton.get(),SIGNAL(clicked()),this,SLOT(removeMe()));
-	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changedSetting()));
+	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changeSelector()));
 
 	headerLayout->addWidget(closebutton.release());
 	headerLayout->addWidget(comboBox_);
