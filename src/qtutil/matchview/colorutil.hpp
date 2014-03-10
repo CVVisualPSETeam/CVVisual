@@ -57,8 +57,20 @@ cv::Vec<uint8_t,3> inline falseColor(double d)
 
 QColor inline getFalseColor(double value, double max, double min)
 {
-	double val01 = (value-min) / (max - min);
-	auto color=falseColor(val01);
+	cv::Vec<uint8_t,3> color;
+	if(value<=min)
+	{
+		color=falseColor(0);
+	} else if(value>=max)
+	{
+		color=falseColor(1);
+	}else if(max<=min)
+	{
+		color=falseColor(0);
+	}else {
+		double val01 = (value-min) / (max - min);
+		color=falseColor(val01);
+	}
 
 	return QColor{color[2],color[1],color[0]};
 }
