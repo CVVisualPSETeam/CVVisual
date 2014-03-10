@@ -22,8 +22,10 @@ namespace view
 Rawview::Rawview(const std::vector<cv::KeyPoint> &keypoints1,
                  const std::vector<cv::KeyPoint> &keypoints2,
                  const std::vector<cv::DMatch> &matches,
+				 bool usesTrainDescriptor,
                  bool showShowInViewMenu)
-    : showShowInViewMenu{ showShowInViewMenu }
+    : showShowInViewMenu{ showShowInViewMenu },
+	  usesTrainDescriptor{ usesTrainDescriptor }
 {
 	TRACEPOINT;
 	queryWidget = new qtutil::STFLQueryWidget();
@@ -36,16 +38,17 @@ Rawview::Rawview(const std::vector<cv::KeyPoint> &keypoints1,
 	setLayout(layout);
 	initEngine();
 	connect(queryWidget, SIGNAL(showHelp(QString)), this,
-	        SLOT(showHelp(QString)));
+		SLOT(showHelp(QString)));
 	connect(queryWidget, SIGNAL(userInputUpdate(QString)), this,
-	        SLOT(updateQuery(QString)));
+			SLOT(updateQuery(QString)));
 	connect(queryWidget, SIGNAL(filterSignal(QString)), this,
-	        SLOT(filterQuery(QString)));
+			SLOT(filterQuery(QString)));
 	connect(queryWidget, SIGNAL(requestSuggestions(QString)), this,
-	        SLOT(requestSuggestions(QString)));
+			SLOT(requestSuggestions(QString)));
 
 	queryEngine.setElements(
-	    gui::createRawviewTableRows(keypoints1, keypoints2, matches));
+				gui::createRawviewTableRows(keypoints1, keypoints2,
+											matches, usesTrainDescriptor));
 	table->updateRowGroups(queryEngine.query("#group by keypoint_type"));
 	TRACEPOINT;
 }
@@ -292,13 +295,19 @@ void Rawview::showHelp(QString topic)
 	TRACEPOINT;
 }
 
+bool Rawview::doesShowShowInViewMenu()
+{
+	return showShowInViewMenu;
+}
+
 void Rawview::selectMatches(const std::vector<cv::KeyPoint> &keypoints1,
                             const std::vector<cv::KeyPoint> &keypoints2,
                             const std::vector<cv::DMatch> &matches)
 {
 	TRACEPOINT;
 	queryEngine.setElements(
-	    gui::createRawviewTableRows(keypoints1, keypoints2, matches));
+	    gui::createRawviewTableRows(keypoints1, keypoints2,
+									matches, usesTrainDescriptor));
 	table->updateRowGroups(queryEngine.reexecuteLastQuery());
 	TRACEPOINT;
 }
@@ -309,5 +318,26 @@ void Rawview::selectKeyPoints(const std::vector<cv::KeyPoint> &keyPoints)
 	    gui::createSingleKeyPointRawviewTableRows(keyPoints));
 	table->updateRowGroups(queryEngine.reexecuteLastQuery());
 }
+
+std::vector<cv::DMatch> Rawview::getMatchSelection()
+{
+	return table->getMatchSelection();
+}
+
+std::vector<cv::KeyPoint> Rawview::getKeyPointSelection()
+{
+	return table->getKeyPointSelection();
+}
+
+void Rawview::setMatchSelection(std::vector<cv::DMatch> matches)
+{
+	table->setMatchSelection(matches);
+}
+
+void Rawview::setKeyPointSelection(std::vector<cv::KeyPoint> keyPoints)
+{
+	table->setKeyPointSelection(keyPoints);
+}
+
 }
 }
