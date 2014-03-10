@@ -106,7 +106,7 @@ private:
 	util::Reference<controller::ViewController> controller;
 	QLabel *imgSizeSliderLabel;
 	QSlider *imgSizeSlider;
-	std::vector<OverviewTableRow> elementBuffer;
+	std::vector<util::Reference<const impl::Call>> elementBuffer;
 
 	void initEngine();
 };

@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <math.h>
+#include <memory>
 
 #include <QMap>
 #include <QSet>
@@ -114,16 +115,19 @@ void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
 void OverviewPanel::addElementBuffered(const util::Reference<const impl::Call> newCall)
 {
 	TRACEPOINT;
-	OverviewTableRow row(newCall);
-	DEBUG(newCall->getId());
-	elementBuffer.push_back(row);
+	elementBuffer.push_back(newCall);
 	TRACEPOINT;
 }
 
 void OverviewPanel::flushElementBuffer()
 {
 	TRACEPOINT;
-	queryEngine.addElements(elementBuffer);
+	std::vector<OverviewTableRow> rows;
+	for (const util::Reference<const impl::Call> call : elementBuffer)
+	{
+		rows.push_back(OverviewTableRow(call));
+	}
+	queryEngine.addElements(std::move(rows));
 	table->updateRowGroups(queryEngine.reexecuteLastQuery());
 	elementBuffer.clear();
 	TRACEPOINT;
