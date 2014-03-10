@@ -111,12 +111,13 @@ void ViewController::addCall(util::Reference<impl::Call> data)
 	updateMode();
 	if (mode == Mode::NORMAL)
 	{
-		mainWindow->showOverviewTab();
-	}
-	if (mode != Mode::HIDE)
-	{
 		ovPanel->addElement(*data);
-	}
+		mainWindow->showOverviewTab();
+	} 
+	else if (mode == Mode::FAST_FORWARD)
+	{
+		ovPanel->addElementBuffered(*data);
+	} 
 	TRACEPOINT;
 }
 
@@ -405,6 +406,7 @@ void ViewController::updateMode()
 	if (mode == Mode::FAST_FORWARD && hasFinalCall())
 	{
 		mode = Mode::NORMAL;
+		ovPanel->flushElementBuffer();
 	}
 	TRACEPOINT;
 }

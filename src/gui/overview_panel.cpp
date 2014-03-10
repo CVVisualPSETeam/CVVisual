@@ -111,6 +111,24 @@ void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
 	TRACEPOINT;
 }
 
+void OverviewPanel::addElementBuffered(const util::Reference<const impl::Call> newCall)
+{
+	TRACEPOINT;
+	OverviewTableRow row(newCall);
+	DEBUG(newCall->getId());
+	elementBuffer.push_back(row);
+	TRACEPOINT;
+}
+
+void OverviewPanel::flushElementBuffer()
+{
+	TRACEPOINT;
+	queryEngine.addElements(elementBuffer);
+	table->updateRowGroups(queryEngine.reexecuteLastQuery());
+	elementBuffer.clear();
+	TRACEPOINT;
+}
+
 void OverviewPanel::removeElement(size_t id)
 {
 	TRACEPOINT;

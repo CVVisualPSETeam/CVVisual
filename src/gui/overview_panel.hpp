@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_OVERVIEWPANEL_HPP
 #define CVVISUAL_OVERVIEWPANEL_HPP
 
+#include <vector>
+
 #include <QWidget>
 #include <QString>
 #include <QSlider>
@@ -56,7 +58,7 @@ class OverviewPanel : public QWidget
 	}
 
 	/**
-	 * @brief Adds the given calll to the shown overview table.
+	 * @brief Adds the given call to the shown overview table.
 	 * @param newCall given call
 	 */
 	void addElement(const util::Reference<const impl::Call> newCall);
@@ -68,13 +70,24 @@ class OverviewPanel : public QWidget
 	void showExitApplicationButton();
 
 	/**
+	 * @brief Adds the given call buffered to the shown overview table.
+	 * @note Be sure to flush the buffer via flushElementBuffer() later.
+	 * @param newCall given call
+	 */
+	void addElementBuffered(const util::Reference<const impl::Call> newCall);
+	
+	/**
+	 * @brief Flushes the element buffer and shows its elements in the overview table.
+	 */
+	void flushElementBuffer();
+	
+	/**
 	 * @brief Removes and deletes the element with the given id.
 	 * @param id given element id
 	 */
 	void removeElement(size_t id);
-
-      private
-slots:
+	
+private slots:
 
 	void filterQuery(QString query);
 
@@ -86,13 +99,14 @@ slots:
 
 	void showHelp(QString topic);
 
-      private:
+private:
 	stfl::STFLEngine<OverviewTableRow> queryEngine;
 	qtutil::STFLQueryWidget *queryWidget;
 	OverviewTable *table;
 	util::Reference<controller::ViewController> controller;
 	QLabel *imgSizeSliderLabel;
 	QSlider *imgSizeSlider;
+	std::vector<OverviewTableRow> elementBuffer;
 
 	void initEngine();
 };

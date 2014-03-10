@@ -133,7 +133,7 @@ void RawviewGroupSubtable::customMenuRequested(QPoint location)
 	// TODO linker error
 	// if (parent->getParent()->doesShowShowInViewMenu())
 	//{
-	menu->addAction(new QAction("Show selected rows in view", this));
+	//menu->addAction(new QAction("Show selected rows in view", this));
 	//}
 
 	auto formats = RawviewTableRow::getAvailableTextFormats();
