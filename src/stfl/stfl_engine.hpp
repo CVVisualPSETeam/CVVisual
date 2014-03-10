@@ -553,9 +553,9 @@ template <typename Element> class STFLEngine
 			using namespace std::placeholders;
 			QStringList arr =
 			    cmdString.split(" ", QString::SkipEmptyParts);
-			QString cmd = arr.takeFirst();
 			if (arr.empty())
 				continue;
+			QString cmd = arr.takeFirst();
 			if (isFilterCmd(cmd))
 			{
 				QString argument = arr.join(" ");
