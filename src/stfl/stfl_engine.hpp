@@ -200,6 +200,22 @@ template <typename Element> class STFLEngine
 	}
 
 	/**
+	 * @brief Adds the new elements to the elements already inherited by
+	 * this engine.
+	 *
+	 * @param newElements new elements
+	 */
+	void addElements(std::vector<Element> newElements)
+	{
+		TRACEPOINT;
+		for (Element &elem : newElements)
+		{
+			addNewElement(elem);
+		}
+		TRACEPOINT;
+	}
+									   
+	/**
 	 * @brief Sets the elements inherited by this engine.
 	 *
 	 * @param newElements new elements, now inherited by this engine
