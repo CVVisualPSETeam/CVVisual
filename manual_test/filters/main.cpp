@@ -24,6 +24,20 @@ void dilateFile(char *filename)
 	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, filename);
 }
 
+/**
+ * @brief This test filters  all the provided images with erode(), dilate(), Sobel() and morphologyEx()
+ * and visualizes these filters with the debug-framework.
+ * 
+ * Expected behaviour:
+ * * A Mainwindow should open that shows an overview-table containing the first image and it's dilated
+ *   version.
+ * * Upon klicking step multiple times or '>>' once, all further images and filters should appear in
+ *   the table.
+ * * All calls can be opened in any existing window or in a new one. It is possible to select all the
+ *   different filter-visualisations for all of them.
+ * * Closing calltabs should work. Closing the last tab of a window results in the closing of the window
+ * * Clicking the Close-button results in the termination of the program with 0 as exit-status.
+ */
 int main(int argc, char **argv)
 {
 	if (argc == 1)
