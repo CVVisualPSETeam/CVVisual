@@ -18,7 +18,6 @@
 #include "signalslot.hpp"
 #include "registerhelper.hpp"
 #include "filterfunctionwidget.hpp"
-#include "../dbg/dbg.hpp"
 #include "../util/util.hpp"
 #include "../util/observer_ptr.hpp"
 
@@ -61,11 +60,9 @@ class FilterSelectorWidget
 	      FilterFunctionWidget<In, Out>{ parent }, layout_{ nullptr },
 	      currentFilter_{ nullptr }, slotFilterSelected_{ [this]()
 	{
-		TRACEPOINT;
 		this->updatedSelectedFilter();
 	} }
 	{
-		TRACEPOINT;
 		auto lay = util::make_unique<QVBoxLayout>();
 		layout_ = *lay;
 		this->layout_->setAlignment(Qt::AlignTop);
@@ -76,13 +73,11 @@ class FilterSelectorWidget
 		                 SIGNAL(signal(QString)),
 		                 &(this->slotFilterSelected_), SLOT(slot()));
 		this->setLayout(lay.release());
-		TRACEPOINT;
 		// update for initial selection (if it is valid)
 		if (this->has(this->selection()))
 		{
 			updatedSelectedFilter();
 		}
-		TRACEPOINT;
 		// add an apply button
 		auto button = util::make_unique<QPushButton>("apply");
 		// connect it
@@ -90,12 +85,10 @@ class FilterSelectorWidget
 		                 &(this->signalFilterSettingsChanged()),
 		                 SIGNAL(signal()));
 		this->layout_->addWidget(button.release());
-		TRACEPOINT;
 	}
 
 	~FilterSelectorWidget()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -106,7 +99,6 @@ class FilterSelectorWidget
 	 */
 	virtual void applyFilter(InputArray in, OutputArray out) const override
 	{
-		TRACEPOINT;
 		auto check = checkInput(in);
 		if (!check.first)
 		{
@@ -114,7 +106,6 @@ class FilterSelectorWidget
 				check.second.toStdString()
 			};
 		}
-		TRACEPOINT;
 		return currentFilter_->applyFilter(in, out);
 	}
 
@@ -130,12 +121,10 @@ class FilterSelectorWidget
 	virtual std::pair<bool, QString> checkInput(InputArray in) const
 	    override
 	{
-		TRACEPOINT;
 		if (!currentFilter_)
 		{
 			return { false, "No entry selected." };
 		}
-		TRACEPOINT;
 		return currentFilter_->checkInput(in);
 	}
 
@@ -148,7 +137,6 @@ class FilterSelectorWidget
 	 */
 	template <class Filter> static bool registerFilter(const QString &name)
 	{
-		TRACEPOINT;
 		return qtutil::registerFilter<In, Out, Filter>(name);
 	}
 
@@ -164,10 +152,8 @@ class FilterSelectorWidget
 	 */
 	void updatedSelectedFilter()
 	{
-		TRACEPOINT;
 		if ((this->currentFilter_))
 		{
-			TRACEPOINT;
 			layout_->removeWidget((this->currentFilter_.getPtr()));
 			// disconnect
 			QObject::disconnect(
@@ -186,7 +172,6 @@ class FilterSelectorWidget
 		    SIGNAL(signal()));
 		// settings changed
 		this->signalFilterSettingsChanged().emitSignal();
-		TRACEPOINT;
 	}
 
 	/**
@@ -208,11 +193,9 @@ class FilterSelectorWidget
 template <std::size_t In, std::size_t Out, class Filter>
 bool registerFilter(const QString &name)
 {
-	TRACEPOINT;
 	return FilterSelectorWidget<In, Out>::registerElement(
 	    name, [](QWidget *parent)
 	{
-		    TRACEPOINT;
 		    return std::unique_ptr<FilterFunctionWidget<In, Out>>{
 			    new Filter{ parent }
 		    };

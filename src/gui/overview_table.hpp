@@ -11,7 +11,6 @@
 #include "../stfl/element_group.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../util/util.hpp"
-#include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
 #include "overview_group_subtable.hpp"
 
@@ -40,7 +39,6 @@ class OverviewTable : public QWidget
 
 	~OverviewTable()
 	{
-		TRACEPOINT;
 	}
 
 	/**

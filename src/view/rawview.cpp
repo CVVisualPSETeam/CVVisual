@@ -12,7 +12,6 @@
 #include "../controller/view_controller.hpp"
 #include "../qtutil/stfl_query_widget.hpp"
 #include "../qtutil/util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -25,7 +24,6 @@ Rawview::Rawview(const std::vector<cv::KeyPoint> &keypoints1,
                  bool showShowInViewMenu)
     : showShowInViewMenu{ showShowInViewMenu }
 {
-	TRACEPOINT;
 	queryWidget = new qtutil::STFLQueryWidget();
 	table = new gui::RawviewTable(this);
 	QVBoxLayout *layout = new QVBoxLayout;
@@ -47,7 +45,6 @@ Rawview::Rawview(const std::vector<cv::KeyPoint> &keypoints1,
 	queryEngine.setElements(
 	    gui::createRawviewTableRows(keypoints1, keypoints2, matches));
 	table->updateRowGroups(queryEngine.query("#group by keypoint_type"));
-	TRACEPOINT;
 }
 
 void Rawview::initEngine()
@@ -265,42 +262,32 @@ void Rawview::initEngine()
 
 void Rawview::filterQuery(QString query)
 {
-	TRACEPOINT;
 	table->updateRowGroups(
 	    queryEngine.query(query + " #group by keypoint_type"));
-	TRACEPOINT;
 }
 
 void Rawview::updateQuery(QString query)
 {
-	TRACEPOINT;
 	requestSuggestions(query);
-	TRACEPOINT;
 }
 
 void Rawview::requestSuggestions(QString query)
 {
-	TRACEPOINT;
 	queryWidget->showSuggestions(queryEngine.getSuggestions(query));
-	TRACEPOINT;
 }
 
 void Rawview::showHelp(QString topic)
 {
-	TRACEPOINT;
 	qtutil::openHelpBrowser(topic);
-	TRACEPOINT;
 }
 
 void Rawview::selectMatches(const std::vector<cv::KeyPoint> &keypoints1,
                             const std::vector<cv::KeyPoint> &keypoints2,
                             const std::vector<cv::DMatch> &matches)
 {
-	TRACEPOINT;
 	queryEngine.setElements(
 	    gui::createRawviewTableRows(keypoints1, keypoints2, matches));
 	table->updateRowGroups(queryEngine.reexecuteLastQuery());
-	TRACEPOINT;
 }
 
 void Rawview::selectKeyPoints(const std::vector<cv::KeyPoint> &keyPoints)

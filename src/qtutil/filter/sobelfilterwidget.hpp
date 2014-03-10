@@ -41,7 +41,6 @@ class SobelFilterWidget : public FilterFunctionWidget<1, 1>
 	 */
 	virtual ~SobelFilterWidget() override
 	{
-		TRACEPOINT;
 	}
 
 	/**

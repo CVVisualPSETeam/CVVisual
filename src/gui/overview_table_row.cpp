@@ -8,7 +8,6 @@
 
 #include "../qtutil/util.hpp"
 #include "../stfl/stringutils.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -18,7 +17,6 @@ namespace gui
 OverviewTableRow::OverviewTableRow(util::Reference<const impl::Call> call)
     : call_{ call }
 {
-	TRACEPOINT;
 	id_ = call_->getId();
 	idStr = QString::number(call_->getId());
 	for (size_t i = 0; i < 2 && i < call->matrixCount(); i++)
@@ -38,14 +36,12 @@ OverviewTableRow::OverviewTableRow(util::Reference<const impl::Call> call)
 		functionStr = data.function;
 	}
 	typeStr = QString(call_->type());
-	TRACEPOINT;
 }
 
 void OverviewTableRow::addToTable(QTableWidget *table, size_t row,
                                   bool showImages, size_t maxImages,
                                   int imgHeight, int imgWidth)
 {
-	TRACEPOINT;
 	std::vector<std::unique_ptr<QTableWidgetItem>> items{};
 	items.push_back(util::make_unique<QTableWidgetItem>(idStr));
 	if (showImages)
@@ -82,14 +78,12 @@ void OverviewTableRow::addToTable(QTableWidget *table, size_t row,
 		items[i]->setFlags(items[i]->flags() ^ Qt::ItemIsEditable);
 		table->setItem(row, i, items[i].release());
 	}
-	TRACEPOINT;
 }
 
 void OverviewTableRow::resizeInTable(QTableWidget *table, size_t row,
                                   bool showImages, size_t maxImages,
                                   int imgHeight, int imgWidth)
 {
-	TRACEPOINT;
 	if (showImages)
 	{
 		for (size_t i = 0; i < imgs.size() && i < maxImages; i++)
@@ -105,7 +99,6 @@ void OverviewTableRow::resizeInTable(QTableWidget *table, size_t row,
 			table->setItem(row, i + 1, imgWidget.release());
 		}
 	}
-	TRACEPOINT;
 }
 }
 }

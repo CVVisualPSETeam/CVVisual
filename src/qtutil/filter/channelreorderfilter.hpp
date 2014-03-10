@@ -7,7 +7,6 @@
 #include <QSpinBox>
 
 #include "../filterfunctionwidget.hpp"
-#include "../../dbg/dbg.hpp"
 #include "../../util/observer_ptr.hpp"
 
 namespace cvv
@@ -39,7 +38,6 @@ class ChannelReorderFilter : public FilterFunctionWidget<1, 1>
 	 */
 	~ChannelReorderFilter()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -63,7 +61,6 @@ class ChannelReorderFilter : public FilterFunctionWidget<1, 1>
 
 	int outputChannels()
 	{
-		TRACEPOINT;
 		return channel_->value();
 	}
 
@@ -75,9 +72,7 @@ slots:
 	 */
 	void setChannel(int n)
 	{
-		TRACEPOINT;
 		setChannel(static_cast<std::size_t>(n));
-		TRACEPOINT;
 	}
 
 	/**

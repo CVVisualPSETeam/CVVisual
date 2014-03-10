@@ -67,7 +67,6 @@ MatchManagement::MatchManagement(std::vector<cv::DMatch> univers,QWidget *parent
 
 void MatchManagement::setSettings(CVVMatch &match)
 {
-	DEBUGF("\n\n matchsettingslist.size() %s",settingsList_.size());
 	if (std::find_if(selection_.begin(), selection_.end(),
 			 [&](const cv::DMatch &o)
 		{ return match == o; }) != selection_.end())
@@ -184,7 +183,6 @@ void MatchManagement::removeSelection(MatchSelectionSelector *selector)
 
 void MatchManagement::applySelection()
 {
-	DEBUGF("\n\n matchselectorlist.size() %s",selectorList_.size());
 	std::vector<cv::DMatch> currentSelection=univers_;
 	for(auto& selector:selectorList_){
 		currentSelection=selector->select(currentSelection);

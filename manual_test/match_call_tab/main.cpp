@@ -58,7 +58,6 @@
  */
 int main(int argc, char *argv[])
 {
-	cvv::dbg::setLoggingState(false); // Disable tracepoints.
 
 	/* Create some data for the MatchCallTab: */
 	cv::Mat src{ 1000, 1000, CV_8U };

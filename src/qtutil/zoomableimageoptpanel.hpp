@@ -9,7 +9,6 @@
 #include "opencv2/core/core.hpp"
 #include "zoomableimage.hpp"
 #include "util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {

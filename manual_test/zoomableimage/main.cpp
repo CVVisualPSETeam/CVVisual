@@ -18,7 +18,6 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 
-#include "../../src/dbg/dbg.hpp"
 #include "../../src/qtutil/matchview/colorutil.hpp"
 
 // from
@@ -44,7 +43,6 @@ static const int w = 400;
  */
 int main(int argc, char *argv[])
 {
-	cvv::dbg::setLoggingState(false);
 
 	QApplication a(argc, argv);
 

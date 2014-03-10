@@ -13,7 +13,6 @@
 
 // cvv
 #include "signalslot.hpp"
-#include "../dbg/dbg.hpp"
 #include "../util/util.hpp"
 
 namespace cvv
@@ -66,7 +65,6 @@ class FilterFunctionWidget : public QWidget
 	FilterFunctionWidget(QWidget *parent = nullptr)
 	    : QWidget{ parent }, signFilterSettingsChanged_{}
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -74,7 +72,6 @@ class FilterFunctionWidget : public QWidget
 	 */
 	virtual ~FilterFunctionWidget()
 	{
-		TRACEPOINT;
 	}
 
 	/**

@@ -9,7 +9,6 @@
 #include "overview_panel.hpp"
 #include "../controller/view_controller.hpp"
 #include "../util/util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -44,7 +43,6 @@ class MainCallWindow : public CallWindow
 
 	~MainCallWindow()
 	{
-		TRACEPOINT;
 	}
 
 	/**

@@ -1,6 +1,5 @@
 #include "stfl_query_widget.hpp"
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -9,7 +8,6 @@ namespace qtutil
 
 STFLQueryWidget::STFLQueryWidget()
 {
-	TRACEPOINT;
 	lineEdit = new STFLQueryWidgetLineEdit(this);
 	auto *layout = new QHBoxLayout;
 	layout->addWidget(lineEdit);
@@ -22,36 +20,27 @@ STFLQueryWidget::STFLQueryWidget()
 	        SLOT(textChanged()));
 	connect(lineEdit, SIGNAL(requestSuggestions(QString)), this,
 	        SIGNAL(requestSuggestions(QString)));
-	TRACEPOINT;
 }
 
 void STFLQueryWidget::showSuggestions(const QStringList &suggestions)
 {
-	TRACEPOINT;
 	lineEdit->showSuggestions(suggestions);
-	TRACEPOINT;
 }
 
 void STFLQueryWidget::returnPressed()
 {
-	TRACEPOINT;
 	filterSignal(lineEdit->text());
-	TRACEPOINT;
 }
 
 void STFLQueryWidget::textChanged()
 {
-	TRACEPOINT;
 	userInputUpdate(lineEdit->text());
 	requestSuggestions(lineEdit->text());
-	TRACEPOINT;
 }
 
 void STFLQueryWidget::helpRequested()
 {
-	TRACEPOINT;
 	showHelp("filterquery");
-	TRACEPOINT;
 }
 }
 }

@@ -58,11 +58,9 @@ private:
 template <class Selection>
 bool registerMatchSelection(const QString &name)
 {
-	TRACEPOINT;
 	return MatchSelectionSelector::registerElement(
 	    name, [](std::vector<cv::DMatch> univers)
 	{
-		    TRACEPOINT;
 		    return std::unique_ptr<MatchSelection>{ new Selection{univers}};
 	});
 }

@@ -69,7 +69,6 @@ cv::Mat renderImg();
  */
 int main(int argc, char *argv[])
 {
-	cvv::dbg::setLoggingState(false);
 	try
 	{
 

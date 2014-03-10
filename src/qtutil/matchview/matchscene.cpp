@@ -9,7 +9,6 @@
 #include <QAction>
 
 #include "matchscene.hpp"
-#include "../../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -111,7 +110,6 @@ void MatchScene::viewReized()
 
 void MatchScene::rightClick(const QPoint &pos)
 {
-	TRACEPOINT;
 	QPoint p = mapToGlobal(pos);
 	QMenu menu;
 
@@ -124,7 +122,6 @@ void MatchScene::rightClick(const QPoint &pos)
 	QAction *item = menu.exec(p);
 	if (item)
 	{
-		TRACEPOINT;
 		QString fileName = QFileDialog::getSaveFileName(
 		    this, tr("Save File"), ".",
 		    tr("BMP (*.bmp);;GIF (*.gif);;JPG (*.jpg);;PNG (*.png);;"
@@ -132,7 +129,6 @@ void MatchScene::rightClick(const QPoint &pos)
 		       "XPM (*.xpm)"));
 		if (fileName == "")
 		{
-			TRACEPOINT;
 			return;
 		}
 		QPixmap pmap;
@@ -158,7 +154,6 @@ void MatchScene::rightClick(const QPoint &pos)
 		}
 		pmap.save(fileName, 0, 100);
 	}
-	TRACEPOINT;
 }
 }
 }

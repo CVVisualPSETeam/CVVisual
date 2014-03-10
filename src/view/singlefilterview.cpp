@@ -22,7 +22,6 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat> &images,
 				   QWidget *parent)
     : FilterView{ parent }
 {
-	TRACEPOINT;
 	auto imwid = util::make_unique<QWidget>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 	auto layout = util::make_unique<QHBoxLayout>();
@@ -92,7 +91,6 @@ SingleFilterView::SingleFilterView(const std::vector<cv::Mat> &images,
 
 	setLayout(layout.release());
 
-	TRACEPOINT;
 }
 }
 } // namespaces

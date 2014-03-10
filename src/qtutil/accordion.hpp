@@ -13,7 +13,6 @@
 #include "collapsable.hpp"
 #include "../util/util.hpp"
 #include "../util/observer_ptr.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -42,7 +41,6 @@ class Accordion : public QWidget
 
 	~Accordion()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -53,13 +51,11 @@ class Accordion : public QWidget
 	 */
 	Collapsable &element(Handle handle)
 	{
-		TRACEPOINT;
 		return *elements_.at(handle);
 	}
 
 	const Collapsable &element(Handle handle) const
 	{
-		TRACEPOINT;
 		return *elements_.at(handle);
 	}
 
@@ -72,9 +68,7 @@ class Accordion : public QWidget
 	 */
 	void setTitle(Handle handle, const QString &title)
 	{
-		TRACEPOINT;
 		element(handle).setTitle(title);
-		TRACEPOINT;
 	}
 
 	/**
@@ -86,7 +80,6 @@ class Accordion : public QWidget
 	 */
 	QString title(Handle handle) const
 	{
-		TRACEPOINT;
 		return element(handle).title();
 	}
 
@@ -103,9 +96,7 @@ class Accordion : public QWidget
 	 */
 	void collapse(Handle handle, bool b = true)
 	{
-		TRACEPOINT;
 		element(handle).collapse(b);
-		TRACEPOINT;
 	}
 
 	/**
@@ -121,9 +112,7 @@ class Accordion : public QWidget
 	 */
 	void expand(Handle handle, bool b = true)
 	{
-		TRACEPOINT;
 		collapse(handle, !b);
-		TRACEPOINT;
 	}
 
 	/**
@@ -146,9 +135,7 @@ class Accordion : public QWidget
 	 */
 	void expandAll(bool b = true)
 	{
-		TRACEPOINT;
 		collapseAll(!b);
-		TRACEPOINT;
 	}
 
 	/**
@@ -164,9 +151,7 @@ class Accordion : public QWidget
 	 */
 	void hide(Handle handle, bool b = true)
 	{
-		TRACEPOINT;
 		element(handle).setVisible(!b);
-		TRACEPOINT;
 	}
 
 	/**
@@ -182,9 +167,7 @@ class Accordion : public QWidget
 	 */
 	void show(Handle handle, bool b = true)
 	{
-		TRACEPOINT;
 		hide(handle, !b);
-		TRACEPOINT;
 	}
 
 	/**
@@ -207,9 +190,7 @@ class Accordion : public QWidget
 	 */
 	void showAll(bool b = true)
 	{
-		TRACEPOINT;
 		hideAll(!b);
-		TRACEPOINT;
 	}
 
 	/**
@@ -237,7 +218,6 @@ class Accordion : public QWidget
 	Handle push_back(const QString &title, std::unique_ptr<QWidget> widget,
 	                 bool isCollapsed = true)
 	{
-		TRACEPOINT;
 		return insert(title, std::move(widget), isCollapsed);
 	}
 
@@ -251,7 +231,6 @@ class Accordion : public QWidget
 	Handle push_front(const QString &title, std::unique_ptr<QWidget> widget,
 	                  bool isCollapsed = true)
 	{
-		TRACEPOINT;
 		return insert(title, std::move(widget), isCollapsed, 0);
 	}
 
@@ -294,7 +273,6 @@ class Accordion : public QWidget
 	 */
 	std::size_t size() const
 	{
-		TRACEPOINT;
 		return elements_.size();
 	}
 

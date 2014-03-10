@@ -143,7 +143,6 @@ TranslationMatchView::TranslationMatchView(
 	}
 	matchManagment_->updateAll();
 	keyManagment_->updateAll();
-	TRACEPOINT;
 }
 }
 }

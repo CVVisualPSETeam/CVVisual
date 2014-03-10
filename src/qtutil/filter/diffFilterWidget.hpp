@@ -54,7 +54,6 @@ class DiffFilterFunction : public FilterFunctionWidget<2, 1>
 	*/
 	~DiffFilterFunction()
 	{
-		TRACEPOINT;
 	}
 
 	/**

@@ -12,7 +12,6 @@
 #include <QSettings>
 
 #include "types.hpp"
-#include "../../src/dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -21,16 +20,13 @@ namespace qtutil
 
 QSet<QString> createStringSet(QString string)
 {
-	TRACEPOINT;
 	QSet<QString> set;
 	set.insert(string);
-	TRACEPOINT;
 	return set;
 }
 
 std::pair<bool, QString> typeToQString(const cv::Mat &mat)
 {
-	TRACEPOINT;
 	QString s{};
 	bool b = true;
 	switch (mat.depth())
@@ -61,45 +57,35 @@ std::pair<bool, QString> typeToQString(const cv::Mat &mat)
 		b = false;
 	}
 	s.append("C").append(QString::number(mat.channels()));
-	TRACEPOINT;
 	return { b, s };
 }
 
 QString conversionResultToString(const ImageConversionResult &result)
 {
-	TRACEPOINT;
 	switch (result)
 	{
 	case ImageConversionResult::SUCCESS:
-		TRACEPOINT;
 		return "SUCCESS";
 		break;
 	case ImageConversionResult::MAT_EMPTY:
-		TRACEPOINT;
 		return "Empty mat";
 		break;
 	case ImageConversionResult::MAT_NOT_2D:
-		TRACEPOINT;
 		return "Mat not two dimensional";
 		break;
 	case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:
-		TRACEPOINT;
 		return "Float values out of range [0,1]";
 		break;
 	case ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED:
-		TRACEPOINT;
 		return "Unsupported number of channels";
 		break;
 	case ImageConversionResult::MAT_INVALID_SIZE:
-		TRACEPOINT;
 		return "Invalid size";
 		break;
 	case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:
-		TRACEPOINT;
 		return "Unsupported depth ";
 		break;
 	}
-	TRACEPOINT;
 	return "Unknown result from convert function";
 }
 
@@ -120,12 +106,10 @@ struct GrayColorTable
 	 */
 	GrayColorTable() : table{}
 	{
-		TRACEPOINT;
 		for (int i = 0; i < 256; i++)
 		{
 			table.push_back(qRgb(i, i, i));
 		}
-		TRACEPOINT;
 	}
 
 	/**
@@ -133,7 +117,6 @@ struct GrayColorTable
 	 */
 	~GrayColorTable()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -168,10 +151,8 @@ template <int depth> struct ConvertHelper<depth, 1>
 {
 	static QImage image(const cv::Mat &mat)
 	{
-		TRACEPOINT;
 		QImage img{ mat.cols, mat.rows, QImage::Format_Indexed8 };
 		img.setColorTable(grayColorTable.table);
-		TRACEPOINT;
 		return img;
 	}
 
@@ -190,7 +171,6 @@ template <int depth> struct ConvertHelper<depth, 2>
 {
 	static QImage image(const cv::Mat &mat)
 	{
-		TRACEPOINT;
 		return QImage{ mat.cols, mat.rows, QImage::Format_RGB888 };
 	}
 
@@ -212,7 +192,6 @@ template <int depth> struct ConvertHelper<depth, 3>
 {
 	static QImage image(const cv::Mat &mat)
 	{
-		TRACEPOINT;
 		return QImage{ mat.cols, mat.rows, QImage::Format_RGB888 };
 	}
 
@@ -235,7 +214,6 @@ template <int depth> struct ConvertHelper<depth, 4>
 {
 	static QImage image(const cv::Mat &mat)
 	{
-		TRACEPOINT;
 		return QImage{ mat.cols, mat.rows, QImage::Format_ARGB32 };
 	}
 
@@ -263,7 +241,6 @@ template <int depth> struct ConvertHelper<depth, 4>
 template <int depth, int channels>
 void convertPart(const cv::Mat &mat, QImage &img, int minRow, int maxRow)
 {
-	TRACEPOINT;
 	if (minRow == maxRow)
 	{
 		return;
@@ -286,7 +263,6 @@ void convertPart(const cv::Mat &mat, QImage &img, int minRow, int maxRow)
 			    depth, channels>::pixelOperation(i, j, mat, row);
 		}
 	}
-	TRACEPOINT;
 }
 
 /**
@@ -298,12 +274,10 @@ void convertPart(const cv::Mat &mat, QImage &img, int minRow, int maxRow)
 template <int depth, int channels>
 QImage convert(const cv::Mat &mat, unsigned int threads)
 {
-	TRACEPOINT;
 	QImage img = structures::ConvertHelper<depth, channels>::image(mat);
 
 	if (threads > 1)
 	{
-		TRACEPOINT;
 		// multithreadding
 		auto nThreads =
 		    std::min(threads, std::thread::hardware_concurrency());
@@ -320,7 +294,6 @@ QImage convert(const cv::Mat &mat, unsigned int threads)
 		convertPart<depth, channels>(mat, img, nperthread * nThreads,
 					     mat.rows);
 
-		TRACEPOINT;
 		// join
 		for (auto &t : workerThreads)
 		{
@@ -329,10 +302,8 @@ QImage convert(const cv::Mat &mat, unsigned int threads)
 	}
 	else
 	{
-		TRACEPOINT;
 		convertPart<depth, channels>(mat, img, 0, mat.rows);
 	}
-	TRACEPOINT;
 	return img;
 }
 
@@ -348,13 +319,11 @@ template <int depth>
 bool checkValueRange(const cv::Mat &mat, DepthType<depth> min,
 		     DepthType<depth> max)
 {
-	TRACEPOINT;
 	std::pair<cv::MatConstIterator_<DepthType<depth>>,
 		  cv::MatConstIterator_<DepthType<depth>>>
 	mm{ std::minmax_element(mat.begin<DepthType<depth>>(),
 				mat.end<DepthType<depth>>()) };
 
-	TRACEPOINT;
 	return cv::saturate_cast<DepthType<CV_8UC1>>(*(mm.first)) >= min &&
 	       cv::saturate_cast<DepthType<CV_8UC1>>(*(mm.second)) <= max;
 }
@@ -370,18 +339,13 @@ bool checkValueRange(const cv::Mat &mat, DepthType<depth> min,
 std::pair<ImageConversionResult, QImage> errorResult(ImageConversionResult res,
 						     const cv::Mat &mat)
 {
-	TRACEPOINT;
 	switch (res)
 	{
 	case ImageConversionResult::FLOAT_OUT_OF_0_TO_1:
-		TRACEPOINT;
 	case ImageConversionResult::MAT_NOT_2D:
-		TRACEPOINT;
 	case ImageConversionResult::MAT_UNSUPPORTED_DEPTH:
-		TRACEPOINT;
 	case ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED:
 	{
-		TRACEPOINT;
 		QImage imgresult{ mat.cols, mat.rows, QImage::Format_RGB444 };
 		imgresult.fill(Qt::black);
 		return { res, imgresult };
@@ -394,7 +358,6 @@ std::pair<ImageConversionResult, QImage> errorResult(ImageConversionResult res,
 	case ImageConversionResult::MAT_INVALID_SIZE:
 		;
 	}
-	TRACEPOINT;
 	return { res, QImage{ 0, 0, QImage::Format_Invalid } };
 }
 
@@ -411,32 +374,26 @@ template <int channels>
 std::pair<ImageConversionResult, QImage>
 convert(const cv::Mat &mat, bool skipFloatRangeTest, unsigned int threads)
 {
-	TRACEPOINT;
 	// depth ok?
 	switch (mat.depth())
 	{
 	case CV_8U:
-		TRACEPOINT;
 		return { ImageConversionResult::SUCCESS,
 			 convert<CV_8U, channels>(mat, threads) };
 		break;
 	case CV_8S:
-		TRACEPOINT;
 		return { ImageConversionResult::SUCCESS,
 			 convert<CV_8S, channels>(mat, threads) };
 		break;
 	case CV_16U:
-		TRACEPOINT;
 		return { ImageConversionResult::SUCCESS,
 			 convert<CV_16U, channels>(mat, threads) };
 		break;
 	case CV_16S:
-		TRACEPOINT;
 		return { ImageConversionResult::SUCCESS,
 			 convert<CV_16S, channels>(mat, threads) };
 		break;
 	case CV_32S:
-		TRACEPOINT;
 		return { ImageConversionResult::SUCCESS,
 			 convert<CV_32S, channels>(mat, threads) };
 		break;
@@ -453,7 +410,6 @@ convert(const cv::Mat &mat, bool skipFloatRangeTest, unsigned int threads)
 				    mat);
 			}
 		}
-		TRACEPOINT;
 		return { ImageConversionResult::SUCCESS,
 			 convert<CV_32F, channels>(mat, threads) };
 		break;
@@ -470,16 +426,13 @@ convert(const cv::Mat &mat, bool skipFloatRangeTest, unsigned int threads)
 				    mat);
 			}
 		}
-		TRACEPOINT;
 		return { ImageConversionResult::SUCCESS,
 			 convert<CV_64F, channels>(mat, threads) };
 		break;
 	default:
-		TRACEPOINT;
 		return errorResult(ImageConversionResult::MAT_UNSUPPORTED_DEPTH,
 				   mat);
 	}
-	TRACEPOINT;
 }
 
 // convert
@@ -495,25 +448,21 @@ std::pair<ImageConversionResult, QImage>
 convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest,
 		   unsigned int threads)
 {
-	TRACEPOINT;
 	// empty?
 	if (mat.empty())
 	{
-		TRACEPOINT;
 		return errorResult(ImageConversionResult::MAT_EMPTY, mat);
 	};
 
 	// 2d?
 	if (mat.dims != 2)
 	{
-		TRACEPOINT;
 		return errorResult(ImageConversionResult::MAT_NOT_2D, mat);
 	};
 
 	// size ok
 	if (mat.rows < 1 || mat.cols < 1)
 	{
-		TRACEPOINT;
 		return errorResult(ImageConversionResult::MAT_INVALID_SIZE,
 				   mat);
 	}
@@ -523,23 +472,18 @@ convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest,
 	switch (mat.channels())
 	{
 	case 1:
-		TRACEPOINT;
 		return convert<1>(mat, skipFloatRangeTest, threads);
 		break;
 	case 2:
-		TRACEPOINT;
 		return convert<2>(mat, skipFloatRangeTest, threads);
 		break;
 	case 3:
-		TRACEPOINT;
 		return convert<3>(mat, skipFloatRangeTest, threads);
 		break;
 	case 4:
-		TRACEPOINT;
 		return convert<4>(mat, skipFloatRangeTest, threads);
 		break;
 	default:
-		TRACEPOINT;
 		return errorResult(
 		    ImageConversionResult::NUMBER_OF_CHANNELS_NOT_SUPPORTED,
 		    mat);
@@ -547,55 +491,43 @@ convertMatToQImage(const cv::Mat &mat, bool skipFloatRangeTest,
 	// floating depth + in range [0,1]  (in function convert<T>)
 	// depth ok?						(in function
 	// convert<T>)
-	TRACEPOINT;
 }
 
 std::pair<ImageConversionResult, QPixmap>
 convertMatToQPixmap(const cv::Mat &mat, bool skipFloatRangeTest,
 		    unsigned int threads)
 {
-	TRACEPOINT;
 	auto converted = convertMatToQImage(mat, skipFloatRangeTest, threads);
-	TRACEPOINT;
 	return { converted.first, QPixmap::fromImage(converted.second) };
 }
 
 std::vector<cv::Mat> splitChannels(const cv::Mat &mat)
 {
-	TRACEPOINT;
 	if (mat.channels() < 1)
 	{
-		TRACEPOINT;
 		return std::vector<cv::Mat>{};
 	}
-	TRACEPOINT;
 	auto chan = std::unique_ptr<cv::Mat[]>(new cv::Mat[mat.channels()]);
-	TRACEPOINT;
 	cv::split(mat, chan.get());
-	TRACEPOINT;
 	std::vector<cv::Mat> result{};
 	// put in vector
 	for (int i = 0; i < mat.channels(); i++)
 	{
 		result.emplace_back(chan[i]);
 	}
-	TRACEPOINT;
 	return result;
 }
 
 cv::Mat mergeChannels(std::vector<cv::Mat> mats)
 {
-	TRACEPOINT;
 	if (mats.size() <= 0)
 	{
-		TRACEPOINT;
 		throw std::invalid_argument{ "no input mat" };
 	}
 
 	// check
 	if (mats.at(0).channels() != 1)
 	{
-		TRACEPOINT;
 		throw std::invalid_argument{ "mat 0 not 1 channel" };
 	}
 	int type = mats.at(0).type();
@@ -604,7 +536,6 @@ cv::Mat mergeChannels(std::vector<cv::Mat> mats)
 	{
 		if ((type != mats.at(i).type()) || (size != mats.at(i).size()))
 		{
-			TRACEPOINT;
 			throw std::invalid_argument{
 				"mats have different sizes or depths."
 				"(or not 1 channel)"
@@ -621,45 +552,37 @@ cv::Mat mergeChannels(std::vector<cv::Mat> mats)
 	}
 	merge(mergeinput.get(), mats.size(), result);
 
-	TRACEPOINT;
 	return result;
 }
 
 void openHelpBrowser(const QString &topic)
 {
-	TRACEPOINT;
 	auto topicEncoded = QUrl::toPercentEncoding(topic);
 	QDesktopServices::openUrl(
 	    QUrl(QString("http://cvv.mostlynerdless.de/help.php?topic=") +
 		 topicEncoded));
-	TRACEPOINT;
 }
 
 void setDefaultSetting(const QString &scope, const QString &key,
 		       const QString &value)
 {
-	TRACEPOINT;
 	QSettings settings{ "CVVisual", QSettings::IniFormat };
 	QString _key = scope + "/" + key;
 	if (!settings.contains(_key))
 	{
 		settings.setValue(_key, value);
 	}
-	TRACEPOINT;
 }
 
 void setSetting(const QString &scope, const QString &key, const QString &value)
 {
-	TRACEPOINT;
 	QSettings settings{ "CVVisual", QSettings::IniFormat };
 	QString _key = scope + "/" + key;
 	settings.setValue(_key, value);
-	TRACEPOINT;
 }
 
 QString getSetting(const QString &scope, const QString &key)
 {
-	TRACEPOINT;
 	QSettings settings{ "CVVisual", QSettings::IniFormat };
 	QString _key = scope + "/" + key;
 	if (!settings.contains(_key))
@@ -667,7 +590,6 @@ QString getSetting(const QString &scope, const QString &key)
 		throw std::invalid_argument{ "there is no such setting" };
 	}
 	QString set = settings.value(_key).value<QString>();
-	TRACEPOINT;
 	return set;
 }
 }

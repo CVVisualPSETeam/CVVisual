@@ -60,11 +60,9 @@ private:
 template <class Selection>
 bool registerKeyPointSelection(const QString &name)
 {
-	TRACEPOINT;
 	return KeyPointSelectionSelector::registerElement(
 	    name, [](std::vector<cv::KeyPoint> univers)
 	{
-		    TRACEPOINT;
 		    return std::unique_ptr<KeyPointSelection>{ new Selection{univers}};
 	});
 }

@@ -38,7 +38,6 @@ int main(int argc, char **argv)
 {
 	QApplication a(argc, argv);
 
-	cvv::dbg::setLoggingState(false);
 	if (argc != 3)
 	{
 		std::cerr << "Only execute this test with filenames of two "

@@ -11,7 +11,6 @@
 #include <QObject>
 #include <QString>
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -33,12 +32,10 @@ class Signal : public QObject
 	 */
 	Signal(QObject *parent = nullptr) : QObject{ parent }
 	{
-		TRACEPOINT;
 	}
 
 	~Signal()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -47,9 +44,7 @@ class Signal : public QObject
 	 */
 	void emitSignal() const
 	{
-		TRACEPOINT;
 		emit signal();
-		TRACEPOINT;
 	}
 signals:
 	/**
@@ -76,15 +71,12 @@ class Slot : public QObject
 	Slot(const std::function<void()> &f, QObject *parent = nullptr)
 	    : QObject{ parent }, function_{ f }
 	{
-		TRACEPOINT;
 		if (!f)
 			throw std::invalid_argument{ "invalid function" };
-		TRACEPOINT;
 	}
 
 	~Slot()
 	{
-		TRACEPOINT;
 	}
 
       public
@@ -94,9 +86,7 @@ slots:
 	 */
 	void slot() const
 	{
-		TRACEPOINT;
 		function_();
-		TRACEPOINT;
 	}
 
       private:
@@ -119,19 +109,15 @@ class SignalQString : public QObject
       public:
 	SignalQString(QObject *parent = nullptr) : QObject{ parent }
 	{
-		TRACEPOINT;
 	}
 
 	~SignalQString()
 	{
-		DEBUGF("this=%s", reinterpret_cast<size_t>(this));
 	}
 
 	void emitSignal(const QString &t) const
 	{
-		TRACEPOINT;
 		emit signal(t);
-		TRACEPOINT;
 	}
 signals:
 	void signal(QString t) const;
@@ -148,24 +134,19 @@ class SlotQString : public QObject
 	            QObject *parent = nullptr)
 	    : QObject{ parent }, function_{ f }
 	{
-		TRACEPOINT;
 		if (!f)
 			throw std::invalid_argument{ "invalide function" };
-		TRACEPOINT;
 	}
 
 	~SlotQString()
 	{
-		TRACEPOINT;
 	}
 
       public
 slots:
 	void slot(QString t) const
 	{
-		TRACEPOINT;
 		function_(t);
-		TRACEPOINT;
 	}
 
       private:
@@ -181,19 +162,15 @@ class SignalMatRef : public QObject
       public:
 	SignalMatRef(QObject *parent = nullptr) : QObject{ parent }
 	{
-		TRACEPOINT;
 	}
 
 	~SignalMatRef()
 	{
-		TRACEPOINT;
 	}
 
 	void emitSignal(cv::Mat &mat) const
 	{
-		TRACEPOINT;
 		emit signal(mat);
-		TRACEPOINT;
 	}
 signals:
 	/**
@@ -212,24 +189,19 @@ class SlotBool : public QObject
 	SlotBool(const std::function<void(bool)> &f, QObject *parent = nullptr)
 	    : QObject{ parent }, function_{ f }
 	{
-		TRACEPOINT;
 		if (!f)
 			throw std::invalid_argument{ "invalide function" };
-		TRACEPOINT;
 	}
 
 	~SlotBool()
 	{
-		TRACEPOINT;
 	}
 
       public
 slots:
 	void slot(bool t) const
 	{
-		TRACEPOINT;
 		function_(t);
-		TRACEPOINT;
 	}
 
       private:

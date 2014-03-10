@@ -13,7 +13,6 @@
 #include "opencv2/core/core.hpp"
 
 #include "../filterfunctionwidget.hpp"
-#include "../../dbg/dbg.hpp"
 #include "../../util/observer_ptr.hpp"
 
 namespace cvv
@@ -50,7 +49,6 @@ class GrayFilterWidget : public FilterFunctionWidget<1, 1>
 	 */
 	~GrayFilterWidget()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -80,9 +78,7 @@ slots:
 	 */
 	void setChannel(int n)
 	{
-		TRACEPOINT;
 		setChannel(static_cast<std::size_t>(n));
-		TRACEPOINT;
 	}
 
 	/**

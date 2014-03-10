@@ -11,7 +11,6 @@ RawviewWindow::RawviewWindow(QString title,
 			     const std::vector<cv::DMatch> matches)
     : RawviewWindow(title, keypoints1, keypoints2)
 {
-	TRACEPOINT;
 	setWindowTitle(title);
 	setMinimumWidth(600);
 	setMinimumHeight(600);
@@ -21,7 +20,6 @@ RawviewWindow::RawviewWindow(QString title,
 		SIGNAL(matchesSelected(std::vector<cv::DMatch>)));
 	connect(view, SIGNAL(keyPointsSelected(std::vector<cv::KeyPoint>)),
 		this, SIGNAL(keyPointsSelected(std::vector<cv::KeyPoint>)));
-	TRACEPOINT;
 }
 
 RawviewWindow::RawviewWindow(QString title,
@@ -29,9 +27,7 @@ RawviewWindow::RawviewWindow(QString title,
 			     const std::vector<cv::KeyPoint> &keypoints2)
     : keypoints1{ keypoints1 }, keypoints2{ keypoints2 }
 {
-	TRACEPOINT;
 	setWindowTitle(title);
-	TRACEPOINT;
 }
 
 void RawviewWindow::selectMatches(const std::vector<cv::DMatch> &matches)

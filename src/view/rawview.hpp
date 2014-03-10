@@ -80,7 +80,6 @@ class Rawview : public MatchView
 	Rawview(const impl::MatchCall &call, QWidget *parent = nullptr)
 	    : Rawview(call.keyPoints1(), call.keyPoints2(), call.matches())
 	{
-		TRACEPOINT;
 		setParent(parent);
 	}
 

@@ -14,7 +14,6 @@
 #include "overview_table.hpp"
 #include "overview_table_row.hpp"
 #include "../util/util.hpp"
-#include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
 
 namespace cvv
@@ -54,7 +53,6 @@ class OverviewPanel : public QWidget
 
 	~OverviewPanel()
 	{
-		TRACEPOINT;
 	}
 
 	/**

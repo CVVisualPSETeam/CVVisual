@@ -42,7 +42,6 @@ class OverlayFilterWidget : public FilterFunctionWidget<2, 1>
 	*/
 	~OverlayFilterWidget()
 	{
-		TRACEPOINT;
 	}
 
 	/**

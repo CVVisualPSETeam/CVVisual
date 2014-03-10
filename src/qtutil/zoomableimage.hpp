@@ -17,7 +17,6 @@
 #include "util.hpp"
 #include "../util/util.hpp"
 #include "../util/observer_ptr.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -36,7 +35,6 @@ class ZoomableImageGraphicsView : public QGraphicsView
 	 */
 	ZoomableImageGraphicsView() : QGraphicsView{}
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -44,7 +42,6 @@ class ZoomableImageGraphicsView : public QGraphicsView
 	 */
 	~ZoomableImageGraphicsView()
 	{
-		TRACEPOINT;
 	}
 
       protected:
@@ -85,7 +82,6 @@ class ZoomableImage : public QWidget
 	 */
 	~ZoomableImage()
 	{
-		TRACEPOINT;
 		//disconnect everything from custom signals
 		QObject::disconnect(this, SIGNAL(updateArea(QRectF,qreal)), 0, 0);
 		QObject::disconnect(this, SIGNAL(updateConversionResult(ImageConversionResult,cv::Mat)), 0, 0);
@@ -104,7 +100,6 @@ class ZoomableImage : public QWidget
 		//stop timer from being activated
 		updateAreaTimer_.stop();
 		updateAreaQueued_=true;
-		TRACEPOINT;
 	}
 
 	/**
@@ -113,7 +108,6 @@ class ZoomableImage : public QWidget
 	 */
 	const cv::Mat &mat() const
 	{
-		TRACEPOINT;
 		return mat_;
 	}
 
@@ -123,7 +117,6 @@ class ZoomableImage : public QWidget
 	 */
 	cv::Mat &mat()
 	{
-		TRACEPOINT;
 		return mat_;
 	}
 
@@ -139,7 +132,6 @@ class ZoomableImage : public QWidget
 	 */
 	qreal zoom() const
 	{
-		TRACEPOINT;
 		return zoom_;
 	}
 
@@ -152,7 +144,6 @@ class ZoomableImage : public QWidget
 	 */
 	qreal threshold() const
 	{
-		TRACEPOINT;
 		return threshold_;
 	}
 
@@ -161,9 +152,7 @@ class ZoomableImage : public QWidget
 	 */
 	virtual void resizeEvent(QResizeEvent *) override
 	{
-		TRACEPOINT;
 		queueUpdateArea();
-		TRACEPOINT;
 	}
 
 	/**
@@ -172,7 +161,6 @@ class ZoomableImage : public QWidget
 	 */
 	int imageWidth() const
 	{
-		TRACEPOINT;
 		return mat_.cols;
 	}
 
@@ -182,7 +170,6 @@ class ZoomableImage : public QWidget
 	 */
 	int imageHeight() const
 	{
-		TRACEPOINT;
 		return mat_.rows;
 	}
 
@@ -192,7 +179,6 @@ class ZoomableImage : public QWidget
 	 */
 	bool autoShowValues() const
 	{
-		TRACEPOINT;
 		return autoShowValues_;
 	}
 
@@ -202,7 +188,6 @@ class ZoomableImage : public QWidget
 	 */
 	qreal scrollFactorCTRL() const
 	{
-		TRACEPOINT;
 		return scrollFactorCTRL_;
 	}
 
@@ -212,7 +197,6 @@ class ZoomableImage : public QWidget
 	 */
 	qreal scrollFactorCTRLShift() const
 	{
-		TRACEPOINT;
 		return scrollFactorCTRLShift_;
 	}
 
@@ -222,7 +206,6 @@ class ZoomableImage : public QWidget
 	 */
 	QPixmap fullImage() const
 	{
-		TRACEPOINT;
 		return pixmap_->pixmap();
 	}
 
@@ -232,7 +215,6 @@ class ZoomableImage : public QWidget
 	 */
 	QPixmap visibleImage() const
 	{
-		TRACEPOINT;
 		return QPixmap::grabWidget(view_->viewport());
 	}
 
@@ -280,9 +262,7 @@ slots:
 	 */
 	void setMatR(cv::Mat &mat)
 	{
-		TRACEPOINT;
 		setMat(mat);
-		TRACEPOINT;
 	}
 
 	/**
@@ -304,9 +284,7 @@ slots:
 	 */
 	void setAutoShowValues(bool enable = true)
 	{
-		TRACEPOINT;
 		autoShowValues_ = enable;
-		TRACEPOINT;
 	}
 
 	/**
@@ -316,9 +294,7 @@ slots:
 	 */
 	void setThreshold(qreal threshold = 60)
 	{
-		TRACEPOINT;
 		threshold_ = threshold;
-		TRACEPOINT;
 	}
 
 	/**
@@ -332,9 +308,7 @@ slots:
 	 */
 	void setCTRLZoomFactor(qreal factor = 1.025)
 	{
-		TRACEPOINT;
 		scrollFactorCTRL_ = factor;
-		TRACEPOINT;
 	}
 
 	/**
@@ -343,9 +317,7 @@ slots:
 	 */
 	void setCTRLShiftZoomFactor(qreal factor = 1.01)
 	{
-		TRACEPOINT;
 		scrollFactorCTRLShift_ = factor;
-		TRACEPOINT;
 	}
 
 	/**
@@ -381,9 +353,7 @@ slots:
 	 */
 	void viewScrolled()
 	{
-		TRACEPOINT;
 		queueUpdateArea();
-		TRACEPOINT;
 	}
 
 	/**

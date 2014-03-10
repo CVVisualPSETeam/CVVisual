@@ -10,7 +10,6 @@
 
 #include "../stfl/element_group.hpp"
 #include "overview_table_row.hpp"
-#include "../dbg/dbg.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 
@@ -49,7 +48,6 @@ class OverviewGroupSubtable : public QWidget
 
 	~OverviewGroupSubtable()
 	{
-		TRACEPOINT;
 	}
 
 	/**

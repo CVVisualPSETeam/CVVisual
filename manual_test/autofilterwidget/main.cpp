@@ -45,12 +45,9 @@
  */
 int main(int argc, char *argv[])
 {
-	cvv::dbg::setLoggingState(true);
-	TRACEPOINT;
 
 	cvv::impl::initializeFilterAndViews();
 
-	TRACEPOINT;
 
 	QApplication a(argc, argv);
 	QWidget w{};
@@ -64,7 +61,6 @@ int main(int argc, char *argv[])
 	matvec.push_back(matvec.back());
 	cv::Mat m1 = cvv::qtutil::mergeChannels(matvec);
 
-	TRACEPOINT;
 	// something to see for sobel
 	line(m2, cv::Point{ 0, 0 }, cv::Point{ 100, 100 },
 	     cv::Scalar{ 0, 0, 0 }, 10, 8);
@@ -76,7 +72,6 @@ int main(int argc, char *argv[])
 	// connect area on input
 	QObject::connect(i1.get(), SIGNAL(updateArea(QRectF, qreal)), i2.get(),
 			 SLOT(setArea(QRectF, qreal)));
-	TRACEPOINT;
 
 	auto afw =
 	    cvv::util::make_unique<cvv::qtutil::AutoFilterWidget<1, 1>>();
@@ -95,7 +90,6 @@ int main(int argc, char *argv[])
 	QObject::connect(bindiv.get(), SIGNAL(clicked(bool)),
 			 &(afw->slotUseFilterIndividually()), SLOT(slot(bool)));
 
-	TRACEPOINT;
 	// add images
 	auto u1 = afw->addEntry("i1", { { i1->mat() } }, { { o1->mat() } });
 	auto u2 = afw->addEntry("i2", { { i2->mat() } }, { { o2->mat() } });
@@ -105,7 +99,6 @@ int main(int argc, char *argv[])
 	QObject::connect((u2.at(0).getPtr()), SIGNAL(signal(cv::Mat &)),
 			 o2.get(), SLOT(setMatR(cv::Mat &)));
 
-	TRACEPOINT;
 	// build
 	auto layh = cvv::util::make_unique<QHBoxLayout>();
 	auto layv1 = cvv::util::make_unique<QVBoxLayout>();
