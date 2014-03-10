@@ -66,22 +66,30 @@ class MatchScene : public QGraphicsView
 		   QWidget *parent = nullptr);
 
 	/**
+	 * @brief returns the lett image.
+	 */
+	ZoomableImage& getLeftImage()
+		{return *leftImage_;}
+
+	/**
+	 * @brief returns the right image.
+	 */
+	ZoomableImage& getRightImage()
+		{return *rightImage_;}
+
+	/**
 	 * @brief returns a ZoomableOptPanel of the left Image
 	 * @return a ZoomableOptPanel of the left Image
 	 */
 	std::unique_ptr<ZoomableOptPanel> getLeftMatInfoWidget()
-	{
-		return util::make_unique<ZoomableOptPanel>(*leftImage_);
-	}
+		{return util::make_unique<ZoomableOptPanel>(*leftImage_);}
 
 	/**
 	 * @brief returns a ZoomableOptPanel of the right Image
 	 * @return a ZoomableOptPanel of the right Image
 	 */
 	std::unique_ptr<ZoomableOptPanel> getRightMatInfoWidget()
-	{
-		return util::make_unique<ZoomableOptPanel>(*rightImage_);
-	}
+		{return util::make_unique<ZoomableOptPanel>(*rightImage_);}
 
 
 	/**
