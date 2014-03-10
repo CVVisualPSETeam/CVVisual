@@ -36,7 +36,7 @@ class MatchCallTab
 	 * visualized.
 	 */
 	MatchCallTab(const cvv::impl::MatchCall &matchCall)
-	    : MatchCallTab{
+	    : MatchCallTab<cvv::view::MatchView, cvv::impl::MatchCall>{
 		      matchCall, matchCall.requestedView()
 	      }
 	{

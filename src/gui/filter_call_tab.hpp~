@@ -34,8 +34,8 @@ class FilterCallTab
 	 * visualized.
 	 */
 	FilterCallTab(const cvv::impl::FilterCall &filterCall)
-	    : FilterCallTab{
-		      filterCall, filterCall.requestedView()
+	    : MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>{
+		      filterCall, QString{ "default_filter_view" }, QString{ "DefaultFilterView" }
 	      }
 	{
 	}
