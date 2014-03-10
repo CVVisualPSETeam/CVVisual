@@ -38,13 +38,6 @@ class OverlayFilterWidget : public FilterFunctionWidget<2, 1>
 	OverlayFilterWidget(QWidget *parent = nullptr);
 
 	/**
-	* @brief Default destructuor.
-	*/
-	~OverlayFilterWidget()
-	{
-	}
-
-	/**
 	* The opacity of the second image while overlaying is indicated by
 	* opacityOfFilterImg_.
 	* @brief Overlays the original images

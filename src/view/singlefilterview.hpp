@@ -38,13 +38,6 @@ class SingleFilterView : public cvv::view::FilterView
 	    : SingleFilterView{ { call.original(), call.result() }, parent }
 	{
 	}
-
-	/**
-	* @brief Destructor
-	*/
-	~SingleFilterView()
-	{
-	}
 };
 }
 } // namespaces

@@ -68,13 +68,6 @@ class FilterFunctionWidget : public QWidget
 	}
 
 	/**
-	 * @brief virtual destructor.
-	 */
-	virtual ~FilterFunctionWidget()
-	{
-	}
-
-	/**
 	 * @brief Applys the filter to in and saves the result in out.
 	 * @param in The input images.
 	 * @param out The output images.

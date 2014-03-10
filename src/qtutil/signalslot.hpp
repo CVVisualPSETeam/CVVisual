@@ -34,10 +34,6 @@ class Signal : public QObject
 	{
 	}
 
-	~Signal()
-	{
-	}
-
 	/**
 	 * @brief Emits the signal.
 	 * @param args The arguments
@@ -75,10 +71,6 @@ class Slot : public QObject
 			throw std::invalid_argument{ "invalid function" };
 	}
 
-	~Slot()
-	{
-	}
-
       public
 slots:
 	/**
@@ -108,10 +100,6 @@ class SignalQString : public QObject
 	Q_OBJECT
       public:
 	SignalQString(QObject *parent = nullptr) : QObject{ parent }
-	{
-	}
-
-	~SignalQString()
 	{
 	}
 
@@ -164,10 +152,6 @@ class SignalMatRef : public QObject
 	{
 	}
 
-	~SignalMatRef()
-	{
-	}
-
 	void emitSignal(cv::Mat &mat) const
 	{
 		emit signal(mat);
@@ -191,10 +175,6 @@ class SlotBool : public QObject
 	{
 		if (!f)
 			throw std::invalid_argument{ "invalide function" };
-	}
-
-	~SlotBool()
-	{
 	}
 
       public

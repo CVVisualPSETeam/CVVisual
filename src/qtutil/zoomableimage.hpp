@@ -37,13 +37,6 @@ class ZoomableImageGraphicsView : public QGraphicsView
 	{
 	}
 
-	/**
-	 * @brief Destructor
-	 */
-	~ZoomableImageGraphicsView()
-	{
-	}
-
       protected:
 	/**
 	 * @brief Ignores the wheel event if ctrl is pressed.

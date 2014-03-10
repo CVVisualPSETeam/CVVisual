@@ -34,13 +34,6 @@ class ChannelReorderFilter : public FilterFunctionWidget<1, 1>
 	ChannelReorderFilter(QWidget *parent = nullptr);
 
 	/**
-	 * @brief Destructor
-	 */
-	~ChannelReorderFilter()
-	{
-	}
-
-	/**
 	 * @brief Applys the filter to in and saves the result in out.
 	 * @param in The input images.
 	 * @param out The output images.

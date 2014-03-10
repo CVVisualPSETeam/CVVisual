@@ -25,9 +25,6 @@ class TabWidget : public QTabWidget
 	{
 	};
 
-	~TabWidget()
-	{
-	}
 	/**
 	 * @brief Returns the shown tab bar.
 	 * This method helps to access the member tabBar which has by default

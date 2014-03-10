@@ -51,10 +51,6 @@ class OverviewPanel : public QWidget
 	 */
 	OverviewPanel(util::Reference<controller::ViewController> controller);
 
-	~OverviewPanel()
-	{
-	}
-
 	/**
 	 * @brief Adds the given call to the shown overview table.
 	 * @param newCall given call

@@ -37,13 +37,6 @@ class SobelFilterWidget : public FilterFunctionWidget<1, 1>
 	SobelFilterWidget(QWidget *parent = nullptr);
 
 	/**
-	 * @brief virtual destructor.
-	 */
-	virtual ~SobelFilterWidget() override
-	{
-	}
-
-	/**
 	 * @brief Applys the filter to in and saves the result in out.
 	 * @param in The input images.
 	 * @param out The output images.

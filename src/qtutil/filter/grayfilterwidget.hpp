@@ -45,13 +45,6 @@ class GrayFilterWidget : public FilterFunctionWidget<1, 1>
 	GrayFilterWidget(QWidget *parent = nullptr);
 
 	/**
-	 * @brief Destructor
-	 */
-	~GrayFilterWidget()
-	{
-	}
-
-	/**
 	 * @brief Applys the filter to in and saves the result in out.
 	 * @param in The input images.
 	 * @param out The output images.
