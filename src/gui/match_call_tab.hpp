@@ -29,8 +29,9 @@ class MatchCallTab
 
       public:
 	/**
-	 * @brief Short constructor named after Call and using the default view.
-	 * Initializes the MatchCallTab with the default view and names it after
+	 * @brief Short constructor named after Call and using the requested View
+	 * from the Call or, if no or invalid request, default view.
+	 * Initializes the MatchCallTab with the requested or default view and names it after
 	 * the associated MatchCall.
 	 * @param matchCall - the MatchCall containing the information to be
 	 * visualized.
