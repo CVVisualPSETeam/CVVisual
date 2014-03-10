@@ -33,6 +33,11 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
 	matchManagment_ = matchmnt.get();
 
+	connect(&matchscene_ptr->getLeftImage(),SIGNAL(updateMouseHover(QPointF,QString,bool)),
+		this,SLOT(updateMousHoverOver(QPointF,QString,bool)));
+	connect(&matchscene_ptr->getRightImage(),SIGNAL(updateMouseHover(QPointF,QString,bool)),
+		this,SLOT(updateMousHoverOver(QPointF,QString,bool)));
+
 	accor->setMinimumWidth(350);
 	accor->setMaximumWidth(350);
 

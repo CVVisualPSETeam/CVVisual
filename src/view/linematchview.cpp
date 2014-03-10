@@ -43,6 +43,11 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	matchManagment_ = matchmnt.get();
 	keyManagment_ = keyPointmnt.get();
 
+	connect(&matchscene_ptr->getLeftImage(),SIGNAL(updateMouseHover(QPointF,QString,bool)),
+		this,SLOT(updateMousHoverOver(QPointF,QString,bool)));
+	connect(&matchscene_ptr->getRightImage(),SIGNAL(updateMouseHover(QPointF,QString,bool)),
+		this,SLOT(updateMousHoverOver(QPointF,QString,bool)));
+
 	accor->setMinimumWidth(350);
 	accor->setMaximumWidth(350);
 

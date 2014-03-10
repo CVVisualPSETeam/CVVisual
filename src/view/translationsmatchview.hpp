@@ -52,7 +52,7 @@ class TranslationMatchView : public MatchView
 		      call.matches(),    call.img1(),
 		      call.img2(),       call.usesTrainDescriptor(),
 		      parent
-	      }
+}
 	{}
 
 	virtual std::vector<cv::DMatch> getMatchSelection() override
@@ -75,6 +75,12 @@ public slots:
 	virtual void setKeyPointSelection(std::vector<cv::KeyPoint> selection)
 	{
 		keyManagment_->setSelection(selection);
+	}
+
+private slots:
+
+	void updateMousHoverOver(QPointF pt,QString str,bool){
+		emit updateRightFoooter(QString("%1/%2 RGB:%3").arg(pt.x()).arg(pt.y()).arg(str));
 	}
 
 private:
