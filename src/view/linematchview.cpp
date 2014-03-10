@@ -7,6 +7,7 @@
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
 #include "../qtutil/matchview/matchmanagement.hpp"
 #include "../qtutil/matchview/matchsettingsselector.hpp"
+#include "../qtutil/matchview/showinrawviewwidget.hpp"
 #include "../util/util.hpp"
 
 #include "linematchview.hpp"
@@ -56,6 +57,12 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		      std::move(matchscene_ptr->getRightMatInfoWidget()));
 	accor->insert("Sync Zoom ",
 		      std::move(matchscene_ptr->getSyncZoomWidget()));
+	accor->insert("Show selection in rawview window",
+		      std::move(util::make_unique<qtutil::ShowInRawView>(leftKeyPoints,
+								 rightKeyPoints,
+								 matches,
+								 matchManagment_,
+								 keyManagment_)));
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());

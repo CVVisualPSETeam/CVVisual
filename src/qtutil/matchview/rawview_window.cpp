@@ -2,31 +2,31 @@
 
 namespace cvv
 {
-namespace view
+namespace qtutil
 {
 
 RawviewWindow::RawviewWindow(QString title,
-                             const std::vector<cv::KeyPoint> &keypoints1,
-                             const std::vector<cv::KeyPoint> &keypoints2,
-                             const std::vector<cv::DMatch> &matches)
+			     const std::vector<cv::KeyPoint> keypoints1,
+			     const std::vector<cv::KeyPoint> keypoints2,
+			     const std::vector<cv::DMatch> matches)
     : RawviewWindow(title, keypoints1, keypoints2)
 {
 	TRACEPOINT;
 	setWindowTitle(title);
 	setMinimumWidth(600);
 	setMinimumHeight(600);
-	view = new Rawview(keypoints1, keypoints2, matches, true);
+	view = new view::Rawview(keypoints1, keypoints2, matches, true);
 	setCentralWidget(view);
 	connect(view, SIGNAL(matchesSelected(std::vector<cv::DMatch>)), this,
-	        SIGNAL(matchesSelected(std::vector<cv::DMatch>)));
+		SIGNAL(matchesSelected(std::vector<cv::DMatch>)));
 	connect(view, SIGNAL(keyPointsSelected(std::vector<cv::KeyPoint>)),
-	        this, SIGNAL(keyPointsSelected(std::vector<cv::KeyPoint>)));
+		this, SIGNAL(keyPointsSelected(std::vector<cv::KeyPoint>)));
 	TRACEPOINT;
 }
 
 RawviewWindow::RawviewWindow(QString title,
-                             const std::vector<cv::KeyPoint> &keypoints1,
-                             const std::vector<cv::KeyPoint> &keypoints2)
+			     const std::vector<cv::KeyPoint> &keypoints1,
+			     const std::vector<cv::KeyPoint> &keypoints2)
     : keypoints1{ keypoints1 }, keypoints2{ keypoints2 }
 {
 	TRACEPOINT;
@@ -38,7 +38,7 @@ void RawviewWindow::selectMatches(const std::vector<cv::DMatch> &matches)
 {
 	if (view == nullptr)
 	{
-		view = new Rawview(keypoints1, keypoints2, matches, true);
+		view = new view::Rawview(keypoints1, keypoints2, matches, true);
 		setCentralWidget(view);
 		connect(
 		    view,

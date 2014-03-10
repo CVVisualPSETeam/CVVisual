@@ -5,6 +5,7 @@
 #include "../qtutil/matchview/matchscene.hpp"
 #include "../qtutil/matchview/cvvkeypoint.hpp"
 #include "../qtutil/matchview/cvvmatch.hpp"
+#include "../qtutil/matchview/showinrawviewwidget.hpp"
 #include "../util/util.hpp"
 
 #include "translationsmatchview.hpp"
@@ -53,6 +54,12 @@ TranslationMatchView::TranslationMatchView(
 		      std::move(matchscene_ptr->getRightMatInfoWidget()));
 	accor->insert("Sync Zoom ",
 		      std::move(matchscene_ptr->getSyncZoomWidget()));
+	accor->insert("Show selection in rawview window",
+		      std::move(util::make_unique<qtutil::ShowInRawView>(leftKeyPoints,
+								 rightKeyPoints,
+								 matches,
+								 matchManagment_,
+								 keyManagment_)));
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
