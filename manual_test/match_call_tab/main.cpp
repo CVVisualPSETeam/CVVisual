@@ -11,9 +11,8 @@
 #include "../../src/gui/match_call_tab.hpp"
 #include "../../src/impl/match_call.hpp"
 #include "../../include/opencv2/call_meta_data.hpp"
-#include "../../src/view/linematchview.hpp"
-#include "../../src/view/rawview.hpp"
 #include "../../src/view/match_view.hpp"
+#include "../../src/impl/init.hpp"
 
 #include "../../src/util/util.hpp"
 
@@ -58,7 +57,6 @@
  */
 int main(int argc, char *argv[])
 {
-
 	/* Create some data for the MatchCallTab: */
 	cv::Mat src{ 1000, 1000, CV_8U };
 	cv::Mat train{ 1000, 1000, CV_8U };
@@ -89,10 +87,7 @@ int main(int argc, char *argv[])
 	cvv::impl::MatchCall mc{ src,  key1, train,              key2, match,
 		                 data, type, "some description", "",   true };
 
-	cvv::gui::MatchCallTab::registerMatchView<cvv::view::LineMatchView>(
-	    "LineMatchView");
-	cvv::gui::MatchCallTab::registerMatchView<cvv::view::Rawview>(
-	    "RawView");
+	cvv::impl::initializeFilterAndViews();
 
 	cvv::gui::MatchCallTab v{ mc };
 	cvv::gui::MatchCallTab w{ mc, "RawView" };
