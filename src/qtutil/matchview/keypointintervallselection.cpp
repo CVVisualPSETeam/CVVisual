@@ -26,9 +26,12 @@ KeyPointIntervallSelector::KeyPointIntervallSelector(std::vector<cv::KeyPoint> k
 	auto layout=util::make_unique<QVBoxLayout>();
 	auto selector=util::make_unique<IntervallSelector>(min,max);
 
+	layout->setContentsMargins(0, 0, 0, 0);
+
 	selector_=selector.get();
 	connect(&(selector->signalSettingsChanged()),SIGNAL(signal()),this,SIGNAL(settingsChanged()));
 
+	layout->addWidget(valueChooser.release());
 	layout->addWidget(selector.release());
 	setLayout(layout.release());
 }
