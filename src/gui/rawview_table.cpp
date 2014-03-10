@@ -57,5 +57,43 @@ void RawviewTable::updateUI()
 		subTable->updateUI();
 	}
 }
+
+std::vector<cv::DMatch> RawviewTable::getMatchSelection()
+{
+	std::vector<cv::DMatch> matches;
+	for (auto subTable : subTables)
+	{
+		auto subMatches = subTable->getMatchSelection();
+		matches.insert(matches.end(), subMatches.begin(), subMatches.end());
+	}
+	return matches;
+}
+
+std::vector<cv::KeyPoint> RawviewTable::getKeyPointSelection()
+{
+	std::vector<cv::KeyPoint> keyPoints;
+	for (auto subTable : subTables)
+	{
+		auto subKeyPoints = subTable->getKeyPointSelection();
+		keyPoints.insert(keyPoints.end(), subKeyPoints.begin(), subKeyPoints.end());
+	}
+	return keyPoints;
+}
+
+void RawviewTable::setMatchSelection(std::vector<cv::DMatch> matches)
+{
+	for (auto subTable : subTables)
+	{
+		subTable->setMatchSelection(matches);
+	}
+}
+
+void RawviewTable::setKeyPointSelection(std::vector<cv::KeyPoint> keyPoints)
+{
+	for (auto subTable : subTables)
+	{
+		subTable->setKeyPointSelection(keyPoints);
+	}
+}
 }
 }

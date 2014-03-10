@@ -218,13 +218,16 @@ class RawviewTableRow
  * @param keyPoints1 given "left" key points
  * @param keyPoints2 given "right" key points
  * @param matches given matches
+ * @param usesTrainDescriptor Use the trainIdx property of each match to get the
+ * "right" key points?
  * @return first element is the match row list, second is the single key point
  *row list
  */
 std::pair<QList<RawviewTableRow>, QList<RawviewTableRow>>
 createRawviewTableRows(const std::vector<cv::KeyPoint> &keyPoints1,
                        const std::vector<cv::KeyPoint> &keyPoints2,
-                       const std::vector<cv::DMatch> &matches);
+                       const std::vector<cv::DMatch> &matches,
+					   bool usesTrainDescriptor = true);
 
 /**
  * @brief Create a list of rows from the given key points.
