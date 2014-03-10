@@ -11,7 +11,6 @@
 
 #include "../stfl/element_group.hpp"
 #include "rawview_table_row.hpp"
-#include "../util/optional.hpp"
 #include "../util/util.hpp"
 
 namespace cvv
