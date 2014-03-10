@@ -519,7 +519,15 @@ template <typename Element> class STFLEngine
 			using namespace std::placeholders;
 			QStringList arr =
 			    cmdString.split(" ", QString::SkipEmptyParts);
-			QString cmd = arr.takeFirst();
+			QString cmd;
+			if (arr.empty())
+			{
+				cmd = "";
+			}
+			else
+			{
+				cmd = arr.takeFirst();
+			}
 			if (arr.empty())
 				continue;
 			if (isFilterCmd(cmd))

@@ -55,7 +55,7 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	std::vector<qtutil::CVVKeyPoint *> rightKeys;
 
 	accor->insert("Match Settings", std::move(matchmnt));
-	accor->insert("KeyPoint Color", std::move(keyPointmnt));
+	accor->insert("KeyPoint Settings", std::move(keyPointmnt));
 	accor->insert("Left Image ",
 		      std::move(matchscene_ptr->getLeftMatInfoWidget()));
 	accor->insert("Right Image ",
