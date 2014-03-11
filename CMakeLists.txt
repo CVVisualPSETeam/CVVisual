@@ -142,9 +142,6 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_imagecalltab manual_test/image_call_tab/main.cpp)
 	target_link_libraries(test_manual_imagecalltab cvvisual Qt5Core Qt5Widgets)
 
-	add_executable(test_manual_dbg_printer manual_test/dbg_printer/main.cpp)
-	target_link_libraries(test_manual_dbg_printer cvvisual Qt5Core)
-
 
 
 	#QTUTIL	
