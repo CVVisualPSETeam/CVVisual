@@ -161,6 +161,8 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 				}
 				parent->getParent()->keyPointsSelected(
 				    keyPoints);
+				std::vector<cv::DMatch> emptyVec{};
+				parent->getParent()->matchesSelected(emptyVec); //unselect matches
 			}
 			else
 			{
@@ -169,7 +171,7 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 				{
 					matches.push_back(row.getMatch());
 				}
-				parent->getParent()->matchesSelected(matches);
+				parent->getParent()->matchesKeyPointsSelected(matches);
 			}
 		}
 		else

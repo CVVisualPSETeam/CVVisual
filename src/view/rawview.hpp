@@ -62,8 +62,8 @@ public:
 	 * @param showShowInViewMenu Does this view show a "Show in view" item
 	 * in its context menus?
 	 */
-	Rawview(const std::vector<cv::KeyPoint> &keypoints1,
-	const std::vector<cv::KeyPoint> &keypoints2,
+	Rawview(const std::vector<cv::KeyPoint> &keyPoints1,
+	const std::vector<cv::KeyPoint> &keyPoints2,
 	const std::vector<cv::DMatch> &matches,
 	bool usesTrainDescriptor = true,
 	bool showShowInViewMenu = false);
@@ -128,8 +128,8 @@ public slots:
 	 * @param keypoints2 (right) key points the match is refererring two
 	 * @param matches matches to show
 	 */
-	void selectMatches(const std::vector<cv::KeyPoint> &keypoints1,
-	                   const std::vector<cv::KeyPoint> &keypoints2,
+	void selectMatches(const std::vector<cv::KeyPoint> &keyPoints1,
+	                   const std::vector<cv::KeyPoint> &keyPoints2,
 	                   const std::vector<cv::DMatch> &matches);
 
 	/**
@@ -143,6 +143,14 @@ public slots:
 
 	virtual void setKeyPointSelection(std::vector<cv::KeyPoint> keyPoints);
 	
+	/**
+	 * @brief Issues the matchesSelected and the keyPointsSelected signal.
+	 * It uses the referenced key points (via the given matches) to find the
+	 * selected key points, that will be passed to the keyPointsSelected signals.
+	 * @param matches the user selected matches.
+	 */
+	void matchesKeyPointsSelected(const std::vector<cv::DMatch> &matches);
+	
 private slots:
 
 	void filterQuery(QString query);
@@ -154,6 +162,9 @@ private slots:
 	void showHelp(QString topic);
 
 private:
+	std::vector<cv::KeyPoint> keyPoints1;
+	std::vector<cv::KeyPoint> keyPoints2;
+	std::vector<cv::DMatch> matches;
 	stfl::STFLEngine<gui::RawviewTableRow> queryEngine;
 	qtutil::STFLQueryWidget *queryWidget;
 	gui::RawviewTable *table;
