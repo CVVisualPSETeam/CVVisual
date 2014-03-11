@@ -1,7 +1,7 @@
 #ifndef CVVISUAL_DEBUG_MODE_HPP
 #define CVVISUAL_DEBUG_MODE_HPP
 
-#if __cplusplus >= 201103L
+#if __cplusplus >= 201103L && defined CVV_USE_THREAD_LOCAL
 #define CVV_THREAD_LOCAL thread_local
 #else
 #define CVV_THREAD_LOCAL
