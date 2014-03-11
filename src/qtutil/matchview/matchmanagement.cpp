@@ -33,21 +33,33 @@ MatchManagement::MatchManagement(std::vector<cv::DMatch> univers,QWidget *parent
 
 	auto buttonAddSetting=util::make_unique<QPushButton>("Add setting");
 	auto buttonAddSelection=util::make_unique<QPushButton>("Add selector");
-	auto buttonApply=util::make_unique<QPushButton>("Apply settings");
+	//auto buttonApply=util::make_unique<QPushButton>("Apply settings");
+	auto showOnlySelection=util::make_unique<QCheckBox>("Show selection only");
 	auto buttonApplySelection=util::make_unique<QPushButton>("Apply Selection");
+	auto buttonSelectAll=util::make_unique<QPushButton>("Select all");
+	auto buttonSelectNone=util::make_unique<QPushButton>("Select none");
 
 	connect(buttonAddSetting.get(),SIGNAL(clicked()),this,SLOT(addSetting()));
 	connect(buttonAddSelection.get(),SIGNAL(clicked()),this,SLOT(addSelection()));
-	connect(buttonApply.get(),SIGNAL(clicked()),this,SLOT(updateAll()));
+	//connect(buttonApply.get(),SIGNAL(clicked()),this,SLOT(updateAll()));
+	connect(showOnlySelection.get(),SIGNAL(clicked()),this,SLOT(updateAll()));
 	connect(buttonApplySelection.get(),SIGNAL(clicked()),this,SLOT(applySelection()));
+	connect(buttonSelectAll.get(),SIGNAL(clicked()),this,SLOT(selectAll()));
+	connect(buttonSelectNone.get(),SIGNAL(clicked()),this,SLOT(selectNone()));
 
 	settingsLayout_=settingsLayout.get();
 	selectorLayout_=selectorLayout.get();
+	showOnlySelection_=showOnlySelection.get();
+
+	showOnlySelection->setChecked(true);
 
 	buttonLayout->addWidget(buttonAddSetting.release(),0,0);
-	buttonLayout->addWidget(buttonAddSelection.release(),1,0);
-	buttonLayout->addWidget(buttonApply.release(),0,1);
-	buttonLayout->addWidget(buttonApplySelection.release(),1,1);
+	buttonLayout->addWidget(buttonAddSelection.release(),0,1);
+	buttonLayout->addWidget(buttonApplySelection.release(),1,0);
+	//buttonLayout->addWidget(buttonApply.release(),1,1);
+	buttonLayout->addWidget(showOnlySelection.release(),1,1);
+	buttonLayout->addWidget(buttonSelectAll.release(),2,0);
+	buttonLayout->addWidget(buttonSelectNone.release(),2,1);
 
 	buttonFrame->setLayout(buttonLayout.release());
 
@@ -67,48 +79,54 @@ MatchManagement::MatchManagement(std::vector<cv::DMatch> univers,QWidget *parent
 
 void MatchManagement::setSettings(CVVMatch &match)
 {
-	if (std::find_if(selection_.begin(), selection_.end(),
+	if (showOnlySelection_->isChecked()&& std::find_if(selection_.begin(), selection_.end(),
 			 [&](const cv::DMatch &o)
 		{ return match == o; }) != selection_.end())
 	{
+
+		match.setShow(true);
+
 		//connect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
 		//	&match,SLOT(updateSettings(MatchSettings&)));
-		for(auto setting: settingsList_)
+		/*for(auto setting: settingsList_)
 		{
 			setting->setSettings(match);
-		}
+		}*/
 	}else{
+
+		match.setShow(false);
+
 		//disconnect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
 		//	&match,SLOT(updateSettings(MatchSettings&)));
-		for(auto setting: settingsList_)
+		/*for(auto setting: settingsList_)
 		{
 			setting->setUnSelectedSettings(match);
-		}
+		}*/
 	}
 }
 
 void MatchManagement::addToSelection(const cv::DMatch &match)
 {
 	selection_.push_back(match);
-	//updateAll();
+	updateAll();
 }
 
 void MatchManagement::singleSelection(const cv::DMatch &match)
 {
-	selection_.erase(selection_.begin());
+	selection_.clear();
 	selection_.push_back(match);
-	//updateAll();
+	updateAll();
 }
 
 void MatchManagement::setSelection(
     const std::vector<cv::DMatch> &selection)
 {
-	selection_.erase(selection_.begin());
+	selection_.clear();
 	for (auto &match : selection)
 	{
 		selection_.push_back(match);
 	}
-	//updateAll();
+	updateAll();
 }
 
 void MatchManagement::addSetting()
@@ -119,8 +137,8 @@ void MatchManagement::addSetting()
 
 void MatchManagement::addSetting(std::unique_ptr<MatchSettingsSelector> setting)
 {
-	//connect(setting.get(),SIGNAL(settingsChanged(MatchSettings &)),
-	//	this,SIGNAL(applySettingsToSelection(MatchSettings&)));
+	connect(setting.get(),SIGNAL(settingsChanged(MatchSettings &)),
+		this,SIGNAL(settingsChanged(MatchSettings&)));
 
 	connect(setting.get(),SIGNAL(remove(MatchSettingsSelector *)),
 		this,SLOT(removeSetting(MatchSettingsSelector*)));
@@ -156,7 +174,7 @@ void MatchManagement::addSelection(std::unique_ptr<MatchSelectionSelector> selec
 	connect(selection.get(),SIGNAL(remove(MatchSelectionSelector*))
 		,this,SLOT(removeSelection(MatchSelectionSelector*)));
 
-	//connect(selection.get(),SIGNAL(settingsChanged()),this,SLOT(applySelection()));
+	connect(selection.get(),SIGNAL(settingsChanged()),this,SLOT(applySelection()));
 	selectorList_.push_back(selection.get());
 	selection->setLineWidth(1);
 	selection->setFrameStyle(QFrame::Box);
@@ -165,7 +183,6 @@ void MatchManagement::addSelection(std::unique_ptr<MatchSelectionSelector> selec
 
 void MatchManagement::removeSelection(MatchSelectionSelector *selector)
 {
-
 	auto it = std::find(selectorList_.begin(), selectorList_.end(), selector);
 
 	if(it == selectorList_.end())

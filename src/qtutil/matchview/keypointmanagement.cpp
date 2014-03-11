@@ -33,21 +33,33 @@ KeyPointManagement::KeyPointManagement(std::vector<cv::KeyPoint> univers,QWidget
 
 	auto buttonAddSetting=util::make_unique<QPushButton>("Add setting");
 	auto buttonAddSelection=util::make_unique<QPushButton>("Add selector");
-	auto buttonApply=util::make_unique<QPushButton>("Apply settings");
-	auto buttonApplySelection=util::make_unique<QPushButton>("Apply selection");
+	//auto buttonApply=util::make_unique<QPushButton>("Apply settings");
+	auto showOnlySelection=util::make_unique<QCheckBox>("Show selection only");
+	auto buttonApplySelection=util::make_unique<QPushButton>("Apply Selection");
+	auto buttonSelectAll=util::make_unique<QPushButton>("Select all");
+	auto buttonSelectNone=util::make_unique<QPushButton>("Select none");
 
 	connect(buttonAddSetting.get(),SIGNAL(clicked()),this,SLOT(addSetting()));
 	connect(buttonAddSelection.get(),SIGNAL(clicked()),this,SLOT(addSelection()));
-	connect(buttonApply.get(),SIGNAL(clicked()),this,SLOT(updateAll()));
+	//connect(buttonApply.get(),SIGNAL(clicked()),this,SLOT(updateAll()));
+	connect(showOnlySelection.get(),SIGNAL(clicked()),this,SLOT(updateAll()));
 	connect(buttonApplySelection.get(),SIGNAL(clicked()),this,SLOT(applySelection()));
+	connect(buttonSelectAll.get(),SIGNAL(clicked()),this,SLOT(selectAll()));
+	connect(buttonSelectNone.get(),SIGNAL(clicked()),this,SLOT(selectNone()));
 
 	settingsLayout_=settingsLayout.get();
 	selectorLayout_=selectorLayout.get();
+	showOnlySelection_=showOnlySelection.get();
+
+	showOnlySelection->setChecked(true);
 
 	buttonLayout->addWidget(buttonAddSetting.release(),0,0);
-	buttonLayout->addWidget(buttonAddSelection.release(),1,0);
-	buttonLayout->addWidget(buttonApply.release(),0,1);
-	buttonLayout->addWidget(buttonApplySelection.release(),1,1);
+	buttonLayout->addWidget(buttonAddSelection.release(),0,1);
+	buttonLayout->addWidget(buttonApplySelection.release(),1,0);
+	//buttonLayout->addWidget(buttonApply.release(),1,1);
+	buttonLayout->addWidget(showOnlySelection.release(),1,1);
+	buttonLayout->addWidget(buttonSelectAll.release(),2,0);
+	buttonLayout->addWidget(buttonSelectNone.release(),2,1);
 
 	buttonFrame->setLayout(buttonLayout.release());
 
@@ -67,37 +79,42 @@ KeyPointManagement::KeyPointManagement(std::vector<cv::KeyPoint> univers,QWidget
 
 void KeyPointManagement::setSettings(CVVKeyPoint &key)
 {
-	if (std::find_if(selection_.begin(), selection_.end(),
+	if (showOnlySelection_->isChecked()&& std::find_if(selection_.begin(), selection_.end(),
 			 [&](const cv::KeyPoint &o)
 		{ return key == o; }) != selection_.end())
 	{
+		key.setShow(true);
 		//connect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
 		//	&key,SLOT(updateSettings(KeyPointSettings&)));
-		for(auto setting: settingsList_)
+		/*for(auto setting: settingsList_)
 		{
 			setting->setSettings(key);
-		}
+		}*/
 	}else{
+
+		key.setShow(false);
 		//disconnect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
 //			&key,SLOT(updateSettings(KeyPointSettings&)));
-		for(auto setting: settingsList_)
+		/*for(auto setting: settingsList_)
 		{
 			setting->setUnSelectedSettings(key);
-		}
+		}*/
 	}
 }
 
 void KeyPointManagement::addToSelection(const cv::KeyPoint &key)
 {
 	selection_.push_back(key);
-//	updateAll();
+	emit updateSelection(selection_);
+	updateAll();
 }
 
 void KeyPointManagement::singleSelection(const cv::KeyPoint &key)
 {
 	selection_.erase(selection_.begin());
 	selection_.push_back(key);
-//	updateAll();
+	emit updateSelection(selection_);
+	updateAll();
 }
 
 void KeyPointManagement::setSelection(
@@ -108,7 +125,8 @@ void KeyPointManagement::setSelection(
 	{
 		selection_.push_back(key);
 	}
-//	updateAll();
+	emit updateSelection(selection_);
+	updateAll();
 }
 
 void KeyPointManagement::addSetting()
@@ -119,8 +137,8 @@ void KeyPointManagement::addSetting()
 
 void KeyPointManagement::addSetting(std::unique_ptr<KeyPointSettingsSelector> setting)
 {
-//	connect(setting.get(),SIGNAL(settingsChanged(KeyPointSettings &)),
-		//this,SIGNAL(applySettingsToSelection(KeyPointSettings&)));
+	connect(setting.get(),SIGNAL(settingsChanged(KeyPointSettings &)),
+		this,SIGNAL(settingsChanged(KeyPointSettings&)));
 
 	connect(setting.get(),SIGNAL(remove(KeyPointSettingsSelector *)),
 		this,SLOT(removeSetting(KeyPointSettingsSelector*)));
@@ -155,7 +173,7 @@ void KeyPointManagement::addSelection(std::unique_ptr<KeyPointSelectionSelector>
 	connect(selection.get(),SIGNAL(remove(KeyPointSelectionSelector*))
 		,this,SLOT(removeSelection(KeyPointSelectionSelector*)));
 
-	//connect(selection.get(),SIGNAL(settingsChanged()),this,SLOT(applySelection()));
+	connect(selection.get(),SIGNAL(settingsChanged()),this,SLOT(applySelection()));
 	selectorList_.push_back(selection.get());
 	selection->setLineWidth(1);
 	selection->setFrameStyle(QFrame::Box);
