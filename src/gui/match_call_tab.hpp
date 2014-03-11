@@ -41,8 +41,6 @@ class MatchCallTab
 		      matchCall, matchCall.requestedView()
 	      }
 	{
-		oldView_ = view_;
-		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
 	}
 
 	/**
