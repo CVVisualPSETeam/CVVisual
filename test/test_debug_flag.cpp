@@ -17,16 +17,3 @@ TEST_F(DebugFlagTest, SetAndUnsetDebugMode)
 	cvv::setDebugFlag(true);
 	EXPECT_EQ(cvv::debugMode(), true);
 }
-
-TEST_F(DebugFlagTest, ParallelDebugMode)
-{
-	EXPECT_EQ(cvv::debugMode(), true);
-	std::thread t{ []
-	{
-		EXPECT_EQ(cvv::debugMode(), true);
-		cvv::setDebugFlag(false);
-		EXPECT_EQ(cvv::debugMode(), false);
-	} };
-	t.join();
-	EXPECT_EQ(cvv::debugMode(), true);
-}
