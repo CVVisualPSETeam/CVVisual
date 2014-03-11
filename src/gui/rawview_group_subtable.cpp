@@ -98,6 +98,7 @@ void RawviewGroupSubtable::updateUI()
 void RawviewGroupSubtable::selectionChanged()
 {
 	QModelIndexList indexList = qTable->selectionModel()->selectedIndexes();
+	currentRowIndexes.clear();
 	for (QModelIndex index : indexList)
 	{
 		if (index.isValid())
@@ -289,7 +290,7 @@ void RawviewGroupSubtable::setSelectedRows(std::set<int> rowIndexes)
 	qTable->setRangeSelected(clearSelectionRange, false);
 	for (int i : rowIndexes)
 	{
-		QTableWidgetSelectionRange range(i, 0, i, qTable->columnCount());
+		QTableWidgetSelectionRange range(i, 0, i + 1, qTable->columnCount());
 		qTable->setRangeSelected(range, true);
 	}
 }
