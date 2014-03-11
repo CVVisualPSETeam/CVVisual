@@ -1,6 +1,7 @@
 #include "rawview_group_subtable.hpp"
 
 #include <utility>
+#include <algorithm>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/features2d/features2d.hpp>
@@ -20,7 +21,6 @@
 #include "../view/rawview.hpp"
 #include "rawview_table.hpp"
 #include "../controller/view_controller.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -31,7 +31,6 @@ RawviewGroupSubtable::RawviewGroupSubtable(
     RawviewTable *parent, stfl::ElementGroup<RawviewTableRow> group)
     : parent{ parent }, group{ std::move(group) }
 {
-	TRACEPOINT;
 	qTable = new QTableWidget(this);
 	qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 	qTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -85,24 +84,21 @@ RawviewGroupSubtable::RawviewGroupSubtable(
 	qTable->setColumnCount(list.size());
 	qTable->setHorizontalHeaderLabels(list);
 	updateUI();
-	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::updateUI()
 {
-	TRACEPOINT;
 	qTable->setRowCount(group.size());
 	for (size_t i = 0; i < group.size(); i++)
 	{
 		group.get(i).addToTable(qTable, i);
 	}
-	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::selectionChanged()
 {
-	TRACEPOINT;
 	QModelIndexList indexList = qTable->selectionModel()->selectedIndexes();
+	currentRowIndexes.clear();
 	for (QModelIndex index : indexList)
 	{
 		if (index.isValid())
@@ -114,12 +110,10 @@ void RawviewGroupSubtable::selectionChanged()
 			}
 		}
 	}
-	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::customMenuRequested(QPoint location)
 {
-	TRACEPOINT;
 	QModelIndex index = qTable->indexAt(location);
 	if (!index.isValid())
 	{
@@ -130,12 +124,11 @@ void RawviewGroupSubtable::customMenuRequested(QPoint location)
 	connect(menu, SIGNAL(triggered(QAction *)), this,
 	        SLOT(customMenuAction(QAction *)));
 
-	// TODO linker error
-	// if (parent->getParent()->doesShowShowInViewMenu())
-	//{
-	menu->addAction(new QAction("Show selected rows in view", this));
-	//}
-
+	if (parent->getParent()->doesShowShowInViewMenu())
+	{
+		menu->addAction(new QAction("Show selected rows in view", this));
+	}
+	
 	auto formats = RawviewTableRow::getAvailableTextFormats();
 	for (auto format : formats)
 	{
@@ -148,23 +141,14 @@ void RawviewGroupSubtable::customMenuRequested(QPoint location)
 		currentRowIndexes = { row };
 	}
 	menu->popup(qTable->viewport()->mapToGlobal(location));
-	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::customMenuAction(QAction *action)
 {
-	TRACEPOINT;
 	bool single = group.getTitles().contains("single key point");
 	if (currentRowIndexes.size() > 0)
 	{
-		std::vector<RawviewTableRow> rows;
-		for (auto index : currentRowIndexes)
-		{
-			if (index < qTable->rowCount() && index >= 0)
-			{
-				rows.push_back(group.get(index));
-			}
-		}
+		auto rows = getSelectedRows();
 		QString text = action->text();
 		if (text == "Show selected rows in view")
 		{
@@ -177,6 +161,8 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 				}
 				parent->getParent()->keyPointsSelected(
 				    keyPoints);
+				std::vector<cv::DMatch> emptyVec{};
+				parent->getParent()->matchesSelected(emptyVec); //unselect matches
 			}
 			else
 			{
@@ -185,7 +171,7 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 				{
 					matches.push_back(row.getMatch());
 				}
-				parent->getParent()->matchesSelected(matches);
+				parent->getParent()->matchesKeyPointsSelected(matches);
 			}
 		}
 		else
@@ -207,8 +193,109 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 			}
 		}
 	}
-	DEBUG("Action: " + action->text().toStdString());
-	TRACEPOINT;
 }
+
+std::vector<cv::DMatch> RawviewGroupSubtable::getMatchSelection()
+{
+	std::vector<cv::DMatch> matches;
+	for (RawviewTableRow row : getSelectedRows())
+	{
+		if (!row.hasSingleKeyPoint())
+		{
+			matches.push_back(row.getMatch());
+		}
+	}
+	return matches;
+}
+
+std::vector<cv::KeyPoint> RawviewGroupSubtable::getKeyPointSelection()
+{
+	std::vector<cv::KeyPoint> keyPoints;
+	for (RawviewTableRow row : getSelectedRows())
+	{
+		if (row.hasSingleKeyPoint())
+		{
+			keyPoints.push_back(row.getKeyPoint1());
+		}
+	}
+	return keyPoints;
+}
+
+void RawviewGroupSubtable::setMatchSelection(std::vector<cv::DMatch> matches)
+{
+	std::set<int> indexes;
+	for (size_t i = 0; i < group.size(); i++)
+	{
+		RawviewTableRow elem = group.get(i);
+		if (!elem.hasSingleKeyPoint())
+		{
+			for (auto &match : matches)
+			{
+				if (match.distance == elem.matchDistance() &&
+						match.imgIdx == elem.matchImgIdx() &&
+						match.queryIdx == elem.matchQueryIdx() &&
+						match.trainIdx == elem.matchTrainIdx())
+				{
+					indexes.insert(i);
+					break;
+				}
+			}
+		}
+	}
+	setSelectedRows(indexes);
+}
+
+void RawviewGroupSubtable::setKeyPointSelection(std::vector<cv::KeyPoint> keyPoints)
+{
+	std::set<int> indexes;
+	for (size_t i = 0; i < group.size(); i++)
+	{
+		RawviewTableRow elem = group.get(i);
+		if (elem.hasSingleKeyPoint())
+		{
+			for (auto &keyPoint : keyPoints)
+			{
+				if (keyPoint.pt.x == elem.keyPoint1XCoord() &&
+						keyPoint.pt.y == elem.keyPoint1YCoord() &&
+						keyPoint.size == elem.keyPoint1Size() &&
+						keyPoint.angle == elem.keyPoint1Angle() &&
+						keyPoint.response == elem.keyPoint1Response() &&
+						keyPoint.octave == elem.keyPoint1Octave() &&
+						keyPoint.class_id == elem.keyPoint1ClassId())
+				{
+					indexes.insert(i);
+					break;
+				}
+			}
+		}
+	}
+	setSelectedRows(indexes);
+}
+
+std::vector<RawviewTableRow> RawviewGroupSubtable::getSelectedRows()
+{
+	std::vector<RawviewTableRow> rows;
+	for (auto index : currentRowIndexes)
+	{
+		if (index < qTable->rowCount() && index >= 0)
+		{
+			rows.push_back(group.get(index));
+		}
+	}
+	return rows;
+}
+
+void RawviewGroupSubtable::setSelectedRows(std::set<int> rowIndexes)
+{
+	currentRowIndexes = rowIndexes;
+	QTableWidgetSelectionRange clearSelectionRange(0, 0, qTable->rowCount(), qTable->columnCount());
+	qTable->setRangeSelected(clearSelectionRange, false);
+	for (int i : rowIndexes)
+	{
+		QTableWidgetSelectionRange range(i, 0, i + 1, qTable->columnCount());
+		qTable->setRangeSelected(range, true);
+	}
+}
+
 }
 }

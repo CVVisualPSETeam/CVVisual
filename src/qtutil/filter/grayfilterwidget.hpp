@@ -13,7 +13,6 @@
 #include "opencv2/core/core.hpp"
 
 #include "../filterfunctionwidget.hpp"
-#include "../../dbg/dbg.hpp"
 #include "../../util/observer_ptr.hpp"
 
 namespace cvv
@@ -46,14 +45,6 @@ class GrayFilterWidget : public FilterFunctionWidget<1, 1>
 	GrayFilterWidget(QWidget *parent = nullptr);
 
 	/**
-	 * @brief Destructor
-	 */
-	~GrayFilterWidget()
-	{
-		TRACEPOINT;
-	}
-
-	/**
 	 * @brief Applys the filter to in and saves the result in out.
 	 * @param in The input images.
 	 * @param out The output images.
@@ -80,9 +71,7 @@ slots:
 	 */
 	void setChannel(int n)
 	{
-		TRACEPOINT;
 		setChannel(static_cast<std::size_t>(n));
-		TRACEPOINT;
 	}
 
 	/**

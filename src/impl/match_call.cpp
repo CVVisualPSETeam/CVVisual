@@ -7,7 +7,6 @@
 #include "data_controller.hpp"
 
 #include "../util/util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -25,12 +24,10 @@ MatchCall::MatchCall(cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
       img2_{ img2.getMat().clone() }, keypoints2_{ std::move(keypoints2) },
       matches_{ std::move(matches) }, usesTrainDescriptor_{ useTrainDescriptor }
 {
-	TRACEPOINT;
 }
 
 const cv::Mat &MatchCall::matrixAt(size_t index) const
 {
-	TRACEPOINT;
 	switch (index)
 	{
 	case 0:
@@ -48,7 +45,6 @@ void debugMatchCall(cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
                     const char *description, const char *view,
                     bool useTrainDescriptor)
 {
-	TRACEPOINT;
 	dataController().addCall(util::make_unique<MatchCall>(
 	    img1, std::move(keypoints1), img2, std::move(keypoints2),
 	    std::move(matches), data, "match",
@@ -56,7 +52,6 @@ void debugMatchCall(cv::InputArray img1, std::vector<cv::KeyPoint> keypoints1,
 	                : QString{ "<no description>" },
 	    view ? QString::fromLocal8Bit(view) : QString{},
 	    useTrainDescriptor));
-	TRACEPOINT;
 }
 }
 } // namespaces cvv::impl

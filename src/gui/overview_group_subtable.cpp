@@ -17,7 +17,6 @@
 #include "overview_table.hpp"
 #include "../controller/view_controller.hpp"
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -29,16 +28,13 @@ OverviewGroupSubtable::OverviewGroupSubtable(
     OverviewTable *parent, stfl::ElementGroup<OverviewTableRow> group)
     : controller{ controller }, parent{ parent }, group{ std::move(group) }
 {
-	TRACEPOINT;
 	controller->setDefaultSetting("overview", "imgsize",
 	                              QString::number(100));
 	initUI();
-	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::initUI()
 {
-	TRACEPOINT;
 	controller->setDefaultSetting("overview", "imgzoom", "30");
 	qTable = new QTableWidget(this);
 	qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -59,12 +55,10 @@ void OverviewGroupSubtable::initUI()
 	layout->addWidget(qTable);
 	setLayout(layout);
 	updateUI();
-	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::updateUI()
 {
-	TRACEPOINT;
 	imgSize = controller->getSetting("overview", "imgzoom").toInt() *
 	          width() / 400;
 	QStringList list{};
@@ -131,28 +125,23 @@ void OverviewGroupSubtable::updateUI()
 	header->setSectionResizeMode(maxImages + 5,
 	                             QHeaderView::ResizeToContents);
 	updateMinimumSize();
-	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::rowClicked(int row, int collumn)
 {
-	TRACEPOINT;
 	(void)collumn;
 	size_t tabId = group.get(row).id();
 	controller->showAndOpenCallTab(tabId);
-	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::customMenuRequested(QPoint location)
 {
-	TRACEPOINT;
 	if (qTable->rowCount() == 0)
 	{
 		return;
 	}
 	controller->removeEmptyWindows();
 	QMenu *menu = new QMenu(this);
-	TRACEPOINT;
 	auto windows = controller->getTabWindows();
 	menu->addAction(new QAction("Open in new window", this));
 	for (auto window : windows)
@@ -160,32 +149,23 @@ void OverviewGroupSubtable::customMenuRequested(QPoint location)
 		menu->addAction(new QAction(
 		    QString("Open in '%1'").arg(window->windowTitle()), this));
 	}
-	TRACEPOINT;
 	menu->addAction(new QAction("Remove call", this));
-	TRACEPOINT;
 	QModelIndex index = qTable->indexAt(location);
 	if (!index.isValid())
 	{
 		return;
 	}
-	TRACEPOINT;
 	int row = index.row();
-	TRACEPOINT;
 	QString idStr = qTable->item(row, 0)->text();
-	TRACEPOINT;
 	connect(menu, SIGNAL(triggered(QAction *)), this,
 	        SLOT(customMenuAction(QAction *)));
-	TRACEPOINT;
 	std::stringstream{ idStr.toStdString() } >> currentCustomMenuCallTabId;
 	currentCustomMenuCallTabIdValid = true;
-	TRACEPOINT;
 	menu->popup(mapToGlobal(location));
-	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::customMenuAction(QAction *action)
 {
-	TRACEPOINT;
 	if (!currentCustomMenuCallTabIdValid)
 	{
 		return;
@@ -193,18 +173,14 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 	QString actionText = action->text();
 	if (actionText == "Open in new window")
 	{
-		TRACEPOINT;
 		controller->moveCallTabToNewWindow(currentCustomMenuCallTabId);
-		TRACEPOINT;
 		currentCustomMenuCallTabId = -1;
 		return;
 	}
 	else if (actionText == "Remove call")
 	{
-		TRACEPOINT;
 		controller->removeCallTab(currentCustomMenuCallTabId, true,
 		                          true);
-		TRACEPOINT;
 		currentCustomMenuCallTabId = -1;
 		return;
 	}
@@ -214,27 +190,22 @@ void OverviewGroupSubtable::customMenuAction(QAction *action)
 		if (actionText ==
 		    QString("Open in '%1'").arg(window->windowTitle()))
 		{
-			TRACEPOINT;
 			controller->moveCallTabToWindow(
 			    currentCustomMenuCallTabId, window->getId());
-			TRACEPOINT;
 			break;
 		}
 	}
 	currentCustomMenuCallTabId = -1;
-	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
 {
-	TRACEPOINT;
 	(void)event;
 	imgSize = controller->getSetting("overview", "imgzoom").toInt() *
 	          width() / 400;
 	rowHeight = std::max(imgSize, qTable->fontMetrics().height() + 5);
 	for (size_t row = 0; row < group.size(); row++)
 	{
-		DEBUG(QString("Iteration %1").arg(row));
 		group.get(row).resizeInTable(qTable, row,
 		                          parent->isShowingImages(), maxImages,
 		                          imgSize, imgSize);
@@ -242,12 +213,10 @@ void OverviewGroupSubtable::resizeEvent(QResizeEvent *event)
 	}
 	updateMinimumSize();
 	event->accept();
-	TRACEPOINT;
 }
 
 void OverviewGroupSubtable::removeRow(size_t id)
 {
-	TRACEPOINT;
 	for (size_t i = 0; i < group.size(); i++)
 	{
 		if (group.get(i).id() == id)
@@ -257,7 +226,6 @@ void OverviewGroupSubtable::removeRow(size_t id)
 			break;
 		}
 	}
-	TRACEPOINT;
 }
 
 bool OverviewGroupSubtable::hasRow(size_t id)
@@ -345,7 +313,6 @@ void OverviewGroupSubtable::updateMinimumSize()
 		height += qTable->rowHeight(a);
 	}
 	setMinimumHeight(height + (qTable->rowCount() * 1));
-	DEBUG(height);
 }
 }
 }

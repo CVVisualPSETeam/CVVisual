@@ -9,11 +9,11 @@
 #include <QMainWindow>
 #include <QString>
 
-#include "rawview.hpp"
+#include "../../view/rawview.hpp"
 
 namespace cvv
 {
-namespace view
+namespace qtutil
 {
 
 /**
@@ -34,9 +34,9 @@ class RawviewWindow : public QMainWindow
 	 * @param matches matches between the left and the right keypoints.
 	 */
 	RawviewWindow(QString title,
-	              const std::vector<cv::KeyPoint> &keypoints1,
-	              const std::vector<cv::KeyPoint> &keypoints2,
-	              const std::vector<cv::DMatch> &matches);
+		      const std::vector<cv::KeyPoint> keypoints1,
+		      const std::vector<cv::KeyPoint> keypoints2,
+		      const std::vector<cv::DMatch> matches);
 
 	/**
 	 * @brief Constructor of this class.
@@ -47,8 +47,8 @@ class RawviewWindow : public QMainWindow
 	 * @param keypoints2 right keypoints
 	 */
 	RawviewWindow(QString title,
-	              const std::vector<cv::KeyPoint> &keypoints1,
-	              const std::vector<cv::KeyPoint> &keypoints2);
+		      const std::vector<cv::KeyPoint> &keypoints1,
+		      const std::vector<cv::KeyPoint> &keypoints2);
 
 signals:
 
@@ -65,8 +65,7 @@ signals:
 	 */
 	void keyPointsSelected(const std::vector<cv::KeyPoint> &keyPoints);
 
-      public
-slots:
+public slots:
 
 	/**
 	 * @brief Show only the given matches.
@@ -83,7 +82,7 @@ slots:
       private:
 	std::vector<cv::KeyPoint> keypoints1;
 	std::vector<cv::KeyPoint> keypoints2;
-	Rawview *view = nullptr;
+	view::Rawview *view = nullptr;
 };
 }
 }

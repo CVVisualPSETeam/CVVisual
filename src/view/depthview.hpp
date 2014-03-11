@@ -63,6 +63,12 @@ public slots:
 		matchManagment_->setSelection(selection);
 	}
 
+private slots:
+
+	void updateMousHoverOver(QPointF pt,QString str,bool){
+		emit updateRightFoooter(QString("%1/%2 RGB:%3").arg(pt.x()).arg(pt.y()).arg(str));
+	}
+
 private:
 	qtutil::MatchManagement *matchManagment_;
 };

@@ -24,6 +24,8 @@ KeyPointValueChooser::KeyPointValueChooser(QWidget *parent):
 
 	connect(comb.get(),SIGNAL(currentIndexChanged(int)),this,SIGNAL(valueChanged()));
 
+	layout->setContentsMargins(0, 0, 0, 0);
+
 	layout->addWidget(label.release());
 	layout->addWidget(comb.release());
 

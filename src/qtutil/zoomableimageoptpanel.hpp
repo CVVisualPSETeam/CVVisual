@@ -9,7 +9,6 @@
 #include "opencv2/core/core.hpp"
 #include "zoomableimage.hpp"
 #include "util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -33,7 +32,7 @@ class ZoomableOptPanel : public QWidget
 	 * @param parent the parent Widget
 	 */
 	ZoomableOptPanel(const ZoomableImage &zoomIm,
-	                 QWidget *parent = nullptr);
+			 bool showHideButton=true,QWidget *parent = nullptr);
 
       public
 slots:

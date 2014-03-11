@@ -28,12 +28,9 @@ KeyPointSettingsSelector::KeyPointSettingsSelector(const std::vector<cv::KeyPoin
 
 	layout_=layout.get();
 	setLayout(layout.release());
-	TRACEPOINT;
 	if(this->has(this->selection())){
-		TRACEPOINT;
 		changedSetting();
 	}
-	TRACEPOINT;
 }
 
 void KeyPointSettingsSelector::setSettings(CVVKeyPoint &key)
@@ -43,23 +40,16 @@ void KeyPointSettingsSelector::setSettings(CVVKeyPoint &key)
 
 void KeyPointSettingsSelector::changedSetting()
 {
-	TRACEPOINT;
 	auto setting=(*this)()(univers_);
-	TRACEPOINT;
 	if(setting){
-		TRACEPOINT;
 		if(setting_){
-			TRACEPOINT;
 			layout_->removeWidget(setting_);
 			disconnect(setting_,SIGNAL(settingsChanged(KeyPointSettings&)),
 				   this,SIGNAL(settingsChanged(KeyPointSettings&)));
 			setting_->deleteLater();
 		}
-		TRACEPOINT;
 		setting_=setting.get();
-		TRACEPOINT;
 		layout_->addWidget(setting.release());
-		TRACEPOINT;
 		connect(setting_,SIGNAL(settingsChanged(KeyPointSettings&)),
 		this,SIGNAL(settingsChanged(KeyPointSettings&)));
 	}

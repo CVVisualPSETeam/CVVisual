@@ -28,6 +28,8 @@ FalseColorKeyPointPen::FalseColorKeyPointPen(std::vector<cv::KeyPoint> univers, 
 	connect(valueChooser.get(),SIGNAL(valueChanged()),this,SLOT(updateMinMax()));
 	connect(button.get(), SIGNAL(clicked()), this, SLOT(updateAll()));
 
+	layout->setContentsMargins(0, 0, 0, 0);
+
 	layout->addWidget(valueChooser.release());
 	layout->addWidget(button.release());
 

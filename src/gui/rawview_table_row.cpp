@@ -9,7 +9,6 @@
 
 #include "../qtutil/util.hpp"
 #include "../stfl/stringutils.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -21,7 +20,6 @@ RawviewTableRow::RawviewTableRow(cv::DMatch match, cv::KeyPoint keyPoint1,
     : match{ match }, keyPoint1{ keyPoint1 }, keyPoint2{ keyPoint2 },
       hasLonelyKeyPoint_{ false }
 {
-	TRACEPOINT;
 }
 
 RawviewTableRow::RawviewTableRow(cv::KeyPoint keyPoint, bool left)
@@ -31,7 +29,6 @@ RawviewTableRow::RawviewTableRow(cv::KeyPoint keyPoint, bool left)
 
 void RawviewTableRow::addToTable(QTableWidget *table, size_t row)
 {
-	TRACEPOINT;
 	std::vector<QString> items;
 	if (!hasLonelyKeyPoint_)
 	{
@@ -71,14 +68,12 @@ void RawviewTableRow::addToTable(QTableWidget *table, size_t row)
 		item->setFlags(item->flags() ^ Qt::ItemIsEditable);
 		table->setItem(row, i, item);
 	}
-	TRACEPOINT;
 }
 
 QString RawviewTableRow::rowsToText(const std::vector<RawviewTableRow> &rows,
                                     const QString format,
                                     bool singleKeyPointRows)
 {
-	TRACEPOINT;
 	QStringList lines;
 	// header
 	if (format == "CSV")
@@ -261,13 +256,11 @@ QString RawviewTableRow::rowsToText(const std::vector<RawviewTableRow> &rows,
 	{
 		text = QString("[%1]").arg(lines.join(",\r\n"));
 	}
-	TRACEPOINT;
 	return text;
 }
 
 std::vector<QString> RawviewTableRow::getAvailableTextFormats()
 {
-	TRACEPOINT;
 	return { QString("CSV"),    QString("JSON"),
 		 QString("PYTHON"), QString("RUBY") };
 }
@@ -275,20 +268,26 @@ std::vector<QString> RawviewTableRow::getAvailableTextFormats()
 std::pair<QList<RawviewTableRow>, QList<RawviewTableRow>>
 createRawviewTableRows(const std::vector<cv::KeyPoint> &keyPoints1,
                        const std::vector<cv::KeyPoint> &keyPoints2,
-                       const std::vector<cv::DMatch> &matches)
+                       const std::vector<cv::DMatch> &matches,
+					   bool usesTrainDescriptor)
 {
-	TRACEPOINT;
 	QList<RawviewTableRow> matchRowList;
 	QList<RawviewTableRow> singleRowList;
 	std::set<size_t> usedKeyPoints1;
 	std::set<size_t> usedKeyPoints2;
 	for (auto &match : matches)
 	{
+		int leftIndex = match.queryIdx;
+		int rightIndex = usesTrainDescriptor ? match.trainIdx : match.imgIdx;
+		if (leftIndex >= (int)keyPoints1.size() || rightIndex >= (int)keyPoints2.size())
+		{
+			continue;
+		}
 		usedKeyPoints1.insert(match.queryIdx);
 		usedKeyPoints2.insert(match.trainIdx);
 		matchRowList.append(
-		    RawviewTableRow(match, keyPoints1.at(match.queryIdx),
-		                    keyPoints2.at(match.trainIdx)));
+		    RawviewTableRow(match, keyPoints1.at(leftIndex),
+		                    keyPoints2.at(rightIndex)));
 	}
 	for (size_t i = 0; i < usedKeyPoints1.size(); i++)
 	{
@@ -303,10 +302,9 @@ createRawviewTableRows(const std::vector<cv::KeyPoint> &keyPoints1,
 		if (usedKeyPoints2.find(i) != usedKeyPoints2.end())
 		{
 			singleRowList.push_back(
-			    RawviewTableRow(keyPoints2.at(i), true));
+			    RawviewTableRow(keyPoints2.at(i), false));
 		}
 	}
-	TRACEPOINT;
 	return std::make_pair(matchRowList, singleRowList);
 }
 
@@ -314,13 +312,11 @@ QList<RawviewTableRow>
 createSingleKeyPointRawviewTableRows(const std::vector<cv::KeyPoint> &keyPoints,
                                      bool left)
 {
-	TRACEPOINT;
 	auto retList = QList<RawviewTableRow>();
 	for (auto &keyPoint : keyPoints)
 	{
 		retList.append(RawviewTableRow(keyPoint, left));
 	}
-	TRACEPOINT;
 	return retList;
 }
 }

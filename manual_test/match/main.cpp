@@ -40,6 +40,19 @@ std::vector<cv::KeyPoint> scaleDown(const std::vector<cv::KeyPoint> &in,
 
 	return points;
 }
+
+/**
+ * @brief This test creates random matches of random quality on all the provided images and scales
+ * them down for a copy of the same image.
+ * 
+ * Expected behaviour:
+ * * A Mainwindow should open that shows an overview-table containing matches from the first image to itself
+ * * Upon klicking step multiple times or '>>' once, all further images should appear in the table.
+ * * All calls can be opened in any existing window or in a new one. It is possible to select all the
+ *   different match-visualisations for all of them.
+ * * Closing calltabs should work. Closing the last tab of a window results in the closing of the window
+ * * Clicking the Close-button results in the termination of the program with 0 as exit-status.
+ */
 int main(int argc, char **argv)
 {
 	if (argc < 2)
@@ -51,7 +64,7 @@ int main(int argc, char **argv)
 	for (int i = 1; i < argc; ++i)
 	{
 		auto src = cv::imread(argv[i]);
-		const size_t keypointCount = 20;
+		const size_t keypointCount = 500;
 		auto keypoints1 =
 		    makeRandomKeys(src.cols, src.rows, keypointCount);
 		auto keypoints2 =
@@ -59,7 +72,7 @@ int main(int argc, char **argv)
 
 		std::vector<cv::DMatch> match;
 		std::mt19937_64 gen{ std::random_device{}() };
-		std::uniform_real_distribution<float> dist{ 0.0f, 3.0f };
+		std::uniform_real_distribution<float> dist{ 0.0f, 1.0f };
 		for (size_t i = 0; i < keypointCount; i++)
 		{
 			match.emplace_back(i, i, dist(gen));

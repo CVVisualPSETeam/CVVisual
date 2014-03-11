@@ -19,7 +19,6 @@
 #include "stringutils.hpp"
 #include "element_group.hpp"
 #include "../qtutil/util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -77,9 +76,7 @@ template <typename Element> class STFLEngine
 	      filterCSPoolFuncs{ filterCSPoolFuncs }, sortFuncs{ sortFuncs },
 	      groupFuncs{ groupFuncs }
 	{
-		TRACEPOINT;
 		initSupportedCommandsList();
-		TRACEPOINT;
 	}
 
 	/**
@@ -88,10 +85,8 @@ template <typename Element> class STFLEngine
 	 */
 	void addNewElement(Element element)
 	{
-		TRACEPOINT;
 		elements.append(element);
 		updateFilterPools(element);
-		TRACEPOINT;
 	}
 
 	/**
@@ -103,7 +98,6 @@ template <typename Element> class STFLEngine
 	 */
 	QStringList getSuggestions(QString _query, size_t number = 100)
 	{
-		TRACEPOINT;
 		QString query(_query);
 		bool addedRaw = false;
 		if (!query.startsWith("#"))
@@ -145,7 +139,6 @@ template <typename Element> class STFLEngine
 				replaceIfStartsWith(suggs[i], "raw ", "");
 			}
 		}
-		TRACEPOINT;
 		return suggs;
 	}
 
@@ -156,7 +149,6 @@ template <typename Element> class STFLEngine
 	 */
 	std::vector<ElementGroup<Element>> query(QString query)
 	{
-		TRACEPOINT;
 		lastQuery = query;
 		if (!query.startsWith("#"))
 		{
@@ -168,7 +160,6 @@ template <typename Element> class STFLEngine
 		elemList = executeFilters(elements, cmdStrings);
 		elemList = executeSortCmds(elemList, cmdStrings);
 		auto groups = executeGroupCmds(elemList, cmdStrings);
-		TRACEPOINT;
 		return groups;
 	}
 
@@ -191,14 +182,26 @@ template <typename Element> class STFLEngine
 	 */
 	void addElements(QList<Element> newElements)
 	{
-		TRACEPOINT;
 		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
 		}
-		TRACEPOINT;
 	}
 
+	/**
+	 * @brief Adds the new elements to the elements already inherited by
+	 * this engine.
+	 *
+	 * @param newElements new elements
+	 */
+	void addElements(std::vector<Element> newElements)
+	{
+		for (Element &elem : newElements)
+		{
+			addNewElement(elem);
+		}
+	}
+									   
 	/**
 	 * @brief Sets the elements inherited by this engine.
 	 *
@@ -206,14 +209,12 @@ template <typename Element> class STFLEngine
 	 */
 	void setElements(QList<Element> newElements)
 	{
-		TRACEPOINT;
 		elements.clear();
 		for (Element &elem : newElements)
 		{
 			addNewElement(elem);
 		}
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -223,7 +224,6 @@ template <typename Element> class STFLEngine
 	 */
 	void setElements(std::pair<QList<Element>, QList<Element>> newElements)
 	{
-		TRACEPOINT;
 		elements.clear();
 		for (Element &elem : newElements.first)
 		{
@@ -234,7 +234,6 @@ template <typename Element> class STFLEngine
 			addNewElement(elem);
 		}
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -246,11 +245,9 @@ template <typename Element> class STFLEngine
 	    QString command,
 	    std::function<bool(const QString &, const Element &)> func)
 	{
-		TRACEPOINT;
 		filterFuncs[command] = func;
 		initSupportedCommandsList();
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -261,11 +258,9 @@ template <typename Element> class STFLEngine
 	void setFilterPoolFunc(QString command,
 	                       std::function<QString(const Element &)> func)
 	{
-		TRACEPOINT;
 		filterPoolFuncs[command] = func;
 		initSupportedCommandsList();
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -279,11 +274,9 @@ template <typename Element> class STFLEngine
 	    QString command,
 	    std::function<bool(const QStringList &, const Element &)> func)
 	{
-		TRACEPOINT;
 		filterCSFuncs[command] = func;
 		initSupportedCommandsList();
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -297,11 +290,9 @@ template <typename Element> class STFLEngine
 	setFilterCSPoolFunc(QString command,
 	                    std::function<QSet<QString>(const Element &)> func)
 	{
-		TRACEPOINT;
 		filterCSPoolFuncs[command] = func;
 		initSupportedCommandsList();
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -321,7 +312,6 @@ template <typename Element> class STFLEngine
 	                      std::function<QString(const Element &)> func,
 	                      bool withFilterCS = true)
 	{
-		TRACEPOINT;
 		if (withFilterCS)
 		{
 			filterCSFuncs[command] = [func](const QStringList &args,
@@ -345,7 +335,6 @@ template <typename Element> class STFLEngine
 		{ return func(elem); };
 		initSupportedCommandsList();
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -368,7 +357,6 @@ template <typename Element> class STFLEngine
 	                       bool withFilterCS = true,
 	                       bool withRangeCmd = true)
 	{
-		TRACEPOINT;
 		if (withFilterCS)
 		{
 			filterCSFuncs[command] = [func](const QStringList &args,
@@ -418,7 +406,6 @@ template <typename Element> class STFLEngine
 		{ return QString(command + " %1").arg(func(elem)); };
 		initSupportedCommandsList();
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -440,7 +427,6 @@ template <typename Element> class STFLEngine
 	                     std::function<float(const Element &)> func,
 	                     bool withFilterCS = true, bool withRangeCmd = true)
 	{
-		TRACEPOINT;
 		if (withFilterCS)
 		{
 			filterCSFuncs[command] = [func](const QStringList &args,
@@ -490,7 +476,6 @@ template <typename Element> class STFLEngine
 		{ return QString(command + " %1").arg(func(elem)); };
 		initSupportedCommandsList();
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
 	/**
@@ -499,12 +484,10 @@ template <typename Element> class STFLEngine
 	 */
 	void removeElements(std::function<bool(const Element &)> matchFunc)
 	{
-		TRACEPOINT;
 		auto newEnd =
 		    std::remove_if(elements.begin(), elements.end(), matchFunc);
 		elements.erase(newEnd, elements.end());
 		reinitFilterPools();
-		TRACEPOINT;
 	}
 
       private:
@@ -529,7 +512,6 @@ template <typename Element> class STFLEngine
 	QList<Element> executeFilters(const QList<Element> &elements,
 	                              const QStringList &cmdStrings)
 	{
-		TRACEPOINT;
 		std::vector<std::function<bool(const Element &)>> filters;
 
 		for (const QString &cmdString : cmdStrings)
@@ -537,7 +519,15 @@ template <typename Element> class STFLEngine
 			using namespace std::placeholders;
 			QStringList arr =
 			    cmdString.split(" ", QString::SkipEmptyParts);
-			QString cmd = arr.takeFirst();
+			QString cmd;
+			if (arr.empty())
+			{
+				cmd = "";
+			}
+			else
+			{
+				cmd = arr.takeFirst();
+			}
 			if (arr.empty())
 				continue;
 			if (isFilterCmd(cmd))
@@ -557,40 +547,33 @@ template <typename Element> class STFLEngine
 				    filterCSFuncs[cmd], arguments, _1));
 			}
 		}
-		TRACEPOINT;
 		if (filters.empty())
 		{
-			TRACEPOINT;
 			return elements;
 		}
 		QList<Element> retList;
 		// copy if all filters match
 		using StringFilter = std::function<bool(const Element &)>;
-		TRACEPOINT;
 		auto copy_if = [&](const Element &element)
 		{
 			// find in filters
 			auto find_if = [&](StringFilter filter)
 			{
-				TRACEPOINT;
 				return !filter(element);
 			};
 			auto returnval =
 			    std::find_if(filters.begin(), filters.end(),
 			                 find_if) == filters.end();
-			TRACEPOINT;
 			return returnval;
 		};
 		std::copy_if(elements.begin(), elements.end(),
 		             std::back_inserter(retList), copy_if);
-		TRACEPOINT;
 		return retList;
 	}
 
 	QList<Element> executeSortCmds(const QList<Element> &elements,
 	                               const QStringList &cmdStrings)
 	{
-		TRACEPOINT;
 		QList<std::pair<QString, bool>> sortCmds;
 		for (QString cmdString : cmdStrings)
 		{
@@ -627,7 +610,6 @@ template <typename Element> class STFLEngine
 				}
 			}
 		}
-		TRACEPOINT;
 		QList<Element> resList(elements);
 		for (auto sortCmd : sortCmds)
 		{
@@ -648,7 +630,6 @@ template <typename Element> class STFLEngine
 				{ return sortFunc(elem2, elem1); });
 			}
 		}
-		TRACEPOINT;
 		return resList;
 	}
 
@@ -658,7 +639,6 @@ template <typename Element> class STFLEngine
 	std::vector<ElementGroup<Element> > executeGroupCmds(const QList<Element> &elements,
 														 const QStringList &cmdStrings)
 	{
-		TRACEPOINT;
 		QStringList groupCmds;
 		for (QString cmdString : cmdStrings)
 		{
@@ -687,8 +667,7 @@ template <typename Element> class STFLEngine
 				groupCmds.append(cmdPartList[0]);
 			}
 		}
-		TRACEPOINT;
-		std::vector<ElementGroup<Element> > groupList;
+		std::vector<ElementGroup<Element>> groupList;
 		std::map<QString, QList<Element>> groups{};
 		for (auto &element : elements)
 		{
@@ -723,7 +702,6 @@ template <typename Element> class STFLEngine
 				groupList.push_back(elementGroup);
 			}
 		}
-		TRACEPOINT;
 		return groupList;
 	}
 
@@ -901,12 +879,8 @@ template <typename Element> class STFLEngine
 										   pointer, commandCount);
 				break;
 			case '~': //set the current register to the given value with a "~{9}" like syntax
-				DEBUG(code);
-				DEBUG(codePointer);
 				if (code.size() > codePointer + 3 && code.at(codePointer + 1) == '{')
 				{
-					DEBUG(code);
-					DEBUG(codePointer);
 					size_t number = 0;
 					size_t i = codePointer + 2;
 					while (i < code.size() && code.at(i) >= '0' && code.at(i) <= '9')
@@ -923,12 +897,9 @@ template <typename Element> class STFLEngine
 						registers[pointer] = number % 128;
 					}
 					codePointer = i;
-					DEBUG(codePointer);
 				}
 				break;
 			case '"': //syntax '"{chars}"
-				DEBUG(code);
-				DEBUG(codePointer);
 				if (code.size() > codePointer + 3 && code.at(codePointer + 1) == '{')
 				{
 					size_t codeI = codePointer + 2;
@@ -943,7 +914,6 @@ template <typename Element> class STFLEngine
 						registerI++;
 					}
 					codePointer = codeI;
-					DEBUG(codePointer);
 				}
 				break;
 			case '?': //condition, syntax "?()()"
@@ -1124,7 +1094,6 @@ template <typename Element> class STFLEngine
 	
 	QStringList getSuggestionsForCmdQuery(const QString &cmdQuery, size_t number)
 	{
-		TRACEPOINT;
 		QStringList tokens = cmdQuery.split(" ");
 		QStringList suggs;
 		if (tokens.empty())
@@ -1192,13 +1161,11 @@ template <typename Element> class STFLEngine
 				sugg = cmd + " " + sugg;
 			}
 		}
-		TRACEPOINT;
 		return suggs.mid(0, number);
 	}
 
 	QStringList getSuggestionsForSortCmd(QStringList args)
 	{
-		TRACEPOINT;
 		QString last;
 		if (args.empty())
 		{
@@ -1234,13 +1201,11 @@ template <typename Element> class STFLEngine
 		{
 			joinCommand(item, "sort by ", args);
 		}
-		TRACEPOINT;
 		return list;
 	}
 
 	QStringList getSuggestionsForGroupCmd(QStringList args)
 	{
-		TRACEPOINT;
 		QString last;
 		if (args.empty())
 		{
@@ -1256,20 +1221,17 @@ template <typename Element> class STFLEngine
 		{
 			joinCommand(item, "group by ", args);
 		}
-		TRACEPOINT;
 		return list;
 	}
 
 	QStringList getSuggestionsForFilterCmd(const QString &cmd, const QString &argument)
 	{
-		TRACEPOINT;
 		QStringList pool(filterPool[cmd].toList());
 		return sortStringsByStringEquality(pool, argument);
 	}
 
 	QStringList getSuggestionsForFilterCSCmd(const QString &cmd, QStringList args)
 	{
-		TRACEPOINT;
 		QString last;
 		if (args.empty())
 		{
@@ -1285,13 +1247,11 @@ template <typename Element> class STFLEngine
 		{
 			joinCommand(item, cmd, args, true);
 		}
-		TRACEPOINT;
 		return list;
 	}
 
 	QStringList getSuggestionsForCmd(const QString &cmd)
 	{
-		TRACEPOINT;
 		return sortStringsByStringEquality(supportedCmds, cmd);
 	}
 	
@@ -1301,7 +1261,6 @@ template <typename Element> class STFLEngine
 	 */
 	void initSupportedCommandsList()
 	{
-		TRACEPOINT;
 		QStringList list;
 		list.append(filterFuncs.keys());
 		list.append(filterCSFuncs.keys());
@@ -1314,12 +1273,10 @@ template <typename Element> class STFLEngine
 			list.append("sort by " + key);
 		}
 		supportedCmds = list;
-		TRACEPOINT;
 	}
 	
 	void updateFilterPools(Element element)
 	{
-		TRACEPOINT;
 		auto it = filterPoolFuncs.begin();
 		while (it != filterPoolFuncs.end())
 		{
@@ -1332,12 +1289,10 @@ template <typename Element> class STFLEngine
 			filterCSPool[it2.key()].unite(it2.value()(element));
 			++it2;
 		}
-		TRACEPOINT;
 	}
 	
 	void reinitFilterPools()
 	{
-		TRACEPOINT;
 		auto it = filterPoolFuncs.begin();
 		while (it != filterPoolFuncs.end())
 		{
@@ -1358,7 +1313,6 @@ template <typename Element> class STFLEngine
 			}
 			++it2;
 		}
-		TRACEPOINT;
 	}
 
 	/**
@@ -1369,7 +1323,6 @@ template <typename Element> class STFLEngine
 	 */
 	QStringList sortStringsByStringEquality(const QStringList &strings, QString compareWith)
 	{
-		TRACEPOINT;
 		QMap<int, QStringList> weightedStrings;
 		auto compareWithWords = compareWith.split(" ", QString::SkipEmptyParts);
 		for (const QString &str : strings)
@@ -1403,37 +1356,31 @@ template <typename Element> class STFLEngine
 			list.sort();
 			retList.append(list);
 		}
-		TRACEPOINT;
 		return retList;
 	}
 
 	bool isSortCmd(const QString &cmd)
 	{
-		TRACEPOINT;
 		return sortFuncs.count(cmd) > 0;
 	}
 
 	bool isGroupCmd(const QString &cmd)
 	{
-		TRACEPOINT;
 		return groupFuncs.count(cmd) > 0;
 	}
 
 	bool isFilterCmd(const QString &cmd)
 	{
-		TRACEPOINT;
 		return filterFuncs.count(cmd) > 0;
 	}
 
 	bool isFilterCSCmd(const QString &cmd)
 	{
-		TRACEPOINT;
 		return filterCSFuncs.count(cmd) > 0;
 	}
 
 	void joinCommand(QString &item, const QString &cmd, QStringList args, bool omitCmd = false)
 	{
-		TRACEPOINT;
 		if (args.size() == 0)
 		{
 			item = "";
@@ -1449,7 +1396,6 @@ template <typename Element> class STFLEngine
 		{
 			item = cmd + item;
 		}
-		TRACEPOINT;
 	}
 };
 

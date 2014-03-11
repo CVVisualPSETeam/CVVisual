@@ -8,7 +8,6 @@
 #include <stdint.h>
 #include <stdexcept>
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -44,7 +43,6 @@ template <class Element> class ElementGroup
 	 */
 	bool contains(const Element &element)
 	{
-		TRACEPOINT;
 		return this->elements.contains(element);
 	}
 
@@ -54,7 +52,6 @@ template <class Element> class ElementGroup
 	 */
 	QList<Element> getElements()
 	{
-		TRACEPOINT;
 		return this->elements;
 	}
 
@@ -64,7 +61,6 @@ template <class Element> class ElementGroup
 	 */
 	size_t size() const
 	{
-		TRACEPOINT;
 		return this->elements.size();
 	}
 
@@ -74,7 +70,6 @@ template <class Element> class ElementGroup
 	 */
 	QStringList getTitles() const
 	{
-		TRACEPOINT;
 		return this->titles;
 	}
 
@@ -86,7 +81,6 @@ template <class Element> class ElementGroup
 	 */
 	bool hasSameTitles(ElementGroup<Element> &other)
 	{
-		TRACEPOINT;
 		for (auto title : other.getTitles())
 		{
 			if (!titles.contains(title))
@@ -94,7 +88,6 @@ template <class Element> class ElementGroup
 				return false;
 			}
 		}
-		TRACEPOINT;
 		return other.getTitles().size() == titles.size();
 	}
 
@@ -113,7 +106,6 @@ template <class Element> class ElementGroup
 	                   std::function<bool(const Element &, const Element &)>
 	                       elementCompFunc)
 	{
-		TRACEPOINT;
 		if (other.getElements().size() != elements.size())
 		{
 			return false;
@@ -125,7 +117,6 @@ template <class Element> class ElementGroup
 				return false;
 			}
 		}
-		TRACEPOINT;
 		return true;
 	}
 
@@ -138,14 +129,12 @@ template <class Element> class ElementGroup
 	 */
 	Element get(size_t index)
 	{
-		TRACEPOINT;
 		if (index >= size())
 		{
 			throw std::invalid_argument{
 				"there is no call with this id"
 			};
 		}
-		TRACEPOINT;
 		return this->elements[index];
 	}
 
@@ -155,12 +144,10 @@ template <class Element> class ElementGroup
 	 */
 	void removeElement(size_t index)
 	{
-		TRACEPOINT;
 		if (index < static_cast<size_t>(elements.size()))
 		{
 			elements.removeAt(index);
 		}
-		TRACEPOINT;
 	}
 
 	/**
@@ -169,9 +156,7 @@ template <class Element> class ElementGroup
 	 */
 	void setElements(QList<Element> newElements)
 	{
-		TRACEPOINT;
 		elements = newElements;
-		TRACEPOINT;
 	}
 
       private:

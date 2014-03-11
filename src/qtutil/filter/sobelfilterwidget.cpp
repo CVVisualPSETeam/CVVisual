@@ -5,7 +5,6 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-#include "../../dbg/dbg.hpp"
 #include "../../util/util.hpp"
 #include "../filterfunctionwidget.hpp"
 #include "../filterselectorwidget.hpp"
@@ -20,7 +19,6 @@ SobelFilterWidget::SobelFilterWidget(QWidget *parent)
       ksize_{ nullptr }, borderType_{ nullptr }, gray_{ nullptr },
       grayFilter_{ nullptr }, reorder_{ nullptr }, reorderFilter_{ nullptr }
 {
-	TRACEPOINT;
 	auto dx = util::make_unique<QSpinBox>();
 	dx_ = *dx;
 	auto dy = util::make_unique<QSpinBox>();
@@ -44,7 +42,6 @@ SobelFilterWidget::SobelFilterWidget(QWidget *parent)
 	borderType_->addItem("BORDER_REPLICATE");
 	borderType_->addItem("BORDER_REFLECT");
 	borderType_->addItem("BORDER_REFLECT_101");
-	TRACEPOINT;
 
 	// connect
 	QObject::connect(dx_.getPtr(), SIGNAL(valueChanged(int)),
@@ -59,7 +56,6 @@ SobelFilterWidget::SobelFilterWidget(QWidget *parent)
 	QObject::connect(borderType_.getPtr(), SIGNAL(currentIndexChanged(int)),
 	                 &(this->signalFilterSettingsChanged()),
 	                 SIGNAL(signal()));
-	TRACEPOINT;
 
 	// subfilter reorder
 	auto reorder = util::make_unique<QCheckBox>("Reorder channels");
@@ -68,7 +64,6 @@ SobelFilterWidget::SobelFilterWidget(QWidget *parent)
 	reorderFilter_ = *reorderFilter;
 	reorder_->setChecked(false);
 	reorderFilter_->setVisible(false);
-	TRACEPOINT;
 	// visible
 	QObject::connect(reorder_.getPtr(), SIGNAL(clicked(bool)),
 	                 reorderFilter_.getPtr(), SLOT(setVisible(bool)));
@@ -80,7 +75,6 @@ SobelFilterWidget::SobelFilterWidget(QWidget *parent)
 	    &(reorderFilter_.getPtr()->signalFilterSettingsChanged()),
 	    SIGNAL(signal()), &(this->signalFilterSettingsChanged()),
 	    SIGNAL(signal()));
-	TRACEPOINT;
 
 	// subfilter gray
 	auto gray = util::make_unique<QCheckBox>("Apply gray filter");
@@ -89,7 +83,6 @@ SobelFilterWidget::SobelFilterWidget(QWidget *parent)
 	grayFilter_ = *grayFilter;
 	gray_->setChecked(false);
 	grayFilter_->setVisible(false);
-	TRACEPOINT;
 	// visible
 	QObject::connect(gray_.getPtr(), SIGNAL(clicked(bool)),
 	                 grayFilter_.getPtr(), SLOT(setVisible(bool)));
@@ -101,7 +94,6 @@ SobelFilterWidget::SobelFilterWidget(QWidget *parent)
 	                 SIGNAL(signal()),
 	                 &(this->signalFilterSettingsChanged()),
 	                 SIGNAL(signal()));
-	TRACEPOINT;
 
 	// build ui
 	auto lay = util::make_unique<QVBoxLayout>();
@@ -118,15 +110,12 @@ SobelFilterWidget::SobelFilterWidget(QWidget *parent)
 	lay->addWidget(util::make_unique<QLabel>("borderType").release());
 	lay->addWidget(borderType.release());
 	setLayout(lay.release());
-	TRACEPOINT;
 	// emit first update
 	signalFilterSettingsChanged().emitSignal();
-	TRACEPOINT;
 }
 
 void SobelFilterWidget::applyFilter(InputArray in, OutputArray out) const
 {
-	TRACEPOINT;
 	int ksize = 3;
 	switch (ksize_->currentIndex())
 	{
@@ -147,7 +136,6 @@ void SobelFilterWidget::applyFilter(InputArray in, OutputArray out) const
 		break;
 	}
 
-	TRACEPOINT;
 	int borderType = cv::BORDER_DEFAULT;
 	switch (borderType_->currentIndex())
 	{
@@ -168,39 +156,30 @@ void SobelFilterWidget::applyFilter(InputArray in, OutputArray out) const
 		break;
 	}
 
-	TRACEPOINT;
 	int dx = dx_->value();
 	int dy = dy_->value();
 	// apply filter
 	cvv::util::Reference<const cv::Mat> inar = in.at(0).get();
 	cvv::util::Reference<cv::Mat> outar = out.at(0).get();
-	TRACEPOINT;
 	// first reorder
 	if (reorder_->isChecked())
 	{
-		TRACEPOINT;
 		reorderFilter_->applyFilter({ { inar } }, { { outar } });
 		// out should be new input
 		inar = outar.get();
-		TRACEPOINT;
 	}
 	// then gray
 	if (gray_->isChecked())
 	{
-		TRACEPOINT;
 		grayFilter_->applyFilter({ { inar } }, { { outar } });
 		// out should be new input
 		inar = outar.get();
-		TRACEPOINT;
 	}
-	TRACEPOINT;
 	Sobel(inar.get(), outar.get(), -1, dx, dy, ksize, 1, 0, borderType);
-	TRACEPOINT;
 }
 
 std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray in) const
 {
-	TRACEPOINT;
 	// check depth in CV_8U,CV_16U,CV_16S,CV_32F,CV_64F
 	switch (in.at(0).get().depth())
 	{
@@ -211,67 +190,54 @@ std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray in) const
 	case CV_64F:
 		break;
 	default:
-		TRACEPOINT;
 		return { false, QString("unsupported depth: ") +
 			            QString::number(in.at(0).get().depth()) };
 	}
 
 	// check subfilter
-	TRACEPOINT;
 	if (gray_->isChecked())
 	{
-		TRACEPOINT;
 		auto resultGray = grayFilter_->checkInput(in);
 		if (!resultGray.first)
 		{
-			TRACEPOINT;
 			return resultGray;
 		}
 	}
-	TRACEPOINT;
 	if (reorder_->isChecked())
 	{
-		TRACEPOINT;
 		auto resultReorder = reorderFilter_->checkInput(in);
 		if (!resultReorder.first)
 		{
-			TRACEPOINT;
 			return resultReorder;
 		}
 	}
 
 	// check channels
-	TRACEPOINT;
 	if (!(gray_->isChecked())) // gray filter => channels will be 1
 	{
 		if ((reorder_->isChecked()) &&
 		    (reorderFilter_->outputChannels() > 4)) // no gray
 		{
-			TRACEPOINT;
 			return { false, "channels>4 (use gray filter or "
 			                "reorder with <=4 output channels)" };
 		}
 		else if ((in.at(0).get().channels() > 4)) // no gray filter +
 		                                          // reorder
 		{
-			TRACEPOINT;
 			return { false, "channels>4 (use gray filter or "
 			                "reorder with <=4 output channels)" };
 		}
 	}
 
-	TRACEPOINT;
 	int dx = dx_->value();
 	int dy = dy_->value();
 	if (dx == 0 && dy == 0)
 	{
-		TRACEPOINT;
 		return { false, "dx=0 and dy=0" };
 	}
 	// dx,dy<ksize, if sharr:  dx XOR dy
 	if (dx_->value() == 0 && dy_->value() == 0)
 	{
-		TRACEPOINT;
 		return { false, "dx=0 and dy=0" };
 	}
 
@@ -299,7 +265,6 @@ std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray in) const
 	{
 		if (dx + dy != 1)
 		{
-			TRACEPOINT;
 			return { false, "ksize=CV_SCHARR but dx+dy != 1" };
 		}
 	}
@@ -307,12 +272,10 @@ std::pair<bool, QString> SobelFilterWidget::checkInput(InputArray in) const
 	{
 		if ((dx >= 3 || dy >= 3) && (dx >= ksize || dy >= ksize))
 		{
-			TRACEPOINT;
 			return { false, "dx or dy is to big" };
 		}
 	}
 
-	TRACEPOINT;
 	return { true, "" };
 }
 }

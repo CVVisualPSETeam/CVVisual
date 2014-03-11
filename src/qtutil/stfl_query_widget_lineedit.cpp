@@ -1,6 +1,5 @@
 #include "stfl_query_widget_lineedit.hpp"
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -10,30 +9,24 @@ namespace qtutil
 STFLQueryWidgetLineEdit::STFLQueryWidgetLineEdit(QWidget *parent)
     : QLineEdit(parent), queryCompleter(new STFLQueryWidgetCompleter(this))
 {
-	TRACEPOINT;
 	queryCompleter->setWidget(this);
 	connect(queryCompleter, SIGNAL(activated(const QString &)), this,
 	        SLOT(insertCompletion(const QString &)));
-	TRACEPOINT;
 }
 
 STFLQueryWidgetCompleter *STFLQueryWidgetLineEdit::completer()
 {
-	TRACEPOINT;
 	return queryCompleter;
 }
 
 void STFLQueryWidgetLineEdit::insertCompletion(const QString &completion)
 {
-	TRACEPOINT;
 	setText(completion);
 	selectAll();
-	TRACEPOINT;
 }
 
 void STFLQueryWidgetLineEdit::keyPressEvent(QKeyEvent *e)
 {
-	TRACEPOINT;
 	if (queryCompleter->popup()->isVisible())
 	{
 		// The following keys are forwarded by the completer to the
@@ -67,16 +60,13 @@ void STFLQueryWidgetLineEdit::keyPressEvent(QKeyEvent *e)
 	}
 
 	requestSuggestions(text());
-	TRACEPOINT;
 }
 
 void STFLQueryWidgetLineEdit::showSuggestions(QStringList suggestions)
 {
-	TRACEPOINT;
 	queryCompleter->update(suggestions);
 	queryCompleter->popup()->setCurrentIndex(
 	    queryCompleter->completionModel()->index(0, 0));
-	TRACEPOINT;
 }
 }
 }

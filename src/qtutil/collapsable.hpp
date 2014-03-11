@@ -12,7 +12,6 @@
 
 #include "../util/util.hpp"
 #include "../util/observer_ptr.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -46,7 +45,6 @@ class Collapsable : public QFrame
 
 	~Collapsable()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -69,9 +67,7 @@ class Collapsable : public QFrame
 	*/
 	void expand(bool b = true)
 	{
-		TRACEPOINT;
 		collapse(!b);
-		TRACEPOINT;
 	}
 
 	/**
@@ -79,9 +75,7 @@ class Collapsable : public QFrame
 	*/
 	void setTitle(const QString &title)
 	{
-		TRACEPOINT;
 		button_->setText(title);
-		TRACEPOINT;
 	}
 
 	/**
@@ -90,7 +84,6 @@ class Collapsable : public QFrame
 	 */
 	QString title() const
 	{
-		TRACEPOINT;
 		return button_->text();
 	}
 
@@ -100,13 +93,11 @@ class Collapsable : public QFrame
 	 */
 	QWidget &widget()
 	{
-		TRACEPOINT;
 		return *widget_;
 	}
 
 	const QWidget &widget() const
 	{
-		TRACEPOINT;
 		return *widget_;
 	}
 
@@ -123,9 +114,7 @@ slots:
 	 */
 	void toggleVisibility()
 	{
-		TRACEPOINT;
 		collapse(widget_->isVisible());
-		TRACEPOINT;
 	}
 
       private:

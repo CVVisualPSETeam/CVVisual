@@ -5,7 +5,6 @@
 #include <QPen>
 
 #include "keypointsettings.hpp"
-#include "../../dbg/dbg.hpp"
 
 namespace cvv
 {

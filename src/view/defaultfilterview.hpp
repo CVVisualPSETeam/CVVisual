@@ -6,7 +6,6 @@
 #include "opencv2/core/core.hpp"
 
 #include "filter_view.hpp"
-#include "../dbg/dbg.hpp"
 
 #include "../impl/filter_call.hpp"
 
@@ -39,12 +38,10 @@ class DefaultFilterView : public cvv::view::FilterView
 			  QWidget *parent = nullptr)
 	    : DefaultFilterView{ { call.original(), call.result() }, parent }
 	{
-		TRACEPOINT;
 	}
 
 	~DefaultFilterView()
 	{
-		TRACEPOINT;
 	}
 };
 }

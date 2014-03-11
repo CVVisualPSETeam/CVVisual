@@ -4,7 +4,6 @@
 #include <QFrame>
 #include <QPen>
 
-#include "../../dbg/dbg.hpp"
 
 namespace cvv
 {

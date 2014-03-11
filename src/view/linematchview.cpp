@@ -7,6 +7,7 @@
 #include "../qtutil/matchview/singlecolorkeypointpen.hpp"
 #include "../qtutil/matchview/matchmanagement.hpp"
 #include "../qtutil/matchview/matchsettingsselector.hpp"
+#include "../qtutil/matchview/showinrawviewwidget.hpp"
 #include "../util/util.hpp"
 
 #include "linematchview.hpp"
@@ -42,6 +43,11 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	matchManagment_ = matchmnt.get();
 	keyManagment_ = keyPointmnt.get();
 
+	connect(&matchscene_ptr->getLeftImage(),SIGNAL(updateMouseHover(QPointF,QString,bool)),
+		this,SLOT(updateMousHoverOver(QPointF,QString,bool)));
+	connect(&matchscene_ptr->getRightImage(),SIGNAL(updateMouseHover(QPointF,QString,bool)),
+		this,SLOT(updateMousHoverOver(QPointF,QString,bool)));
+
 	accor->setMinimumWidth(350);
 	accor->setMaximumWidth(350);
 
@@ -49,13 +55,19 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	std::vector<qtutil::CVVKeyPoint *> rightKeys;
 
 	accor->insert("Match Settings", std::move(matchmnt));
-	accor->insert("KeyPoint Color", std::move(keyPointmnt));
+	accor->insert("KeyPoint Settings", std::move(keyPointmnt));
 	accor->insert("Left Image ",
 		      std::move(matchscene_ptr->getLeftMatInfoWidget()));
 	accor->insert("Right Image ",
 		      std::move(matchscene_ptr->getRightMatInfoWidget()));
 	accor->insert("Sync Zoom ",
 		      std::move(matchscene_ptr->getSyncZoomWidget()));
+	accor->insert("Show selection in rawview window",
+		      std::move(util::make_unique<qtutil::ShowInRawView>(leftKeyPoints,
+								 rightKeyPoints,
+								 matches,
+								 matchManagment_,
+								 keyManagment_)));
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());

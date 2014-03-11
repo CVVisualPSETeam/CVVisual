@@ -29,21 +29,18 @@ class MatchCallTab
 
       public:
 	/**
-	 * @brief Short constructor named after Call and using the default view.
-	 * Initializes the MatchCallTab with the default view and names it after
+	 * @brief Short constructor named after Call and using the requested View
+	 * from the Call or, if no or invalid request, default view.
+	 * Initializes the MatchCallTab with the requested or default view and names it after
 	 * the associated MatchCall.
 	 * @param matchCall - the MatchCall containing the information to be
 	 * visualized.
 	 */
 	MatchCallTab(const cvv::impl::MatchCall &matchCall)
-	    : MultiViewCallTab<cvv::view::MatchView, cvv::impl::MatchCall>{
-		      matchCall, QString{ "default_match_view" }, QString{ "LineMatchView" }
+	    : MatchCallTab{
+		      matchCall, matchCall.requestedView()
 	      }
 	{
-		TRACEPOINT;
-		oldView_ = nullptr;
-		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
-		TRACEPOINT;
 	}
 
 	/**
@@ -59,15 +56,12 @@ class MatchCallTab
 			  matchCall, matchViewId, QString{ "default_match_view" }, QString{ "LineMatchView" }
 		  }
 	{
-		TRACEPOINT;
-		oldView_ = nullptr;
+		oldView_ = view_;
 		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
-		TRACEPOINT;
 	}
 
 	~MatchCallTab()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -81,7 +75,6 @@ class MatchCallTab
 	 */
 	template <class View> static bool registerMatchView(const QString &name)
 	{
-		TRACEPOINT;
 		return registerView<View>(name);
 	}
 
@@ -92,7 +85,6 @@ private slots:
 	 */
 	void viewChanged()
 	{
-		TRACEPOINT;
 		if(oldView_ != nullptr)
 		{
 			view_->setKeyPointSelection(oldView_->getKeyPointSelection());
