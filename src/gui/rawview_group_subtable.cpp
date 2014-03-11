@@ -21,7 +21,6 @@
 #include "../view/rawview.hpp"
 #include "rawview_table.hpp"
 #include "../controller/view_controller.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -32,7 +31,6 @@ RawviewGroupSubtable::RawviewGroupSubtable(
     RawviewTable *parent, stfl::ElementGroup<RawviewTableRow> group)
     : parent{ parent }, group{ std::move(group) }
 {
-	TRACEPOINT;
 	qTable = new QTableWidget(this);
 	qTable->setSelectionBehavior(QAbstractItemView::SelectRows);
 	qTable->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -86,23 +84,19 @@ RawviewGroupSubtable::RawviewGroupSubtable(
 	qTable->setColumnCount(list.size());
 	qTable->setHorizontalHeaderLabels(list);
 	updateUI();
-	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::updateUI()
 {
-	TRACEPOINT;
 	qTable->setRowCount(group.size());
 	for (size_t i = 0; i < group.size(); i++)
 	{
 		group.get(i).addToTable(qTable, i);
 	}
-	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::selectionChanged()
 {
-	TRACEPOINT;
 	QModelIndexList indexList = qTable->selectionModel()->selectedIndexes();
 	for (QModelIndex index : indexList)
 	{
@@ -115,12 +109,10 @@ void RawviewGroupSubtable::selectionChanged()
 			}
 		}
 	}
-	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::customMenuRequested(QPoint location)
 {
-	TRACEPOINT;
 	QModelIndex index = qTable->indexAt(location);
 	if (!index.isValid())
 	{
@@ -148,12 +140,10 @@ void RawviewGroupSubtable::customMenuRequested(QPoint location)
 		currentRowIndexes = { row };
 	}
 	menu->popup(qTable->viewport()->mapToGlobal(location));
-	TRACEPOINT;
 }
 
 void RawviewGroupSubtable::customMenuAction(QAction *action)
 {
-	TRACEPOINT;
 	bool single = group.getTitles().contains("single key point");
 	if (currentRowIndexes.size() > 0)
 	{
@@ -200,8 +190,6 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 			}
 		}
 	}
-	DEBUG("Action: " + action->text().toStdString());
-	TRACEPOINT;
 }
 
 std::vector<cv::DMatch> RawviewGroupSubtable::getMatchSelection()

@@ -16,7 +16,6 @@
 #include "../gui/call_window.hpp"
 #include "../gui/call_tab.hpp"
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {

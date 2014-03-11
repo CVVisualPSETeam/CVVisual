@@ -18,7 +18,6 @@ class ZoomableProxyObject : public QGraphicsProxyWidget
 
 	~ZoomableProxyObject()
 	{
-		TRACEPOINT;
 	}
 
       protected:

@@ -14,7 +14,6 @@
 
 #include "keypointsettings.hpp"
 #include "../zoomableimage.hpp"
-#include "../../dbg/dbg.hpp"
 
 namespace cvv
 {

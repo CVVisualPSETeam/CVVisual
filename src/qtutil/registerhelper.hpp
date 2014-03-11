@@ -13,7 +13,6 @@
 #include <QVBoxLayout>
 // cvv
 #include "signalslot.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -41,12 +40,9 @@ template <class Value, class... Args> class RegisterHelper
 	    : comboBox_{ new QComboBox{} }, signElementSelected_{},
 	      slotElementRegistered_{ [&](const QString &name)
 	{
-		TRACEPOINT;
 		comboBox_->addItem(name);
-		TRACEPOINT;
 	} }
 	{
-		TRACEPOINT;
 		// elem registered
 		QObject::connect(&signalElementRegistered(),
 		                 &SignalQString::signal,
@@ -61,12 +57,10 @@ template <class Value, class... Args> class RegisterHelper
 			comboBox_->addItem(elem.first);
 		}
 
-		TRACEPOINT;
 	}
 
 	~RegisterHelper()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -75,7 +69,6 @@ template <class Value, class... Args> class RegisterHelper
 	 */
 	QString selection() const
 	{
-		TRACEPOINT;
 		return comboBox_->currentText();
 	}
 
@@ -86,7 +79,6 @@ template <class Value, class... Args> class RegisterHelper
 	 */
 	static bool has(const QString &name)
 	{
-		TRACEPOINT;
 		return registeredElementsMap().find(name) !=
 		       registeredElementsMap().end();
 	}
@@ -97,13 +89,11 @@ template <class Value, class... Args> class RegisterHelper
 	 */
 	static std::vector<QString> registeredElements()
 	{
-		TRACEPOINT;
 		std::vector<QString> result{};
 		for (auto &elem : registeredElementsMap())
 		{
 			result.push_back(elem.first);
 		};
-		TRACEPOINT;
 		return result;
 	}
 
@@ -119,10 +109,8 @@ template <class Value, class... Args> class RegisterHelper
 	    const QString &name,
 	    const std::function<std::unique_ptr<Value>(Args...)> &fabric)
 	{
-		TRACEPOINT;
 		if (has(name))
 		{
-			TRACEPOINT;
 			return false;
 		};
 
@@ -130,7 +118,6 @@ template <class Value, class... Args> class RegisterHelper
 
 		signalElementRegistered().emitSignal(name);
 
-		TRACEPOINT;
 		return true;
 	}
 
@@ -142,14 +129,12 @@ template <class Value, class... Args> class RegisterHelper
 	 */
 	bool select(const QString &name)
 	{
-		TRACEPOINT;
 		if (!has(name))
 		{
 			return false;
 		}
 		comboBox_->setCurrentText(name);
 		return true;
-		TRACEPOINT;
 	}
 
 	/**
@@ -161,7 +146,6 @@ template <class Value, class... Args> class RegisterHelper
 	 */
 	std::function<std::unique_ptr<Value>(Args...)> operator()()
 	{
-		TRACEPOINT;
 		return (*this)(selection());
 	}
 
@@ -174,7 +158,6 @@ template <class Value, class... Args> class RegisterHelper
 	std::function<std::unique_ptr<Value>(Args...)>
 	operator()(const QString &name)
 	{
-		TRACEPOINT;
 		return registeredElementsMap().at(name);
 	}
 

@@ -55,7 +55,6 @@ template <int depth> void test(int w, int h, int threads)
  */
 int main()
 {
-	cvv::dbg::setLoggingState(false);
 	try
 	{
 		{

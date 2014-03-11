@@ -14,7 +14,6 @@ namespace qtutil
 ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
     : QWidget{ parent }
 {
-	TRACEPOINT;
 	auto basicLayout = cvv::util::make_unique<QVBoxLayout>();
 
 	basicLayout->setContentsMargins(0,0,0,0);
@@ -78,23 +77,19 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
 
 	updateMat(zoomIm.mat());
 	updateConvertStatus(zoomIm.lastConversionResult(),zoomIm.mat());
-	TRACEPOINT;
 }
 
 void ZoomableOptPanel::updateConvertStatus(ImageConversionResult result,
 					   const cv::Mat &mat)
 {
-	TRACEPOINT;
 	labelConvert_->setText(
 		QString{ "Convert Status: " }.append(conversionResultToString(result)));
 
 	updateMat(mat);
-	TRACEPOINT;
 }
 
 void ZoomableOptPanel::updateMat(cv::Mat mat)
 {
-	TRACEPOINT;
 	if (mat.empty())
 	{
 		labelDim_->setText("empty");
@@ -115,7 +110,6 @@ void ZoomableOptPanel::updateMat(cv::Mat mat)
 		auto type=typeToQString(mat);
 		labelType_->setText(QString{"Type: "}.append(type.second));
 	}
-	TRACEPOINT;
 }
 
 void ZoomableOptPanel::setZoom(QRectF, qreal zoomfac)

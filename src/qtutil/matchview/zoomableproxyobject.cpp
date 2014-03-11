@@ -11,9 +11,7 @@ namespace qtutil
 ZoomableProxyObject::ZoomableProxyObject(ZoomableImage *zoom)
     : QGraphicsProxyWidget{}, image_{ zoom }
 {
-	TRACEPOINT;
 	QGraphicsProxyWidget::setWidget(image_);
-	TRACEPOINT;
 }
 
 void ZoomableProxyObject::wheelEvent(QGraphicsSceneWheelEvent *event)

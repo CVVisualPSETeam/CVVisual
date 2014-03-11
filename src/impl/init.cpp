@@ -1,6 +1,5 @@
 #include "init.hpp"
 
-#include "../dbg/dbg.hpp"
 
 // filters
 #include "../qtutil/filterselectorwidget.hpp"

@@ -7,7 +7,6 @@
 #include <QSpinBox>
 
 #include "../filterfunctionwidget.hpp"
-#include "../../dbg/dbg.hpp"
 #include "../../util/observer_ptr.hpp"
 
 namespace cvv
@@ -35,14 +34,6 @@ class ChannelReorderFilter : public FilterFunctionWidget<1, 1>
 	ChannelReorderFilter(QWidget *parent = nullptr);
 
 	/**
-	 * @brief Destructor
-	 */
-	~ChannelReorderFilter()
-	{
-		TRACEPOINT;
-	}
-
-	/**
 	 * @brief Applys the filter to in and saves the result in out.
 	 * @param in The input images.
 	 * @param out The output images.
@@ -63,7 +54,6 @@ class ChannelReorderFilter : public FilterFunctionWidget<1, 1>
 
 	int outputChannels()
 	{
-		TRACEPOINT;
 		return channel_->value();
 	}
 
@@ -75,9 +65,7 @@ slots:
 	 */
 	void setChannel(int n)
 	{
-		TRACEPOINT;
 		setChannel(static_cast<std::size_t>(n));
-		TRACEPOINT;
 	}
 
 	/**

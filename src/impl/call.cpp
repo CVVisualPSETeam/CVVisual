@@ -22,7 +22,6 @@ Call::Call(impl::CallMetaData callData, QString type, QString description,
       requestedView_{ std::move(requestedView) }
 {
 
-	TRACEPOINT;
 }
 }
 } // namespaces cvv::impl

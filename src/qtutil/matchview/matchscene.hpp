@@ -16,7 +16,6 @@
 #include "../synczoomwidget.hpp"
 #include "../zoomableimage.hpp"
 #include "../zoomableimageoptpanel.hpp"
-#include "../../dbg/dbg.hpp"
 #include "../../util/util.hpp"
 
 namespace cvv

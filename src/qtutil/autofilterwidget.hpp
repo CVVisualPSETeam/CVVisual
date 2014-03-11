@@ -17,7 +17,6 @@
 #include "signalslot.hpp"
 #include "../util/util.hpp"
 #include "../util/observer_ptr.hpp"
-#include "../dbg/dbg.hpp"
 #include "signalslot.hpp"
 
 namespace cvv
@@ -67,7 +66,6 @@ class AutoFilterWidgetEntry : public QWidget
 	    : QWidget{ parent }, name_{ name }, checkBox_{ nullptr },
 	      message_{ nullptr }, in_(in), out_(out), signals_()
 	{
-		TRACEPOINT;
 		auto box = util::make_unique<QCheckBox>(name);
 		checkBox_ = *box;
 
@@ -83,7 +81,6 @@ class AutoFilterWidgetEntry : public QWidget
 		message_->setVisible(false);
 		setLayout(lay.release());
 		enableUserSelection(true);
-		TRACEPOINT;
 	}
 
 	/**
@@ -91,7 +88,6 @@ class AutoFilterWidgetEntry : public QWidget
 	 */
 	~AutoFilterWidgetEntry()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -99,7 +95,6 @@ class AutoFilterWidgetEntry : public QWidget
 	 */
 	operator bool() const
 	{
-		TRACEPOINT;
 		return checkBox_->isChecked();
 	}
 
@@ -109,7 +104,6 @@ class AutoFilterWidgetEntry : public QWidget
 	 */
 	InputArray input() const
 	{
-		TRACEPOINT;
 		return in_;
 	}
 
@@ -119,7 +113,6 @@ class AutoFilterWidgetEntry : public QWidget
 	 */
 	OutputArray output()
 	{
-		TRACEPOINT;
 		return out_;
 	}
 
@@ -129,13 +122,11 @@ class AutoFilterWidgetEntry : public QWidget
 	 */
 	std::vector<util::Reference<const SignalMatRef>> signalsRef() const
 	{
-		TRACEPOINT;
 		std::vector<util::Reference<const SignalMatRef>> result{};
 		for (auto &elem : signals_)
 		{
 			result.emplace_back(elem);
 		}
-		TRACEPOINT;
 		return result;
 	}
 
@@ -144,12 +135,10 @@ class AutoFilterWidgetEntry : public QWidget
 	*/
 	void emitAll() const
 	{
-		TRACEPOINT;
 		for (std::size_t i = 0; i < Out; i++)
 		{
 			signals_.at(i).emitSignal(out_.at(i).get());
 		}
-		TRACEPOINT;
 	}
 
 	/**
@@ -159,17 +148,14 @@ class AutoFilterWidgetEntry : public QWidget
 	 */
 	void setMessage(const QString &msg = "")
 	{
-		TRACEPOINT;
 		if (msg == "")
 		{
 			message_->setVisible(false);
-			TRACEPOINT;
 			return;
 		}
 		message_->setVisible(true);
 		message_->setText(QString("<font color='red'>") + name_ +
 		                  QString(": ") + msg + QString("</font>"));
-		TRACEPOINT;
 	}
 
 	/**
@@ -179,13 +165,11 @@ class AutoFilterWidgetEntry : public QWidget
 	 */
 	void enableUserSelection(bool enabled = true)
 	{
-		TRACEPOINT;
 		if (!enabled)
 		{
 			checkBox_->setChecked(true);
 		}
 		checkBox_->setVisible(enabled);
-		TRACEPOINT;
 	}
 
 	/**
@@ -241,23 +225,19 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 	    : FilterSelectorWidget<In, Out>{ parent },
 	      slotEnableUserSelection_{ [this](bool b)
 	{
-		TRACEPOINT;
 		this->enableUserSelection(b);
 	} },
 	      slotUseFilterIndividually_{ [this](bool b)
 	{
-		TRACEPOINT;
 		this->useFilterIndividually(b);
 	} },
 	      entryLayout_{ nullptr }, applyFilterIndividually_{ false },
 	      entries_{}, earliestActivationTime_{}, slotApplyFilter_{ [this]()
 	{
-		TRACEPOINT;
 		this->autoApplyFilter();
 	} },
 	      userSelection_{ true }
 	{
-		TRACEPOINT;
 		// add sublayout
 		auto lay = util::make_unique<QVBoxLayout>();
 		entryLayout_ = *lay;
@@ -267,7 +247,6 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 		QObject::connect(&(this->signalFilterSettingsChanged()),
 		                 SIGNAL(signal()), &(this->slotApplyFilter_),
 		                 SLOT(slot()));
-		TRACEPOINT;
 	}
 
 	/**
@@ -280,7 +259,6 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 	std::vector<util::Reference<const SignalMatRef>>
 	addEntry(const QString &name, InputArray in, OutputArray out)
 	{
-		TRACEPOINT;
 		auto elem = util::make_unique<
 		    structures::AutoFilterWidgetEntry<In, Out>>(name, in, out);
 		auto result = elem->signalsRef();
@@ -289,7 +267,6 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 		entries_.emplace_back(*elem);
 		// add it to the widget
 		entryLayout_->addWidget(elem.release());
-		TRACEPOINT;
 		return result;
 	}
 
@@ -298,7 +275,6 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 	 */
 	void removeAll()
 	{
-		TRACEPOINT;
 		structures::AutoFilterWidgetEntry<In, Out> *elemToDelete;
 		for (auto &elem : entries_)
 		{
@@ -309,7 +285,6 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 			elemToDelete->deleteLater();
 		}
 		entries_.clear();
-		TRACEPOINT;
 	}
 
 	/**
@@ -319,13 +294,11 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 	 */
 	void enableUserSelection(bool enabled = true)
 	{
-		TRACEPOINT;
 		userSelection_ = enabled;
 		for (auto &elem : entries_)
 		{
 			elem.get().enableUserSelection(userSelection_);
 		}
-		TRACEPOINT;
 	}
 
 	/**
@@ -337,9 +310,7 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 	 */
 	void useFilterIndividually(bool individually = true)
 	{
-		TRACEPOINT;
 		applyFilterIndividually_ = individually;
-		TRACEPOINT;
 	}
 
 	/**
@@ -374,19 +345,16 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 	 */
 	void autoApplyFilter()
 	{
-		TRACEPOINT;
 		auto start = std::chrono::high_resolution_clock::now();
 		// activate again?
 		if (start < earliestActivationTime_)
 		{
-			TRACEPOINT;
 			return;
 		}
 		// apply filter
 		if (!applyFilterIndividually_)
 		{
 			// only apply all filters at once
-			TRACEPOINT;
 			// check wheather all filters can be applied
 			std::size_t failed = 0;
 			for (auto &elem : entries_)
@@ -420,7 +388,6 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 			if (failed)
 			{
 				// one filter failed
-				TRACEPOINT;
 				return;
 			}
 			// all can apply filter
@@ -438,7 +405,6 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 		}
 		else
 		{ // applyFilterIndividually_==true
-			TRACEPOINT;
 			// filters can be applied individually
 			for (auto &elem : entries_)
 			{
@@ -475,7 +441,6 @@ class AutoFilterWidget : public FilterSelectorWidget<In, Out>
 		    std::chrono::high_resolution_clock::now() +
 		    (std::chrono::high_resolution_clock::now() -
 		     start); // duration
-		TRACEPOINT;
 	}
 
 	/**

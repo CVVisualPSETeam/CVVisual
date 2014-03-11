@@ -18,7 +18,6 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 				     QWidget *parent)
     : FilterView{ parent }
 {
-	TRACEPOINT;
 
 	auto layout = util::make_unique<QHBoxLayout>();
 	auto accor = util::make_unique<qtutil::Accordion>();
@@ -61,7 +60,6 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	{
 		zoomableImage->showFullImage();
 	}
-	TRACEPOINT;
 }
 }
 } // namespaces

@@ -14,7 +14,6 @@
 #include "overview_table.hpp"
 #include "overview_table_row.hpp"
 #include "../util/util.hpp"
-#include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
 
 namespace cvv
@@ -51,11 +50,6 @@ class OverviewPanel : public QWidget
 	 * @param controller ViewController that inherits this overview
 	 */
 	OverviewPanel(util::Reference<controller::ViewController> controller);
-
-	~OverviewPanel()
-	{
-		TRACEPOINT;
-	}
 
 	/**
 	 * @brief Adds the given call to the shown overview table.

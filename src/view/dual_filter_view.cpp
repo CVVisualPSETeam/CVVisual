@@ -15,7 +15,6 @@
 #include <QtGui>
 #include <QVBoxLayout>
 
-#include "../dbg/dbg.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../qtutil/autofilterwidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
@@ -34,7 +33,6 @@ namespace view
 DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
     : FilterView{ parent }, rawImages_(images)
 {
-	TRACEPOINT;
 	auto layout = util::make_unique<QHBoxLayout>();
 	auto imageLayout = util::make_unique<QHBoxLayout>();
 	auto imwid = util::make_unique<QWidget>();
@@ -116,7 +114,6 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 	{
 		zoomableImage->showFullImage();
 	}
-	TRACEPOINT;
 }
 
 // Vektorkonstruktor
@@ -129,12 +126,10 @@ DualFilterView::DualFilterView(const std::vector<cv::Mat> &images,
 std::array<cv::Mat, 2>
 DualFilterView::convertToArray(const std::vector<cv::Mat> &matVec) const
 {
-	TRACEPOINT;
 	if (matVec.size() != 2)
 	{
 		throw std::runtime_error("Wrong number of elements in vector");
 	}
-	TRACEPOINT;
 	return { matVec.at(0), matVec.at(1) };
 }
 }

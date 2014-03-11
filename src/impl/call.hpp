@@ -10,7 +10,6 @@
 
 #include "call_meta_data.hpp"
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -30,7 +29,6 @@ class Call
       public:
 	virtual ~Call()
 	{
-		DEBUG("Destructing Call #", id);
 	}
 
 	/**
@@ -38,7 +36,6 @@ class Call
 	 */
 	size_t getId() const
 	{
-		TRACEPOINT;
 		return id;
 	}
 
@@ -47,7 +44,6 @@ class Call
 	 */
 	const QString &type() const
 	{
-		TRACEPOINT;
 		return calltype;
 	}
 
@@ -68,7 +64,6 @@ class Call
 	 */
 	const QString &description() const
 	{
-		TRACEPOINT;
 		return description_;
 	}
 
@@ -78,7 +73,6 @@ class Call
 	 */
 	const QString &requestedView() const
 	{
-		TRACEPOINT;
 		return requestedView_;
 	}
 
@@ -88,7 +82,6 @@ class Call
 	 */
 	const CallMetaData &metaData() const
 	{
-		TRACEPOINT;
 		return metaData_;
 	}
 

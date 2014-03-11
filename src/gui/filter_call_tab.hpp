@@ -7,7 +7,6 @@
 #include "multiview_call_tab.hpp"
 #include "../view/filter_view.hpp"
 #include "../impl/filter_call.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -39,7 +38,6 @@ class FilterCallTab
 		      filterCall, QString{ "default_filter_view" }, QString{ "DefaultFilterView" }
 	      }
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -55,12 +53,10 @@ class FilterCallTab
 		      filterCall, filterViewId, QString{ "default_filter_view" }, QString{ "DefaultFilterView" }
 	      }
 	{
-		TRACEPOINT;
 	}
 
 	~FilterCallTab()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -75,7 +71,6 @@ class FilterCallTab
 	template <class View>
 	static bool registerFilterView(const QString &name)
 	{
-		TRACEPOINT;
 		return registerView<View>(name);
 	}
 };

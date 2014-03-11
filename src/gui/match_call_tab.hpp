@@ -40,10 +40,8 @@ class MatchCallTab
 		      matchCall, QString{ "default_match_view" }, QString{ "LineMatchView" }
 	      }
 	{
-		TRACEPOINT;
 		oldView_ = view_;
 		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
-		TRACEPOINT;
 	}
 
 	/**
@@ -59,15 +57,12 @@ class MatchCallTab
 			  matchCall, matchViewId, QString{ "default_match_view" }, QString{ "LineMatchView" }
 		  }
 	{
-		TRACEPOINT;
 		oldView_ = view_;
 		connect(&this->viewSet, SIGNAL(signal()), this, SLOT(viewChanged()));
-		TRACEPOINT;
 	}
 
 	~MatchCallTab()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -81,7 +76,6 @@ class MatchCallTab
 	 */
 	template <class View> static bool registerMatchView(const QString &name)
 	{
-		TRACEPOINT;
 		return registerView<View>(name);
 	}
 
@@ -92,7 +86,6 @@ private slots:
 	 */
 	void viewChanged()
 	{
-		TRACEPOINT;
 		if(oldView_ != nullptr)
 		{
 			view_->setKeyPointSelection(oldView_->getKeyPointSelection());

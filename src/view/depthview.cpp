@@ -23,7 +23,6 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 			       QWidget *parent)
     : MatchView{ parent }
 {
-	TRACEPOINT;
 	auto layout = util::make_unique<QHBoxLayout>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 	auto matchscene =
@@ -107,7 +106,6 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		matchscene_ptr->addMatch(std::move(cvmatchright));
 	}
 	matchManagment_->updateAll();
-	TRACEPOINT;
 }
 }
 }

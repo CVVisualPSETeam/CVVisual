@@ -9,7 +9,6 @@
 #include <QString>
 #include <QVBoxLayout>
 
-#include "../../dbg/dbg.hpp"
 #include "../../util/util.hpp"
 #include "diffFilterWidget.hpp"
 
@@ -56,12 +55,10 @@ DiffFilterFunction::DiffFilterFunction(QWidget *parent)
 
 void DiffFilterFunction::applyFilter(InputArray in, OutputArray out) const
 {
-	TRACEPOINT;
 
 	auto check = checkInput(in);
 	if (!check.first)
 	{
-		TRACEPOINT;
 		return;
 	}
 
@@ -81,12 +78,10 @@ void DiffFilterFunction::applyFilter(InputArray in, OutputArray out) const
 
 	out.at(0).get() = splitVector.at(static_cast<size_t>(filterType_));
 
-	TRACEPOINT;
 }
 
 std::pair<bool, QString> DiffFilterFunction::checkInput(InputArray in) const
 {
-	TRACEPOINT;
 
 	if (in.at(0).get().size() != in.at(1).get().size())
 	{
@@ -114,7 +109,6 @@ std::pair<bool, QString> DiffFilterFunction::checkInput(InputArray in) const
 		    false, "Images must have one, three or four channels");
 	}
 
-	TRACEPOINT;
 
 	return std::make_pair(true, "Images can be converted");
 }

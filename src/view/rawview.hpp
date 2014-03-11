@@ -77,7 +77,6 @@ public:
 	    : Rawview(call.keyPoints1(), call.keyPoints2(), 
 				  call.matches(), call.usesTrainDescriptor())
 	{
-		TRACEPOINT;
 		setParent(parent);
 	}
 

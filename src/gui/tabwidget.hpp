@@ -4,7 +4,6 @@
 #include <QTabWidget>
 #include <QTabBar>
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -24,13 +23,8 @@ class TabWidget : public QTabWidget
 	 */
 	TabWidget(QWidget *parent) : QTabWidget(parent)
 	{
-		TRACEPOINT;
 	};
 
-	~TabWidget()
-	{
-		TRACEPOINT;
-	}
 	/**
 	 * @brief Returns the shown tab bar.
 	 * This method helps to access the member tabBar which has by default

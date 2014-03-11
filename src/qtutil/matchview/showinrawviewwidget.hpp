@@ -22,17 +22,25 @@ public:
 		      MatchManagement* matchmnt,
 		      KeyPointManagement* keymnt,
 		      QWidget*parent=nullptr);
-
+	
 	~ShowInRawView();
+
+protected:
+	virtual void hideEvent(QHideEvent * );
+	
+	virtual void showEvent(QShowEvent *);
+
 private slots:
 
-	void showHideRawviewWindow()
-	{rawViewWindow_->setVisible(!rawViewWindow_->isVisible());}
+	void getcurrentSelection();
 
 private:
 	MatchManagement* matchmnt_;
 	KeyPointManagement* keymnt_;
 	RawviewWindow* rawViewWindow_;
+	std::vector<cv::KeyPoint> left_key_;
+	std::vector<cv::KeyPoint> right_key_;
+	std::vector<cv::DMatch> matches_;
 };
 
 }}
