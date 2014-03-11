@@ -81,14 +81,14 @@ class MatchScene : public QGraphicsView
 	 * @return a ZoomableOptPanel of the left Image
 	 */
 	std::unique_ptr<ZoomableOptPanel> getLeftMatInfoWidget()
-		{return util::make_unique<ZoomableOptPanel>(*leftImage_);}
+		{return util::make_unique<ZoomableOptPanel>(*leftImage_,false);}
 
 	/**
 	 * @brief returns a ZoomableOptPanel of the right Image
 	 * @return a ZoomableOptPanel of the right Image
 	 */
 	std::unique_ptr<ZoomableOptPanel> getRightMatInfoWidget()
-		{return util::make_unique<ZoomableOptPanel>(*rightImage_);}
+		{return util::make_unique<ZoomableOptPanel>(*rightImage_,false);}
 
 
 	/**

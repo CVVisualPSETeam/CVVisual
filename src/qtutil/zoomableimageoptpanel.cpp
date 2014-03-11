@@ -11,7 +11,7 @@ namespace cvv
 namespace qtutil
 {
 
-ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
+ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, bool showHideButton, QWidget *parent)
     : QWidget{ parent }
 {
 	auto basicLayout = cvv::util::make_unique<QVBoxLayout>();
@@ -27,7 +27,6 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
 	auto labelDepth = cvv::util::make_unique<QLabel>();
 	auto buttonFullImage =
 	    cvv::util::make_unique<QPushButton>("show full Image");
-	auto checkboxShowImage= util::make_unique<QCheckBox>("Show image");
 
 	// ConversionResult+ update mat
 	connect(&zoomIm, SIGNAL(updateConversionResult(ImageConversionResult,
@@ -47,10 +46,7 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
 	connect(buttonFullImage.get(), SIGNAL(clicked()), &zoomIm,
 		SLOT(showFullImage()));
 
-	//connect show image
-	checkboxShowImage->setChecked(true);
-	QObject::connect(checkboxShowImage.get(),SIGNAL(clicked(bool)),
-			 &zoomIm,SLOT(setVisible(bool)));
+
 
 	zoomSpin->setMinimum(0.0);
 	zoomSpin->setMaximum(2000.0);
@@ -64,7 +60,15 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, QWidget *parent)
 	labelDepth_ = labelDepth.get();
 
 	basicLayout->addWidget(zoomSpin.release());
-	basicLayout->addWidget(checkboxShowImage.release());
+	if(showHideButton)
+	{
+		auto checkboxShowImage= util::make_unique<QCheckBox>("Show image");
+		//connect show image
+		checkboxShowImage->setChecked(true);
+		QObject::connect(checkboxShowImage.get(),SIGNAL(clicked(bool)),
+				 &zoomIm,SLOT(setVisible(bool)));
+		basicLayout->addWidget(checkboxShowImage.release());
+	}
 	basicLayout->addWidget(labelConvert.release());
 	basicLayout->addWidget(labelSize.release());
 	basicLayout->addWidget(labelDim.release());

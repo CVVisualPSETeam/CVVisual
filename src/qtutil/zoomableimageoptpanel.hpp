@@ -32,7 +32,7 @@ class ZoomableOptPanel : public QWidget
 	 * @param parent the parent Widget
 	 */
 	ZoomableOptPanel(const ZoomableImage &zoomIm,
-	                 QWidget *parent = nullptr);
+			 bool showHideButton=true,QWidget *parent = nullptr);
 
       public
 slots:
