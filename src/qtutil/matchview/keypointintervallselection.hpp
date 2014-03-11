@@ -33,9 +33,14 @@ public:
 	 */
 	virtual std::vector<cv::KeyPoint> select(const std::vector<cv::KeyPoint>& selection)override;
 
+private slots:
+
+	void changeSelecteValue();
 private:
+	QLayout* layout_;
 	IntervallSelector* selector_;
 	KeyPointValueChooser * valueChooser_;
+	std::vector<cv::KeyPoint> keypoints_;
 };
 
 }}
