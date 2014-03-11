@@ -50,14 +50,6 @@ class DiffFilterFunction : public FilterFunctionWidget<2, 1>
 	DiffFilterFunction(QWidget *parent = nullptr);
 
 	/**
-	* @brief Default destructuor.
-	*/
-	~DiffFilterFunction()
-	{
-		TRACEPOINT;
-	}
-
-	/**
 	* @brief Applys difference filter specified by filterType_.
 	* @param in Array of input matrices
 	* @param out Array of output matrices

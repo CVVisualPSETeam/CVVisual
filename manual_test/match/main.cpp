@@ -40,6 +40,19 @@ std::vector<cv::KeyPoint> scaleDown(const std::vector<cv::KeyPoint> &in,
 
 	return points;
 }
+
+/**
+ * @brief This test creates random matches of random quality on all the provided images and scales
+ * them down for a copy of the same image.
+ * 
+ * Expected behaviour:
+ * * A Mainwindow should open that shows an overview-table containing matches from the first image to itself
+ * * Upon klicking step multiple times or '>>' once, all further images should appear in the table.
+ * * All calls can be opened in any existing window or in a new one. It is possible to select all the
+ *   different match-visualisations for all of them.
+ * * Closing calltabs should work. Closing the last tab of a window results in the closing of the window
+ * * Clicking the Close-button results in the termination of the program with 0 as exit-status.
+ */
 int main(int argc, char **argv)
 {
 	if (argc < 2)

@@ -73,7 +73,7 @@ image_count      | yes               | yes                | yes, also range     
 function         | yes               | yes                | yes                 | calling function
 file             | yes               | yes                | yes                 | inheriting file
 line             | yes               | yes                | yes, also range     |
-type             | yes               | yes                | yes                 | call type   
+type             | yes               | yes                | yes                 | call type
             
 
 ##Rawview
@@ -83,7 +83,7 @@ feauture/command | numeric type | description/property
 -----------------|:-------------|:---------------------------------------------
 match_distance   | float        | match distance
 img_idx          | integer      | match img idx 
-query_idx        | integer      | match query idx  
+query_idx        | integer      | match query idx
 train_idx        | integer      | match train idx
 x_1              | float        | x coordinate of the "left" key point
 y_1              | float        | y coordinate of the "left" key point 

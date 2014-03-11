@@ -33,7 +33,6 @@ public:
 	virtual std::vector<cv::DMatch> select(const std::vector<cv::DMatch>& selection)override;
 
 private:
-	std::vector<cv::DMatch> univers_;
 	IntervallSelector* selector_;
 
 };

@@ -9,11 +9,34 @@
 #include "../../src/view/translationsmatchview.hpp"
 #include "../../src/impl/init.hpp"
 
+/**
+ * @brief this test shows a translationview, it should only end if u close the window manual.
+ * The matches should be schow as translationlinesin the images, a line should only be in one image.
+ *
+ * all classes like ,zoomableimage, zoomableoptpane, synczoomwidget, match Managemant,...
+ * should work correctly.
+ * "Match Settings":
+ *	you can select matches with the selections and settings should only applied to the selected
+ *	matches.
+ *
+ * "KeyPoint Settings":
+ *	see match settings
+ *
+ * "Image Information":
+ *	the zoomableoptpanel should show all informations of the cv::Mat correctly and the zoom
+ *	should be syncron with the zoomabelImage
+ *
+ * "syncWidget":
+ *	you can choose that the zoom in one image should do the same in the other images, or none
+ *
+ * @param argc number of arguments
+ * @param argv arguments executablepath, image path1, imagepath 2
+ * @return 0
+ */
 int main(int argc, char **argv)
 {
 	QApplication a(argc, argv);
 
-	cvv::dbg::setLoggingState(false);
 	if (argc != 3)
 	{
 		std::cerr << "Only execute this test with filenames of two "

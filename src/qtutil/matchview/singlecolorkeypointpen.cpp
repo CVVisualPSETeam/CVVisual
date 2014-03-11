@@ -9,7 +9,7 @@ namespace cvv
 namespace qtutil
 {
 
-SingleColorKeyPen::SingleColorKeyPen(QWidget *parent)
+SingleColorKeyPen::SingleColorKeyPen(std::vector<cv::KeyPoint>, QWidget *parent)
     : KeyPointSettings{ parent }, colordia_{ new QColorDialog{} }
 {
 	auto layout = util::make_unique<QVBoxLayout>();

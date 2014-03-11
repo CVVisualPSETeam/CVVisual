@@ -10,7 +10,6 @@ namespace qtutil
 Accordion::Accordion(QWidget *parent)
     : QWidget{ parent }, elements_{}, layout_{ nullptr }
 {
-	TRACEPOINT;
 	auto lay = util::make_unique<QVBoxLayout>();
 	layout_ = *lay;
 	layout_->setAlignment(Qt::AlignTop);
@@ -27,34 +26,28 @@ Accordion::Accordion(QWidget *parent)
 	auto mainLayout = util::make_unique<QVBoxLayout>();
 	mainLayout->addWidget(scrollArea.release());
 	setLayout(mainLayout.release());
-	TRACEPOINT;
 }
 
 void Accordion::collapseAll(bool b)
 {
-	TRACEPOINT;
 	for (auto &elem : elements_)
 	{
 		elem.second->collapse(b);
 	}
-	TRACEPOINT;
 }
 
 void Accordion::hideAll(bool b)
 {
-	TRACEPOINT;
 	for (auto &elem : elements_)
 	{
 		elem.second->setVisible(!b);
 	}
-	TRACEPOINT;
 }
 
 Accordion::Handle Accordion::insert(const QString &title,
                                     std::unique_ptr<QWidget> widget,
                                     bool isCollapsed, std::size_t position)
 {
-	TRACEPOINT;
 	// create element
 	auto widgetPtr = widget.get();
 	elements_.emplace(
@@ -62,38 +55,32 @@ Accordion::Handle Accordion::insert(const QString &title,
 	                                              isCollapsed).release());
 	// insert element
 	layout_->insertWidget(position, &element(widgetPtr));
-	TRACEPOINT;
 	return widgetPtr;
 }
 
 void Accordion::remove(Handle handle)
 {
-	TRACEPOINT;
 	Collapsable *elem = &element(handle);
 	layout_->removeWidget(elem);
 	elements_.erase(handle);
 	elem->setParent(0);
 	elem->deleteLater();
-	TRACEPOINT;
 }
 
 void Accordion::clear()
 {
-	TRACEPOINT;
 	// clear layout
 	for (auto &elem : elements_)
 	{
 		layout_->removeWidget(elem.second);
-		elem.second->setParent(0);
+		elem.second->setParent(nullptr);
 		elem.second->deleteLater();
 	}
 	elements_.clear();
-	TRACEPOINT;
 }
 
 std::pair<QString, Collapsable *> Accordion::pop(Handle handle)
 {
-	TRACEPOINT;
 	Collapsable *elem = &element(handle);
 	// remove from layout
 	layout_->removeWidget(elem);
@@ -101,26 +88,11 @@ std::pair<QString, Collapsable *> Accordion::pop(Handle handle)
 		                                  elem };
 	// remove from map
 	elements_.erase(handle);
-	TRACEPOINT;
 	return result;
-}
-
-void Accordion::deleteLast()
-{
-	TRACEPOINT;
-	if (layout_->count() > 0 && elements_.size() > 0)
-	{
-		auto elem = layout_->takeAt(layout_->count() - 1)->widget();
-		elements_.erase(elem);
-		elem->setParent(0);
-		elem->deleteLater();
-	}
-	TRACEPOINT;
 }
 
 std::vector<std::pair<QString, Collapsable *>> Accordion::popAll()
 {
-	TRACEPOINT;
 	std::vector<std::pair<QString, Collapsable *>> result{};
 	for (auto &elem : elements_)
 	{
@@ -132,7 +104,6 @@ std::vector<std::pair<QString, Collapsable *>> Accordion::popAll()
 	}
 	// remove from map
 	elements_.clear();
-	TRACEPOINT;
 	return result;
 }
 }

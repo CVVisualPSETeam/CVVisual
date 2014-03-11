@@ -19,7 +19,6 @@
 #include "../qtutil/registerhelper.hpp"
 #include "../qtutil/signalslot.hpp"
 #include "../qtutil/util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -52,7 +51,6 @@ class MultiViewCallTab
 	MultiViewCallTab(const CallType &call, const QString& default_key, const QString& standard_default)
 	    : MultiViewCallTab{ call.description(), call, default_key, standard_default }
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -76,7 +74,6 @@ class MultiViewCallTab
 	      setAsDefaultButtonClicked{ [&]()
 	{ qtutil::setSetting(default_scope_, default_key_, viewId_); } }
 	{
-		TRACEPOINT;
 		setName(tabName);
 		default_scope_ = QString{ "default_views" };
 		default_key_ = default_key;
@@ -87,7 +84,6 @@ class MultiViewCallTab
 					  standard_default_);
 		viewId_ = qtutil::getSetting(default_scope_, default_key_);
 		createGui();
-		TRACEPOINT;
 	}
 
 	/**
@@ -104,12 +100,10 @@ class MultiViewCallTab
 		: MultiViewCallTab{call, default_key, standard_default}
 	{
 		this->select(viewId);
-		//currentIndexChanged.slot();
 	}
 
 	~MultiViewCallTab()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -120,7 +114,6 @@ class MultiViewCallTab
 	 */
 	size_t getId() const override
 	{
-		TRACEPOINT;
 		return call_->getId();
 	}
 
@@ -135,11 +128,9 @@ class MultiViewCallTab
 	 */
 	template <class View> static bool registerView(const QString &name)
 	{
-		TRACEPOINT;
 		return MultiViewCallTab<ViewType, CallType>::registerElement(
 		    name, [](const CallType &call, QWidget *parent)
 		{
-			    TRACEPOINT;
 			    return cvv::util::make_unique<View>(call, parent);
 		    });
 	}
@@ -164,7 +155,6 @@ class MultiViewCallTab
 	 */
 	void createGui()
 	{
-		TRACEPOINT;
 		if (!this->select(viewId_))
 		{
 			this->select(standard_default_);
@@ -178,7 +168,7 @@ class MultiViewCallTab
 			 */
 		}
 		hlayout_ = new QHBoxLayout{};
-		hlayout_->setAlignment(Qt::AlignTop);
+		hlayout_->setAlignment(Qt::AlignTop | Qt::AlignRight);
 		hlayout_->addWidget(new QLabel{ "View:" });
 		hlayout_->addWidget(this->comboBox_);
 		setAsDefaultButton_ = new QPushButton{ "Set as default", this };
@@ -203,7 +193,6 @@ class MultiViewCallTab
 		QObject::connect(&this->signalElementSelected(),
 		                 SIGNAL(signal(QString)), &currentIndexChanged,
 		                 SLOT(slot()));
-		TRACEPOINT;
 	}
 
 	/**
@@ -212,7 +201,6 @@ class MultiViewCallTab
 	 */
 	void setView()
 	{
-		TRACEPOINT;
 		viewId_ = this->selection();
 		if (viewHistory_.count(this->selection()))
 		{
@@ -229,7 +217,6 @@ class MultiViewCallTab
 			vlayout_->addWidget(view_);
 		}
 		viewSet.emitSignal();
-		TRACEPOINT;
 	}
 
 	util::Reference<const CallType> call_;

@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <math.h>
+#include <memory>
 
 #include <QMap>
 #include <QSet>
@@ -13,7 +14,6 @@
 #include "../controller/view_controller.hpp"
 #include "../qtutil/stfl_query_widget.hpp"
 #include "../qtutil/util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -24,7 +24,6 @@ OverviewPanel::OverviewPanel(
     util::Reference<controller::ViewController> controller)
     : controller{ controller }
 {
-	TRACEPOINT;
 	qtutil::setDefaultSetting("overview", "imgzoom", "20");
 	QVBoxLayout *layout = new QVBoxLayout{};
 	setLayout(layout);
@@ -62,12 +61,10 @@ OverviewPanel::OverviewPanel(
 	        SLOT(filterQuery(QString)));
 	connect(queryWidget, SIGNAL(requestSuggestions(QString)), this,
 	        SLOT(requestSuggestions(QString)));
-	TRACEPOINT;
 }
 
 void OverviewPanel::initEngine()
 {
-	TRACEPOINT;
 	// raw and description filter
 	auto rawFilter = [](const OverviewTableRow &elem)
 	{ return elem.description(); };
@@ -99,63 +96,64 @@ void OverviewPanel::initEngine()
 	queryEngine.addIntegerCmdFunc("image_count",
 	                              [](const OverviewTableRow &elem)
 	{ return elem.call()->matrixCount(); });
-	TRACEPOINT;
 }
 
 void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
 {
-	TRACEPOINT;
 	OverviewTableRow row(newCall);
 	queryEngine.addNewElement(row);
 	table->updateRowGroups(queryEngine.reexecuteLastQuery());
-	TRACEPOINT;
+}
+
+void OverviewPanel::addElementBuffered(const util::Reference<const impl::Call> newCall)
+{
+	elementBuffer.push_back(newCall);
+}
+
+void OverviewPanel::flushElementBuffer()
+{
+	std::vector<OverviewTableRow> rows;
+	for (const util::Reference<const impl::Call> call : elementBuffer)
+	{
+		rows.push_back(OverviewTableRow(call));
+	}
+	queryEngine.addElements(std::move(rows));
+	table->updateRowGroups(queryEngine.reexecuteLastQuery());
+	elementBuffer.clear();
 }
 
 void OverviewPanel::removeElement(size_t id)
 {
-	TRACEPOINT;
 	queryEngine.removeElements([id](OverviewTableRow elem)
 	{ return elem.id() == id; });
-	TRACEPOINT;
 	table->removeElement(id);
-	TRACEPOINT;
 }
 
 void OverviewPanel::filterQuery(QString query)
 {
-	TRACEPOINT;
 	table->updateRowGroups(queryEngine.query(query));
-	TRACEPOINT;
 }
 
 void OverviewPanel::updateQuery(QString query)
 {
-	TRACEPOINT;
 	filterQuery(query);
-	TRACEPOINT;
 }
 
 void OverviewPanel::requestSuggestions(QString query)
 {
-	TRACEPOINT;
 	queryWidget->showSuggestions(queryEngine.getSuggestions(query));
-	TRACEPOINT;
 }
 
 void OverviewPanel::imgSizeSliderAction()
 {
-	TRACEPOINT;
 	controller->setSetting("overview", "imgzoom",
 	                       QString::number(imgSizeSlider->value()));
 	table->updateUI();
-	TRACEPOINT;
 }
 
 void OverviewPanel::showHelp(QString topic)
 {
-	TRACEPOINT;
 	controller->openHelpBrowser(topic);
-	TRACEPOINT;
 }
 }
 }

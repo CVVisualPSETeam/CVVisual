@@ -9,7 +9,6 @@ Collapsable::Collapsable(const QString &title, std::unique_ptr<QWidget> widget,
                          bool isCollapsed, QWidget *parent)
     : QFrame{ parent }, widget_{ widget.get() }, layout_{ nullptr }
 {
-	TRACEPOINT;
 	auto lay = util::make_unique<QVBoxLayout>();
 	layout_ = *lay;
 	// set alignment+border
@@ -36,7 +35,6 @@ Collapsable::Collapsable(const QString &title, std::unique_ptr<QWidget> widget,
 
 	// collapse/ expand according to isCollapsed
 	collapse(isCollapsed);
-	TRACEPOINT;
 }
 
 // Collapsable::Collapsable(const QString& title,QWidget& widget, bool
@@ -46,7 +44,6 @@ Collapsable::Collapsable(const QString &title, std::unique_ptr<QWidget> widget,
 
 void Collapsable::collapse(bool b)
 {
-	TRACEPOINT;
 	button_->setChecked(!b);
 	if (b)
 	{
@@ -56,12 +53,10 @@ void Collapsable::collapse(bool b)
 	{
 		widget_->show();
 	}
-	TRACEPOINT;
 }
 
 QWidget *Collapsable::detachWidget()
 {
-	TRACEPOINT;
 	if (!widget_)
 	{
 		return nullptr;
@@ -69,7 +64,6 @@ QWidget *Collapsable::detachWidget()
 	layout_->removeWidget(widget_);
 	QWidget *tmp = widget_;
 	widget_ = nullptr;
-	TRACEPOINT;
 	return tmp;
 }
 }

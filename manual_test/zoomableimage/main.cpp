@@ -18,7 +18,7 @@
 #include <QDoubleSpinBox>
 #include <QPushButton>
 
-#include "../../src/dbg/dbg.hpp"
+#include "../../src/qtutil/matchview/colorutil.hpp"
 
 // from
 // https://github.com/Itseez/opencv/blob/master/samples/cpp/
@@ -27,9 +27,22 @@ cv::Mat renderImg();
 
 static const int w = 400;
 
+/**
+ * @brief
+ * - a window with 4 columns pops up
+ * - the first column contains a spin box and two toggleable buttons
+ *  ("autoshow", "fullimg")
+ * - the 2nd column contains a vertical blue green image with a false color
+ * palete at the top left
+ * - the 3rd column contains a vertical blue image
+ * - the 4th column contains an image of a red rook
+ * - the images can be zoomed with the spin box ctrl+scroll or ctrl+shift+scroll
+ * - if "autoshow" is toggled an the image is zoomed in (60 on the spin box)
+ *  the pixel values are printed
+ * - if "fullimg" is pressed the images are resized and the whole image is visible
+ */
 int main(int argc, char *argv[])
 {
-	cvv::dbg::setLoggingState(false);
 
 	QApplication a(argc, argv);
 
@@ -38,10 +51,23 @@ int main(int argc, char *argv[])
 
 	wid.setLayout(lay);
 
-	cv::Mat mat{ 50, 5, CV_8SC4, cv::Scalar{ 125, 125, 0, 125 } };
+	cv::Mat mat{ 50, 5, CV_8UC3, cv::Scalar{ 125, 125, 0 } };
+
+	mat.at<cv::Vec<uint8_t,3>>(0,0)=cvv::qtutil::falseColor(0.0);
+	mat.at<cv::Vec<uint8_t,3>>(1,0)=cvv::qtutil::falseColor(0.1);
+	mat.at<cv::Vec<uint8_t,3>>(2,0)=cvv::qtutil::falseColor(0.2);
+	mat.at<cv::Vec<uint8_t,3>>(3,0)=cvv::qtutil::falseColor(0.3);
+	mat.at<cv::Vec<uint8_t,3>>(4,0)=cvv::qtutil::falseColor(0.4);
+	mat.at<cv::Vec<uint8_t,3>>(5,0)=cvv::qtutil::falseColor(0.5);
+	mat.at<cv::Vec<uint8_t,3>>(6,0)=cvv::qtutil::falseColor(0.6);
+	mat.at<cv::Vec<uint8_t,3>>(7,0)=cvv::qtutil::falseColor(0.7);
+	mat.at<cv::Vec<uint8_t,3>>(8,0)=cvv::qtutil::falseColor(0.8);
+	mat.at<cv::Vec<uint8_t,3>>(9,0)=cvv::qtutil::falseColor(0.9);
+	mat.at<cv::Vec<uint8_t,3>>(10,0)=cvv::qtutil::falseColor(1.0);
+
 	cv::Mat mat2{ 5, 50, CV_64FC4,
 		      cv::Scalar{ 1,               0.234523452345432523452,
-			          0.75345340e-123, 0.5 } };
+				  0.75345340e-123, 0.5 } };
 	cv::Mat img = renderImg();
 
 	cvv::qtutil::ZoomableImage *i = new cvv::qtutil::ZoomableImage{ mat };
@@ -51,30 +77,32 @@ int main(int argc, char *argv[])
 	QVBoxLayout *layleft = new QVBoxLayout{};
 	QDoubleSpinBox *spb = new QDoubleSpinBox{};
 	QObject::connect(spb, SIGNAL(valueChanged(double)), i,
-	                 SLOT(setZoom(qreal)));
+			 SLOT(setZoom(qreal)));
 	QObject::connect(spb, SIGNAL(valueChanged(double)), i2,
-	                 SLOT(setZoom(qreal)));
+			 SLOT(setZoom(qreal)));
 	QObject::connect(spb, SIGNAL(valueChanged(double)), i3,
-	                 SLOT(setZoom(qreal)));
+			 SLOT(setZoom(qreal)));
 	layleft->addWidget(spb);
 
 	QPushButton *bautoshow = new QPushButton{ "autoshow" };
 	bautoshow->setCheckable(true);
 	QObject::connect(bautoshow, SIGNAL(toggled(bool)), i,
-	                 SLOT(setAutoShowValues(bool)));
+			 SLOT(setAutoShowValues(bool)));
 	QObject::connect(bautoshow, SIGNAL(toggled(bool)), i2,
-	                 SLOT(setAutoShowValues(bool)));
+			 SLOT(setAutoShowValues(bool)));
 	QObject::connect(bautoshow, SIGNAL(toggled(bool)), i3,
-	                 SLOT(setAutoShowValues(bool)));
+			 SLOT(setAutoShowValues(bool)));
+	bautoshow->setChecked(true);
 	layleft->addWidget(bautoshow);
 
 	QPushButton *bshowfull = new QPushButton{ "fullimg" };
 	QObject::connect(bshowfull, SIGNAL(clicked()), i,
-	                 SLOT(showFullImage()));
+			 SLOT(showFullImage()));
 	QObject::connect(bshowfull, SIGNAL(clicked()), i2,
-	                 SLOT(showFullImage()));
+			 SLOT(showFullImage()));
 	QObject::connect(bshowfull, SIGNAL(clicked()), i3,
-	                 SLOT(showFullImage()));
+			 SLOT(showFullImage()));
+	bautoshow->setChecked(true);
 	layleft->addWidget(bshowfull);
 
 	lay->addLayout(layleft);
@@ -100,7 +128,7 @@ cv::Mat renderImg()
 
 	// 2.b. Creating rectangles
 	rectangle(rook_image, cv::Point(0, 7 * w / 8), cv::Point(w, w),
-	          cv::Scalar(0, 255, 255), 1, 8);
+		  cv::Scalar(0, 255, 255), 1, 8);
 
 	// 2.c. Create a few lines
 	MyLine(rook_image, cv::Point(0, 15 * w / 16),

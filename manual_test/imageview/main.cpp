@@ -9,6 +9,20 @@
 #include "../../src/impl/init.hpp"
 #include "../../src/view/image_view.hpp"
 
+/**
+ * (Single)ImageView Test:
+ * Give an image as the argument when running the test.
+ * It should appear correctly on the right.
+ * On the left should be an accordion menu consisting of only
+ * one collapsable, "ImageInformation:".
+ * Open it.
+ * Zooming in and out of the image with both the spin box
+ * and (Shift) + Strg + Mouse Wheel should work (Shift: slower).
+ * Unchecking "Show image" should make it disappear,
+ * checking make it reappear.
+ * The information about the image in the collapsable should be correct.
+ * "Show full image" should work.
+ */
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);

@@ -6,7 +6,6 @@
 #include "QSlider"
 #include "QVBoxLayout"
 
-#include "../../dbg/dbg.hpp"
 #include "../../util/util.hpp"
 #include "overlayfilterwidget.hpp"
 
@@ -18,7 +17,6 @@ namespace qtutil
 OverlayFilterWidget::OverlayFilterWidget(QWidget *parent)
     : FilterFunctionWidget<2, 1>{ parent }, opacityOfFilterImg_{ 0.5 }
 {
-	TRACEPOINT;
 
 	auto layout = util::make_unique<QVBoxLayout>();
 	auto slider = util::make_unique<QSlider>(Qt::Horizontal);
@@ -37,29 +35,24 @@ OverlayFilterWidget::OverlayFilterWidget(QWidget *parent)
 	layout->addWidget(slider.release());
 	setLayout(layout.release());
 
-	TRACEPOINT;
 }
 
 void OverlayFilterWidget::applyFilter(InputArray in, OutputArray out) const
 {
-	TRACEPOINT;
 
 	auto check = checkInput(in);
 	if (!check.first)
 	{
-		TRACEPOINT;
 		return;
 	}
 
 	cv::addWeighted(in.at(0).get(), 1 - opacityOfFilterImg_, in.at(1).get(),
 	                opacityOfFilterImg_, 0, out.at(0).get());
 
-	TRACEPOINT;
 }
 
 std::pair<bool, QString> OverlayFilterWidget::checkInput(InputArray in) const
 {
-	TRACEPOINT;
 	// check whether images have same size
 	if (in.at(0).get().size() != in.at(1).get().size())
 	{
@@ -73,17 +66,14 @@ std::pair<bool, QString> OverlayFilterWidget::checkInput(InputArray in) const
 		    false, "Images need to have same number of channels");
 	}
 
-	TRACEPOINT;
 
 	return std::make_pair(true, "Images can be converted");
 }
 
 void OverlayFilterWidget::updateOpacity(int newOpacity)
 {
-	TRACEPOINT;
 	opacityOfFilterImg_ = newOpacity / 100.0;
 	signalFilterSettingsChanged().emitSignal();
-	TRACEPOINT;
 }
 }
 }

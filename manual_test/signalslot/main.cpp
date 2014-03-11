@@ -51,6 +51,12 @@ class SigSlotTest : public QWidget
 	cvv::qtutil::Slot slotEmi;
 };
 
+/**
+ * @brief
+ * - a window will pop up
+ * - it will contain a button ("push me") and below that a text ("pressed: 0")
+ * - if the button is pressed the nub´mber in the text will increment
+ */
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);

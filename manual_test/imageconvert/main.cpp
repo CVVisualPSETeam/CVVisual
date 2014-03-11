@@ -18,6 +18,55 @@
 static const int w = 400;
 cv::Mat renderImg();
 
+/**
+ * @brief
+ * - two windows will pop up ("rook_window", "test_manual_imageconvert")
+ * - rook_window will contain an image of a red rook on a black background with a
+ * yellow line underneath it
+ * - test_manual_imageconvert will contain two identical rows of images
+ * - the images look like:
+ * light gray square, red square, light green square, blue square,
+ * gray square, dark green square, yellow-green square and the rook image.
+ * - following text will be printed:
+	will now create mats
+	done all
+	will now convert
+	done 12345678
+	done all
+	will now test result
+	1
+	1
+	1
+	1
+	1
+	1
+	1
+	1
+	done all
+	will now print formats 0=Invalid, 3=Indexed8, 5=ARGB32, 13=RGB888
+	3
+	13
+	13
+	13
+	5
+	13
+	13
+	13
+	create widget
+	create vbox
+	create hbox
+	set widget layout to vbox
+	add hbox to vbox
+	will create labels........
+	create labels
+	 1234567 => all8 => all
+	convert to pixmaps start
+	done 12345678 => all
+	convert to pixmaps end
+	now everything with pixmaps
+	convert to pixmaps start
+	convert to pixmaps end
+ */
 int main(int argc, char *argv[])
 {
 	try
@@ -72,33 +121,33 @@ int main(int argc, char *argv[])
 		std::cout << "will now test result \n";
 
 		std::cout << (cGrey.first ==
-		              cvv::qtutil::ImageConversionResult::SUCCESS)
-		          << "\n";
+			      cvv::qtutil::ImageConversionResult::SUCCESS)
+			  << "\n";
 		std::cout << (cR.first ==
-		              cvv::qtutil::ImageConversionResult::SUCCESS)
-		          << "\n";
+			      cvv::qtutil::ImageConversionResult::SUCCESS)
+			  << "\n";
 		std::cout << (cG.first ==
-		              cvv::qtutil::ImageConversionResult::SUCCESS)
-		          << "\n";
+			      cvv::qtutil::ImageConversionResult::SUCCESS)
+			  << "\n";
 		std::cout << (cB.first ==
-		              cvv::qtutil::ImageConversionResult::SUCCESS)
-		          << "\n";
+			      cvv::qtutil::ImageConversionResult::SUCCESS)
+			  << "\n";
 		std::cout << (cBGRA.first ==
-		              cvv::qtutil::ImageConversionResult::SUCCESS)
-		          << "\n";
+			      cvv::qtutil::ImageConversionResult::SUCCESS)
+			  << "\n";
 		std::cout << (cBG.first ==
-		              cvv::qtutil::ImageConversionResult::SUCCESS)
-		          << "\n";
+			      cvv::qtutil::ImageConversionResult::SUCCESS)
+			  << "\n";
 		std::cout << (cRGB.first ==
-		              cvv::qtutil::ImageConversionResult::SUCCESS)
-		          << "\n";
+			      cvv::qtutil::ImageConversionResult::SUCCESS)
+			  << "\n";
 		std::cout << (cImg.first ==
-		              cvv::qtutil::ImageConversionResult::SUCCESS)
-		          << "\n";
+			      cvv::qtutil::ImageConversionResult::SUCCESS)
+			  << "\n";
 
 		std::cout << "done all\n";
 		std::cout << "will now print formats 0=Invalid, 3=Indexed8, "
-		             "5=ARGB32, 13=RGB888 \n";
+			     "5=ARGB32, 13=RGB888 \n";
 
 		std::cout << cGrey.second.format() << "\n";
 		std::cout << cR.second.format() << "\n";
@@ -229,7 +278,7 @@ cv::Mat renderImg()
 
 	// 2.b. Creating rectangles
 	rectangle(rook_image, cv::Point(0, 7 * w / 8), cv::Point(w, w),
-	          cv::Scalar(0, 255, 255), 1, 8);
+		  cv::Scalar(0, 255, 255), 1, 8);
 
 	// 2.c. Create a few lines
 	MyLine(rook_image, cv::Point(0, 15 * w / 16),

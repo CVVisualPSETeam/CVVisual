@@ -19,7 +19,7 @@ class FalseColorMatchPen : public MatchSettings
 {
 public:
 	/**
-	 * @brief FalseColorMatchPen
+	 * @brief the constructor
 	 * @param univers all matches (for max value)
 	 * @param parent the parent Widget
 	 */
@@ -27,7 +27,6 @@ public:
 
 	/**
 	 * @brief set the falseColor of the distance to the given match
-	 * @param match
 	 */
 	virtual void setSettings(CVVMatch &match) override;
 

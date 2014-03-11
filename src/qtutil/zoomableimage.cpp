@@ -222,7 +222,6 @@ ZoomableImage::ZoomableImage(const cv::Mat &mat, QWidget *parent)
 
 void ZoomableImage::setMat(cv::Mat mat)
 {
-	TRACEPOINT;
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
 	emit updateConversionResult(result.first, mat);
@@ -237,14 +236,12 @@ void ZoomableImage::setMat(cv::Mat mat)
 	values_.clear();
 
 	drawValues();
-	TRACEPOINT;
 }
 
 void ZoomableImage::setZoom(qreal factor)
 {
 	if (factor <= 0)
 	{
-		TRACEPOINT;
 		return;
 	}
 	qreal nscale = factor / zoom_;
@@ -265,7 +262,6 @@ void ZoomableImage::queueUpdateArea()
 
 void ZoomableImage::drawValues()
 {
-	TRACEPOINT;
 	// delete old values
 	for (auto &elem : values_)
 	{
@@ -277,10 +273,8 @@ void ZoomableImage::drawValues()
 	// draw values?
 	if (!(autoShowValues_ && (zoom_ >= threshold_)))
 	{
-		TRACEPOINT;
 		return;
 	}
-	TRACEPOINT;
 	auto r = visibleArea();
 
 	for (int j = std::max(0, static_cast<int>(r.top()) - 1);
@@ -303,7 +297,6 @@ void ZoomableImage::drawValues()
 			values_.push_back(txt);
 		}
 	}
-	TRACEPOINT;
 }
 
 void ZoomableImage::wheelEvent(QWheelEvent *event)
@@ -364,7 +357,6 @@ QRectF ZoomableImage::visibleArea() const
 
 void ZoomableImage::rightClick(const QPoint &pos)
 {
-	TRACEPOINT;
 	QPoint p = mapToGlobal(pos);
 	QMenu menu;
 
@@ -374,7 +366,6 @@ void ZoomableImage::rightClick(const QPoint &pos)
 	QAction *item = menu.exec(p);
 	if (item)
 	{
-		TRACEPOINT;
 		QString fileName = QFileDialog::getSaveFileName(
 		    this, tr("Save File"), ".",
 		    tr("BMP (*.bmp);;GIF (*.gif);;JPG (*.jpg);;PNG (*.png);;"
@@ -382,7 +373,6 @@ void ZoomableImage::rightClick(const QPoint &pos)
 		       "XPM (*.xpm)"));
 		if (fileName == "")
 		{
-			TRACEPOINT;
 			return;
 		}
 		QPixmap pmap;
@@ -397,7 +387,6 @@ void ZoomableImage::rightClick(const QPoint &pos)
 
 		pmap.save(fileName, 0, 100);
 	}
-	TRACEPOINT;
 }
 
 QPointF ZoomableImage::mapImagePointToParent(QPointF point) const
@@ -432,7 +421,6 @@ namespace structures
 
 void ZoomableImageGraphicsView::wheelEvent(QWheelEvent *event)
 {
-	TRACEPOINT;
 	if (QApplication::keyboardModifiers() & Qt::ControlModifier)
 	{
 		event->ignore();
@@ -441,7 +429,6 @@ void ZoomableImageGraphicsView::wheelEvent(QWheelEvent *event)
 	{
 		QGraphicsView::wheelEvent(event);
 	}
-	TRACEPOINT;
 }
 }
 }

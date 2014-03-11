@@ -6,7 +6,6 @@
 #include "opencv2/core/core.hpp"
 
 #include "filter_view.hpp"
-#include "../dbg/dbg.hpp"
 #include "../impl/filter_call.hpp"
 
 namespace cvv
@@ -38,15 +37,6 @@ class SingleFilterView : public cvv::view::FilterView
 			 QWidget *parent = nullptr)
 	    : SingleFilterView{ { call.original(), call.result() }, parent }
 	{
-		TRACEPOINT;
-	}
-
-	/**
-	* @brief Destructor
-	*/
-	~SingleFilterView()
-	{
-		TRACEPOINT;
 	}
 };
 }

@@ -79,7 +79,6 @@ class DualFilterView : public FilterView
 		      convertToArray({ call.original(), call.result() }), parent
 	      }
 	{
-		TRACEPOINT;
 	}
 
       private:

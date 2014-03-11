@@ -13,8 +13,8 @@
 #include <QLabel>
 #include <QString>
 #include <QtGui>
+#include <QVBoxLayout>
 
-#include "../dbg/dbg.hpp"
 #include "../qtutil/accordion.hpp"
 #include "../qtutil/autofilterwidget.hpp"
 #include "../qtutil/zoomableimage.hpp"
@@ -33,9 +33,8 @@ namespace view
 DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
     : FilterView{ parent }, rawImages_(images)
 {
-	TRACEPOINT;
 	auto layout = util::make_unique<QHBoxLayout>();
-	auto imageLayout = util::make_unique<QGridLayout>();
+	auto imageLayout = util::make_unique<QHBoxLayout>();
 	auto imwid = util::make_unique<QWidget>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 
@@ -69,7 +68,7 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		}
 
 		accor->insert(
-		    QString("ImageInformation: ") + QString::number(count),
+		    QString("Image Information: ") + QString::number(count),
 		    std::move(
 		        util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
 
@@ -81,7 +80,14 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 		{
 			zoomIm->setMat(image.clone());
 		}
-		imageLayout.get()->addWidget(zoomIm.get(), 0, count);
+		
+		//to ensure that hidden images don't take space put zoomIm in extra widget
+		auto zoomImLayout = util::make_unique<QVBoxLayout>();
+		auto zoomImWid = util::make_unique<QWidget>();
+		
+		zoomImLayout->addWidget(zoomIm.get());
+		zoomImWid->setLayout(zoomImLayout.release());
+		imageLayout->addWidget(zoomImWid.release());
 		
 		return zoomIm.release();
 	};
@@ -95,24 +101,19 @@ DualFilterView::DualFilterView(std::array<cv::Mat, 2> images, QWidget *parent)
 	accor->insert("Zoom synchronization",
 		std::move(util::make_unique<qtutil::SyncZoomWidget>(syncVec)), true, 1);
 	
-	imageLayout->setColumnStretch(0, 1);
-	imageLayout->setColumnStretch(1, 1);
-	imageLayout->setColumnStretch(2, 1);
-	imageLayout->setColumnMinimumWidth(0, 300);
-	imageLayout->setColumnMinimumWidth(1, 300);
-	imageLayout->setColumnMinimumWidth(2, 300);
+	//ensure that all images have same width
 	imwid->setLayout(imageLayout.release());
 
 	layout->addWidget(accor.release());
 	layout->addWidget(imwid.release());
 
 	setLayout(layout.release());
-
+	
+	//full images are shown at beginning
 	for(auto& zoomableImage: syncVec)
 	{
 		zoomableImage->showFullImage();
 	}
-	TRACEPOINT;
 }
 
 // Vektorkonstruktor
@@ -125,12 +126,10 @@ DualFilterView::DualFilterView(const std::vector<cv::Mat> &images,
 std::array<cv::Mat, 2>
 DualFilterView::convertToArray(const std::vector<cv::Mat> &matVec) const
 {
-	TRACEPOINT;
 	if (matVec.size() != 2)
 	{
 		throw std::runtime_error("Wrong number of elements in vector");
 	}
-	TRACEPOINT;
 	return { matVec.at(0), matVec.at(1) };
 }
 }

@@ -37,90 +37,67 @@ class IntervallSelector : public QWidget
 	 */
 	IntervallSelector(double min, double max, QWidget *parent = nullptr)
 	    : QWidget{ parent }, sigSettingsChanged_{}, min_{ nullptr },
-	      max_{ nullptr }, complement_{ nullptr }, useUniverse_{ nullptr },
-	      useSelection_{ nullptr },
-	      bgroupUnivSelec_{ util::make_unique<QButtonGroup>() }
+	      max_{ nullptr }, complement_{ nullptr }
 	{
 		auto minb = util::make_unique<QDoubleSpinBox>();
 		min_ = *minb;
-		;
+
 		auto maxb = util::make_unique<QDoubleSpinBox>();
 		max_ = *maxb;
 		auto complement =
-		    util::make_unique<QCheckBox>("select the complement");
+		    util::make_unique<QCheckBox>("Select the complement");
 		complement_ = *complement;
-		// universe selection selection
-		auto useUniverse =
-		    util::make_unique<QRadioButton>("of the universe");
-		useUniverse_ = *useUniverse;
-		auto useSelection =
-		    util::make_unique<QRadioButton>("of the selection");
-		useSelection_ = *useSelection;
-		// button group
-		bgroupUnivSelec_->addButton(useUniverse.get());
-		bgroupUnivSelec_->addButton(useSelection.get());
-		bgroupUnivSelec_->setExclusive(true);
-		useUniverse_->setChecked(true);
 
 		// set ranges
 		minb->setRange(min, max);
+		maxb->setValue(min);
 		maxb->setRange(min, max);
+		maxb->setValue(max);
 		// connect
 		QObject::connect(min_.getPtr(), SIGNAL(valueChanged(double)),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(max_.getPtr(), SIGNAL(valueChanged(double)),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(complement_.getPtr(), SIGNAL(clicked()),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
-		QObject::connect(bgroupUnivSelec_.get(),
-		                 SIGNAL(buttonClicked(int)),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 &sigSettingsChanged_, SIGNAL(signal()));
 		// build ui
 		auto lay = util::make_unique<QVBoxLayout>();
 		lay->setContentsMargins(0, 0, 0, 0);
 		lay->addWidget(
-		    util::make_unique<QLabel>("from lower bound:").release());
+		util::make_unique<QLabel>(QString{"From lower bound ("}+
+					  QString::number(min)+QString{"):"}).release());
 		lay->addWidget(minb.release());
 		lay->addWidget(
-		    util::make_unique<QLabel>("to upper bound:").release());
+		    util::make_unique<QLabel>(QString{"To upper bound ("}+
+					      QString::number(max)+QString{"):"}).release());
 		lay->addWidget(maxb.release());
-		lay->addWidget(useUniverse.release());
-		lay->addWidget(useSelection.release());
 		lay->addWidget(complement.release());
 		setLayout(lay.release());
 	}
 
 	/**
 	 * @brief Returns elements from the selected range.
-	 * @param universe The universe.
 	 * @param selection The selection.
 	 * @param extr Extractor functor (has to be double extr(Type))
 	 * @return the selected values
 	 */
 	template <class Type, class DoubleExtractor>
-	std::vector<Type> select(std::vector<Type> universe,
-	                         std::vector<Type> selection,
-	                         DoubleExtractor extr) const
+	std::vector<Type> select(std::vector<Type> selection,
+				 DoubleExtractor extr) const
 	{
-		auto in = util::makeRef(universe);
-		if (useSelection_->isChecked())
-		{
-			in = selection;
-		}
-
 		std::vector<Type> result;
 
 		bool complement = complement_->isChecked();
 
-		std::copy_if(in->begin(), in->end(),
-		             std::back_insert_iterator<std::vector<Type>>(
-		                 result),
-		             [=](Type t1)
+		std::copy_if(selection.begin(), selection.end(),
+			     std::back_insert_iterator<std::vector<Type>>(
+				 result),
+			     [=](Type t1)
 		{
 			return complement !=
 			       // check weather the element is in the interval
 			       (((min_->value()) <= extr(t1)) &&
-			        (extr(t1) <= max_->value()));
+				(extr(t1) <= max_->value()));
 		});
 		return result;
 	}
@@ -151,18 +128,6 @@ class IntervallSelector : public QWidget
 	 * @brief Weather the complement should be selected
 	 */
 	util::ObserverPtr<QCheckBox> complement_;
-	/**
-	 * @brief Button to select from the selection
-	 */
-	util::ObserverPtr<QRadioButton> useUniverse_;
-	/**
-	 * @brief Button to select from the selection
-	 */
-	util::ObserverPtr<QRadioButton> useSelection_;
-	/**
-	 * @brief Button group for universe/selection
-	 */
-	std::unique_ptr<QButtonGroup> bgroupUnivSelec_;
 };
 }
 }

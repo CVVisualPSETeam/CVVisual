@@ -5,7 +5,6 @@
 #include <numeric>
 #include <string>
 
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -14,18 +13,15 @@ namespace stfl
 
 int stringEquality(const QString &str1, const QString &str2)
 {
-	TRACEPOINT;
 	if (isSingleWord(str1) && isSingleWord(str2))
 	{
 		return phoneticEquality(str1, str2);
 	}
-	TRACEPOINT;
 	return editDistance(str1, str2);
 }
 
 size_t editDistance(const QString &str1, const QString &str2)
 {
-	TRACEPOINT;
 	const unsigned len1 = str1.size();
 	const unsigned len2 = str2.size();
 
@@ -51,13 +47,11 @@ size_t editDistance(const QString &str1, const QString &str2)
 		}
 		std::swap(col, prevCol);
 	}
-	TRACEPOINT;
 	return prevCol[len2];
 }
 
 int phoneticEquality(const QString &word1, const QString &word2)
 {
-	TRACEPOINT;
 	if (word1 == word2)
 	{
 		return 0;
@@ -67,7 +61,6 @@ int phoneticEquality(const QString &word1, const QString &word2)
 
 QString nysiisForWord(QString word)
 {
-	TRACEPOINT;
 	static std::map<QString, QString> replacements = { { "MAC", "MCC" },
 		                                           { "KN", "NN" },
 		                                           { "K", "C" },
@@ -137,13 +130,11 @@ QString nysiisForWord(QString word)
 		code = code.left(code.size() - 1);
 	}
 	code = removeRepeatedCharacters(code);
-	TRACEPOINT;
 	return code;
 }
 
 QString nysiisForWordCached(const QString &word)
 {
-	TRACEPOINT;
 	static std::map<QString, QString> cache;
 	if (word.isEmpty())
 		return "";
@@ -161,7 +152,6 @@ QString nysiisForWordCached(const QString &word)
 
 QString removeRepeatedCharacters(const QString &str)
 {
-	TRACEPOINT;
 	if (str.isEmpty())
 	{
 		return "";
@@ -173,14 +163,12 @@ QString removeRepeatedCharacters(const QString &str)
 	std::copy_if(str.begin(), str.end(), std::back_inserter(res),
 	             [res](QChar c)
 	{ return c != res[res.size() - 1]; });
-	TRACEPOINT;
 	return res;
 }
 
 void replaceIfStartsWith(QString &str, const QString &search,
                          const QString &replacement)
 {
-	TRACEPOINT;
 	if (str.startsWith(search))
 	{
 		if (search.size() == replacement.size())
@@ -196,25 +184,21 @@ void replaceIfStartsWith(QString &str, const QString &search,
 			          .prepend(replacement);
 		}
 	}
-	TRACEPOINT;
 }
 
 void replaceIfStartsWith(QString &word,
                          const std::map<QString, QString> &replacements)
 {
-	TRACEPOINT;
 	for (auto iterator = replacements.begin();
 	     iterator != replacements.end(); iterator++)
 	{
 		replaceIfStartsWith(word, iterator->first, iterator->second);
 	}
-	TRACEPOINT;
 }
 
 void replaceIfEndsWith(QString &str, const QString &search,
                        const QString &replacement)
 {
-	TRACEPOINT;
 	if (str.endsWith(search))
 	{
 		if (search.length() == replacement.length())
@@ -231,19 +215,16 @@ void replaceIfEndsWith(QString &str, const QString &search,
 			          .append(replacement);
 		}
 	}
-	TRACEPOINT;
 }
 
 void replaceIfEndsWith(QString &word,
                        const std::map<QString, QString> &replacements)
 {
-	TRACEPOINT;
 	for (auto iterator = replacements.begin();
 	     iterator != replacements.end(); iterator++)
 	{
 		replaceIfEndsWith(word, iterator->first, iterator->second);
 	}
-	TRACEPOINT;
 }
 
 bool isVowel(const QChar &someChar)
@@ -255,7 +236,6 @@ bool isVowel(const QChar &someChar)
 
 bool isSingleWord(const QString &str)
 {
-	TRACEPOINT;
 	const auto isLetter = [](QChar c)
 	{ return c.isLetter(); };
 	return std::find_if_not(str.begin(), str.end(), isLetter) != str.end();
@@ -263,13 +243,11 @@ bool isSingleWord(const QString &str)
 
 void unescapeCommas(QString &str)
 {
-	TRACEPOINT;
 	str.replace("\\,", ",");
 }
 
 QString shortenString(QString &str, int maxLength, bool cutEnd, bool fill)
 {
-	TRACEPOINT;
 	if (str.size() > maxLength)
 	{
 		if (cutEnd)
@@ -286,7 +264,6 @@ QString shortenString(QString &str, int maxLength, bool cutEnd, bool fill)
 	{
 		str = str + QString(maxLength - str.size(), ' ');
 	}
-	TRACEPOINT;
 	return str;
 }
 

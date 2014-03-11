@@ -23,13 +23,13 @@ ImageView::ImageView(const cv::Mat &image, QWidget *parent)
 {
 	auto layout = util::make_unique<QHBoxLayout>(this);
 	auto accor = util::make_unique<qtutil::Accordion>(this);
-	
+
 	accor->setMinimumWidth(300);
 	accor->setMaximumWidth(300);
 
 	auto zoomim = util::make_unique<qtutil::ZoomableImage>();
 	accor->insert(QString("ImageInformation:"),
-		std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomim)));
+		std::move(util::make_unique<qtutil::ZoomableOptPanel>(*zoomim,false)));
 	zoomim->setMat(image);
 
 	layout->addWidget(accor.release());

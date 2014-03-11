@@ -9,7 +9,6 @@
 
 #include "../impl/call.hpp"
 #include "../util/util.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -33,7 +32,6 @@ public:
 
 	~OverviewTableRow()
 	{
-		TRACEPOINT;
 	}
 
 	/**

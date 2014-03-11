@@ -1,5 +1,6 @@
 
 #include <QVBoxLayout>
+#include <QPushButton>
 
 
 #include "matchselectionselector.hpp"
@@ -13,17 +14,26 @@ MatchSelectionSelector::MatchSelectionSelector(const std::vector<cv::DMatch> &un
 	univers_{univers}
 {
 	auto layout=util::make_unique<QVBoxLayout>();
-	layout->setContentsMargins(0, 0, 0, 0);
-	layout->addWidget(comboBox_);
+	auto headerLayout=util::make_unique<QHBoxLayout>();
+	auto closebutton=util::make_unique<QPushButton>("-");
+	closebutton->setMaximumWidth(30);
+
+	connect(closebutton.get(),SIGNAL(clicked()),this,SLOT(removeMe()));
 	connect(&signalElementSelected(),SIGNAL(signal(QString)),this,SLOT(changeSelector()));
+
+	headerLayout->addWidget(closebutton.release());
+	headerLayout->addWidget(comboBox_);
+
+	layout->setContentsMargins(0, 0, 0, 0);
+	layout->addLayout(headerLayout.release());
+
 	layout_=layout.get();
+
 	setLayout(layout.release());
-	TRACEPOINT;
+
 	if(this->has(this->selection())){
-		TRACEPOINT;
 		changeSelector();
 	}
-	TRACEPOINT;
 }
 
 std::vector<cv::DMatch> cvv::qtutil::MatchSelectionSelector::select(const std::vector<cv::DMatch> &selection)
@@ -33,22 +43,17 @@ std::vector<cv::DMatch> cvv::qtutil::MatchSelectionSelector::select(const std::v
 
 void MatchSelectionSelector::changeSelector()
 {
-	TRACEPOINT;
 	auto selection=(*this)()(univers_);
-	TRACEPOINT;
+
 	if(selection){
-		TRACEPOINT;
 		if(selection_){
-			TRACEPOINT;
 			layout_->removeWidget(selection_);
+			disconnect(selection_,SIGNAL(settingsChanged()),this,SIGNAL(settingsChanged()));
+			selection_->deleteLater();
 		}
-		TRACEPOINT;
-		selection_->deleteLater();
-		TRACEPOINT;
-		selection_=selection.get();
-		TRACEPOINT;
+		selection_ = selection.get();
+		connect(selection.get(),SIGNAL(settingsChanged()),this,SIGNAL(settingsChanged()));
 		layout_->addWidget(selection.release());
-		TRACEPOINT;
 	}
 }
 

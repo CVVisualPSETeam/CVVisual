@@ -24,7 +24,6 @@ class DataController
 	DataController() = default;
 	~DataController()
 	{
-		TRACEPOINT;
 	}
 
 	/**

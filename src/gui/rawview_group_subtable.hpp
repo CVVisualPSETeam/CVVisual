@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <set>
+#include <vector>
 
 #include <QWidget>
 #include <QTableWidget>
@@ -11,7 +12,6 @@
 
 #include "../stfl/element_group.hpp"
 #include "rawview_table_row.hpp"
-#include "../util/optional.hpp"
 #include "../util/util.hpp"
 
 namespace cvv
@@ -50,18 +50,32 @@ class RawviewGroupSubtable : public QWidget
 	 * @brief Updates the displayed table UI.
 	 */
 	void updateUI();
+	
+	std::vector<cv::DMatch> getMatchSelection();
 
-      private
-slots:
+	std::vector<cv::KeyPoint> getKeyPointSelection();	
+
+public slots:
+	
+	void setMatchSelection(std::vector<cv::DMatch> matches);
+
+	void setKeyPointSelection(std::vector<cv::KeyPoint> keyPoints);
+
+private slots:
+	
 	void customMenuRequested(QPoint location);
 	void customMenuAction(QAction *action);
 	void selectionChanged();
 
-      private:
+private:
 	RawviewTable *parent;
 	stfl::ElementGroup<RawviewTableRow> group;
 	QTableWidget *qTable;
 	std::set<int> currentRowIndexes;
+	
+	std::vector<RawviewTableRow> getSelectedRows();
+	
+	void setSelectedRows(std::set<int> rowIndexes);
 };
 }
 }

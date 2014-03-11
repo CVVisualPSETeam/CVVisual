@@ -10,8 +10,6 @@
 
 #include "../stfl/element_group.hpp"
 #include "overview_table_row.hpp"
-#include "../dbg/dbg.hpp"
-#include "../util/optional.hpp"
 #include "../util/util.hpp"
 #include "../controller/view_controller.hpp"
 
@@ -50,7 +48,6 @@ class OverviewGroupSubtable : public QWidget
 
 	~OverviewGroupSubtable()
 	{
-		TRACEPOINT;
 	}
 
 	/**
@@ -79,17 +76,16 @@ class OverviewGroupSubtable : public QWidget
 	 * @param newGroup new group of rows that will be displayed
 	 */
 	void setRowGroup(stfl::ElementGroup<OverviewTableRow> &newGroup);
-
-      protected:
+	
+protected:
 	void resizeEvent(QResizeEvent *event);
 
-      private
-slots:
+private slots:
 	void rowClicked(int row, int collumn);
 	void customMenuRequested(QPoint location);
 	void customMenuAction(QAction *action);
 
-      private:
+private:
 	util::Reference<controller::ViewController> controller;
 	OverviewTable *parent;
 	stfl::ElementGroup<OverviewTableRow> group;

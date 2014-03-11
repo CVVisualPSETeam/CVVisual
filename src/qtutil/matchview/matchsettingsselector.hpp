@@ -32,6 +32,9 @@ public:
 
 public slots:
 
+	/**
+	 * @brief emits the remove signal this
+	 */
 	void removeMe()
 		{emit remove(this);}
 
@@ -53,6 +56,16 @@ private:
 	QLayout * layout_;
 
 };
+
+template <class Setting>
+bool registerMatchSettings(const QString &name)
+{
+	return MatchSettingsSelector::registerElement(
+	    name, [](std::vector<cv::DMatch> univers)
+	{
+		    return std::unique_ptr<MatchSettings>{ new Setting{univers}};
+	});
+}
 
 }}
 

@@ -1,11 +1,10 @@
-#ifndef CVVISUAL_KEYPOINT_PEN
-#define CVVISUAL_KEYPOINT_PEN
+#ifndef CVVISUAL_KEYPOINT_SETTINGS
+#define CVVISUAL_KEYPOINT_SETTINGS
 
-#include <QWidget>
+#include <QFrame>
 #include <QPen>
 
 #include "cvvkeypoint.hpp"
-#include "../../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -15,9 +14,9 @@ namespace qtutil
 class CVVKeyPoint;
 
 /**
- * @brief this abstract class returns an individual QPen for a CVVKeyPoint.
+ * @brief this abstract class returns an individual Setting for a CVVKeyPoint.
  */
-class KeyPointSettings : public QWidget
+class KeyPointSettings : public QFrame
 {
 	Q_OBJECT
 
@@ -26,14 +25,18 @@ class KeyPointSettings : public QWidget
 	 * @brief KeyPointPen
 	 * @param parent the parent Widget
 	 */
-	KeyPointSettings(QWidget *parent) : QWidget(parent){}
+	KeyPointSettings(QWidget *parent) : QFrame(parent){}
 
 	/**
-	 * @brief getPen
-	 * @param key a CVVKeyPoint
-	 * @return an indivudual QPen for the given CVVKeyPoint
+	 * @brief set individual settings for a selected cvvkeypoint
 	 */
 	virtual void setSettings(CVVKeyPoint &key) = 0;
+
+	/**
+	 * @brief set individual settings for a non-selected cvvkeypoint
+	 */
+	virtual void setUnSelectedSettings(CVVKeyPoint &)
+		{}
 
 public slots:
 	/**
@@ -41,10 +44,11 @@ public slots:
 	 */
 	void updateAll()
 		{ emit settingsChanged(*this); }
+
 signals:
 	/**
 	 * @brief this signal will be emitted if the settings changed
-	 * and the CVVKeyPoint must update their Pens
+	 * and the CVVKeyPoint must update their Settings
 	 */
 	void settingsChanged(KeyPointSettings &);
 };

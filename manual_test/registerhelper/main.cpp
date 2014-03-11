@@ -9,7 +9,7 @@
 #include "../../src/util/util.hpp"
 
 class LabelRegister : public QWidget,
-                      public cvv::qtutil::RegisterHelper<QLabel, QWidget *>
+		      public cvv::qtutil::RegisterHelper<QLabel, QWidget *>
 {
       public:
 	LabelRegister(QWidget *parent = nullptr)
@@ -27,12 +27,12 @@ class LabelRegister : public QWidget,
 		lay->addWidget(lab);
 		setLayout(lay);
 		connect(&signalElementSelected(),
-		        &cvv::qtutil::SignalQString::signal, &s,
-		        &cvv::qtutil::Slot::slot);
+			&cvv::qtutil::SignalQString::signal, &s,
+			&cvv::qtutil::Slot::slot);
 		std::cout << __LINE__
-		          << "\tlabel register constr connected text changed\n";
+			  << "\tlabel register constr connected text changed\n";
 		connect(&signalElementRegistered(), SIGNAL(signal(QString)),
-		        &reg, SLOT(slot(QString)));
+			&reg, SLOT(slot(QString)));
 		std::cout
 		    << __LINE__
 		    << "\tlabel register constr connected elem registered\n";
@@ -60,9 +60,9 @@ class LabelRegister : public QWidget,
 		lay->addWidget(lab);
 
 		std::cout << "\t~current selection\t"
-		          << selection().toStdString() << "\n"
-		          << "\t~txt of func\t" << lab->text().toStdString()
-		          << "\n";
+			  << selection().toStdString() << "\n"
+			  << "\t~txt of func\t" << lab->text().toStdString()
+			  << "\n";
 	}
 };
 
@@ -70,7 +70,7 @@ void regnewlabelfunc()
 {
 	unsigned int cnt = LabelRegister::registeredElements().size();
 	std::cout << "#regnewlabelfunc " << cnt << std::endl << "\t#has?\t"
-	          << LabelRegister::has(QString::number(cnt)) << "\n";
+		  << LabelRegister::has(QString::number(cnt)) << "\n";
 	LabelRegister::registerElement(QString::number(cnt), [=](QWidget *)
 	{
 		std::cout << "§label fun\n";
@@ -79,23 +79,39 @@ void regnewlabelfunc()
 		return cvv::util::make_unique<QLabel>(QString::number(cnt));
 	});
 	std::cout << "\t#anz now\t"
-	          << LabelRegister::registeredElements().size() << std::endl;
+		  << LabelRegister::registeredElements().size() << std::endl;
 }
 
+/**
+ * @brief
+ * - a window will pop up
+ * - the window contains a button ("add") and two identical subwidgets below each other
+ * - the subwidget contains a combobox (initially "A") and a text (initially "A")
+ * - the cobobox starts with the options "A" and "B"
+ * - every time the button "add" is pressed both comboboxes will get a new entry "X"
+ * - if that enty is selected the text will be "X"
+ * - X is a number. it starts at 2 and is incremented for each click
+ * - if a option X in a combobox is selected the text
+ * 		~current selection	X
+ *		~txt of func	X
+ * is printed to std::out
+ * (some other debug thext is printed too)
+ *
+ */
 int main(int argc, char *argv[])
 {
 	QApplication a(argc, argv);
 
 	std::cout << __LINE__ << "\tregister label A\t"
-	          << LabelRegister::registerElement("A", [](QWidget *)
+		  << LabelRegister::registerElement("A", [](QWidget *)
 	{ return cvv::util::make_unique<QLabel>("A"); }) << "\n";
 
 	std::cout << __LINE__ << "\tregister label A again\t"
-	          << LabelRegister::registerElement("A", [](QWidget *)
+		  << LabelRegister::registerElement("A", [](QWidget *)
 	{ return cvv::util::make_unique<QLabel>("A"); }) << "\n";
 
 	std::cout << __LINE__ << "\tregister label B\t"
-	          << LabelRegister::registerElement("B", [](QWidget *)
+		  << LabelRegister::registerElement("B", [](QWidget *)
 	{ return cvv::util::make_unique<QLabel>("B"); }) << "\n";
 
 	QWidget w{};

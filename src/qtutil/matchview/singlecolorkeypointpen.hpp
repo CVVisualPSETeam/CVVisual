@@ -5,7 +5,6 @@
 #include <QPen>
 
 #include "keypointsettings.hpp"
-#include "../../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -25,7 +24,7 @@ class SingleColorKeyPen : public KeyPointSettings
 	 * @brief the consructor
 	 * @param parent the parent Widget
 	 */
-	SingleColorKeyPen(QWidget *parent = nullptr);
+	SingleColorKeyPen(std::vector<cv::KeyPoint> ,QWidget *parent = nullptr);
 
 	/**
 	 * @brief the destructor

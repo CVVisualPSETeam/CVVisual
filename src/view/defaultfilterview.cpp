@@ -1,4 +1,5 @@
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QWidget>
 
 #include "defaultfilterview.hpp"
@@ -17,7 +18,6 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 				     QWidget *parent)
     : FilterView{ parent }
 {
-	TRACEPOINT;
 
 	auto layout = util::make_unique<QHBoxLayout>();
 	auto accor = util::make_unique<qtutil::Accordion>();
@@ -28,23 +28,22 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	accor->setMaximumWidth(250);
 
 	std::vector<qtutil::ZoomableImage*> syncVec;
-	std::vector<util::Reference<qtutil::ZoomableImage>> zoomableImages;
-
-	for (auto image : images)
+	
+	size_t count = 0;
+	for (auto& image : images)
 	{
 		auto zoomIm = util::make_unique<qtutil::ZoomableImage>();
-		zoomableImages.emplace_back(*zoomIm);
 
 		syncVec.push_back(zoomIm.get());
 
 		accor->insert(
-		    "ImageInformation",
+		    QString("Image Information: ") + QString::number(count),
 		    std::move(
 			util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
 
 		zoomIm->setMat(image);
-
 		imageLayout->addWidget(zoomIm.release());
+		count++;
 	}
 
 	accor->insert("Zoom synchronization",
@@ -56,11 +55,11 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	layout->addWidget(imwid.release());
 
 	setLayout(layout.release());
-	for(auto& zoomableImage: zoomableImages)
+	//images should be seen fully at beginning
+	for(auto& zoomableImage: syncVec)
 	{
 		zoomableImage->showFullImage();
 	}
-	TRACEPOINT;
 }
 }
 } // namespaces

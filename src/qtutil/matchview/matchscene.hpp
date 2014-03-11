@@ -16,7 +16,6 @@
 #include "../synczoomwidget.hpp"
 #include "../zoomableimage.hpp"
 #include "../zoomableimageoptpanel.hpp"
-#include "../../dbg/dbg.hpp"
 #include "../../util/util.hpp"
 
 namespace cvv
@@ -66,22 +65,30 @@ class MatchScene : public QGraphicsView
 		   QWidget *parent = nullptr);
 
 	/**
+	 * @brief returns the lett image.
+	 */
+	ZoomableImage& getLeftImage()
+		{return *leftImage_;}
+
+	/**
+	 * @brief returns the right image.
+	 */
+	ZoomableImage& getRightImage()
+		{return *rightImage_;}
+
+	/**
 	 * @brief returns a ZoomableOptPanel of the left Image
 	 * @return a ZoomableOptPanel of the left Image
 	 */
 	std::unique_ptr<ZoomableOptPanel> getLeftMatInfoWidget()
-	{
-		return util::make_unique<ZoomableOptPanel>(*leftImage_);
-	}
+		{return util::make_unique<ZoomableOptPanel>(*leftImage_,false);}
 
 	/**
 	 * @brief returns a ZoomableOptPanel of the right Image
 	 * @return a ZoomableOptPanel of the right Image
 	 */
 	std::unique_ptr<ZoomableOptPanel> getRightMatInfoWidget()
-	{
-		return util::make_unique<ZoomableOptPanel>(*rightImage_);
-	}
+		{return util::make_unique<ZoomableOptPanel>(*rightImage_,false);}
 
 
 	/**
@@ -118,6 +125,12 @@ slots:
 	 * @brief an slot which will be calles when the MatchSceneGraphicsView was resized.
 	 */
 	void viewReized();
+
+	/**
+	 * @brief On right click a menu to save the current visible image or the zoomable images.
+	 * @param pos The position of the right click.
+	 */
+	void rightClick(const QPoint &pos);
 
       private:
 	structures::MatchSceneGraphicsView *graphicView_;

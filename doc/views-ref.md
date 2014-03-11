@@ -1,4 +1,4 @@
-#Views:
+#Views
 ##General information:
 Most views offer an `ImageInformation` collapsable in their accordion menus.  
 The zoom can be found here.  

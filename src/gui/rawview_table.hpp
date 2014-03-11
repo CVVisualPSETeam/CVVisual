@@ -33,7 +33,7 @@ class RawviewTable : public QWidget
 {
 	Q_OBJECT
 
-      public:
+public:
 	/**
 	 * @brief Constructor of this class.
 	 * @param parent parent view
@@ -61,10 +61,21 @@ class RawviewTable : public QWidget
 		return parent;
 	}
 
-      private:
+	std::vector<cv::DMatch> getMatchSelection();
+
+	std::vector<cv::KeyPoint> getKeyPointSelection();	
+
+public slots:
+	
+	void setMatchSelection(std::vector<cv::DMatch> matches);
+
+	void setKeyPointSelection(std::vector<cv::KeyPoint> keyPoints);
+	
+private:
 	view::Rawview *parent;
 	qtutil::Accordion *subtableAccordion;
 	std::vector<RawviewGroupSubtable *> subTables{};
+	
 };
 }
 }

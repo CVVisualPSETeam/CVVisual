@@ -25,7 +25,7 @@ namespace qtutil
 /**
  * @brief Provides a function to select a portion of a set.
  *
- * The highest | lowest n ^ n% of a given universe ^ selection can be selected.
+ * The highest | lowest n ^ n% of a given selection can be selected.
  * Optionally the complement can be used.
  */
 class PortionSelector : public QWidget
@@ -39,9 +39,7 @@ class PortionSelector : public QWidget
 	    : QWidget{ parent }, sigSettingsChanged_{}, highest_{ nullptr },
 	      lowest_{ nullptr }, complement_{ nullptr },
 	      percentVal_{ nullptr }, numberVal_{ nullptr },
-	      percent_{ nullptr }, number_{ nullptr }, useUniverse_{ nullptr },
-	      useSelection_{ nullptr },
-	      bgroupUnivSelec_{ util::make_unique<QButtonGroup>() },
+	      percent_{ nullptr }, number_{ nullptr },
 	      bgroupNumberPerc_{ util::make_unique<QButtonGroup>() }
 	{
 		// create elements
@@ -55,11 +53,6 @@ class PortionSelector : public QWidget
 		auto percent = util::make_unique<QRadioButton>("(100*n)%");
 		auto number = util::make_unique<QRadioButton>("n");
 
-		auto useUniverse =
-		    util::make_unique<QRadioButton>("of the universe");
-		auto useSelection =
-		    util::make_unique<QRadioButton>("of the selection");
-
 		highest_ = *highest;
 		lowest_ = *lowest;
 		complement_ = *complement;
@@ -67,51 +60,41 @@ class PortionSelector : public QWidget
 		numberVal_ = *numberVal;
 		percent_ = *percent;
 		number_ = *number;
-		useUniverse_ = *useUniverse;
-		useSelection_ = *useSelection;
 
-		// button groups
-		bgroupUnivSelec_->addButton(useUniverse.get());
-		bgroupUnivSelec_->addButton(useSelection.get());
-		bgroupUnivSelec_->setExclusive(true);
-
+		// button group
 		bgroupNumberPerc_->addButton(number.get());
 		bgroupNumberPerc_->addButton(percent.get());
 		bgroupNumberPerc_->setExclusive(true);
 
 		// connect subwidgets
 		QObject::connect(number_.getPtr(), SIGNAL(toggled(bool)),
-		                 numberVal_.getPtr(), SLOT(setVisible(bool)));
+				 numberVal_.getPtr(), SLOT(setVisible(bool)));
 		QObject::connect(percent_.getPtr(), SIGNAL(toggled(bool)),
-		                 percentVal_.getPtr(), SLOT(setVisible(bool)));
+				 percentVal_.getPtr(), SLOT(setVisible(bool)));
 
 		// settings
 		percentVal->setRange(0, 1);
 		percentVal->setSingleStep(0.01);
 		numberVal->setRange(0, std::numeric_limits<int>::max());
 
-		useUniverse_->setChecked(true);
 		number_->setChecked(true);
 		percentVal_->setVisible(false);
 		numberVal_->setVisible(true);
 
 		// connect state changed
 		QObject::connect(highest.get(), SIGNAL(clicked()),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(lowest.get(), SIGNAL(clicked()),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(bgroupNumberPerc_.get(),
-		                 SIGNAL(buttonClicked(int)),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 SIGNAL(buttonClicked(int)),
+				 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(numberVal.get(), SIGNAL(valueChanged(int)),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(percentVal.get(), SIGNAL(valueChanged(double)),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
-		QObject::connect(bgroupUnivSelec_.get(),
-		                 SIGNAL(buttonClicked(int)),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 &sigSettingsChanged_, SIGNAL(signal()));
 		QObject::connect(complement.get(), SIGNAL(clicked()),
-		                 &sigSettingsChanged_, SIGNAL(signal()));
+				 &sigSettingsChanged_, SIGNAL(signal()));
 
 		// build ui
 		auto lay = util::make_unique<QVBoxLayout>();
@@ -125,57 +108,47 @@ class PortionSelector : public QWidget
 		lay->addWidget(util::make_unique<QLabel>("with n =").release());
 		lay->addWidget(numberVal.release());
 		lay->addWidget(percentVal.release());
-		lay->addWidget(useUniverse.release());
-		lay->addWidget(useSelection.release());
 		lay->addWidget(complement.release());
 		setLayout(lay.release());
 	}
 
 	/**
 	 * @brief Returns elements from the selected range.
-	 * @param universe The universe.
 	 * @param selection The selection.
 	 * @param comp Comparison function object used for sorting
 	 * (bool cmp(const Type &a, const Type &b))
 	 * @return the selected values
 	 */
 	template <class Type, class Compare>
-	std::vector<Type> select(std::vector<Type> universe,
-	                         std::vector<Type> selection,
-	                         Compare comp) const
+	std::vector<Type> select(std::vector<Type> selection,
+				 Compare comp) const
 	{
-		// universe or selection
-		auto in = util::makeRef(universe);
-		if (useSelection_->isChecked())
-		{
-			in = selection;
-		}
-		std::sort(in->begin(), in->end(), comp);
-
 		// number
 		int n = numberVal_->value();
 		if (percent_->isChecked())
 		{
-			n = (percentVal_->value()) * in->size();
+			n = (percentVal_->value()) * selection.size();
 		}
+
+		std::sort(selection.begin(),selection.end(),comp);
 
 		// lowest selected value
 		std::size_t lower = (lowest_->isChecked()) ? n : 0;
 		// highest selected value
 		std::size_t upper =
-		    in->size() - ((highest_->isChecked()) ? n : 0);
+		    selection.size() - ((highest_->isChecked()) ? n : 0);
 
 		// element
 		bool complement = complement_->isChecked();
 
 		// filter
 		std::vector<Type> result;
-		for (std::size_t i = 0; i < in->size(); i++)
+		for (std::size_t i = 0; i < selection.size(); i++)
 		{
 			if (complement != ((i <= lower) || (i >= upper)))
 			{
 				// copy value
-				result.push_back(in->at(i));
+				result.push_back(selection.at(i));
 			}
 		}
 		return result;
@@ -223,18 +196,6 @@ class PortionSelector : public QWidget
 	 * @brief Whether the number value should be used
 	 */
 	util::ObserverPtr<QRadioButton> number_;
-	/**
-	 * @brief Button to select from the selection
-	 */
-	util::ObserverPtr<QRadioButton> useUniverse_;
-	/**
-	 * @brief Button to select from the selection
-	 */
-	util::ObserverPtr<QRadioButton> useSelection_;
-	/**
-	 * @brief Button group for universe/selection
-	 */
-	std::unique_ptr<QButtonGroup> bgroupUnivSelec_;
 	/**
 	 * @brief Button group for number/percentage
 	 */

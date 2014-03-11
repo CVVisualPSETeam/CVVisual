@@ -10,7 +10,6 @@
 #include "overview_table_row.hpp"
 #include "overview_group_subtable.hpp"
 #include "../qtutil/accordion.hpp"
-#include "../dbg/dbg.hpp"
 
 namespace cvv
 {
@@ -21,19 +20,16 @@ OverviewTable::OverviewTable(
     util::Reference<controller::ViewController> controller)
     : controller{ controller }
 {
-	TRACEPOINT;
 	subtableAccordion = new qtutil::Accordion{};
 	auto *layout = new QVBoxLayout{};
 	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(subtableAccordion);
 	setLayout(layout);
-	TRACEPOINT;
 }
 
 void OverviewTable::updateRowGroups(
     std::vector<stfl::ElementGroup<OverviewTableRow>> newGroups)
 {
-	TRACEPOINT;
 	bool startTheSame = true;
 	for (size_t i = 0; i < std::min(groups.size(), newGroups.size()); i++)
 	{
@@ -43,87 +39,55 @@ void OverviewTable::updateRowGroups(
 			break;
 		}
 	}
-	TRACEPOINT;
-	if (startTheSame)
+	if (startTheSame && groups.size() <= newGroups.size())
 	{
-		TRACEPOINT;
 		for (size_t i = 0;
 		     i < std::min(groups.size(), newGroups.size()); i++)
 		{
 			subTables.at(i)->setRowGroup(newGroups.at(i));
 			subTables.at(i)->updateUI();
 		}
-		if (groups.size() < newGroups.size())
+		for (size_t i = groups.size(); i < newGroups.size(); i++)
 		{
-			for (size_t i = groups.size(); i < newGroups.size();
-			     i++)
-			{
-				TRACEPOINT;
-				appendRowGroupToTable(newGroups.at(i));
-				TRACEPOINT;
-				subTables.at(i)->setRowGroup(newGroups.at(i));
-			}
+			appendRowGroupToTable(newGroups.at(i));
+			subTables.at(i)->setRowGroup(newGroups.at(i));
 		}
-		else if (groups.size() > newGroups.size())
-		{
-			TRACEPOINT;
-			for (size_t i = groups.size(); i > newGroups.size();
-			     i--)
-			{
-				DEBUG(i);
-				subTables.pop_back();
-				TRACEPOINT;
-				subtableAccordion->deleteLast();
-				TRACEPOINT;
-			}
-		}
-		TRACEPOINT;
 	}
 	else
 	{
-		TRACEPOINT;
 		subtableAccordion->clear();
 		subTables.clear();
 		for (auto &group : newGroups)
 		{
 			appendRowGroupToTable(group);
 		}
-		TRACEPOINT;
 	}
 	groups = newGroups;
-	TRACEPOINT;
 }
 
 void OverviewTable::hideImages()
 {
-	TRACEPOINT;
 	doesShowImages = false;
 	updateUI();
-	TRACEPOINT;
 }
 
 void OverviewTable::showImages()
 {
-	TRACEPOINT;
 	doesShowImages = true;
 	updateUI();
-	TRACEPOINT;
 }
 
 bool OverviewTable::isShowingImages()
 {
-	TRACEPOINT;
 	return doesShowImages;
 }
 
 void OverviewTable::updateUI()
 {
-	TRACEPOINT;
 	for (auto *subTable : subTables)
 	{
 		subTable->updateUI();
 	}
-	TRACEPOINT;
 }
 
 void OverviewTable::removeElement(size_t id)

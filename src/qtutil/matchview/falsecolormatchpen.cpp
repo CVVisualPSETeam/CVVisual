@@ -15,7 +15,7 @@ namespace qtutil
 {
 
 FalseColorMatchPen::FalseColorMatchPen(std::vector<cv::DMatch> univers, QWidget *parent)
-    : MatchSettings{ parent },
+    : MatchSettings{parent},
       maxDistance_{0.0},
       minDistance_{0.0}
 {
@@ -30,6 +30,8 @@ FalseColorMatchPen::FalseColorMatchPen(std::vector<cv::DMatch> univers, QWidget 
 	connect(button.get(), SIGNAL(clicked()), this, SLOT(updateAll()));
 
 	layout->addWidget(button.release());
+
+	setLayout(layout.release());
 }
 
 void FalseColorMatchPen::setSettings(CVVMatch &match)

@@ -15,7 +15,6 @@
 #include <QPushButton>
 
 #include "call_tab.hpp"
-#include "../dbg/dbg.hpp"
 #include "../controller/view_controller.hpp"
 #include "../util/util.hpp"
 #include "tabwidget.hpp"
@@ -39,7 +38,7 @@ class CallWindow : public QMainWindow
 
 	Q_OBJECT
 
-      public:
+public:
 	/**
 	 * @brief Contructs a new call window.
 	 * @param controller view controller that this window belongs to
@@ -47,11 +46,6 @@ class CallWindow : public QMainWindow
 	 */
 	CallWindow(util::Reference<controller::ViewController> controller,
 	           size_t id);
-
-	~CallWindow()
-	{
-		TRACEPOINT;
-	}
 
 	/**
 	 * @brief Shows an "Exit program" button.
@@ -93,19 +87,7 @@ class CallWindow : public QMainWindow
 	 * @param id of the given tab
 	 */
 	void showTab(size_t tabId);
-
-	/**
-	 * @brief Update the left footer with the given text.
-	 * @param newText given text
-	 */
-	void updateLeftFooter(QString newText);
-
-	/**
-	 * @brief Update the right footer with the given text.
-	 * @param newText given text
-	 */
-	void updateRightFooter(QString newText);
-
+	
 	/**
 	 * @brief Examines whether or not the given is inherited in this window.
 	 * @param id of the given tab
@@ -124,8 +106,21 @@ class CallWindow : public QMainWindow
 	 */
 	std::vector<size_t> getCallTabIds();
 
-      private
-slots:
+public slots:
+	
+	/**
+	 * @brief Update the left footer with the given text.
+	 * @param newText given text
+	 */
+	void updateLeftFooter(QString newText);
+
+	/**
+	 * @brief Update the right footer with the given text.
+	 * @param newText given text
+	 */
+	void updateRightFooter(QString newText);
+
+private slots:
 	void contextMenuRequested(const QPoint &location);
 
 	void contextMenuAction(QAction *action);
@@ -138,7 +133,7 @@ slots:
 
 	void closeApp();
 
-      protected:
+protected:
 	size_t id;
 	util::Reference<controller::ViewController> controller;
 	TabWidget *tabWidget;

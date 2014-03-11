@@ -8,20 +8,25 @@ In this example, we want to debug a call to 'dilate' (line.1) which is a filter,
 src, dest and the structuring element elem are of type cv::Mat (see the OpenCV doc on [dilate()](http://docs.opencv.org/modules/imgproc/doc/filtering.html#dilate));
 CVVISUAL\_LOCATION is a special macro that inserts the location of the code and description and view can be either string-literals or std::strings. The later three are all optional.
 
-	0 #include <filter.hpp>
-	1 cv::dilate(src, dest, elem);  
-	2 cvv::debugFilter(src, dest, CVVISUAL_LOCATION, description, view);
+```cpp
+	#include <filter.hpp>
+	//...
+	cv::dilate(src, dest, elem);  
+	cvv::debugFilter(src, dest, CVVISUAL_LOCATION, description, view);
+```
 
 When executing the code, the debugFilter function will open the window and halt the execution.  
 ##The Overview Tab 
-![](../images_tut/dilate_overview.png)
+![](images_tut/dilate_overview.PNG)
+
 You are now in the overview tab. Each time you call one of the CVVisual functions, a *Call* is added to the table.  
 You can see the images you passed to the funtion as well as metadata and additional information.  
-The text field allows you to sort or group the Calls by different criteria; see the [filter query language documentation](filterquery-ref.html) on how to use it.  
+The text field allows you to sort or group the Calls by different criteria; see the [filter query language documentation](../ref/filterquery-ref.html) on how to use it.  
 Now double-click on the Call or select `Open in 'CVVisual|main window'` from the context menu.  
 (You can also choose to remove the Call or open it in a new window there)  
 ##Debugging a filter operation  
-![](../images_tut/dilate_calltab_defaultfview.png)
+![](images_tut/dilate_calltab_defaultfview.PNG)
+
 A *CallTab* opens. In the center, there are the images from the call.
 In the `View` drop-down menu you find different *Views* of the Call, that is, different visualizations of it. The accordion menu on the left offers information on the images and additional options depending on the View and the type of the Call.
 Important here might be that `ImageInformation` offers the possibility to zoom (you can also use `Ctrl` plus the mouse wheel); if you zoom in more than 60%, the image pixels will be overlaid with the channel values, in a 3-channel image usually in order (top-down) BGR.  
