@@ -38,4 +38,13 @@ ShowInRawView::ShowInRawView(const std::vector<cv::KeyPoint> left_key,
 	setLayout(layout.release());
 }
 
+ShowInRawView::~ShowInRawView()
+{
+	if (rawViewWindow_)
+	{
+		rawViewWindow_->deleteLater();
+	}
+	
+}
+
 }}

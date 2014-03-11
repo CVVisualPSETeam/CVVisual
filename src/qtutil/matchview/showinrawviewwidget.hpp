@@ -23,8 +23,7 @@ public:
 		      KeyPointManagement* keymnt,
 		      QWidget*parent=nullptr);
 
-	~ShowInRawView()
-		{rawViewWindow_->deleteLater();}
+	~ShowInRawView();
 private slots:
 
 	void showHideRawviewWindow()
