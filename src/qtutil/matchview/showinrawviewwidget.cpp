@@ -25,17 +25,6 @@ ShowInRawView::ShowInRawView(const std::vector<cv::KeyPoint> left_key,
 
 	connect(selectionbutton.get(),SIGNAL(clicked()),this,SLOT(getcurrentSelection()));
 
-	/*connect(keymnt_,SIGNAL(updateSelection(std::vector<cv::KeyPoint>)),
-		rawViewWindow_,SLOT(selectKeyPoints(std::vector<cv::KeyPoint>)));
-	connect(matchmnt_,SIGNAL(updateSelection(std::vector<cv::DMatch>)),
-		rawViewWindow_,SLOT(selectMatches(std::vector<cv::DMatch>)));
-
-	connect(rawViewWindow_,SIGNAL(keyPointsSelected(std::vector<cv::KeyPoint>)),
-		keymnt,SLOT(setSelection(std::vector<cv::KeyPoint>)));
-	connect(rawViewWindow_,SIGNAL(matchesSelected(std::vector<cv::DMatch>)),
-		matchmnt_,SLOT(setSelection(std::vector<cv::DMatch>)));*/
-
-
 	layout->addWidget(selectionbutton.release());
 	setLayout(layout.release());
 }
@@ -46,7 +35,7 @@ ShowInRawView::~ShowInRawView()
 	{
 		rawViewWindow_->deleteLater();
 	}
-	
+
 }
 
 void ShowInRawView::hideEvent(QHideEvent *)
@@ -59,10 +48,20 @@ void ShowInRawView::getcurrentSelection()
 {
 	if(!rawViewWindow_){
 		rawViewWindow_=new RawviewWindow{"Current Selection",left_key_,right_key_,matches_};
+
+		connect(keymnt_,SIGNAL(updateSelection(std::vector<cv::KeyPoint>)),
+			rawViewWindow_,SLOT(selectKeyPoints(std::vector<cv::KeyPoint>)));
+		connect(matchmnt_,SIGNAL(updateSelection(std::vector<cv::DMatch>)),
+			rawViewWindow_,SLOT(selectMatches(std::vector<cv::DMatch>)));
+
+		connect(rawViewWindow_,SIGNAL(keyPointsSelected(std::vector<cv::KeyPoint>)),
+			keymnt_,SLOT(setSelection(std::vector<cv::KeyPoint>)));
+		connect(rawViewWindow_,SIGNAL(matchesSelected(std::vector<cv::DMatch>)),
+			matchmnt_,SLOT(setSelection(std::vector<cv::DMatch>)));
 	}
-	//rawViewWindow_->setVisible(!rawViewWindow_->isVisible());
 	rawViewWindow_->selectKeyPoints(keymnt_->getCurrentSelection());
 	rawViewWindow_->selectMatches(matchmnt_->getCurrentSelection());
+	rawViewWindow_->setVisible(true);
 }
 
 
