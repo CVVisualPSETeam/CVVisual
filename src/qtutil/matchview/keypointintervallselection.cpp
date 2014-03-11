@@ -46,7 +46,7 @@ void KeyPointIntervallSelector::changeSelecteValue()
 		selector_->deleteLater();
 	}
 	double min=-1;
-	double max=-1;
+	double max=0;
 	for(auto& key:keypoints_)
 	{
 
