@@ -34,8 +34,8 @@ class MatchSettings : public QFrame
 	/**
 	 * @brief set individual settings for a non-selected cvvmatch
 	 */
-	virtual void setUnSelectedSettings(CVVMatch &)
-		{}
+	/*virtual void setUnSelectedSettings(CVVMatch &)
+		{}*/
 
 public slots:
 	/**

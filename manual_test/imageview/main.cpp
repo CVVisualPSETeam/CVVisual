@@ -18,8 +18,6 @@
  * Open it.
  * Zooming in and out of the image with both the spin box
  * and (Shift) + Strg + Mouse Wheel should work (Shift: slower).
- * Unchecking "Show image" should make it disappear,
- * checking make it reappear.
  * The information about the image in the collapsable should be correct.
  * "Show full image" should work.
  */

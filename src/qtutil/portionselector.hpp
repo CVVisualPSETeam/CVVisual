@@ -145,7 +145,7 @@ class PortionSelector : public QWidget
 		std::vector<Type> result;
 		for (std::size_t i = 0; i < selection.size(); i++)
 		{
-			if (complement != ((i <= lower) || (i >= upper)))
+			if (complement != ((i < lower) || (i >= upper)))
 			{
 				// copy value
 				result.push_back(selection.at(i));

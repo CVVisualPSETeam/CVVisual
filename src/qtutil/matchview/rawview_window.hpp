@@ -65,8 +65,7 @@ signals:
 	 */
 	void keyPointsSelected(const std::vector<cv::KeyPoint> &keyPoints);
 
-      public
-slots:
+public slots:
 
 	/**
 	 * @brief Show only the given matches.

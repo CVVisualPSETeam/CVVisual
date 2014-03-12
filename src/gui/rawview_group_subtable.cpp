@@ -98,6 +98,7 @@ void RawviewGroupSubtable::updateUI()
 void RawviewGroupSubtable::selectionChanged()
 {
 	QModelIndexList indexList = qTable->selectionModel()->selectedIndexes();
+	currentRowIndexes.clear();
 	for (QModelIndex index : indexList)
 	{
 		if (index.isValid())
@@ -160,6 +161,8 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 				}
 				parent->getParent()->keyPointsSelected(
 				    keyPoints);
+				std::vector<cv::DMatch> emptyVec{};
+				parent->getParent()->matchesSelected(emptyVec); //unselect matches
 			}
 			else
 			{
@@ -168,7 +171,7 @@ void RawviewGroupSubtable::customMenuAction(QAction *action)
 				{
 					matches.push_back(row.getMatch());
 				}
-				parent->getParent()->matchesSelected(matches);
+				parent->getParent()->matchesKeyPointsSelected(matches);
 			}
 		}
 		else
@@ -289,7 +292,7 @@ void RawviewGroupSubtable::setSelectedRows(std::set<int> rowIndexes)
 	qTable->setRangeSelected(clearSelectionRange, false);
 	for (int i : rowIndexes)
 	{
-		QTableWidgetSelectionRange range(i, 0, i, qTable->columnCount());
+		QTableWidgetSelectionRange range(i, 0, i + 1, qTable->columnCount());
 		qTable->setRangeSelected(range, true);
 	}
 }

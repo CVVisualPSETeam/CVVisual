@@ -18,12 +18,13 @@ namespace cvv
 namespace view
 {
 
-Rawview::Rawview(const std::vector<cv::KeyPoint> &keypoints1,
-                 const std::vector<cv::KeyPoint> &keypoints2,
+Rawview::Rawview(const std::vector<cv::KeyPoint> &keyPoints1,
+                 const std::vector<cv::KeyPoint> &keyPoints2,
                  const std::vector<cv::DMatch> &matches,
 				 bool usesTrainDescriptor,
                  bool showShowInViewMenu)
-    : showShowInViewMenu{ showShowInViewMenu },
+    : keyPoints1{keyPoints1}, keyPoints2{keyPoints2}, matches{matches},
+	  showShowInViewMenu{ showShowInViewMenu },
 	  usesTrainDescriptor{ usesTrainDescriptor }
 {
 	queryWidget = new qtutil::STFLQueryWidget();
@@ -45,7 +46,7 @@ Rawview::Rawview(const std::vector<cv::KeyPoint> &keypoints1,
 			SLOT(requestSuggestions(QString)));
 
 	queryEngine.setElements(
-				gui::createRawviewTableRows(keypoints1, keypoints2,
+				gui::createRawviewTableRows(keyPoints1, keyPoints2,
 											matches, usesTrainDescriptor));
 	table->updateRowGroups(queryEngine.query("#group by keypoint_type"));
 }
@@ -289,12 +290,15 @@ bool Rawview::doesShowShowInViewMenu()
 	return showShowInViewMenu;
 }
 
-void Rawview::selectMatches(const std::vector<cv::KeyPoint> &keypoints1,
-                            const std::vector<cv::KeyPoint> &keypoints2,
+void Rawview::selectMatches(const std::vector<cv::KeyPoint> &keyPoints1,
+                            const std::vector<cv::KeyPoint> &keyPoints2,
                             const std::vector<cv::DMatch> &matches)
 {
+	this->keyPoints1 = keyPoints1;
+	this->keyPoints2 = keyPoints2;
+	this->matches = matches;
 	queryEngine.setElements(
-	    gui::createRawviewTableRows(keypoints1, keypoints2,
+	    gui::createRawviewTableRows(keyPoints1, keyPoints2,
 									matches, usesTrainDescriptor));
 	table->updateRowGroups(queryEngine.reexecuteLastQuery());
 }
@@ -304,6 +308,7 @@ void Rawview::selectKeyPoints(const std::vector<cv::KeyPoint> &keyPoints)
 	queryEngine.setElements(
 	    gui::createSingleKeyPointRawviewTableRows(keyPoints));
 	table->updateRowGroups(queryEngine.reexecuteLastQuery());
+	matches.clear();
 }
 
 std::vector<cv::DMatch> Rawview::getMatchSelection()
@@ -324,6 +329,27 @@ void Rawview::setMatchSelection(std::vector<cv::DMatch> matches)
 void Rawview::setKeyPointSelection(std::vector<cv::KeyPoint> keyPoints)
 {
 	table->setKeyPointSelection(keyPoints);
+}
+
+void Rawview::matchesKeyPointsSelected(const std::vector<cv::DMatch> &matches)
+{
+	std::vector<cv::KeyPoint> selectedKeyPointsVec;
+	for (auto match : matches)
+	{
+		selectedKeyPointsVec.push_back(keyPoints1.at(match.queryIdx));
+		cv::KeyPoint keyPointRight;
+		if (usesTrainDescriptor)
+		{
+			keyPointRight = keyPoints2.at(match.trainIdx);
+		}
+		else
+		{
+			keyPointRight = keyPoints2.at(match.imgIdx);
+		}
+		selectedKeyPointsVec.push_back(keyPointRight);
+	}
+	matchesSelected(matches);
+	keyPointsSelected(selectedKeyPointsVec);
 }
 
 }

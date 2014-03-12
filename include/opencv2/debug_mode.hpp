@@ -1,10 +1,10 @@
 #ifndef CVVISUAL_DEBUG_MODE_HPP
 #define CVVISUAL_DEBUG_MODE_HPP
 
-#if __cplusplus >= 201103L && defined CVV_USE_THREAD_LOCAL
-#define CVV_THREAD_LOCAL thread_local
+#if __cplusplus >= 201103L && defined CVVISUAL_USE_THREAD_LOCAL
+#define CVVISUAL_THREAD_LOCAL thread_local
 #else
-#define CVV_THREAD_LOCAL
+#define CVVISUAL_THREAD_LOCAL
 #endif
 
 namespace cvv
@@ -18,7 +18,7 @@ namespace impl
  */
 static inline bool &getDebugFlag()
 {
-	CVV_THREAD_LOCAL static bool flag = true;
+	CVVISUAL_THREAD_LOCAL static bool flag = true;
 	return flag;
 }
 

@@ -30,6 +30,10 @@ DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	auto matchmnt = util::make_unique<qtutil::MatchManagement>(matches);
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
+	int updateAreaDelay=std::min(std::max(matches.size(),std::max(leftKeyPoints.size(),rightKeyPoints.size()))/10,50lu);
+	matchscene_ptr->getLeftImage().setUpdateAreaDelay(updateAreaDelay);
+	matchscene_ptr->getRightImage().setUpdateAreaDelay(updateAreaDelay);
+
 	matchManagment_ = matchmnt.get();
 
 	connect(&matchscene_ptr->getLeftImage(),SIGNAL(updateMouseHover(QPointF,QString,bool)),

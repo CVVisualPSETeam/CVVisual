@@ -14,7 +14,7 @@ RawviewWindow::RawviewWindow(QString title,
 	setWindowTitle(title);
 	setMinimumWidth(600);
 	setMinimumHeight(600);
-	view = new view::Rawview(keypoints1, keypoints2, matches, true);
+	view = new view::Rawview(keypoints1, keypoints2, matches, true, true);
 	setCentralWidget(view);
 	connect(view, SIGNAL(matchesSelected(std::vector<cv::DMatch>)), this,
 		SIGNAL(matchesSelected(std::vector<cv::DMatch>)));
@@ -34,7 +34,7 @@ void RawviewWindow::selectMatches(const std::vector<cv::DMatch> &matches)
 {
 	if (view == nullptr)
 	{
-		view = new view::Rawview(keypoints1, keypoints2, matches, true);
+		view = new view::Rawview(keypoints1, keypoints2, matches, true, true);
 		setCentralWidget(view);
 		connect(
 		    view,

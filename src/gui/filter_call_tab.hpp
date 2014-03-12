@@ -26,16 +26,16 @@ class FilterCallTab
 
       public:
 	/**
-	 * @brief Short constructor named after the Call, using the default
-	 * view.
-	 * Initializes the FilterCallTab with the default view and names it
+	 * @brief Short constructor named after the Call, using the requested View
+	 * from the Call or, if no or invalid request, default view.
+	 * Initializes the FilterCallTab with the requested or default view and names it
 	 * after the associated FilterCall.
 	 * @param filterCall - the FilterCall containing the information to be
 	 * visualized.
 	 */
 	FilterCallTab(const cvv::impl::FilterCall &filterCall)
-	    : MultiViewCallTab<cvv::view::FilterView, cvv::impl::FilterCall>{
-		      filterCall, QString{ "default_filter_view" }, QString{ "DefaultFilterView" }
+	    : FilterCallTab{
+		      filterCall, filterCall.requestedView()
 	      }
 	{
 	}

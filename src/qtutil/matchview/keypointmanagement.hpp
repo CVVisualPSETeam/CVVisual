@@ -1,6 +1,8 @@
 #ifndef CVVISUAL_KEYPOINT_MANAGEMENT
 #define CVVISUAL_KEYPOINT_MANAGEMENT
 
+#include <QCheckBox>
+
 #include "../../util/util.hpp"
 
 #include "opencv2/features2d/features2d.hpp"
@@ -94,6 +96,19 @@ public slots:
 	 */
 	void applySelection();
 
+	/**
+	 * @brief set Selection to univers.
+	 */
+	void selectAll()
+		{setSelection(univers_);}
+
+	/**
+	 * @brief set selection to an empty list.
+	 */
+	void selectNone()
+		{setSelection(std::vector<cv::KeyPoint>{});}
+
+
 signals:
 
 	/**
@@ -116,6 +131,7 @@ private:
 
 	QLayout *settingsLayout_;
 	QLayout *selectorLayout_;
+	QCheckBox *showOnlySelection_;
 };
 }}
 

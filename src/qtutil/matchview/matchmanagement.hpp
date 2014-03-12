@@ -1,7 +1,7 @@
 #ifndef CVVISUAL_MATCH_MANAGEMENT
 #define CVVISUAL_MATCH_MANAGEMENT
 
-#include "../../util/util.hpp"
+#include <QCheckBox>
 
 #include "opencv2/features2d/features2d.hpp"
 
@@ -9,6 +9,7 @@
 #include "matchsettingsselector.hpp"
 #include "matchsettings.hpp"
 #include "cvvmatch.hpp"
+#include "../../util/util.hpp"
 
 namespace cvv
 {
@@ -94,6 +95,18 @@ public slots:
 	 */
 	void applySelection();
 
+	/**
+	 * @brief set Selection to univers.
+	 */
+	void selectAll()
+		{setSelection(univers_);}
+
+	/**
+	 * @brief set selection to an empty list.
+	 */
+	void selectNone()
+		{setSelection(std::vector<cv::DMatch>{});}
+
 signals:
 
 	/**
@@ -116,6 +129,7 @@ private:
 
 	QLayout *settingsLayout_;
 	QLayout *selectorLayout_;
+	QCheckBox *showOnlySelection_;
 };
 }
 }
