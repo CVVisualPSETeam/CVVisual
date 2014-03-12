@@ -1,3 +1,6 @@
+
+#include <algorithm>
+
 #include <QHBoxLayout>
 
 #include "../qtutil/accordion.hpp"
@@ -40,6 +43,10 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	auto keyPointmnt = util::make_unique<qtutil::KeyPointManagement>(allkeypoints);
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
+	int updateAreaDelay=std::min(std::max(matches.size(),std::max(leftKeyPoints.size(),rightKeyPoints.size()))/10,50lu);
+	matchscene_ptr->getLeftImage().setUpdateAreaDelay(updateAreaDelay);
+	matchscene_ptr->getRightImage().setUpdateAreaDelay(updateAreaDelay);
+
 	matchManagment_ = matchmnt.get();
 	keyManagment_ = keyPointmnt.get();
 
