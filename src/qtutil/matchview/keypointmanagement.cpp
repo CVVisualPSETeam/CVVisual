@@ -79,27 +79,38 @@ KeyPointManagement::KeyPointManagement(std::vector<cv::KeyPoint> univers,QWidget
 
 void KeyPointManagement::setSettings(CVVKeyPoint &key)
 {
-	if (showOnlySelection_->isChecked()&& std::find_if(selection_.begin(), selection_.end(),
-			 [&](const cv::KeyPoint &o)
-		{ return key == o; }) != selection_.end())
+	if(showOnlySelection_->isChecked())
 	{
-		key.setShow(true);
-		//connect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
-		//	&key,SLOT(updateSettings(KeyPointSettings&)));
-		/*for(auto setting: settingsList_)
+		if (std::find_if(selection_.begin(), selection_.end(),
+				 [&](const cv::KeyPoint &o)
+			{ return key == o; }) != selection_.end())
 		{
-			setting->setSettings(key);
-		}*/
-	}else{
+			key.setShow(true);
+		}else{
+			key.setShow(false);
+		}
+	}/*else{
+		if (std::find_if(selection_.begin(), selection_.end(),
+				 [&](const cv::KeyPoint &o)
+			{ return key == o; }) != selection_.end())
+		{
+			connect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
+				&key,SLOT(updateSettings(KeyPointSettings&)));
+			for(auto setting: settingsList_)
+			{
+				setting->setSettings(key);
+			}
+		}else{
 
-		key.setShow(false);
-		//disconnect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
-//			&key,SLOT(updateSettings(KeyPointSettings&)));
-		/*for(auto setting: settingsList_)
-		{
-			setting->setUnSelectedSettings(key);
-		}*/
-	}
+			disconnect(this,SIGNAL(applySettingsToSelection(KeyPointSettings&)),
+				&key,SLOT(updateSettings(KeyPointSettings&)));
+			for(auto setting: settingsList_)
+			{
+				setting->setUnSelectedSettings(key);
+			}
+		}
+	}*/
+
 }
 
 void KeyPointManagement::addToSelection(const cv::KeyPoint &key)
@@ -111,7 +122,7 @@ void KeyPointManagement::addToSelection(const cv::KeyPoint &key)
 
 void KeyPointManagement::singleSelection(const cv::KeyPoint &key)
 {
-	selection_.erase(selection_.begin());
+	selection_.clear();
 	selection_.push_back(key);
 	emit updateSelection(selection_);
 	updateAll();
@@ -120,7 +131,7 @@ void KeyPointManagement::singleSelection(const cv::KeyPoint &key)
 void KeyPointManagement::setSelection(
     const std::vector<cv::KeyPoint> &selection)
 {
-	selection_.erase(selection_.begin());
+	selection_.clear();
 	for (auto &key : selection)
 	{
 		selection_.push_back(key);

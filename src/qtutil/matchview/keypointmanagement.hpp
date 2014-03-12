@@ -106,7 +106,7 @@ public slots:
 	 * @brief set selection to an empty list.
 	 */
 	void selectNone()
-	{setSelection(std::vector<cv::KeyPoint>{});}
+		{setSelection(std::vector<cv::KeyPoint>{});}
 
 
 signals:

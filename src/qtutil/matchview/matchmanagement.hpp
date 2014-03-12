@@ -105,7 +105,7 @@ public slots:
 	 * @brief set selection to an empty list.
 	 */
 	void selectNone()
-	{setSelection(std::vector<cv::DMatch>{});}
+		{setSelection(std::vector<cv::DMatch>{});}
 
 signals:
 

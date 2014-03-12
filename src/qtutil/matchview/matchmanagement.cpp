@@ -79,30 +79,36 @@ MatchManagement::MatchManagement(std::vector<cv::DMatch> univers,QWidget *parent
 
 void MatchManagement::setSettings(CVVMatch &match)
 {
-	if (showOnlySelection_->isChecked()&& std::find_if(selection_.begin(), selection_.end(),
-			 [&](const cv::DMatch &o)
-		{ return match == o; }) != selection_.end())
+	if(showOnlySelection_->isChecked())
 	{
-
-		match.setShow(true);
-
-		//connect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
-		//	&match,SLOT(updateSettings(MatchSettings&)));
-		/*for(auto setting: settingsList_)
+		if (std::find_if(selection_.begin(), selection_.end(),
+				 [&](const cv::DMatch &o)
+			{ return match == o; }) != selection_.end())
 		{
-			setting->setSettings(match);
-		}*/
-	}else{
-
-		match.setShow(false);
-
-		//disconnect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
-		//	&match,SLOT(updateSettings(MatchSettings&)));
-		/*for(auto setting: settingsList_)
+			match.setShow(true);
+		}else{
+			match.setShow(false);
+		}
+	}/*else{
+		if (std::find_if(selection_.begin(), selection_.end(),
+				 [&](const cv::DMatch &o)
+			{ return match == o; }) != selection_.end())
 		{
-			setting->setUnSelectedSettings(match);
-		}*/
-	}
+			connect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
+				&match,SLOT(updateSettings(MatchSettings&)));
+			for(auto setting: settingsList_)
+			{
+				setting->setSettings(match);
+			}
+		}else{
+			disconnect(this,SIGNAL(applySettingsToSelection(MatchSettings&)),
+				&match,SLOT(updateSettings(MatchSettings&)));
+			for(auto setting: settingsList_)
+			{
+				setting->setUnSelectedSettings(match);
+			}
+		}
+	}*/
 }
 
 void MatchManagement::addToSelection(const cv::DMatch &match)
