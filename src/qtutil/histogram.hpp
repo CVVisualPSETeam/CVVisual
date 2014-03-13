@@ -19,7 +19,7 @@ class Histogram : public QWidget
     Histogram(const cv::Mat& mat = cv::Mat{}, QWidget* parent = nullptr);
 
     void setMat(const cv::Mat& mat);
-    cv::Mat calcHist(cv::Mat mat, cv::Rect rect, int bins = 256, float rangeMin = 0.0, float rangeMax = 256.0);
+    std::vector<cv::Mat> calcHist(cv::Mat mat, cv::Rect rect, int bins = 256, float rangeMin = 0.0, float rangeMax = 256.0);
 
   public slots:
     void setArea(QRectF, qreal);
@@ -28,7 +28,7 @@ class Histogram : public QWidget
     cv::Rect qrect2cvrect(const cv::Mat& mat, QRectF qrect);
 
     cv::Mat mat_;
-    cv::Mat histMat_;
+    std::vector<cv::Mat> channelHists_;
 };
 
 }
