@@ -56,7 +56,7 @@ void FalseColorKeyPointPen::updateMinMax()
 		maxDistance_=std::max(maxDistance_,valueChooser_->getChoosenValue(key));
 		//minDistance_=std::max(minDistance_,valueChooser_->getChoosenValue(key));
 	}
-
+	updateAll();
 }
 
 }

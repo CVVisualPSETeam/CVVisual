@@ -139,8 +139,8 @@ slots:
 	qtutil::ZoomableImage *leftImage_;
 	qtutil::ZoomableImage *rightImage_;
 
-	ZoomableProxyObject *leftImWidget_;
-	ZoomableProxyObject *rightImWidget_;
+	structures::ZoomableProxyObject *leftImWidget_;
+	structures::ZoomableProxyObject *rightImWidget_;
 };
 }
 }

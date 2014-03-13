@@ -10,6 +10,8 @@ namespace cvv
 {
 namespace qtutil
 {
+namespace structures
+{
 
 class ZoomableProxyObject : public QGraphicsProxyWidget
 {
@@ -31,6 +33,8 @@ class ZoomableProxyObject : public QGraphicsProxyWidget
       private:
 	ZoomableImage *image_;
 };
+
+}
 }
 }
 #endif
