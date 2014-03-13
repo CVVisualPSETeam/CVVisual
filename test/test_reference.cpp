@@ -3,6 +3,16 @@
 
 #include "../src/util/util.hpp"
 
+/**
+ * Makes sure that
+ * - creating, reassigning and comparing `cvv::util::Reference<int>`s (from /src/util/util.hpp) works, 
+ * 	as well as the
+ * - `makeRef()` and `getPtr()` functions; that
+ * - `Reference<const int>`s can be created with `makeRef(const int)`, `{const int}` initializer list
+ * 	and via `Reference<const int>{int}` and, finally, that 
+ * - `cvv::util::Reference`s of super classes can be constructed with derived classes and 
+ * - `Reference`s to base classes can be `castTo()` `References` to the derived classes, but not the other way.
+ */
 class ReferenceTest : public testing::Test
 {
 };

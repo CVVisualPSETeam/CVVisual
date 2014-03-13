@@ -3,6 +3,15 @@
 
 #include "../src/util/util.hpp"
 
+/**
+ * Tests whether the `cvv::util::isAnyOf()` function (from /src/util/util.hpp) correctly recognises 
+ * the first parameter as element or not element of the data structure in the second parameter 
+ * for the following structures:
+ * - Initializer lists with `int int`
+ * - Initializer lists with `long int`
+ * - Vectors of `int int`
+ * - Vectors of `long int`
+ */
 class IsAnyOfTest : public testing::Test
 {
 };
