@@ -89,11 +89,4 @@ Es wird ein weiteres Mal das Hauptfenster angezeigt; wird jedoch der nun der ein
   
 Dies beschließt die Debug-Sitzung.
 
-##Erweiterbarkeit: Beispiel
-Ein Ziel der Entwicklung von CVVisual war es, die Bibliothek möglichst leicht erweiterbar zu halten.
-In diesem Beispiel soll ein neuer *Filter View* - also eine Darstellungsmöglichkeit für einen Filter-Datensatz -
-erstellt und eingefügt werden.
-
-...
-
 
