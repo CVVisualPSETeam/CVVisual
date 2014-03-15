@@ -3,6 +3,10 @@
 
 #include "../src/util/observer_ptr.hpp"
 
+/**
+ * Verifies that assigning `nullptr` and a nonzero value to a `cvv::util::ObserverPtr<Int>` 
+ * (from /src/util/observer_ptr.hpp) work and that `isNull()` and `getPtr()` return the correct result.
+ */
 class ObserverPtrTest : public testing::Test
 {
 };

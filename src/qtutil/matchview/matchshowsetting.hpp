@@ -21,8 +21,8 @@ public:
 	virtual void setSettings(CVVMatch &match) override
 		{match.setShow(button_->isChecked());}
 
-	virtual void setUnSelectedSettings(CVVMatch &match) override
-		{match.setShow(!(button_->isChecked()));}
+	/*virtual void setUnSelectedSettings(CVVMatch &match) override
+		{match.setShow(!(button_->isChecked()));}*/
 public slots:
 
 	void updateButton();

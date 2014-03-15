@@ -8,6 +8,14 @@
 #include "show_image.hpp"
 #include "final_show.hpp"
 
+/**
+ * This test calls showImage for every provided image followed by a call to finalShow for each.
+ * 
+ * The expected behaviour is that for every Image img the debug-framework will open once with one
+ * SingleImage-call and get into the final-call modus after steping forward once. After closing
+ * it, the same should happen with the next Image, whereby all old state was deleted between these
+ * calls.
+ */
 int main(int argc, char **argv)
 {
 	for (int i = 1; i < argc; ++i)

@@ -88,7 +88,7 @@ void initializeFilterAndViews()
 	//match Settings
 	cvv::qtutil::registerMatchSettings<cvv::qtutil::SingleColorMatchPen>("Single Color");
 	cvv::qtutil::registerMatchSettings<cvv::qtutil::FalseColorMatchPen>("False Color");
-	cvv::qtutil::registerMatchSettings<cvv::qtutil::MatchShowSetting>("Show/Hide");
+	//cvv::qtutil::registerMatchSettings<cvv::qtutil::MatchShowSetting>("Show/Hide");
 
 	//match Selector
 	cvv::qtutil::registerMatchSelection<cvv::qtutil::MatchIntervallSelector>("Intervall Selector");
@@ -97,7 +97,7 @@ void initializeFilterAndViews()
 	//keypoint Settings
 	cvv::qtutil::registerKeyPointSetting<cvv::qtutil::SingleColorKeyPen>("Single Color");
 	cvv::qtutil::registerKeyPointSetting<cvv::qtutil::FalseColorKeyPointPen>("False Color");
-	cvv::qtutil::registerKeyPointSetting<cvv::qtutil::KeyPointShowSetting>("Show/Hide");
+	//cvv::qtutil::registerKeyPointSetting<cvv::qtutil::KeyPointShowSetting>("Show/Hide");
 
 	//keypoint Selection
 	cvv::qtutil::registerKeyPointSelection<cvv::qtutil::KeyPointIntervallSelector>("Intervall Selector");

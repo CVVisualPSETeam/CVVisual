@@ -20,8 +20,8 @@ public:
 	virtual void setSettings(CVVKeyPoint &key) override
 		{key.setShow(button_->isChecked());}
 
-	virtual void setUnSelectedSettings(CVVKeyPoint &key) override
-		{key.setShow(!(button_->isChecked()));}
+	/*virtual void setUnSelectedSettings(CVVKeyPoint &key) override
+		{key.setShow(!(button_->isChecked()));}*/
 public slots:
 
 	void updateButton();

@@ -55,6 +55,7 @@ void KeyPointSelectionSelector::changeSelector()
 		selection_ = selection.get();
 		connect(selection.get(),SIGNAL(settingsChanged()),this,SIGNAL(settingsChanged()));
 		layout_->addWidget(selection.release());
+		emit settingsChanged();
 	}
 }
 

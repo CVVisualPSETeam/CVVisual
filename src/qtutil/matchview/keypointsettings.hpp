@@ -35,8 +35,8 @@ class KeyPointSettings : public QFrame
 	/**
 	 * @brief set individual settings for a non-selected cvvkeypoint
 	 */
-	virtual void setUnSelectedSettings(CVVKeyPoint &)
-		{}
+	/*virtual void setUnSelectedSettings(CVVKeyPoint &)
+		{}*/
 
 public slots:
 	/**
