@@ -12,7 +12,7 @@ namespace qtutil
 {
 
 /**
-* @brief Class providing functionality of compute an overlay image of two
+* @brief Class providing functionality to compute an overlay image of two
 *	input matrices.
 */
 class OverlayFilterWidget : public FilterFunctionWidget<2, 1>
