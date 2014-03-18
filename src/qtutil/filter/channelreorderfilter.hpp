@@ -13,7 +13,9 @@ namespace cvv
 {
 namespace qtutil
 {
-
+/**
+ * @brief Class providing a filter that reorders an input mat's channels.
+ */
 class ChannelReorderFilter : public FilterFunctionWidget<1, 1>
 {
 	Q_OBJECT
