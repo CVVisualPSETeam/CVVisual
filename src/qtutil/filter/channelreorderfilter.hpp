@@ -51,7 +51,11 @@ class ChannelReorderFilter : public FilterFunctionWidget<1, 1>
 	 *be progressed.)
 	 */
 	virtual std::pair<bool, QString> checkInput(InputArray) const override;
-
+	
+	/**
+	* @brief Returns the number of output channels.
+	* @return the number of output channels.
+	*/
 	int outputChannels()
 	{
 		return channel_->value();
