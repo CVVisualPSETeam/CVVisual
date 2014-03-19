@@ -57,7 +57,7 @@ After switching to _SingleFilterView_, which will be more useful to us here, we 
 In `Select a filter`, a gray filter can be applied with different parameters.
 ![](../images_example/single_filter_gray.png)
 This looks more like what we wanted. 
-Rechecking `Show image` for the unselected result image of the actual filter operation and zooming in to all images synchronously deeper than 60% shows the different values of the pixels.
+Rechecking `Show image` for the unselected result image of the actual filter operation and zooming (`Ctrl` + `Mouse wheel`) into all images synchronously deeper than 60% shows the different values of the pixels.
 Sadly, we can't do anything about this situation in this session, though, so we just continue.
 As stepping through each single _Call_ seems quite tedious, we use the _fast-forward_ button, `>>`.
 On the downside, we now have quite an amount of _Calls_ in the table.
