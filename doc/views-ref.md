@@ -6,14 +6,14 @@ The zoom can be found here.
 If the zoom is deeper than 60%, the image's pixels will be overlaid with their channel values; usually, the order is BGR[+alpha] from the top.    
   
 ##Single Image View:
-Associated with the `debugSingleImage` function.  
+Associated with the `debugSingleImage()` function.  
 Shows one single image with no features other than `Image Information`.  
 
 ##Filter Views:
 Associated with the `debugFilter()` function.  
 
 ###DefaultFilterView:
-Shows two images with no features other than `ImageInformation`.  
+Shows two images with only the basic features of `ImageInformation`, synchronized zoom and `Histogram`.  
 
 ###DualFilterView:
 Shows the two images given to the CVVisual function and _Result Image_ inbetween 

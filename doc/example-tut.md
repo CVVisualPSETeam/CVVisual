@@ -43,14 +43,14 @@ Finally, it removes the worst (as defined by match distance) 0.8 quantile of mat
 	...
 	126 cvv::debugDMatch(prevImgGray, prevKeypoints, imgGray, keypoints, matches, CVVISUAL_LOCATION, bestMatchIdString.c_str());
 
-After we started the program, the CVVisual Main Window opens with one _Call_, that is, the first image that a `cvv::showImage()` was called with.
+After we started the program, the CVVisual Main Window opens with one _Call_, that is, the first image that a `cvv::showImage()` was called with (the program execution was halted at this call).
 ![](../images_example/overview_single_call.png)
 The image is shown as a small thumbnail in the _Overview table_, together with additional information on it, like the line of the call and the description passed as a parameter.
 We double-click it, and a tab opens, where the image is shown bigger. It looks like the webcam worked, so we close the tab and press `Step`.
 ![](../images_example/single_image_tab.png)
 The window shows up again, this time with the first _Call_ to `cvv::debugFilter()` added.
 ![](../images_example/overview_two_calls.png)
-We open its tab, too, because the grayscale image does not exactly look like what we wanted.
+We open its tab, too, because, say, the grayscale image does not exactly look like what we wanted.
 ![](../images_example/filter_tab_default.png)
 After switching to _SingleFilterView_, which will be more useful to us here, we select to not show the right two images - the grayscale image and the one below, where results of filter operations in this tab are depicted.
 ![](../images_example/single_filter_right_two_imgs_unselected.png)
@@ -60,7 +60,8 @@ This looks more like what we wanted.
 Rechecking `Show image` for the unselected result image of the actual filter operation and zooming (`Ctrl` + `Mouse wheel`) into all images synchronously deeper than 60% shows the different values of the pixels.
 Sadly, we can't do anything about this situation in this session, though, so we just continue.
 As stepping through each single _Call_ seems quite tedious, we use the _fast-forward_ button, `>>`.
-On the downside, we now have quite an amount of _Calls_ in the table.
+The program runs until it reaches `finalShow()`, taking images with the webcam along the way.
+This saved us some clicking; on the downside, we now have quite an amount of _Calls_ in the table.
 ![](../images_example/overview_all.png)
 Using the [filter query language](../ref/filters-ref.html), the _Calls_ to `debugDMatch()` can be filtered out.
 ![](../images_example/overview_matches_filtered.png)

@@ -9,26 +9,26 @@ Beispielsweise könnte ein Codestück folgendermaßen aussehen:
 	//...
 	cvv::debugDMatch(src, keypoints1, src, keypoints2, match, CVVISUAL\_LOCATION);
 
-![](../images_ueberblick/MainWindow.jpg)
+![](../images_ueberblick/MainWindow.PNG)
 
 Die Bilder werden zusammen mit Informationen und Metadaten in der Overview-Tabelle angezeigt.  
 Ein Doppelklick darauf öffnet ein Tab, in dem die Bilder und Matches groß angezeigt werden.
 
-![](../images_ueberblick/LineMatchViewTab.jpg)
+![](../images_ueberblick/LineMatchViewTab.PNG)
 
 In dieser Ansicht, genannt *Line Match View* werden die KeyPoints der Matches, d.h. die von OpenCV gelieferten ähnlichen Bildpunkte, durch Linien verbunden. Im Akkordeonmenü kann man beispielsweise deren Farbe änder. `Strg + Mausrad` erlaubt, zu zoomen.
 
-![](../images_ueberblick/LineMatchViewZoomed.jpg)
+![](../images_ueberblick/LineMatchViewZoomed.PNG)
 
 Die Art der Darstellung kann im `View`-Dropdown-Menü geändert werden; so können die Matches etwa auch als Translationspfeile angezeigt werden.
 
-![](../images_ueberblick/TranslationMatchViewTab.jpg)
+![](../images_ueberblick/TranslationMatchViewTab.PNG)
 
 Zudem gibt es bei Matches auch die Möglichkeit, die Daten in einer Tabelle anzuzeigen, im sogenannten 
 *Raw View*. Die Daten können hier über einen Linksklick in einer JSON oder einer CSV-Datei gespeichert 
 werden.
 
-![](../images_ueberblick/RawviewTab.jpg)
+![](../images_ueberblick/RawviewTab.PNG)
 
 Wird `Step` geklickt wird die Ausführung des zu debuggenden Programmes, das beim Aufruf des Hauptfensters angehalten wurde, fortgesetzt, bis es auf eine weitere CVVisual-Funktion
 stößt:
@@ -38,16 +38,16 @@ stößt:
 
 Das Hauptfenster erscheint erneut, wobei der neuen Datensatz der Tabelle hinzugefügt wird.
 
-![](../images_ueberblick/MainWindowTwoCalls.jpg)
+![](../images_ueberblick/MainWindowTwoCalls.PNG)
 
 Da es sich hier um eine Filter-Operation handelt, ist die Anzeige im Tab eine andere:
 
-![](../images_ueberblick/DefaultFilterViewTab.jpg)
+![](../images_ueberblick/DefaultFilterViewTab.PNG)
 
 Auch die möglichen Anzeigen unterscheiden sich von denen für Match-Operationen.
 Der *Dual Filter View* erlaubt zum Beispiel zusätzlich, ein Differenzbild der beiden übergebenen anzuzeigen.
 
-![](../images_ueberblick/DualfilterViewDiffImg.jpg)
+![](../images_ueberblick/DualfilterViewDiffImg.PNG)
 
 Nach einem *fast-forward* (`>>`) über die weiteren Schritte des Programms
 
@@ -65,15 +65,15 @@ Nach einem *fast-forward* (`>>`) über die weiteren Schritte des Programms
 	cvv::finalShow();
 ergibt sich im Overview folgendes Bild:
 
-![](../images_ueberblick/MainWindowFull.jpg)
+![](../images_ueberblick/MainWindowFull.PNG)
 
 Dabei wird durch den letzten Aufruf nur ein einziges Bild zur Anzeige übergeben:
 
-![](../images_ueberblick/SingleImageTab.jpg)
+![](../images_ueberblick/SingleImageTab.PNG)
 
 Mithilfe der Textzeile lassen sich durch Kommandos der *Filter Query Language* von CVVisual die Datensätze ordnen, filtern und gruppieren. Hier wurde nach ID gruppiert:
 
-![](../images_ueberblick/OverviewFilterQueryGroupByID.jpg)
+![](../images_ueberblick/OverviewFilterQueryGroupByID.PNG)
 
 Dies funktioniert auch im *Raw View*.
 
@@ -84,8 +84,6 @@ Hinter dem letzten Aufruf einer regulären CVVisual-Funktion muss, wie oben gese
 	//...
 
 Es wird ein weiteres Mal das Hauptfenster angezeigt; wird jedoch der nun der einzige verbleibende, der `Close`-Knopf betätigt, wird das Hauptfenster endgültig geschlossen.
-
-![](../images_ueberblick/OverviewExitProgram.jpg)
   
 Dies beschließt die Debug-Sitzung.
 
