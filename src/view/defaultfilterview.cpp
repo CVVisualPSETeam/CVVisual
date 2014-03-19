@@ -9,6 +9,7 @@
 #include "../qtutil/zoomableimage.hpp"
 #include "../qtutil/synczoomwidget.hpp"
 #include "../qtutil/histogram.hpp"
+#include "../qtutil/histogramoptpanel.hpp"
 #include "../util/util.hpp"
 
 namespace cvv
@@ -45,9 +46,12 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 
 		zoomIm->setMat(image);
 
-    auto histogram = util::make_unique<qtutil::Histogram>();
-    histogram->setMat(image);
-    connect(zoomIm.get(), SIGNAL(updateArea(QRectF, qreal)), histogram.get(), SLOT(setArea(QRectF, qreal)));
+		auto histogram = util::make_unique<qtutil::Histogram>();
+		histogram->setMat(image);
+		histogram->setVisible(false);
+		connect(zoomIm.get(), SIGNAL(updateArea(QRectF, qreal)), histogram.get(), SLOT(setArea(QRectF, qreal)));
+
+		accor->insert(QString("Histogram: ") + QString::number(count), std::move(util::make_unique<qtutil::HistogramOptPanel>(*histogram)));
 
 		imageLayout->addWidget(zoomIm.release(), 0, count);
     imageLayout->addWidget(histogram.release(), 1, count);
