@@ -20,17 +20,17 @@ In dieser Ansicht, genannt *Line Match View* werden die KeyPoints der Matches, d
 
 ![](../images_ueberblick/LineMatchViewZoomed.PNG)
 
-Die Art der Darstellung kann im `View`-Dropdown-Menü geändert werden; so können die Matches etwa auch als Translationspfeile angezeigt werden.
+Die Art der Darstellung kann im `View`-Dropdown-Menü geändert werden; so können die Matches etwa auch als Translationslinien angezeigt werden.
 
 ![](../images_ueberblick/TranslationMatchViewTab.PNG)
 
 Zudem gibt es bei Matches auch die Möglichkeit, die Daten in einer Tabelle anzuzeigen, im sogenannten 
-*Raw View*. Die Daten können hier über einen Linksklick in einer JSON oder einer CSV-Datei gespeichert 
+*Raw View*. Die Daten können hier über einen Linksklick als JSON oder CSV ins Clipboard kopiert 
 werden.
 
 ![](../images_ueberblick/RawviewTab.PNG)
 
-Wird `Step` geklickt wird die Ausführung des zu debuggenden Programmes, das beim Aufruf des Hauptfensters angehalten wurde, fortgesetzt, bis es auf eine weitere CVVisual-Funktion
+Wird `Step` geklickt wird die Ausführung des zu debuggenden Programmes, das beim Aufruf des Hauptfensters angehalten wurde fortgesetzt, bis es auf eine weitere CVVisual-Funktion
 stößt:
 
 	//...
@@ -87,4 +87,5 @@ Es wird ein weiteres Mal das Hauptfenster angezeigt; wird jedoch der nun der ein
   
 Dies beschließt die Debug-Sitzung.
 
+[Quelle des zur Demonstration benutzten Bildes.](http://commons.wikimedia.org/wiki/File:PNG-Gradient.png)
 
