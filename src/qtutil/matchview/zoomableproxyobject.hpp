@@ -12,7 +12,9 @@ namespace qtutil
 {
 namespace structures
 {
-
+/**
+ * @brief spezific class for MatchScene
+ */
 class ZoomableProxyObject : public QGraphicsProxyWidget
 {
       public:

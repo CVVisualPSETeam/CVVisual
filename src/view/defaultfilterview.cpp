@@ -1,5 +1,6 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QGridLayout>
 #include <QWidget>
 
 #include "defaultfilterview.hpp"
@@ -7,6 +8,8 @@
 #include "../qtutil/zoomableimageoptpanel.hpp"
 #include "../qtutil/zoomableimage.hpp"
 #include "../qtutil/synczoomwidget.hpp"
+#include "../qtutil/histogram.hpp"
+#include "../qtutil/histogramoptpanel.hpp"
 #include "../util/util.hpp"
 
 namespace cvv
@@ -22,7 +25,7 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 	auto layout = util::make_unique<QHBoxLayout>();
 	auto accor = util::make_unique<qtutil::Accordion>();
 	auto imwid = util::make_unique<QWidget>();
-	auto imageLayout = util::make_unique<QHBoxLayout>();
+	auto imageLayout = util::make_unique<QGridLayout>();
 
 	accor->setMinimumWidth(250);
 	accor->setMaximumWidth(250);
@@ -42,7 +45,17 @@ DefaultFilterView::DefaultFilterView(const std::vector<cv::Mat> &images,
 			util::make_unique<qtutil::ZoomableOptPanel>(*zoomIm)));
 
 		zoomIm->setMat(image);
-		imageLayout->addWidget(zoomIm.release());
+
+		auto histogram = util::make_unique<qtutil::Histogram>();
+		histogram->setMat(image);
+		histogram->setVisible(false);
+		connect(zoomIm.get(), SIGNAL(updateArea(QRectF, qreal)), histogram.get(), SLOT(setArea(QRectF, qreal)));
+
+		accor->insert(QString("Histogram: ") + QString::number(count), std::move(util::make_unique<qtutil::HistogramOptPanel>(*histogram)));
+
+		imageLayout->addWidget(zoomIm.release(), 0, count);
+    imageLayout->addWidget(histogram.release(), 1, count);
+
 		count++;
 	}
 

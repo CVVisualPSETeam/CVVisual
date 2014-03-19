@@ -20,11 +20,17 @@ public:
 	 */
 	MatchSelection(QWidget * parent =nullptr):QFrame{parent}{}
 
-
+	/**
+	 * @brief select the matches of the given selection.
+	 * @param selection a given selection
+	 * @return a new selection
+	 */
 	virtual std::vector<cv::DMatch> select(const std::vector<cv::DMatch>& selection) = 0;
 
 signals:
-
+	/**
+	 * @brief this signal will be emitted if settings changed.
+	 */
 	void settingsChanged();
 
 };

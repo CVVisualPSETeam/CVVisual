@@ -53,7 +53,7 @@ slots:
       protected
 slots:
 	void colorButtonClicked()
-	{colorDialog_->show();}
+		{colorDialog_->show();}
 
       protected:
 	QColor color_;

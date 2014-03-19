@@ -43,8 +43,15 @@ class MatchSceneGraphicsView : public QGraphicsView
 		QGraphicsView::resizeEvent(event);
 		emit signalResized();
 	}
+
+	virtual void contextMenuEvent(QContextMenuEvent *event)
+	{
+		emit signalContextMenu(event->globalPos());
+		//event->ignore();
+	}
 signals:
 	void signalResized();
+	void signalContextMenu(const QPoint& );
 };
 }
 

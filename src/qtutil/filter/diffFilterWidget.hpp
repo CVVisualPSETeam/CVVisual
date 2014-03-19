@@ -24,7 +24,7 @@ enum class DiffFilterType
 };
 
 /**
-* @brief Class providing functionality of compute a difference image of two
+* @brief Class providing functionality to compute a difference image of two
 *	input matrices.
 */
 class DiffFilterFunction : public FilterFunctionWidget<2, 1>
@@ -70,7 +70,7 @@ class DiffFilterFunction : public FilterFunctionWidget<2, 1>
 	//< Map of all available filters with their names
 
 	/**
-	* @brief Extracts the names of all available filters from filterMap_
+	* @brief Extracts the names of all available filters from filterMap_.
 	*/
 	QStringList extractStringListfromMap() const;
 
