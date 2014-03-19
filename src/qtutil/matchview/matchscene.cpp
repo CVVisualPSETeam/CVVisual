@@ -32,8 +32,8 @@ MatchScene::MatchScene(const cv::Mat &imageLeft, const cv::Mat &imageRight, QWid
 	leftImage_ = leftImage.get();
 	rightImage_ = rightImage.get();
 
-	auto leftImWidget = util::make_unique<ZoomableProxyObject>(leftImage.release());
-	auto rightImWidget = util::make_unique<ZoomableProxyObject>( rightImage.release() );
+	auto leftImWidget = util::make_unique<structures::ZoomableProxyObject>(leftImage.release());
+	auto rightImWidget = util::make_unique<structures::ZoomableProxyObject>( rightImage.release() );
 
 	leftImWidget_=leftImWidget.get();
 	rightImWidget_=rightImWidget.get();
@@ -44,11 +44,14 @@ MatchScene::MatchScene(const cv::Mat &imageLeft, const cv::Mat &imageRight, QWid
 	leftImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
 	rightImWidget_->setFlag(QGraphicsItem::ItemIsFocusable);
 
+	basicLayout->setContentsMargins(0, 0, 0, 0);
 	basicLayout->addWidget(graphicView.release());
 	setLayout(basicLayout.release());
 
 	connect(graphicView_, SIGNAL(signalResized()), this,
 		SLOT(viewReized()));
+	connect(graphicView_, SIGNAL(signalContextMenu(QPoint)), this,
+		SLOT(rightClick(QPoint)));
 
 	// rightklick
 	setContextMenuPolicy(Qt::CustomContextMenu);
@@ -110,7 +113,7 @@ void MatchScene::viewReized()
 
 void MatchScene::rightClick(const QPoint &pos)
 {
-	QPoint p = mapToGlobal(pos);
+	QPoint p = pos;
 	QMenu menu;
 
 	menu.addAction("Save visible image");

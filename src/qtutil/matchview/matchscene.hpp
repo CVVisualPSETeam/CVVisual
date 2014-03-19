@@ -43,8 +43,15 @@ class MatchSceneGraphicsView : public QGraphicsView
 		QGraphicsView::resizeEvent(event);
 		emit signalResized();
 	}
+
+	virtual void contextMenuEvent(QContextMenuEvent *event)
+	{
+		emit signalContextMenu(event->globalPos());
+		//event->ignore();
+	}
 signals:
 	void signalResized();
+	void signalContextMenu(const QPoint& );
 };
 }
 
@@ -139,8 +146,8 @@ slots:
 	qtutil::ZoomableImage *leftImage_;
 	qtutil::ZoomableImage *rightImage_;
 
-	ZoomableProxyObject *leftImWidget_;
-	ZoomableProxyObject *rightImWidget_;
+	structures::ZoomableProxyObject *leftImWidget_;
+	structures::ZoomableProxyObject *rightImWidget_;
 };
 }
 }

@@ -2,6 +2,12 @@
 
 #include "call_meta_data.hpp"
 
+/**
+ * Tests whether the `CVVISUAL_LOCATION` macro (from /include/opencv2/call_meta_data.hpp)
+ * works as expected, i.e. the instance of `cvv::impl::CallMetaData` as which it gets defined has the correct data.
+ * The second test in this file checks wether a `cvv::impl::CallMataData` created by hand and with an empty
+ * initializer list has no known location, as it is supposed to be.
+ */
 class LocationTest : public testing::Test
 {
 };

@@ -10,7 +10,11 @@ namespace cvv
 {
 namespace qtutil
 {
-
+namespace structures
+{
+/**
+ * @brief spezific class for MatchScene
+ */
 class ZoomableProxyObject : public QGraphicsProxyWidget
 {
       public:
@@ -31,6 +35,8 @@ class ZoomableProxyObject : public QGraphicsProxyWidget
       private:
 	ZoomableImage *image_;
 };
+
+}
 }
 }
 #endif

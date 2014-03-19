@@ -50,6 +50,7 @@ void MatchSettingsSelector::changedSetting()
 		layout_->addWidget(setting.release());
 		connect(setting_,SIGNAL(settingsChanged(MatchSettings&)),
 			this,SIGNAL(settingsChanged(MatchSettings&)));
+		setting_->updateAll();
 	}
 }
 

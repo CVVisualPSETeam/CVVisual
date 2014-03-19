@@ -52,6 +52,7 @@ void KeyPointSettingsSelector::changedSetting()
 		layout_->addWidget(setting.release());
 		connect(setting_,SIGNAL(settingsChanged(KeyPointSettings&)),
 		this,SIGNAL(settingsChanged(KeyPointSettings&)));
+		setting_->updateAll();
 	}
 }
 
