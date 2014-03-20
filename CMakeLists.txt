@@ -197,6 +197,6 @@ if(CVV_BUILD_TESTS)
 	add_executable(test_manual_translationviewtest manual_test/translationviewtest/main.cpp)
 	target_link_libraries(test_manual_translationviewtest cvvisual Qt5Core opencv_highgui opencv_core)
 
-	add_executable(test_manual_depthviewtest manual_test/depthviewtest/main.cpp)
-	target_link_libraries(test_manual_depthviewtest cvvisual Qt5Core opencv_highgui opencv_core)
+	add_executable(test_manual_pointmatchviewtest manual_test/pointmatchviewtest/main.cpp)
+	target_link_libraries(test_manual_pointmatchviewtest cvvisual Qt5Core opencv_highgui opencv_core)
 endif()
