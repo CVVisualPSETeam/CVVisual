@@ -1,5 +1,5 @@
-#ifndef CVVISUAL_DEPTH_MATCH_VIEW
-#define CVVISUAL_DEPTH_MATCH_VIEW
+#ifndef CVVISUAL_POINT_MATCH_VIEW
+#define CVVISUAL_POINT_MATCH_VIEW
 
 #include <vector>
 
@@ -17,7 +17,7 @@ namespace view
  * @brief this class interprets the translation of matches as depth value.
  * Unfinished
  */
-class DepthMatchView : public MatchView
+class PointMatchView : public MatchView
 {
 
 	Q_OBJECT
@@ -33,7 +33,7 @@ class DepthMatchView : public MatchView
 	 *	the imIdx will be taken
 	 * @param parent the parent widget
 	 */
-	DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
+	PointMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 		       std::vector<cv::KeyPoint> rightKeyPoints,
 		       std::vector<cv::DMatch> matches, cv::Mat leftIm,
 		       cv::Mat rightIm, bool usetrainIdx = true,
@@ -44,8 +44,8 @@ class DepthMatchView : public MatchView
 	 * @param call from which the data for the view is taken.
 	 * @param parent of this QWidget.
 	 */
-	DepthMatchView(const impl::MatchCall &call, QWidget *parent = nullptr)
-	    : DepthMatchView{ call.keyPoints1(), call.keyPoints2(),
+	PointMatchView(const impl::MatchCall &call, QWidget *parent = nullptr)
+	    : PointMatchView{ call.keyPoints1(), call.keyPoints2(),
 			      call.matches(),    call.img1(),
 			      call.img2(),       call.usesTrainDescriptor(),
 			      parent }

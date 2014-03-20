@@ -9,14 +9,14 @@
 #include "../qtutil/matchview/cvvpointmatch.hpp"
 #include "../util/util.hpp"
 
-#include "depthview.hpp"
+#include "pointmatchview.hpp"
 
 namespace cvv
 {
 namespace view
 {
 
-DepthMatchView::DepthMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
+PointMatchView::PointMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 			       std::vector<cv::KeyPoint> rightKeyPoints,
 			       std::vector<cv::DMatch> matches, cv::Mat leftIm,
 			       cv::Mat rightIm, bool usetrainIdx,

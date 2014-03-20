@@ -6,7 +6,7 @@
 #include "opencv2/features2d/features2d.hpp"
 #include <opencv2/highgui/highgui.hpp>
 
-#include "../../src/view/depthview.hpp"
+#include "../../src/view/pointmatchview.hpp"
 #include "../../src/impl/init.hpp"
 
 /**
@@ -67,8 +67,8 @@ int main(int argc, char **argv)
 		match.emplace_back(i, i + 1, 1.0f * i / 20);
 	}
 	cvv::impl::initializeFilterAndViews();
-	cvv::view::DepthMatchView view{ key1, key2, match, src, train };
-	view.setWindowTitle("DepthView Test");
+	cvv::view::PointMatchView view{ key1, key2, match, src, train };
+	view.setWindowTitle("PointMatchView Test");
 	view.show();
 	return a.exec();
 }

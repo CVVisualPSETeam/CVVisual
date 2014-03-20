@@ -21,7 +21,7 @@
 #include "../view/linematchview.hpp"
 #include "../view/rawview.hpp"
 #include "../view/translationsmatchview.hpp"
-#include "../view/depthview.hpp"
+#include "../view/pointmatchview.hpp"
 
 #include "../qtutil/matchview/matchselectionselector.hpp"
 #include "../qtutil/matchview/matchintervallselection.hpp"
@@ -80,8 +80,8 @@ void initializeFilterAndViews()
 	    "LineMatchView");
 	cvv::gui::MatchCallTab::registerMatchView<
 	    cvv::view::TranslationMatchView>("TranslationMatchView");
-	cvv::gui::MatchCallTab::registerMatchView<cvv::view::DepthMatchView>(
-	    "DepthMatchView");
+	cvv::gui::MatchCallTab::registerMatchView<cvv::view::PointMatchView>(
+	    "PointMatchView");
 	cvv::gui::MatchCallTab::registerMatchView<cvv::view::Rawview>(
 	    "RawView");
 
