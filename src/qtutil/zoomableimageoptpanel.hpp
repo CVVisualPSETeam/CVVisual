@@ -37,7 +37,7 @@ class ZoomableOptPanel : public QWidget
       public
 slots:
 	void updateMat(cv::Mat mat);
-	void updateConvertStatus(ImageConversionResult result, const cv::Mat &);
+	void updateConvertStatus(const cv::Mat &,ImageConversionResult result);
 	void setZoom(QRectF, qreal);
 
       private:

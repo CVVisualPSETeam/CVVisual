@@ -29,10 +29,10 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, bool showHideBut
 	    cvv::util::make_unique<QPushButton>("show full Image");
 
 	// ConversionResult+ update mat
-	connect(&zoomIm, SIGNAL(updateConversionResult(ImageConversionResult,
-						       const cv::Mat &)),
-		this, SLOT(updateConvertStatus(ImageConversionResult,
-					       const cv::Mat &)));
+	connect(&zoomIm, SIGNAL(updateConversionResult(const cv::Mat &,
+						       ImageConversionResult)),
+		this, SLOT(updateConvertStatus(const cv::Mat &,
+					       ImageConversionResult)));
 
 	// getzoom from image
 	connect(&zoomIm, SIGNAL(updateArea(QRectF, qreal)), this,
@@ -80,11 +80,10 @@ ZoomableOptPanel::ZoomableOptPanel(const ZoomableImage &zoomIm, bool showHideBut
 	setLayout(basicLayout.release());
 
 	updateMat(zoomIm.mat());
-	updateConvertStatus(zoomIm.lastConversionResult(),zoomIm.mat());
+	updateConvertStatus(zoomIm.mat(),zoomIm.lastConversionResult());
 }
 
-void ZoomableOptPanel::updateConvertStatus(ImageConversionResult result,
-					   const cv::Mat &mat)
+void ZoomableOptPanel::updateConvertStatus(const cv::Mat &mat, ImageConversionResult result)
 {
 	labelConvert_->setText(
 		QString{ "Convert Status: " }.append(conversionResultToString(result)));

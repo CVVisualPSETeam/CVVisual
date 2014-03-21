@@ -224,7 +224,7 @@ void ZoomableImage::setMat(cv::Mat mat)
 {
 	mat_ = mat;
 	auto result = convertMatToQPixmap(mat_);
-	emit updateConversionResult(result.first, mat);
+	emit updateConversionResult( mat,result.first);
 	lastConversionResult_=result.first;
 	// QTReference:
 	// void QGraphicsScene::clear() [slot]

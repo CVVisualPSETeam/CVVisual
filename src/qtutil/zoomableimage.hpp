@@ -77,7 +77,7 @@ class ZoomableImage : public QWidget
 	{
 		//disconnect everything from custom signals
 		QObject::disconnect(this, SIGNAL(updateArea(QRectF,qreal)), 0, 0);
-		QObject::disconnect(this, SIGNAL(updateConversionResult(ImageConversionResult,cv::Mat)), 0, 0);
+		QObject::disconnect(this, SIGNAL(updateConversionResult(cv::Mat,ImageConversionResult)), 0, 0);
 		QObject::disconnect(this, SIGNAL(updateMouseHover(QPointF,QString,bool)), 0, 0);
 
 		//disconnect all slots
@@ -226,8 +226,8 @@ signals:
 	 * conversion result
 	 * and the image.
 	 */
-	void updateConversionResult(ImageConversionResult,
-				    const cv::Mat &) const;
+	void updateConversionResult(const cv::Mat &,
+				    ImageConversionResult) const;
 
 	/**
 	 *@brief Emitted whenever the visible area changes. Passes the visible
