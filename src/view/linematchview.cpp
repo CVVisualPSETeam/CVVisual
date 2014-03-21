@@ -43,7 +43,9 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 	auto keyPointmnt = util::make_unique<qtutil::KeyPointManagement>(allkeypoints);
 
 	qtutil::MatchScene *matchscene_ptr = matchscene.get();
-	int updateAreaDelay=std::min(std::max(matches.size(),std::max(leftKeyPoints.size(),rightKeyPoints.size()))/10,50lu);
+	int updateAreaDelay=std::min(std::max(matches.size(),
+					      std::max(leftKeyPoints.size(),
+						       rightKeyPoints.size()))/10,50lu);
 	matchscene_ptr->getLeftImage().setUpdateAreaDelay(updateAreaDelay);
 	matchscene_ptr->getRightImage().setUpdateAreaDelay(updateAreaDelay);
 
@@ -63,18 +65,19 @@ LineMatchView::LineMatchView(std::vector<cv::KeyPoint> leftKeyPoints,
 
 	accor->insert("Match Settings", std::move(matchmnt));
 	accor->insert("KeyPoint Settings", std::move(keyPointmnt));
-	accor->insert("Left Image ",
-		      std::move(matchscene_ptr->getLeftMatInfoWidget()));
-	accor->insert("Right Image ",
-		      std::move(matchscene_ptr->getRightMatInfoWidget()));
-	accor->insert("Sync Zoom ",
-		      std::move(matchscene_ptr->getSyncZoomWidget()));
 	accor->insert("Show selection in rawview window",
 		      std::move(util::make_unique<qtutil::ShowInRawView>(leftKeyPoints,
 								 rightKeyPoints,
 								 matches,
 								 matchManagment_,
 								 keyManagment_)));
+
+	accor->insert("Sync Zoom ",
+		      std::move(matchscene_ptr->getSyncZoomWidget()));
+	accor->insert("Left Image ",
+		      std::move(matchscene_ptr->getLeftMatInfoWidget()));
+	accor->insert("Right Image ",
+		      std::move(matchscene_ptr->getRightMatInfoWidget()));
 
 	layout->addWidget(accor.release());
 	layout->addWidget(matchscene.release());
