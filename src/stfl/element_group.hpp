@@ -19,7 +19,7 @@ namespace stfl
  */
 template <class Element> class ElementGroup
 {
-      public:
+public:
 	/**
 	 * @brief Contructs an empty ElementGroup.
 	 */
@@ -159,7 +159,7 @@ template <class Element> class ElementGroup
 		elements = newElements;
 	}
 
-      private:
+private:
 	QStringList titles;
 	QList<Element> elements;
 };

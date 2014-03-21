@@ -3,6 +3,7 @@
 #include <functional>
 #include <math.h>
 #include <memory>
+#include <iostream>
 
 #include <QMap>
 #include <QSet>
@@ -14,6 +15,7 @@
 #include "../controller/view_controller.hpp"
 #include "../qtutil/stfl_query_widget.hpp"
 #include "../qtutil/util.hpp"
+#include "../stfl/element_group.hpp"
 
 namespace cvv
 {
@@ -67,18 +69,24 @@ void OverviewPanel::initEngine()
 {
 	// raw and description filter
 	auto rawFilter = [](const OverviewTableRow &elem)
-	{ return elem.description(); };
+	{ 
+		return elem.description(); 
+	};
 	queryEngine.addStringCmdFunc("raw", rawFilter, false);
 	queryEngine.addStringCmdFunc("description", rawFilter, false);
 
 	// file filter
 	queryEngine.addStringCmdFunc("file", [](const OverviewTableRow &elem)
-	{ return elem.file(); });
+	{ 
+		return elem.file(); 
+	});
 
 	// function filter
 	queryEngine.addStringCmdFunc("function",
 	                             [](const OverviewTableRow &elem)
-	{ return elem.function(); });
+	{ 
+		return elem.function(); 
+	});
 
 	// line filter
 	queryEngine.addIntegerCmdFunc("line", [](const OverviewTableRow &elem)
@@ -86,17 +94,62 @@ void OverviewPanel::initEngine()
 
 	// id filter
 	queryEngine.addIntegerCmdFunc("id", [](const OverviewTableRow &elem)
-	{ return elem.id(); });
+	{ 
+		return elem.id(); 
+	});
 
 	// type filter
 	queryEngine.addStringCmdFunc("type", [](const OverviewTableRow &elem)
-	{ return elem.type(); });
+	{ 
+		return elem.type(); 
+	});
 
 	//"number of images" filter
 	queryEngine.addIntegerCmdFunc("image_count",
 	                              [](const OverviewTableRow &elem)
-	{ return elem.call()->matrixCount(); });
+	{ 
+		return elem.call()->matrixCount(); 
+	});
+	
+	//additional commands
+	
+	//open call command
+	queryEngine.addAdditionalCommand("open", 
+		[&](QStringList args, std::vector<stfl::ElementGroup<OverviewTableRow>>& groups)
+	{
+		openCommand(args, groups);
+	}, {"first_of_group", "last_of_group", "shown"});
 }
+
+void OverviewPanel::openCommand(QStringList args,
+	std::vector<stfl::ElementGroup<OverviewTableRow>>& groups)
+{
+	if (args.contains("shown"))
+	{
+		for (auto &group : groups)
+		{
+			for (auto &elem : group.getElements())
+			{
+				controller->openCallTab(elem.id());
+			}
+		}
+		return;
+	}
+	if (args.contains("first_of_group") || args.contains("last_of_group"))
+	{
+		bool first = args.contains("first_of_group") ;
+		for (auto &group : groups)
+		{
+			if (group.size() > 0)
+			{
+				size_t index = first ? 0 : group.size() - 1;
+				size_t id = group.get(index).id();
+				controller->openCallTab(id);
+			}
+		} 
+	}
+}
+		
 
 void OverviewPanel::addElement(const util::Reference<const impl::Call> newCall)
 {
@@ -125,7 +178,9 @@ void OverviewPanel::flushElementBuffer()
 void OverviewPanel::removeElement(size_t id)
 {
 	queryEngine.removeElements([id](OverviewTableRow elem)
-	{ return elem.id() == id; });
+	{ 
+		return elem.id() == id; 
+	});
 	table->removeElement(id);
 }
 

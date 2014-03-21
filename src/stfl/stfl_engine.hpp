@@ -8,6 +8,8 @@
 #include <QHash>
 #include <QSet>
 #include <QRegExp>
+#include <QSettings>
+
 #include <map>
 #include <set>
 #include <iostream>
@@ -35,29 +37,33 @@ template <typename Element> class STFLEngine
       public:
 	/**
 	 * @brief Constructs a new Engine.
-	 * @note use the appropriate setters to add filters, etc.
+	 * @param id id for storing the last queries.
+	 * @note Use the appropriate setters to add filters, etc.
 	 */
-	STFLEngine()
+	STFLEngine(QString id): id{id}
 	{
 	}
 
 	/**
 	 * @brief Constructs (and initializes) a new engine.
+	 * 
+	 * Use this constructor only if you want to have controll about everything.
+	 * Consider using the simple constructor in combination with the add*
+	 * commands instead.
 	 *
+	 * @param id id for storing the last queries.
 	 * @param filterFuncs map mapping a filter command to a filter function
 	 * @param filterPoolFuncs map mapping a filter command to a filter pool
-	 *function
-	 * (that returns a value the filter command filters on for a given
-	 *element)
+	 * function (that returns a value the filter command filters on for a given
+	 * element)
 	 * @param filterCSFuncs map mapping a filter cs command (it allows comma
-	 *separated arguments
+	 * separated arguments
 	 * to a filter function
 	 * @param filterCSPoolFuncs map mapping a filter cs command to a filter
-	 *pool function
+	 * pool function
 	 * @param sortFuncs map mapping a sort command to sort function
 	 * @param groupFuncs map mapping a group command to a grouping function
-	 *(a function returning a grooup name
-	 * for a given element)
+	 * (a function returning a grooup name for a given element)
 	 */
 	STFLEngine(
 	    QMap<QString, std::function<bool(const QString &, const Element &)>>
@@ -71,7 +77,7 @@ template <typename Element> class STFLEngine
 	    QMap<QString, std::function<int(const Element &, const Element &)>>
 	        sortFuncs,
 	    QMap<QString, std::function<QString(const Element &)>> groupFuncs)
-	    : filterFuncs{ filterFuncs }, filterPoolFuncs{ filterPoolFuncs },
+	    : id{id}, filterFuncs{ filterFuncs }, filterPoolFuncs{ filterPoolFuncs },
 	      filterCSFuncs{ filterCSFuncs },
 	      filterCSPoolFuncs{ filterCSPoolFuncs }, sortFuncs{ sortFuncs },
 	      groupFuncs{ groupFuncs }
@@ -96,7 +102,7 @@ template <typename Element> class STFLEngine
 	 * @param number maximum number of suggestions
 	 * @return suggestions for the given query
 	 */
-	QStringList getSuggestions(QString _query, size_t number = 100)
+	QStringList getSuggestions(QString _query, size_t number = 50)
 	{
 		QString query(_query);
 		bool addedRaw = false;
@@ -160,6 +166,8 @@ template <typename Element> class STFLEngine
 		elemList = executeFilters(elements, cmdStrings);
 		elemList = executeSortCmds(elemList, cmdStrings);
 		auto groups = executeGroupCmds(elemList, cmdStrings);
+		executeAdditionalCommands(groups, cmdStrings);
+		addQueryToStore(query);
 		return groups;
 	}
 
@@ -479,6 +487,21 @@ template <typename Element> class STFLEngine
 	}
 
 	/**
+	 * @brief Add an additional command.
+	 * Add a command which function gets only executed once per query execution.
+	 * @param name command name
+	 * @param func the associated function, that takes the parameters and the
+	 * element groups resulting from the filter, group and sort commands.
+	 */
+	void addAdditionalCommand(QString name, 
+			std::function<void(QStringList, std::vector<ElementGroup<Element>>&)> func,
+			QStringList avParameters = QStringList{})
+	{
+		additionalCommandFuncs[name] = func;
+		additionalCommandPools[name] = avParameters;
+	}
+
+	/**
 	 * @brief Removes the elements that match the given function.
 	 * @param matchFunc given match function
 	 */
@@ -490,7 +513,9 @@ template <typename Element> class STFLEngine
 		reinitFilterPools();
 	}
 
-      private:
+private:
+	QString id;
+	QSettings settings{"CVVisual", QSettings::IniFormat};
 	QList<Element> elements;
 	QString lastQuery = "";
 	QStringList supportedCmds;
@@ -508,6 +533,12 @@ template <typename Element> class STFLEngine
 	QMap<QString, std::function<int(const Element &, const Element &)>>
 	sortFuncs;
 	QMap<QString, std::function<QString(const Element &)>> groupFuncs;
+
+	QMap<QString, std::function<void(QStringList,
+			std::vector<ElementGroup<Element>>&)>> additionalCommandFuncs;
+	QMap<QString, QStringList> additionalCommandPools;
+
+	const int MAX_NUMBER_OF_STORED_CMDS = 200;
 
 	QList<Element> executeFilters(const QList<Element> &elements,
 	                              const QStringList &cmdStrings)
@@ -695,6 +726,27 @@ template <typename Element> class STFLEngine
 		}
 		return groupList;
 	}
+	
+	void executeAdditionalCommands(std::vector<ElementGroup<Element>> &groups, QStringList cmdStrings)
+	{
+		cmdStrings.removeDuplicates();
+		for (QString cmdString : cmdStrings)
+		{
+			QStringList arr =
+			    cmdString.split(" ", QString::SkipEmptyParts);
+			if (arr.isEmpty())
+			{
+				continue;
+			}
+			QString cmd = arr.takeFirst();
+			if (!isAdditionalCmd(cmd))
+			{
+				continue;
+			}
+			arr = arr.join("").split(",", QString::SkipEmptyParts);
+			additionalCommandFuncs[cmd](arr, groups);
+		}
+	}
 
 	QStringList getSuggestionsForCmdQuery(const QString &cmdQuery,
 	                                      size_t number)
@@ -738,7 +790,7 @@ template <typename Element> class STFLEngine
 				suggs = getSuggestionsForGroupCmd(args);
 			}
 		}
-		else if (isFilterCmd(cmd) || isFilterCSCmd(cmd))
+		else if (isFilterCmd(cmd) || isFilterCSCmd(cmd) || isAdditionalCmd(cmd))
 		{
 			tokens = tokens.mid(1, tokens.size());
 			QString rejoined = tokens.join(" ");
@@ -755,7 +807,14 @@ template <typename Element> class STFLEngine
 			{
 				QStringList args = rejoined.split(
 				    ",", QString::SkipEmptyParts);
-				suggs = getSuggestionsForFilterCSCmd(cmd, args);
+				if (isFilterCmd(cmd))
+				{
+					suggs = getSuggestionsForFilterCSCmd(cmd, args);
+				}
+				else
+				{
+					suggs = getSuggestionsForAdditionalCmd(cmd, args);
+				}
 			}
 		}
 		else
@@ -763,12 +822,16 @@ template <typename Element> class STFLEngine
 			suggs = getSuggestionsForCmd(cmd);
 		}
 		if (isFilterCmd(cmd) || isFilterCSCmd(cmd) || isSortCmd(cmd) ||
-		    isGroupCmd(cmd))
+		    isGroupCmd(cmd) || isAdditionalCmd(cmd))
 		{
 			for (auto &sugg : suggs)
 			{
 				sugg = cmd + " " + sugg;
 			}
+		}
+		for (QString cmd : getStoredCmdsForInput(cmdQuery))
+		{
+			suggs.prepend(cmd);
 		}
 		return suggs.mid(0, number);
 	}
@@ -864,6 +927,30 @@ template <typename Element> class STFLEngine
 		return list;
 	}
 
+	QStringList getSuggestionsForAdditionalCmd(const QString &cmd, const QStringList &args)
+	{
+		auto pool = additionalCommandPools[cmd];
+		if (pool.isEmpty())
+		{
+			return QStringList(args.join(", "));
+		}
+		QString last;
+		if (args.empty())
+		{
+			last = "";
+		}
+		else
+		{
+			last = args[args.size() - 1];
+		}
+		QStringList list = sortStringsByStringEquality(pool, last);
+		for (QString &item : list)
+		{
+			joinCommand(item, cmd, args, true);
+		}
+		return list;
+	}
+
 	QStringList getSuggestionsForCmd(const QString &cmd)
 	{
 		return sortStringsByStringEquality(supportedCmds, cmd);
@@ -878,6 +965,7 @@ template <typename Element> class STFLEngine
 		QStringList list;
 		list.append(filterFuncs.keys());
 		list.append(filterCSFuncs.keys());
+		list.append(additionalCommandFuncs.keys());
 		for (const auto &key : groupFuncs.keys())
 		{
 			list.append("group by " + key);
@@ -929,6 +1017,57 @@ template <typename Element> class STFLEngine
 			}
 			++it2;
 		}
+	}
+
+	void addQueryToStore(QString query)
+	{
+		QStringList storedCmds = getStoredCmds();
+		QStringList cmds = query.split("#", QString::SkipEmptyParts);
+		cmds.removeDuplicates();
+		for (QString cmd : cmds)
+		{
+			cmd = cmd.trimmed();
+			if (cmd == "")
+			{
+				continue;
+			}
+			int index = storedCmds.indexOf(cmd);
+			while (index != -1)
+			{
+				storedCmds.removeAt(index);
+				index = storedCmds.indexOf(cmd);
+			}
+			if (storedCmds.size() >= MAX_NUMBER_OF_STORED_CMDS)
+			{
+				storedCmds.removeFirst();
+			}
+			storedCmds.append(cmd);
+		}
+		settings.setValue(QString("STFLEngine/%1/settings").arg(id), storedCmds);
+	}
+
+	QStringList getStoredCmds()
+	{
+		QString key = QString("STFLEngine/%1/settings").arg(id);
+		if (!settings.contains(key))
+		{
+			return QStringList();
+		}
+		return settings.value(key).value<QStringList>();
+	}
+
+	QStringList getStoredCmdsForInput(QString input)
+	{
+		QStringList store = getStoredCmds();
+		QStringList retList;
+		for (QString cmd : store)
+		{
+			if (cmd.startsWith(input) && cmd != input)
+			{
+				retList.prepend(cmd);
+			}
+		}
+		return retList;
 	}
 
 	/**
@@ -1003,6 +1142,11 @@ template <typename Element> class STFLEngine
 		return filterCSFuncs.count(cmd) > 0;
 	}
 
+	bool isAdditionalCmd(const QString &cmd)
+	{
+		return additionalCommandFuncs.count(cmd) > 0;
+	}
+	
 	void joinCommand(QString &item, const QString &cmd, QStringList args,
 	                 bool omitCmd = false)
 	{

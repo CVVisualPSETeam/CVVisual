@@ -94,7 +94,7 @@ private slots:
 	void showHelp(QString topic);
 
 private:
-	stfl::STFLEngine<OverviewTableRow> queryEngine;
+	stfl::STFLEngine<OverviewTableRow> queryEngine{"Overview"};
 	qtutil::STFLQueryWidget *queryWidget;
 	OverviewTable *table;
 	util::Reference<controller::ViewController> controller;
@@ -103,6 +103,9 @@ private:
 	std::vector<util::Reference<const impl::Call>> elementBuffer;
 
 	void initEngine();
+	
+	void openCommand(QStringList args,
+		std::vector<stfl::ElementGroup<OverviewTableRow>>& groups);
 };
 }
 }
