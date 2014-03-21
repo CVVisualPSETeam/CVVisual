@@ -147,7 +147,7 @@ class ViewController
 	 * deletes the proper Call
 	 */
 	void removeCallTab(size_t tabId, bool deleteIt = true,
-	                   bool deleteCall = false);
+	                   bool deleteCall = false, bool updateUI = true);
 
 	/**
 	 * @brief Opens the users default browser with the topic help page.
@@ -185,9 +185,7 @@ class ViewController
 
 	/**
 	 * @brief Show the given call tab and bring it's window to the front.
-	 * @note Its not guaranteed that it really brings the tabs' window to
-	 * the
-	 * front.
+	 * @note It's not guaranteed that it really brings the tabs' window to the front.
 	 * @param tabId id of the given call tab
 	 */
 	void showCallTab(size_t tabId);
@@ -197,6 +195,12 @@ class ViewController
 	 * @param tabId id of the tab
 	 */
 	void showAndOpenCallTab(size_t tabId);
+	
+	/**
+	 * @brief Opens the tab it if neccessary.
+	 * @param tabId id of the tab
+	 */
+	void openCallTab(size_t tabId);
 
 	/**
 	 * @brief Show the overview tab (and table) and bring it's window to the

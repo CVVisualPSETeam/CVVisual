@@ -165,7 +165,7 @@ private:
 	std::vector<cv::KeyPoint> keyPoints1;
 	std::vector<cv::KeyPoint> keyPoints2;
 	std::vector<cv::DMatch> matches;
-	stfl::STFLEngine<gui::RawviewTableRow> queryEngine;
+	stfl::STFLEngine<gui::RawviewTableRow> queryEngine{"Rawview"};
 	qtutil::STFLQueryWidget *queryWidget;
 	gui::RawviewTable *table;
 	bool showShowInViewMenu = false;

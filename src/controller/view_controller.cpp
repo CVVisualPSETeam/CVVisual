@@ -165,7 +165,7 @@ void ViewController::moveCallTabToWindow(size_t tabId, size_t windowId)
 	removeEmptyWindowsWithDelay();
 }
 
-void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
+void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall, bool updateUI)
 {
 	auto *curWindow = getCurrentWindowOfTab(tabId);
 	if (curWindow->hasTab(tabId))
@@ -178,7 +178,10 @@ void ViewController::removeCallTab(size_t tabId, bool deleteIt, bool deleteCall)
 	}
 	if (deleteCall && hasCall(tabId))
 	{
-		ovPanel->removeElement(tabId);
+		if (updateUI)
+		{
+			ovPanel->removeElement(tabId);
+		}
 		impl::dataController().removeCall(tabId);
 	}
 	removeEmptyWindowsWithDelay();
@@ -224,6 +227,16 @@ void ViewController::showAndOpenCallTab(size_t tabId)
 		curWindow = mainWindow;
 	}
 	curWindow->showTab(tabId);
+}
+
+void ViewController::openCallTab(size_t tabId)
+{
+	auto curWindow = getCurrentWindowOfTab(tabId);
+	if (!curWindow->hasTab(tabId))
+	{
+		moveCallTabToWindow(tabId, 0);
+		curWindow = mainWindow;
+	}
 }
 
 void ViewController::showOverview()
