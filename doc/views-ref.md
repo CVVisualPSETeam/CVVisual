@@ -26,7 +26,7 @@ Allows to apply filters to the images it shows via the `Select a filter` collaps
 ##Match Views:
 Associated with the `debugDMatch()` function.  
 
-###Depthview: 
+###PointMatchView: 
 Interprets the translation of matches as depth value. 
 
 ###LineMatchView:
