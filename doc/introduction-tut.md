@@ -2,7 +2,7 @@
 ##Enabling debug mode  
 Define the CVV\_DEBUG_MODE macro somewhere in the translation unit.
 ##Opening the debug window  
-Open the debug window by putting one of the functions from the [CVVisual API](/api) into your code.    
+Open the debug window by putting one of the functions from the [CVVisual API](http://cvv.mostlynerdless.de/api) into your code.    
 In this example, we want to debug a call to 'dilate' (line.1) which is a filter, so we use debugFilter.  
 ###Example: Code  
 src, dest and the structuring element elem are of type cv::Mat (see the OpenCV doc on [dilate()](http://docs.opencv.org/modules/imgproc/doc/filtering.html#dilate));
@@ -21,7 +21,7 @@ When executing the code, the debugFilter function will open the window and halt 
 
 You are now in the overview tab. Each time you call one of the CVVisual functions, a *Call* is added to the table.  
 You can see the images you passed to the funtion as well as metadata and additional information.  
-The text field allows you to sort or group the Calls by different criteria; see the [filter query language documentation](../ref/filterquery-ref.html) on how to use it.  
+The text field allows you to sort or group the Calls by different criteria; see the [filter query language documentation](http://cvv.mostlynerdless.de/ref/filterquery-ref.html) on how to use it.  
 Now double-click on the Call or select `Open in 'CVVisual|main window'` from the context menu.  
 (You can also choose to remove the Call or open it in a new window there)  
 ##Debugging a filter operation  
