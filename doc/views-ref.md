@@ -21,7 +21,9 @@ which represents the result of a filter that was applied to the others via the `
 like a difference image between the two.  
   
 ###SingleFilterView:
-Allows to apply filters to the images it shows via the `Select a filter` collapsable.  
+Shows the two images given to the CVVisual function in the top row and _Result Images_ below each of those.
+They represent the result of a filter that was applied to the image above it. Allows to apply filters to the
+images it shows via the `Select a filter` collapsable.  
 
 ##Match Views:
 Associated with the `debugDMatch()` function.  
