@@ -167,7 +167,6 @@ template <typename Element> class STFLEngine
 		elemList = executeSortCmds(elemList, cmdStrings);
 		auto groups = executeGroupCmds(elemList, cmdStrings);
 		executeAdditionalCommands(groups, cmdStrings);
-		addQueryToStore(query);
 		return groups;
 	}
 
@@ -515,7 +514,6 @@ template <typename Element> class STFLEngine
 
 private:
 	QString id;
-	QSettings settings{"CVVisual", QSettings::IniFormat};
 	QList<Element> elements;
 	QString lastQuery = "";
 	QStringList supportedCmds;
@@ -829,10 +827,6 @@ private:
 				sugg = cmd + " " + sugg;
 			}
 		}
-		for (QString cmd : getStoredCmdsForInput(cmdQuery))
-		{
-			suggs.prepend(cmd);
-		}
 		return suggs.mid(0, number);
 	}
 
@@ -1017,57 +1011,6 @@ private:
 			}
 			++it2;
 		}
-	}
-
-	void addQueryToStore(QString query)
-	{
-		QStringList storedCmds = getStoredCmds();
-		QStringList cmds = query.split("#", QString::SkipEmptyParts);
-		cmds.removeDuplicates();
-		for (QString cmd : cmds)
-		{
-			cmd = cmd.trimmed();
-			if (cmd == "")
-			{
-				continue;
-			}
-			int index = storedCmds.indexOf(cmd);
-			while (index != -1)
-			{
-				storedCmds.removeAt(index);
-				index = storedCmds.indexOf(cmd);
-			}
-			if (storedCmds.size() >= MAX_NUMBER_OF_STORED_CMDS)
-			{
-				storedCmds.removeFirst();
-			}
-			storedCmds.append(cmd);
-		}
-		settings.setValue(QString("STFLEngine/%1/settings").arg(id), storedCmds);
-	}
-
-	QStringList getStoredCmds()
-	{
-		QString key = QString("STFLEngine/%1/settings").arg(id);
-		if (!settings.contains(key))
-		{
-			return QStringList();
-		}
-		return settings.value(key).value<QStringList>();
-	}
-
-	QStringList getStoredCmdsForInput(QString input)
-	{
-		QStringList store = getStoredCmds();
-		QStringList retList;
-		for (QString cmd : store)
-		{
-			if (cmd.startsWith(input) && cmd != input)
-			{
-				retList.prepend(cmd);
-			}
-		}
-		return retList;
 	}
 
 	/**
