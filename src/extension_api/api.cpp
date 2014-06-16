@@ -8,7 +8,7 @@ namespace cvv
 namespace extend
 {
 
-void addCallType(const QString name, TabFactory factory)
+void addCallType(const QString& name, TabFactory factory)
 {
 	controller::ViewController::addCallType(name, factory);
 }

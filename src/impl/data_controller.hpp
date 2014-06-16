@@ -22,9 +22,6 @@ class DataController
 {
       public:
 	DataController() = default;
-	~DataController()
-	{
-	}
 
 	/**
 	 * Add a new call to the calls-list.

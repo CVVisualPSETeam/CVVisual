@@ -27,9 +27,7 @@ size_t newCallId();
 class Call
 {
       public:
-	virtual ~Call()
-	{
-	}
+	virtual ~Call() = default;
 
 	/**
 	 * @brief Returns the unique id of the call.

@@ -47,7 +47,7 @@ using TabFactory = controller::TabFactory;
  * return the appropriate
  * window.
  */
-void addCallType(const QString name, TabFactory factory);
+void addCallType(const QString& name, TabFactory factory);
 
 template <std::size_t In, std::size_t Out, class Filter>
 /**
