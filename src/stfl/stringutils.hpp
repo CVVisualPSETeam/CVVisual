@@ -14,20 +14,6 @@ namespace stfl
 {
 
 /**
- * @brief Calculates the equality of two strings.
- * If both strings are only single words, a combination of the
- * levenshtein edit distance and a phonetic matching algorithm is used.
- * If not only the first is used.
- * Attention: using a phonetic algorithm is much slower, than the simple
- * levenshtein.
- * @param str1 first string
- * @param str2 second string
- * @return equality of both strings, 0 means both string are equal,
- *  the greater the number, the more unequal are both strings.
- */
-int stringEquality(const QString &str1, const QString &str2);
-
-/**
  * @brief Implementation of the levenshtein distance.
  * The levenshtein distance is a metric for the edit distance between to
  * strings.
@@ -38,40 +24,6 @@ int stringEquality(const QString &str1, const QString &str2);
  * @return edit distance
  */
 size_t editDistance(const QString &str1, const QString &str2);
-
-/**
- * @brief Implementation of a phonetic algorithm to compare two words.
- * It generates the NYSIIS for both words and returns the levenshtein
- * edit distance between them.
- * @attention using a phonetic algorithm is much slower, than the simple
- * levenshtein,
- * and also consumes much more memory as it uses the cached version the NYSIIS
- * algorithm
- * @param word1 first word
- * @param word2 second word
- * @return equality of both words, 0 means both words are equal,
- * the greater the number, the more unequal are both words.
- */
-int phoneticEquality(const QString &word1, const QString &word2);
-
-/**
- * @brief Examines the NYSIIS of the given word.
- * The NYSIIS is the New York State Identification and Intelligence System
- * Phonetic Code,
- * http://en.wikipedia.org/wiki/NYSIIS.
- * @param word given word
- * @return NYSIIS of the given word
- */
-QString nysiisForWord(QString word);
-
-/**
- * @brief Examines the NYSIIS of the given word and caches it.
- * It's faster than the uncached method, at the cost of consuming more memory.
- * @param word given word
- * @return NYSIIS of the given word
- * @see nysiisForWord
- */
-QString nysiisForWordCached(const QString &word);
 
 /**
  * @brief Removes repeated chars in the given string.
